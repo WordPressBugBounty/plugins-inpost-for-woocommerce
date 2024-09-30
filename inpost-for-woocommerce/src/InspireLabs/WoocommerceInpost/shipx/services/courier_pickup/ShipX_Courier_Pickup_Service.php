@@ -31,34 +31,37 @@ class ShipX_Courier_Pickup_Service {
 
 			return [];
 		}
-		foreach ( $dpoints['street'] as $i => $v ) {
-			if ( ! isset( $dpoints['postal_code'][ $i ] ) ) {
-				$this->dpoint_error( __( 'postal code', 'woocommerce-inpost' ),
-					$i );
-				$postal_code = '';
-			} else {
-				$postal_code = $dpoints['postal_code'][ $i ];
+		
+		if( isset($dpoints['street']) && is_array($dpoints['street']) ) {
+			foreach ( $dpoints['street'] as $i => $v ) {
+				if ( ! isset( $dpoints['postal_code'][ $i ] ) ) {
+					$this->dpoint_error( __( 'postal code', 'woocommerce-inpost' ),
+						$i );
+					$postal_code = '';
+				} else {
+					$postal_code = $dpoints['postal_code'][ $i ];
+				}
+
+				if ( ! isset( $dpoints['building_number'][ $i ] ) ) {
+					$this->dpoint_error( __( 'building number', 'woocommerce-inpost' ), $i );
+					$building_number = '';
+				} else {
+					$building_number = $dpoints['building_number'][ $i ];
+				}
+
+				if ( ! isset( $dpoints['city'][ $i ] ) ) {
+					$this->dpoint_error( __( 'city', 'woocommerce-inpost' ), $i );
+					$city = '';
+				} else {
+					$city = $dpoints['city'][ $i ];
+				}
+
+
+				$return[] = $dpoints['street'][ $i ]
+							. ' ' . $building_number
+							. ' ' . $postal_code
+							. ' ' . $city;
 			}
-
-			if ( ! isset( $dpoints['building_number'][ $i ] ) ) {
-				$this->dpoint_error( __( 'building number', 'woocommerce-inpost' ), $i );
-				$building_number = '';
-			} else {
-				$building_number = $dpoints['building_number'][ $i ];
-			}
-
-			if ( ! isset( $dpoints['city'][ $i ] ) ) {
-				$this->dpoint_error( __( 'city', 'woocommerce-inpost' ), $i );
-				$city = '';
-			} else {
-				$city = $dpoints['city'][ $i ];
-			}
-
-
-			$return[] = $dpoints['street'][ $i ]
-			            . ' ' . $building_number
-			            . ' ' . $postal_code
-			            . ' ' . $city;
 		}
 
 		return $return;

@@ -12,90 +12,86 @@ use Automattic\WooCommerce\StoreApi\StoreApi;
 
 
 defined( 'ABSPATH' ) || exit;
-define( 'WOOCOMMERCE_INPOST_VERSION', '1.2.0' );
+
 /**
  * Class for integrating with WooCommerce Blocks
  */
-class EasyPackWooBlocks implements IntegrationInterface
-{
-
-    /**
-     * The name of the integration.
-     *
-     * @return string
-     */
-    public function get_name() {
-        return 'woocommerce-inpost';
-    }
-
-    /**
-     * When called invokes any initialization/setup for the integration.
-     */
-    public function initialize() {
-
-        $plugin_data = new EasyPack();
-        $script_url = $plugin_data->getPluginJs() . 'blocks/easypack-woo-blocks-integration.js';
+class EasyPackWooBlocks implements IntegrationInterface {
 
 
-        //$style_url = $plugin_data->getPluginCss() . 'woo-blocks-integration.css';
+	/**
+	 * The name of the integration.
+	 *
+	 * @return string
+	 */
+	public function get_name() {
+		return 'inpost-pl-block';
+	}
 
-        $dep = array('dependencies' => array('wp-blocks', 'wp-components', 'wp-data', 'wp-element'), 'version' => '1.2.0');
+	/**
+	 * When called invokes any initialization/setup for the integration.
+	 */
+	public function initialize() {
 
-        $script_asset = $dep;
+		$plugin_data = new EasyPack();
+		$script_url  = $plugin_data->getPluginJs() . 'blocks/inpost-pl-block.js';
 
-        wp_register_script(
-            'wc-blocks-integration',
-            $script_url,
-            $script_asset['dependencies'],
-            $script_asset['version'],
-            true
-        );
+		$dep = array(
+			'dependencies' => array( 'wc-settings', 'wp-data', 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n', 'wp-primitives' ),
+			'version'      => WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
+		);
 
-    }
+		$script_asset = $dep;
 
-    /**
-     * Returns an array of script handles to enqueue in the frontend context.
-     *
-     * @return string[]
-     */
-    public function get_script_handles() {
-        return array( 'wc-blocks-integration' );
-    }
+		wp_register_script(
+			'inpost-pl-wc-blocks-integration',
+			$script_url,
+			$script_asset['dependencies'],
+			$script_asset['version'],
+			true
+		);
+	}
 
-    /**
-     * Returns an array of script handles to enqueue in the editor context.
-     *
-     * @return string[]
-     */
-    public function get_editor_script_handles() {
-        return array( 'wc-blocks-integration' );
-    }
+	/**
+	 * Returns an array of script handles to enqueue in the frontend context.
+	 *
+	 * @return string[]
+	 */
+	public function get_script_handles() {
+		return array( 'inpost-pl-wc-blocks-integration' );
+	}
 
-    /**
-     * An array of key, value pairs of data made available to the block on the client side.
-     *
-     * @return array
-     */
-    public function get_script_data() {
-        //$woocommerce_example_plugin_data = some_expensive_serverside_function();
-        return [
-            'expensive_data_calculation' => '' //$woocommerce_example_plugin_data
-        ];
-    }
+	/**
+	 * Returns an array of script handles to enqueue in the editor context.
+	 *
+	 * @return string[]
+	 */
+	public function get_editor_script_handles() {
+		return array( 'inpost-pl-wc-blocks-integration' );
+	}
 
-    /**
-     * Get the file modified time as a cache buster if we're in dev mode.
-     *
-     * @param string $file Local path to the file.
-     * @return string The cache buster value to use for the given file.
-     */
-    protected function get_file_version( $file ) {
-        if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG && file_exists( $file ) ) {
-            return filemtime( $file );
-        }
+	/**
+	 * An array of key, value pairs of data made available to the block on the client side.
+	 *
+	 * @return array
+	 */
+	public function get_script_data() {
+		return array(
+			'inpost_pl_block_data' => array( 'inpost_pl' ),
+		);
+	}
 
-        return '1.2.0';
-    }
+	/**
+	 * Get the file modified time as a cache buster if we're in dev mode.
+	 *
+	 * @param string $file Local path to the file.
+	 * @return string The cache buster value to use for the given file.
+	 */
+	protected function get_file_version( $file ) {
+		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG && file_exists( $file ) ) {
+			return filemtime( $file );
+		}
 
-
+		return WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;
+	}
 }

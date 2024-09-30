@@ -866,56 +866,7 @@ class EasyPack extends inspire_Plugin4 {
 				}
 			}
 		}
-
-		$methods_required_geowidget = array(
-			'easypack_parcel_machines_economy_cod',
-			'easypack_parcel_machines_cod',
-			'easypack_parcel_machines',
-			'easypack_parcel_machines_weekend',
-		);
-
-		if ( ! empty( $rates ) && is_array( $rates ) && count( $rates ) === 1 && has_block( 'woocommerce/checkout' ) ) {
-			$single_rate   = reset( $rates );
-			$linked_method = 'none';
-			if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
-				$instance_id = $single_rate->instance_id;
-				// check if some easypack method linked to Flexible Shipping
-				if ( ! empty( $instance_id ) ) {
-					$linked_method = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $instance_id );
-				}
-			}
-
-			if ( is_checkout() || get_option( 'easypack_debug_mode_enqueue_scripts' ) === 'yes' ) {
-				if ( in_array( $single_rate->method_id, $methods_required_geowidget )
-					|| in_array( $linked_method, $methods_required_geowidget )
-				) {
-					$config = 'parcelCollect';
-					if ( 'easypack_parcel_machines_weekend' === $single_rate->method_id
-						|| 'easypack_parcel_machines_weekend' === $linked_method
-					) {
-						$config = 'parcelCollect247';
-					}
-
-					if ( 'easypack_parcel_machines_cod' === $single_rate->method_id
-						|| 'easypack_parcel_machines_economy_cod' === $single_rate->method_id
-						|| 'easypack_parcel_machines_cod' === $linked_method
-						|| 'easypack_parcel_machines_economy_cod' === $linked_method
-					) {
-						$config = 'parcelCollectPayment';
-					}
-
-					wp_enqueue_script( 'easypack-single', $this->getPluginJs() . 'single.js', array( 'jquery' ) );
-					wp_localize_script(
-						'easypack-single',
-						'easypack_single',
-						array(
-							'need_map' => true,
-							'config'   => $config,
-						)
-					);
-				}
-			}
-		}
+		
 
 		return $rates;
 	}

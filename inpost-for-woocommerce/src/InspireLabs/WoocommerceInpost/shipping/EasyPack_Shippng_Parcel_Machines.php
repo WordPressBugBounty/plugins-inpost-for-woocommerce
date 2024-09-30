@@ -1478,10 +1478,14 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 			foreach ( $order->get_items() as $item_id => $item ) {
 				$product_id = $item->get_product_id();
-				$product    = wc_get_product( $product_id );
-
+				$product    = wc_get_product( $product_id );				
+				
 				if ( $item->get_quantity() > 1 ) {
 					return new ShipX_Shipment_Parcel_Dimensions_Model();
+				}
+				
+				if( ! $product || is_wp_error($product) ) {
+					continue;
 				}
 
 				$height = (float) $product->get_height();

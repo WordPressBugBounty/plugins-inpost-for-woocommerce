@@ -1,4 +1,4 @@
-var geowidgetModal;
+var inpostjsGeowidgetModal;
 
 function inpost_pl_get_shipping_method_js_mode() {
     let data = {};
@@ -66,7 +66,7 @@ function inpost_pl_select_point_callback_js_mode(point) {
 
     let point_address = address_line1 + '<br>' + address_line2;    
 
-    geowidgetModal.close();
+    inpostjsGeowidgetModal.close();
 }
 
 
@@ -92,7 +92,7 @@ jQuery(document).ready(function() {
 
     var wH = jQuery(window).height()-80;
 
-    geowidgetModal = new jBox('Modal', {
+    inpostjsGeowidgetModal = new jBox('Modal', {
         width: 800,
         height: wH,
         attach: '#easypack_show_geowidget_modal',
@@ -144,14 +144,9 @@ jQuery(document).ready(function() {
             }
 
             let wH = jQuery(window).height()-80;
-
-            geowidgetModal = new jBox('Modal', {
-                width: 800,
-                height: wH,
-                attach: '#easypack_show_geowidget_modal',
-                title: 'Wybierz paczkomat',
-                content: '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback_js_mode" token="'+token+'" language="pl" config="'+config+'"></inpost-geowidget>'
-            });
+			
+			let map_content = '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback_js_mode" token="'+token+'" language="pl" config="'+config+'"></inpost-geowidget>';
+			inpostjsGeowidgetModal.setContent( map_content );            
 
             let selector = '#shipping_method_0_' + method + postfix;
 
@@ -172,9 +167,9 @@ jQuery(document).ready(function() {
 
                 if (target.hasAttribute('id') && target.getAttribute('id') === 'easypack_js_type_geowidget') {
                     e.preventDefault();
-                    if( typeof geowidgetModal != 'undefined' && geowidgetModal !== null ) {
-                        if( ! geowidgetModal.isOpen ) {
-                            geowidgetModal.open();
+                    if( typeof inpostjsGeowidgetModal != 'undefined' && inpostjsGeowidgetModal !== null ) {
+                        if( ! inpostjsGeowidgetModal.isOpen ) {
+                            inpostjsGeowidgetModal.open();
                         }
                     }
                 }
