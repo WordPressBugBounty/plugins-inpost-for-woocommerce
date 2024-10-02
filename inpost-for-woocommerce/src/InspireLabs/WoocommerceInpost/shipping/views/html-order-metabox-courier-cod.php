@@ -402,7 +402,8 @@ woocommerce_form_field('easypack_send_method', $params, $send_method);
                 easypack_sms: jQuery(metabox).find('#easypack_sms_enabled').is(':checked'),
                 easypack_email: jQuery(metabox).find('#easypack_email_enabled').is(':checked'),
                 reference_number: jQuery(metabox).find('#reference_number').val(),
-                easypack_additional_package: jQuery(metabox).find('#easypack_additional_package').val()
+                easypack_additional_package: jQuery(metabox).find('#easypack_additional_package').val(),
+				cod_amounts: cod_amounts
             };
 
         } else {
@@ -423,7 +424,8 @@ woocommerce_form_field('easypack_send_method', $params, $send_method);
                 easypack_sms: jQuery(metabox).find('#easypack_sms_enabled').is(':checked'),
                 easypack_email: jQuery(metabox).find('#easypack_email_enabled').is(':checked'),
                 reference_number: jQuery(metabox).find('#reference_number').val(),
-                easypack_additional_package: jQuery(metabox).find('#easypack_additional_package').val()
+                easypack_additional_package: jQuery(metabox).find('#easypack_additional_package').val(),
+				cod_amounts: cod_amounts
             };
         }
 
