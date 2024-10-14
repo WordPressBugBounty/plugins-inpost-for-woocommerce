@@ -3,7 +3,7 @@
 	Plugin Name: InPost PL
 	Plugin URI: https://wordpress.org/plugins/inpost-for-woocommerce/
 	Description: InPost for WooCommerce is a dedicated integration plugin, designed for small and medium-sized businesses that want to quickly and conveniently integrate with InPost services.
-	Version: 1.5.4
+	Version: 1.5.5
 	Author: iLabs.dev
 	Author URI: https://ilabs.dev/
 	Text Domain: woocommerce-inpost
@@ -39,7 +39,7 @@ use InspireLabs\WoocommerceInpost\EasyPack_Helper;
 
 define( 'WOOCOMMERCE_INPOST_PLUGIN_FILE', __FILE__ );
 define( 'WOOCOMMERCE_INPOST_PLUGIN_DIR', __DIR__ );
-define( 'WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION', '1.5.4' );
+define( 'WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION', '1.5.5' );
 
 require_once __DIR__ . "/vendor/autoload.php";
 

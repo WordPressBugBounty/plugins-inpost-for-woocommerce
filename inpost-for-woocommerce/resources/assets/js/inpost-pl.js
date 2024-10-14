@@ -93,9 +93,7 @@ function inpost_pl_get_shipping_method() {
 
 
 jQuery( document ).ready(
-	function () {
-		
-		console.log("InpostPL: wer.1.5.3");
+	function () {		
 
 		// Prepare modal with map.
 		inpostplMapToken  = inpost_pl_map.geowidget_v5_token;
