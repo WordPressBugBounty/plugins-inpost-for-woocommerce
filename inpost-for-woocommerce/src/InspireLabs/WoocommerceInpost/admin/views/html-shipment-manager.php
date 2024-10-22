@@ -46,7 +46,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\courier_pickup\ShipX_Dispatch_Ord
 			<div style="float:left;">
 				<p>&nbsp;
 					<span class="tips"
-							data-tip="<?php esc_attresc_html_e( 'From the list, select the packages that you want to be sent by courier.', 'woocommerce-inpost' ); ?>">
+							data-tip="<?php esc_html_e( 'From the list, select the packages that you want to be sent by courier.', 'woocommerce-inpost' ); ?>">
 						<button id="easypack_get_courier" class="button-primary">
 							<?php esc_html_e( 'Get courier', 'woocommerce-inpost' ); ?>
 						</button>&nbsp;
@@ -231,8 +231,8 @@ use InspireLabs\WoocommerceInpost\shipx\models\courier_pickup\ShipX_Dispatch_Ord
 				<span>
 				<?php else : ?>
 					<span class="tips" data-tip="
-					<?php
-					esc_attresc_html_e(
+					<?php 
+					esc_html_e(
 						'From the list, select the packages that you want to be collected to be sent. If Courier has been chosen, the collection of your packages by a courier will be arranged.',
 						'woocommerce-inpost'
 					);

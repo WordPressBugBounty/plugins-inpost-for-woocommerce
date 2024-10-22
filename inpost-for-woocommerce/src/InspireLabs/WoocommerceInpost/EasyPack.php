@@ -773,8 +773,8 @@ class EasyPack extends inspire_Plugin4 {
 
 
 	public function enqueue_block_script() {
-		if ( ( is_checkout() || get_option( 'easypack_debug_mode_enqueue_scripts' ) === 'yes' )
-			&& has_block( 'woocommerce/checkout' ) ) {
+		if ( ( is_checkout() && has_block( 'woocommerce/checkout' ) ) || 'yes' === get_option( 'easypack_debug_mode_enqueue_scripts' ) )
+		{
 
 			$front_blocks_js_path = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/front-blocks.js';
 			wp_enqueue_script(
