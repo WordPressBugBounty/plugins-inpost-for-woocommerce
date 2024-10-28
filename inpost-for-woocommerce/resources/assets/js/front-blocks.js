@@ -190,24 +190,26 @@ jQuery( document ).ready(
 					'change',
 					function () {
 						if (this.checked) {
-							jQuery( '#inpost_pl_selected_point_data_wrap' ).hide();
-							inpost_pl_change_react_input_value( document.getElementById( 'inpost-parcel-locker-id' ), '' );
+							const parent = document.getElementById("shipping-option");
+							if( parent && parent.contains(this) ) {								
+								jQuery( '#inpost_pl_selected_point_data_wrap' ).hide();
+								inpost_pl_change_react_input_value( document.getElementById( 'inpost-parcel-locker-id' ), '' );
 
-							let config = 'parcelCollect';
-							if (jQuery( this ).attr( 'id' ).indexOf( 'easypack_parcel_machines_cod' ) !== -1) {
-								config = 'parcelCollectPayment';
+								let config = 'parcelCollect';
+								if (jQuery( this ).attr( 'id' ).indexOf( 'easypack_parcel_machines_cod' ) !== -1) {
+									config = 'parcelCollectPayment';
+								}
+								if (jQuery( this ).attr( 'id' ).indexOf( 'easypack_shipping_courier_c2c' ) !== -1) {
+									config = 'parcelSend';
+								}
+								if (jQuery( this ).attr( 'id' ).indexOf( 'easypack_parcel_machines_weekend' ) !== -1) {
+									config = 'parcelCollect247';
+								}
+
+								let map_content = '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback_blocks" token="' + token + '" language="pl" config="' + config + '"></inpost-geowidget>';
+
+								inpostPlGeowidgetModalBlock.setContent( map_content );
 							}
-							if (jQuery( this ).attr( 'id' ).indexOf( 'easypack_shipping_courier_c2c' ) !== -1) {
-								config = 'parcelSend';
-							}
-							if (jQuery( this ).attr( 'id' ).indexOf( 'easypack_parcel_machines_weekend' ) !== -1) {
-								config = 'parcelCollect247';
-							}
-
-							let map_content = '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback_blocks" token="' + token + '" language="pl" config="' + config + '"></inpost-geowidget>';
-
-							inpostPlGeowidgetModalBlock.setContent( map_content );
-
 						}
 					}
 				);

@@ -661,6 +661,7 @@ class ShipX_Shipment_Service
     public function get_services_key_value()
     {
         $services[] = 'inpost_courier_standard';
+		$services[] = 'inpost_courier_alcohol';
         //$services[] = 'inpost_courier_express_1000';
         //$services[] = 'inpost_courier_express_1200';
         //services[] = 'inpost_courier_express_1700';
