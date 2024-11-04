@@ -129,7 +129,7 @@ jQuery(document).ready(function() {
         jQuery('input[name=parcel_machine_desc]').each(function(ind, elem) {
             jQuery(elem).val('');
         });
-        jQuery('#ship-to-different-address').show();
+        //jQuery('#ship-to-different-address').show();
 
         if( typeof method != 'undefined' && method !== null ) {
 			let config = 'parcelCollect';
@@ -153,12 +153,28 @@ jQuery(document).ready(function() {
             let map_button = '<div class="easypack_show_geowidget" id="easypack_js_type_geowidget">\n' +
                 easypack_front_map.button_text1 + '</div>';
 
-            let li = jQuery(selector).parent('li');
+            let li_parent = jQuery(selector).closest('li');
 
             if ( method.indexOf('easypack_parcel_machines') !== -1 ) {
-                jQuery(li).after(map_button);
-                jQuery('#ship-to-different-address').hide();
+				if ( typeof li_parent != 'undefined' ) {
+					jQuery(li_parent).after(map_button);
+					//jQuery('#ship-to-different-address').hide();
+				}
             }
+			
+			
+			jQuery( '#easypack_js_type_geowidget' ).on(
+				'click',
+				function () {
+					if ( typeof inpostjsGeowidgetModal != 'undefined' && inpostjsGeowidgetModal !== null ) {
+						if (!inpostjsGeowidgetModal.isOpen) {
+							console.log('inpost geowidget open jQuery');
+							inpostjsGeowidgetModal.open();
+						}
+					}
+				}
+			);
+			
 
             // open modal with map
             document.addEventListener('click', function (e) {
