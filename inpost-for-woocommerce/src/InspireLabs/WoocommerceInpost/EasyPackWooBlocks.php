@@ -25,7 +25,7 @@ class EasyPackWooBlocks implements IntegrationInterface {
 	 * @return string
 	 */
 	public function get_name() {
-		return 'inpost-pl-block';
+		return 'inpost_pl_block';
 	}
 
 	/**
@@ -77,7 +77,7 @@ class EasyPackWooBlocks implements IntegrationInterface {
 	 */
 	public function get_script_data() {
 		return array(
-			'inpost_pl_block_data' => array( 'inpost_pl' ),
+			'configured_methods' => EasyPack_Helper()->get_inpost_methods(),
 		);
 	}
 

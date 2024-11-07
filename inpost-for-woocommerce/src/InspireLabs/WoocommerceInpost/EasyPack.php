@@ -3,6 +3,7 @@
 namespace InspireLabs\WoocommerceInpost;
 
 use Exception;
+use InspireLabs\WoocommerceInpost\admin\EasyPack_Custom_Product_List_Table;
 use InspireLabs\WoocommerceInpost\EasyPack_Helper;
 use InspireLabs\WoocommerceInpost\admin\Alerts;
 use InspireLabs\WoocommerceInpost\admin\EasyPack_Product_Shipping_Method_Selector;
@@ -75,9 +76,11 @@ class EasyPack extends inspire_Plugin4 {
 
 
 	/**
+	 * Get labels uri
+	 *
 	 * @return string
 	 */
-	public static function getLabelsUri() {
+	public static function getLabelsUri(): string {
 		return plugins_url() . '/woo-inpost/web/labels/';
 	}
 
@@ -87,21 +90,25 @@ class EasyPack extends inspire_Plugin4 {
 	}
 
 	/**
-	 * @return mixed
+	 * Get assets JS uri
+	 *
+	 * @return string
 	 */
-	public static function get_assets_js_uri() {
+	public static function get_assets_js_uri(): string {
 		return self::$assets_js_uri;
 	}
 
 	/**
-	 * @return mixed
+	 * Get assets CSS uri
+	 *
+	 * @return string
 	 */
-	public static function get_assets_css_uri() {
+	public static function get_assets_css_uri(): string {
 		return self::$assets_css_uri;
 	}
 
-	public static function EasyPack() {
-		if ( self::$instance === null ) {
+	public static function EasyPack(): EasyPack {
+		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
 
@@ -126,6 +133,28 @@ class EasyPack extends inspire_Plugin4 {
 		add_action( 'woocommerce_before_checkout_form', array( $this, 'clear_wc_shipping_cache' ) );
 		add_filter( 'woocommerce_locate_template', array( $this, 'easypack_woo_templates' ), 1, 3 );
 
+		// integration Products table start.
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_product_table_assets' ), 100 );
+		add_action( 'wp_ajax_inpost_product_table', array( $this, 'inpost_product_table_callback' ) );
+
+		add_action(
+			'admin_menu',
+			function () {
+				( new EasyPack_Custom_Product_List_Table() );
+				$product_table = new EasyPack_Custom_Product_List_Table();
+				add_submenu_page(
+					'inpost',
+					__( 'Products Settings', 'woocommerce-inpost' ),
+					__( 'Products Settings', 'woocommerce-inpost' ),
+					'view_woocommerce_reports',
+					'easypack_product_settings',
+					array( $product_table, 'render_custom_product_settings_page' )
+				);
+			},
+			9999
+		);
+		// integration Products table end.
+
 		try {
 			( new Easypack_Shipping_Rates() )->init();
 
@@ -141,7 +170,7 @@ class EasyPack extends inspire_Plugin4 {
 			( new EasyPackBulkOrders() )->hooks();
 			( new EasyPackCoupons() )->hooks();
 
-			// integration with Woocommerce blocks start
+			// integration with Woocommerce blocks start.
 			add_action(
 				'woocommerce_blocks_checkout_block_registration',
 				function ( $integration_registry ) {
@@ -152,7 +181,7 @@ class EasyPack extends inspire_Plugin4 {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_block_script' ), 100 );
 
 			add_action( 'woocommerce_store_api_checkout_update_order_from_request', array( $this, 'block_checkout_save_parcel_locker_in_order_meta' ), 10, 2 );
-			// integration with Woocommerce blocks end
+			// integration with Woocommerce blocks end.
 
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 75 );
 			add_filter( 'woocommerce_shipping_methods', array( $this, 'woocommerce_shipping_methods' ), 1000 );
@@ -163,7 +192,6 @@ class EasyPack extends inspire_Plugin4 {
 			$this->init_email_filters();
 			( new EasyPack_Product_Shipping_Method_Selector() )->handle_product_edit_hooks();
 		} catch ( Exception $exception ) {
-			error_log( $exception->getMessage() );
 			\wc_get_logger()->debug( 'INPOST Exception: ', array( 'source' => 'inpost-log' ) );
 			\wc_get_logger()->debug( print_r( $exception->getMessage(), true ), array( 'source' => 'inpost-log' ) );
 
@@ -178,6 +206,8 @@ class EasyPack extends inspire_Plugin4 {
 	}
 
 	/**
+	 * Get environment
+	 *
 	 * @return string
 	 */
 	public static function get_environment(): string {
@@ -185,6 +215,8 @@ class EasyPack extends inspire_Plugin4 {
 	}
 
 	/**
+	 * Setup environment
+	 *
 	 * @return void
 	 */
 	private function setup_environment() {
@@ -204,9 +236,11 @@ class EasyPack extends inspire_Plugin4 {
 	}
 
 	/**
-	 * @param array    $items
+	 * Show parcel machine in order details
 	 *
-	 * @param WC_Order $wcOrder
+	 * @param array    $items $items.
+	 *
+	 * @param WC_Order $wcOrder $wcOrder.
 	 *
 	 * @return array
 	 */
@@ -228,7 +262,7 @@ class EasyPack extends inspire_Plugin4 {
 		$shipping_method_id = '';
 
 		foreach ( $wcOrder->get_items( 'shipping' ) as $item_id => $item ) {
-			$shipping_method_id = $item->get_method_id(); // The method ID
+			$shipping_method_id = $item->get_method_id(); // The method ID.
 		}
 
 		if ( in_array( $shipping_method_id, $parcel_locker_methods )
@@ -267,7 +301,7 @@ class EasyPack extends inspire_Plugin4 {
 
 		$servicesAllowed = array();
 
-		// get Shipping methods from stored settings
+		// get Shipping methods from stored settings.
 		if ( ! empty( $stored_organization ) && is_array( $stored_organization ) ) {
 			if ( isset( $stored_organization['services'] ) && is_array( $stored_organization['services'] ) ) {
 				foreach ( $main_methods as $service ) {
@@ -278,14 +312,14 @@ class EasyPack extends inspire_Plugin4 {
 			}
 		}
 
-		// trying to connect to API during 60 seconds and save data to settings or show special message
+		// trying to connect to API during 60 seconds and save data to settings or show special message.
 		if ( empty( $servicesAllowed ) || ! is_array( $servicesAllowed ) ) {
 
 			$now                 = time();
-			$limit_time_to_retry = 60 + (int) get_option( 'easypack_api_limit_connection', 0 ); // saved during saving API key
+			$limit_time_to_retry = 60 + (int) get_option( 'easypack_api_limit_connection', 0 ); // saved during saving API key.
 
 			if ( $limit_time_to_retry > $now ) {
-				// try to connect to API only for 60 sec to avoid make website slow
+				// try to connect to API only for 60 sec to avoid make website slow.
 				$this->get_or_update_data_from_api();
 			} elseif ( ! empty( get_option( 'easypack_organization_id' ) )
 					&& ! empty( get_option( 'easypack_token' ) )
@@ -534,11 +568,23 @@ class EasyPack extends inspire_Plugin4 {
 		}
 
 		if ( is_checkout() || get_option( 'easypack_debug_mode_enqueue_scripts' ) === 'yes' ) {
-			wp_enqueue_style( 'easypack-jbox-css', $this->getPluginCss() . 'jBox.all.min.css' );
-			wp_enqueue_script( 'easypack-jquery-modal', $this->getPluginJs() . 'jBox.all.min.js', array( 'jquery' ) );
+			wp_enqueue_style( 'easypack-jbox-css', $this->getPluginCss() . 'jBox.all.min.css', array(), WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION );
+			wp_enqueue_script(
+				'easypack-jquery-modal',
+				$this->getPluginJs() . 'jBox.all.min.js',
+				array( 'jquery' ),
+				WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
+				array( 'in_footer' => true )
+			);
 
 			if ( get_option( 'easypack_js_map_button' ) === 'yes' && ! has_block( 'woocommerce/checkout' ) ) {
-				wp_enqueue_script( 'easypack-front-js', $this->getPluginJs() . 'front.js', array( 'jquery' ) );
+				wp_enqueue_script(
+					'easypack-front-js',
+					$this->getPluginJs() . 'front.js',
+					array( 'jquery' ),
+					WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
+					array( 'in_footer' => true )
+				);
 				wp_localize_script(
 					'easypack-front-js',
 					'easypack_front_map',
@@ -549,6 +595,7 @@ class EasyPack extends inspire_Plugin4 {
 						'geowidget_v5_token' => self::ENVIRONMENT_SANDBOX === self::get_environment()
 							? get_option( 'easypack_geowidget_sandbox_token' )
 							: get_option( 'easypack_geowidget_production_token' ),
+						'inpost_methods'     => EasyPack_Helper()->get_inpost_methods(),
 					)
 				);
 			}
@@ -773,8 +820,7 @@ class EasyPack extends inspire_Plugin4 {
 
 
 	public function enqueue_block_script() {
-		if ( ( is_checkout() && has_block( 'woocommerce/checkout' ) ) || 'yes' === get_option( 'easypack_debug_mode_enqueue_scripts' ) )
-		{
+		if ( ( is_checkout() && has_block( 'woocommerce/checkout' ) ) || 'yes' === get_option( 'easypack_debug_mode_enqueue_scripts' ) ) {
 
 			$front_blocks_js_path = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/front-blocks.js';
 			wp_enqueue_script(
@@ -823,6 +869,17 @@ class EasyPack extends inspire_Plugin4 {
 			update_post_meta( $order->get_ID(), '_parcel_machine_id', $parcel_machine_id );
 			$order->update_meta_data( '_parcel_machine_id', $parcel_machine_id );
 			$order->save();
+
+			if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
+				foreach ( $order->get_shipping_methods() as $shipping_method ) {
+					$fs_instance_id = $shipping_method->get_instance_id();
+				}
+
+				$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $fs_instance_id );
+				if ( ! empty( $fs_method_name ) ) {
+					update_post_meta( $order->get_ID(), '_fs_easypack_method_name', $fs_method_name );
+				}
+			}
 		}
 	}
 
@@ -851,7 +908,7 @@ class EasyPack extends inspire_Plugin4 {
 				if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
 					$linked_method = '';
 					$instance_id   = $rate->instance_id;
-					// check if some easypack method linked to Flexible Shipping
+					// check if some easypack method linked to Flexible Shipping.
 					if ( ! empty( $instance_id ) ) {
 						$linked_method = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $instance_id );
 					}
@@ -866,8 +923,80 @@ class EasyPack extends inspire_Plugin4 {
 				}
 			}
 		}
-		
 
 		return $rates;
+	}
+
+
+	public function inpost_product_table_callback() {
+
+		check_ajax_referer( 'inpost_product_table', 'security' );
+
+		if ( isset( $_POST['product_data'] ) && is_array( $_POST['product_data'] ) && isset( $_POST['product_id'] ) ) {
+			$product_id = sanitize_text_field( wp_unslash( $_POST['product_id'] ) );
+
+			$wc_product = wc_get_product( $product_id );
+
+			if ( ! $wc_product || is_wp_error( $wc_product ) ) {
+				$error = 'Product #' . $product_id . ' does not exist';
+				wp_send_json( array( 'error' => $error ) );
+				wp_die();
+			}
+
+			$locker_size_meta_key     = self::ATTRIBUTE_PREFIX . '_parcel_dimensions';
+			$allowed_methods_meta_key = self::ATTRIBUTE_PREFIX . '_shipping_methods_allowed';
+			if ( isset( $_POST['product_data']['allowed_methods'] ) ) {
+				$allowed_methods = array_map( 'sanitize_text_field', wp_unslash( $_POST['product_data']['allowed_methods'] ) );
+				update_post_meta( $product_id, $allowed_methods_meta_key, $allowed_methods );
+			} else {
+				$allowed_methods = array();
+				update_post_meta( $product_id, $allowed_methods_meta_key, $allowed_methods );
+			}
+			if ( isset( $_POST['product_data']['locker_size'] ) && ! empty( $_POST['product_data']['locker_size'] ) ) {
+				$locker_size = sanitize_text_field( wp_unslash( $_POST['product_data']['locker_size'] ) );
+				update_post_meta( $product_id, $locker_size_meta_key, $locker_size );
+			}
+		}
+
+		if ( isset( $_POST['all_data'] ) ) {
+			$data_return = $_POST['all_data'];
+		} else {
+			wp_send_json( array( 'error' => esc_html__( 'Error in data', 'woocommerce-inpost' ) ) );
+		}
+
+		echo wp_json_encode( $data_return );
+		wp_die();
+	}
+
+	function enqueue_product_table_assets() {
+
+		$current_screen = get_current_screen();
+
+		if ( is_a( $current_screen, 'WP_Screen' ) && 'inpost_page_easypack_product_settings' === $current_screen->id ) {
+
+			$plugin_data            = new EasyPack();
+			$product_table_css_path = dirname( WOOCOMMERCE_INPOST_PLUGIN_FILE ) . '/resources/assets/css/product-table.css';
+
+			$product_table_script     = dirname( WOOCOMMERCE_INPOST_PLUGIN_FILE ) . '/resources/js/product-table.js';
+			$product_table_script_ver = file_exists( $product_table_script ) ? filemtime( $product_table_script ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;
+			wp_enqueue_script(
+				'easypack-product-table',
+				$plugin_data->getPluginJs() . 'product-table.js',
+				array( 'jquery' ),
+				$product_table_script_ver,
+				true
+			);
+			wp_localize_script(
+				'easypack-product-table',
+				'inpost_product_table',
+				array(
+					'nonce'     => wp_create_nonce( 'inpost_product_table' ),
+					'admin_url' => admin_url( 'admin-ajax.php' ),
+				)
+			);
+
+			$product_table_css_ver = file_exists( $product_table_css_path ) ? filemtime( $product_table_css_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;
+			wp_enqueue_style( 'easypack-product-table', $this->getPluginCss() . 'product-table.css', array(), $product_table_css_ver );
+		}
 	}
 }

@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: InPost for WooCommerce 1.5.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-inpost\n"
 "POT-Creation-Date: 2018-08-24 13:01:34+00:00\n"
-"PO-Revision-Date: 2024-09-12 11:48+0200\n"
+"PO-Revision-Date: 2024-11-06 16:29+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -1941,3 +1941,51 @@ msgstr "Nieprawidłowy kod pocztowy nadawcy"
 
 msgid "Wrong receiver postal code"
 msgstr "Nieprawidłowy kod pocztowy odbiorcy"
+
+msgid "The same rules apply to this price as to the shipping method - taxable or not"
+msgstr "W przypadku tej ceny obowiązują te same zasady, co w przypadku sposobu dostawy - opodatkowany czy nie"
+
+msgid "Ecobox"
+msgstr "Ekobox"
+
+msgid "Enable Ecobox?"
+msgstr "Włączyć usługę Ekobox?"
+
+msgid "Ecobox price"
+msgstr "Dodatkowa opłata za usługę Ekobox"
+
+msgid "Additional cost to the shipping price."
+msgstr "Dodatkowy koszt do ceny dostawy."
+
+msgid "Per page"
+msgstr "Na stronę"
+
+msgid "Img"
+msgstr "Obraz"
+
+msgid "Allowed Shipping Methods"
+msgstr "Dozwolone metody wysyłki"
+
+msgid "Locker size"
+msgstr "Gabaryt"
+
+msgid "Update product settings"
+msgstr "Aktualizuj ustawienia produktów"
+
+msgid "Re-load page"
+msgstr "Odśwież stronę"
+
+msgid "By changing these settings you change the settings for all products on the page in a similar way."
+msgstr "Zmieniając te ustawienia, w podobny sposób zmieniasz ustawienia dla wszystkich produktów na stronie."
+
+msgid "Products Settings"
+msgstr "Ustawienia produktów"
+
+msgid "Ekobox allowed"
+msgstr "Ekobox dozwolony"
+
+msgid "Update all products on page"
+msgstr "Zaktualizuj wszystkie produkty na stronie"
+
+msgid "Update settings"
+msgstr "Zaktualizuj"

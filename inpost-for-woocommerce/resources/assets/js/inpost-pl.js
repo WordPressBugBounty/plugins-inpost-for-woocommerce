@@ -93,26 +93,19 @@ function inpost_pl_get_shipping_method() {
 
 
 jQuery( document ).ready(
-	function () {		
+	function () {
 
 		// Prepare modal with map.
 		inpostplMapToken  = inpost_pl_map.geowidget_v5_token;
 		let shipping_data = inpost_pl_get_shipping_method();
 		let method        = shipping_data.method;
+		let instance_id   = shipping_data.postfix;
+		inpostplMapConfig = 'parcelCollect';
 
 		let wH = jQuery( window ).height() - 100;
 
 		if (typeof method != 'undefined' && method !== null) {
-			if (method === 'easypack_parcel_machines_cod') {
-				inpostplMapConfig = 'parcelCollectPayment';
-			} else if (method === 'easypack_shipping_courier_c2c') {
-				inpostplMapConfig = 'parcelSend';
-			} else if (method === 'easypack_parcel_machines_weekend') {
-				inpostplMapConfig = 'parcelCollect247';
-			} else {
-				inpostplMapConfig = 'parcelCollect';
-			}
-
+			inpostplMapConfig = inpost_pl_get_map_config_by_shipping_instance_id( instance_id, method );
 		}
 
 		inpostplGeowidgetModal = new jBox(
@@ -143,17 +136,11 @@ jQuery( document ).ready(
 				// Change modal map params.
 				let shipping_data = inpost_pl_get_shipping_method();
 				let method        = shipping_data.method;
+				let instance_id   = shipping_data.postfix;
+				inpostplMapConfig = 'parcelCollect';
 
 				if (typeof method != 'undefined' && method !== null) {
-					if (method === 'easypack_parcel_machines_cod') {
-						inpostplMapConfig = 'parcelCollectPayment';
-					} else if (method === 'easypack_shipping_courier_c2c') {
-						inpostplMapConfig = 'parcelSend';
-					} else if (method === 'easypack_parcel_machines_weekend') {
-						inpostplMapConfig = 'parcelCollect247';
-					} else {
-						inpostplMapConfig = 'parcelCollect';
-					}
+					inpostplMapConfig = inpost_pl_get_map_config_by_shipping_instance_id( instance_id, method );
 
 					let map_content = '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback" token="' + inpostplMapToken + '" language="pl" config="' + inpostplMapConfig + '"></inpost-geowidget>';
 					inpostplGeowidgetModal.setContent( map_content );
@@ -172,7 +159,7 @@ document.addEventListener(
 
 		if (target.hasAttribute( 'id' ) && target.getAttribute( 'id' ) === 'easypack_show_geowidget') {
 			e.preventDefault();
-			
+
 			if (typeof inpostplGeowidgetModal != 'undefined' && inpostplGeowidgetModal !== null) {
 				if ( ! inpostplGeowidgetModal.isOpen ) {
 					console.log( 'open inpost geowidget' );
@@ -182,3 +169,47 @@ document.addEventListener(
 		}
 	}
 );
+
+
+function inpost_pl_get_map_config_by_shipping_instance_id(instance_id, method) {
+	let map_config     = 'parcelCollect';
+	let inpost_methods = inpost_pl_get_configured_inpost_methods_data();
+
+	if (instance_id !== undefined && instance_id !== null && instance_id !== '') {
+		let selected_method = inpost_methods[instance_id];
+		if (typeof selected_method != 'undefined' && selected_method !== null) {
+			let method_id = selected_method.inpost_title;
+			if (method_id === 'easypack_parcel_machines_cod') {
+				map_config = 'parcelCollectPayment';
+			}
+			if (method_id === 'easypack_shipping_courier_c2c') {
+				map_config = 'parcelSend';
+			}
+			if (method_id === 'easypack_parcel_machines_weekend') {
+				map_config = 'parcelCollect247';
+			}
+		}
+
+	} else {
+		if (method === 'easypack_parcel_machines_cod') {
+			map_config = 'parcelCollectPayment';
+		}
+		if (method === 'easypack_shipping_courier_c2c') {
+			map_config = 'parcelSend';
+		}
+		if (method === 'easypack_parcel_machines_weekend') {
+			map_config = 'parcelCollect247';
+		}
+	}
+
+	return map_config;
+}
+
+function inpost_pl_get_configured_inpost_methods_data() {
+	if (typeof inpost_pl_map != 'undefined' && inpost_pl_map !== null) {
+		if ( inpost_pl_map.inpost_methods ) {
+			return inpost_pl_map.inpost_methods;
+		}
+	}
+	return [];
+}
