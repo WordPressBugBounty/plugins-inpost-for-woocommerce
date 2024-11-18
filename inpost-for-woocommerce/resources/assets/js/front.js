@@ -58,11 +58,41 @@ function inpost_pl_select_point_callback_js_mode(point) {
 			'name="parcel_machine_desc" class="parcel_machine_desc" value="' + parcelMachineAddressDesc + '"/></div>';
 	}
 
-	jQuery( '#easypack_selected_point_data' ).remove();
+	jQuery( '#easypack_selected_point_data' ).each(
+		function (ind, elem) {
+			jQuery( elem ).remove();
+		}
+	);
+
+	jQuery( '.inpost_pl_additional_validation_field' ).each(
+		function (ind, elem) {
+			jQuery( elem ).remove();
+		}
+	);
+
 	jQuery( '#easypack_js_type_geowidget' ).after( selected_point_data );
 	jQuery( "#easypack_js_type_geowidget" ).text( easypack_front_map.button_text2 );
 
 	let point_address = address_line1 + '<br>' + address_line2;
+	
+	// for some templates like Divi - add hidden fields for Inpost Parcel locker dynamically.
+	var form               = document.getElementsByClassName( 'checkout woocommerce-checkout' )[0];
+	var additionalInput1   = document.createElement( 'input' );
+	additionalInput1.type  = 'hidden';
+	additionalInput1.name  = 'parcel_machine_id';
+	additionalInput1.value = point.name;
+	additionalInput1.classList.add('inpost_pl_additional_validation_field');
+
+	var additionalInput2   = document.createElement( 'input' );
+	additionalInput2.type  = 'hidden';
+	additionalInput2.name  = 'parcel_machine_desc';
+	additionalInput2.value = parcelMachineAddressDesc;
+	additionalInput2.classList.add('inpost_pl_additional_validation_field');
+
+	if (form) {
+		form.appendChild( additionalInput1 );
+		form.appendChild( additionalInput2 );
+	}
 
 	inpostjsGeowidgetModal.close();
 }

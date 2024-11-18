@@ -87,6 +87,20 @@ class EasyPack extends inspire_Plugin4 {
 	public function __construct() {
 		parent::__construct();
 		add_action( 'plugins_loaded', array( $this, 'init_easypack' ), 100 );
+		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+
+		add_action(
+			'init',
+			function () {
+				if ( 'yes' === get_option( 'easypack_debug_mode' ) ) {
+					if ( current_user_can( 'administrator' ) ) {
+						$this->init_shipping_methods();
+					}
+				} else {
+					$this->init_shipping_methods();
+				}
+			}
+		);
 	}
 
 	/**
@@ -121,7 +135,6 @@ class EasyPack extends inspire_Plugin4 {
 		self::$assets_css_uri = $this->getPluginCss();
 		( new Geowidget_v5() )->init_assets();
 		$this->init_alerts();
-		$this->loadPluginTextDomain();
 
 		add_filter( 'woocommerce_get_settings_pages', array( $this, 'woocommerce_get_settings_pages' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ), 75 );
@@ -157,16 +170,6 @@ class EasyPack extends inspire_Plugin4 {
 
 		try {
 			( new Easypack_Shipping_Rates() )->init();
-
-			if ( 'yes' === get_option( 'easypack_debug_mode' ) ) {
-
-				if ( current_user_can( 'administrator' ) ) {
-					$this->init_shipping_methods();
-				}
-			} else {
-				$this->init_shipping_methods();
-			}
-
 			( new EasyPackBulkOrders() )->hooks();
 			( new EasyPackCoupons() )->hooks();
 
@@ -549,7 +552,7 @@ class EasyPack extends inspire_Plugin4 {
 		);
 	}
 
-	public function loadPluginTextDomain() {
+	public function load_plugin_textdomain() {
 		load_plugin_textdomain(
 			'woocommerce-inpost',
 			false,
@@ -563,11 +566,11 @@ class EasyPack extends inspire_Plugin4 {
 
 
 	public function enqueue_scripts() {
-		if ( is_cart() || is_checkout() || get_option( 'easypack_debug_mode_enqueue_scripts' ) === 'yes' ) {
+		if ( is_cart() || is_checkout() || has_block( 'woocommerce/checkout' ) || 'yes' === get_option( 'easypack_debug_mode_enqueue_scripts' ) ) {
 			wp_enqueue_style( 'easypack-front', $this->getPluginCss() . 'front.css' );
 		}
 
-		if ( is_checkout() || get_option( 'easypack_debug_mode_enqueue_scripts' ) === 'yes' ) {
+		if ( is_checkout() || has_block( 'woocommerce/checkout' ) || get_option( 'easypack_debug_mode_enqueue_scripts' ) === 'yes' ) {
 			wp_enqueue_style( 'easypack-jbox-css', $this->getPluginCss() . 'jBox.all.min.css', array(), WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION );
 			wp_enqueue_script(
 				'easypack-jquery-modal',
@@ -820,7 +823,7 @@ class EasyPack extends inspire_Plugin4 {
 
 
 	public function enqueue_block_script() {
-		if ( ( is_checkout() && has_block( 'woocommerce/checkout' ) ) || 'yes' === get_option( 'easypack_debug_mode_enqueue_scripts' ) ) {
+		if ( ( is_checkout() && has_block( 'woocommerce/checkout' ) ) || has_block( 'woocommerce/checkout' ) || 'yes' === get_option( 'easypack_debug_mode_enqueue_scripts' ) ) {
 
 			$front_blocks_js_path = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/front-blocks.js';
 			wp_enqueue_script(

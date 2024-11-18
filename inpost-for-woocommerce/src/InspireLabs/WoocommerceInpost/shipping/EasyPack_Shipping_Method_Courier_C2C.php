@@ -311,12 +311,22 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
             $send_method = '';
             $parcels = [];
 
-            // if Bulk create shipments
-            if( isset( $_POST['action']) && $_POST['action'] === 'easypack_bulk_create_shipments' ) {
+            // if Bulk create shipments.
+			if( isset( $_POST['action']) && 'easypack_bulk_create_shipments' === $_POST['action'] ) {
 
-                $parcels = get_post_meta( $order_id, '_easypack_parcels', true )
-                    ? get_post_meta( $order_id, '_easypack_parcels', true )
-                    : array( get_option( 'easypack_default_package_size' ) );
+				$parcels = array();
+
+				if ( 'easypack_bulk_create_shipments_A' === $_POST['locker_size'] ) {
+					$parcels = array( 'small' );
+				} elseif ( 'easypack_bulk_create_shipments_B' === $_POST['locker_size'] ) {
+					$parcels = array( 'medium' );
+				} elseif ( 'easypack_bulk_create_shipments_C' === $_POST['locker_size'] ) {
+					$parcels = array( 'large' );
+				} else {
+					$parcels = get_post_meta( $order_id, '_easypack_parcels', true )
+						? get_post_meta( $order_id, '_easypack_parcels', true )
+						: array( Easypack_Helper()->get_parcel_size_from_settings( $order_id ) );
+				}
 
                 $insurance_mode = get_option('easypack_insurance_amount_mode', '2' );
                 if( '1' === $insurance_mode ) { // from order amount
@@ -330,9 +340,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
                     $insurance_amount = floatval( get_option('easypack_insurance_amount_default') );
                 }
 
-                $reference_number = get_post_meta( $order_id, '_reference_number', true )
-                    ? get_post_meta( $order_id, '_reference_number', true )
-                    : $order_id;
+                $reference_number = EasyPack_Helper()->get_maybe_custom_reference_number( $order_id );
 
                 if( 'yes' === get_option('easypack_add_order_note') ) {
                     $order_note = '';

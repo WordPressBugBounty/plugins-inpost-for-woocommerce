@@ -293,9 +293,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
                     $insurance_amount = floatval( get_option('easypack_insurance_amount_default') );
                 }
 					
-                $reference_number = get_post_meta( $order_id, '_reference_number', true )
-                    ? get_post_meta( $order_id, '_reference_number', true )
-                    : $order_id;
+                $reference_number = EasyPack_Helper()->get_maybe_custom_reference_number( $order_id );
 
                 if( 'yes' === get_option('easypack_add_order_note') ) {
                     $order_note = '';

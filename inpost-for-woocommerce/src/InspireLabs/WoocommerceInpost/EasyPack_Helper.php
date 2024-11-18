@@ -571,7 +571,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		public function set_data_to_order_meta( $_post, $id ) {
 
 			/*
-			 $order = wc_get_order( $id );
+			$order = wc_get_order( $id );
 
 			if ( ! $order || is_wp_error( $order ) ) {
 				return;
@@ -818,7 +818,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 				return true;
 			}
 
-			if ( is_checkout() || get_option( 'easypack_debug_mode_enqueue_scripts' ) === 'yes' ) {
+			if ( is_checkout() || has_block( 'woocommerce/checkout' ) || get_option( 'easypack_debug_mode_enqueue_scripts' ) === 'yes' ) {
 				return true;
 			}
 
@@ -1037,6 +1037,29 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			}
 
 			$this->post_confirmation_pdf( $shipment_ids );
+		}
+
+
+		/**
+		 * Check if used any Sequential Order Numbers
+		 *
+		 * @param int $order_id $order_id.
+		 * @return mixed
+		 */
+		public function get_maybe_custom_reference_number( $order_id ) {
+
+			$reference_number = $order_id;
+
+			if ( class_exists( 'Wt_Advanced_Order_Number' ) || class_exists( 'WC_Seq_Order_Number' ) ) {
+				$order = wc_get_order( $order_id );
+				if ( $order && ! is_wp_error( $order ) ) {
+					if ( ! empty( $order->get_meta( '_order_number' ) ) ) {
+						$reference_number = $order->get_meta( '_order_number' );
+					}
+				}
+			}
+
+			return $reference_number;
 		}
 	}
 

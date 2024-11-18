@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: InPost for WooCommerce 1.5.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-inpost\n"
 "POT-Creation-Date: 2018-08-24 13:01:34+00:00\n"
-"PO-Revision-Date: 2024-11-06 16:29+0100\n"
+"PO-Revision-Date: 2024-11-13 14:38+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -1036,7 +1036,7 @@ msgstr "Przesyłka stworzona w sandbox API. Zmień API na środowisko sandbox"
 #: classes/shipping/views/html-order-matabox-parcel-machines.php:58
 #: classes/shipping/views/html-order-matabox-parcel-machines_cod.php:58
 msgid "Selected parcel locker"
-msgstr "Wybrany paczkomat"
+msgstr "Wybrany punkt odbioru"
 
 #: classes/shipping/views/html-order-matabox-parcel-machines.php:64
 #: classes/shipping/views/html-order-matabox-parcel-machines_cod.php:67
@@ -1314,17 +1314,17 @@ msgstr "Nie utworzona jeszcze"
 
 #: templates/checkout/easypack-review-order-after-shipping.php:18
 msgid "Select Parcel Locker"
-msgstr "Wybierz paczkomat"
+msgstr "Wybierz punkt odbioru"
 
 #: templates/checkout/easypack-review-order-after-shipping.php:53
 #: templates/checkout/easypack-review-order-after-shipping.php:54
 #: templates/checkout/easypack-review-order-after-shipping.php:55
 msgid "Select parcel locker"
-msgstr "Wybierz paczkomat"
+msgstr "Wybierz punkt odbioru"
 
 #: templates/checkout/easypack-review-order-after-shipping.php:105
 msgid "Selected Parcel Locker:"
-msgstr "Wybrano paczkomat:"
+msgstr "Wybrany punkt odbioru:"
 
 #: templates/emails/after-order-table.php:12
 #: templates/emails/plain/after-order-table.php:12
@@ -1745,7 +1745,7 @@ msgid "Parcel locker must be choosen"
 msgstr "Musisz wybrać paczkomat"
 
 msgid "Selected parcel locker:"
-msgstr "Wybrany paczkomat:"
+msgstr "Wybrany punkt odbioru:"
 
 msgid "The package has not been created! You do not have funds in your Parcel Manager account or a contract for InPost services."
 msgstr "Paczka nie została utworzona! Nie masz środków na koncie w Manager Paczek lub podpiętej umowy na usługi InPost."
@@ -1989,3 +1989,12 @@ msgstr "Zaktualizuj wszystkie produkty na stronie"
 
 msgid "Update settings"
 msgstr "Zaktualizuj"
+
+msgid "InPost PL create shipments A"
+msgstr "InPost PL tworzenie przesyłek gab. A"
+
+msgid "InPost PL create shipments B"
+msgstr "InPost PL tworzenie przesyłek gab. B"
+
+msgid "InPost PL create shipments C"
+msgstr "InPost PL tworzenie przesyłek gab. C"
