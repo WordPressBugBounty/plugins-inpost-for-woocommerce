@@ -74,20 +74,20 @@ function inpost_pl_select_point_callback_js_mode(point) {
 	jQuery( "#easypack_js_type_geowidget" ).text( easypack_front_map.button_text2 );
 
 	let point_address = address_line1 + '<br>' + address_line2;
-	
+
 	// for some templates like Divi - add hidden fields for Inpost Parcel locker dynamically.
 	var form               = document.getElementsByClassName( 'checkout woocommerce-checkout' )[0];
 	var additionalInput1   = document.createElement( 'input' );
 	additionalInput1.type  = 'hidden';
 	additionalInput1.name  = 'parcel_machine_id';
 	additionalInput1.value = point.name;
-	additionalInput1.classList.add('inpost_pl_additional_validation_field');
+	additionalInput1.classList.add( 'inpost_pl_additional_validation_field' );
 
 	var additionalInput2   = document.createElement( 'input' );
 	additionalInput2.type  = 'hidden';
 	additionalInput2.name  = 'parcel_machine_desc';
 	additionalInput2.value = parcelMachineAddressDesc;
-	additionalInput2.classList.add('inpost_pl_additional_validation_field');
+	additionalInput2.classList.add( 'inpost_pl_additional_validation_field' );
 
 	if (form) {
 		form.appendChild( additionalInput1 );
@@ -171,7 +171,6 @@ jQuery( document ).ready(
 						jQuery( elem ).val( '' );
 					}
 				);
-				// jQuery('#ship-to-different-address').show();
 
 				if ( typeof method != 'undefined' && method !== null ) {
 					let config = 'parcelCollect';
@@ -182,25 +181,41 @@ jQuery( document ).ready(
 					let map_content = '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback_js_mode" token="' + token + '" language="pl" config="' + config + '"></inpost-geowidget>';
 					inpostjsGeowidgetModal.setContent( map_content );
 
-					let selector = '#shipping_method_0_' + method + postfix;
+					let selector              = method + ':' + postfix;
+					let shipping_option_input = null;
+					let li_parent             = null;
+					console.log( "shipping option input value" );
+					console.log( selector );
+
+					let shipping_options_block = jQuery( '#shipping_method' );
+					if ( typeof shipping_options_block != 'undefined' && shipping_options_block !== null ) {
+						jQuery( shipping_options_block ).find( 'input' ).each(
+							function (index, input) {
+								if ( selector === jQuery( input ).val() ) {
+									shipping_option_input = input;
+								}
+							}
+						);
+					}
 
 					let map_button = '<div class="easypack_show_geowidget" id="easypack_js_type_geowidget">\n' +
 					easypack_front_map.button_text1 + '</div>';
-
-					let li_parent = jQuery( selector ).closest( 'li' );
+					if ( shipping_option_input ) {
+						li_parent = jQuery( shipping_option_input ).closest( 'li' );
+					}
 
 					if ( method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
-						if ( typeof li_parent != 'undefined' ) {
+						if ( typeof li_parent != 'undefined' && li_parent !== null ) {
 							jQuery( li_parent ).after( map_button );
-							// jQuery('#ship-to-different-address').hide();
 						}
+
 					} else {
 						let inpost_methods        = inpost_pl_js_get_configured_inpost_methods();
 						let linked_fs_method_data = inpost_methods[postfix];
 						if ( typeof linked_fs_method_data != 'undefined' && linked_fs_method_data !== null ) {
-							let linked_fs_method = linked_fs_method_data.inpost_title;							
+							let linked_fs_method = linked_fs_method_data.inpost_title;
 							if ( linked_fs_method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
-								if (typeof li_parent != 'undefined') {
+								if (typeof li_parent != 'undefined' && li_parent !== null) {
 									jQuery( li_parent ).after( map_button );
 								}
 							}
@@ -278,9 +293,9 @@ function inpost_pl_js_get_map_config_based_on_instance_id(instance_id, method) {
 }
 
 function inpost_pl_js_get_configured_inpost_methods() {
-	if (typeof easypack_front_map != 'undefined' && easypack_front_map !== null) {
-		if ( easypack_front_map.inpost_methods ) {
-			return easypack_front_map.inpost_methods;
+	if (typeof window.easypack_front_map != 'undefined' && window.easypack_front_map !== null) {
+		if ( window.easypack_front_map.inpost_methods ) {
+			return window.easypack_front_map.inpost_methods;
 		}
 	}
 	return [];

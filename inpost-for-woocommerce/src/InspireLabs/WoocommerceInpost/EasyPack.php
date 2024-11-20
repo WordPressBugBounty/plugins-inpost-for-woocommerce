@@ -87,7 +87,9 @@ class EasyPack extends inspire_Plugin4 {
 	public function __construct() {
 		parent::__construct();
 		add_action( 'plugins_loaded', array( $this, 'init_easypack' ), 100 );
+		add_action( 'woocommerce_init', array( $this, 'add_settings_to_flexible_shipping' ) );
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+		add_filter( 'woocommerce_package_rates', array( $this, 'check_paczka_weekend_fs_settings' ), 10, 2 );
 
 		add_action(
 			'init',
@@ -904,7 +906,7 @@ class EasyPack extends inspire_Plugin4 {
 
 		if ( $order_total_amount > 5000 ) {
 			foreach ( $rates as $rate_key => $rate ) {
-				if ( in_array( $rate->method_id, $methods_to_disable ) ) {
+				if ( in_array( $rate->method_id, $methods_to_disable, true ) ) {
 					unset( $rates[ $rate_key ] );
 				}
 
@@ -918,7 +920,7 @@ class EasyPack extends inspire_Plugin4 {
 
 					if ( ! empty( $linked_method ) && 0 === strpos( $rate_key, 'flexible_shipping' ) ) {
 						if ( 0 === strpos( $linked_method, 'easypack_' ) ) {
-							if ( in_array( $linked_method, $methods_to_disable ) ) {
+							if ( in_array( $linked_method, $methods_to_disable, true ) ) {
 								unset( $rates[ $rate_key ] );
 							}
 						}
@@ -1001,5 +1003,157 @@ class EasyPack extends inspire_Plugin4 {
 			$product_table_css_ver = file_exists( $product_table_css_path ) ? filemtime( $product_table_css_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;
 			wp_enqueue_style( 'easypack-product-table', $this->getPluginCss() . 'product-table.css', array(), $product_table_css_ver );
 		}
+	}
+
+
+	/**
+	 * Add custom fields to each shipping method.
+	 */
+	public function add_settings_to_flexible_shipping() {
+
+		if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
+			$shipping_methods = WC()->shipping->get_shipping_methods();
+			foreach ( $shipping_methods as $shipping_method ) {
+				if ( 'flexible_shipping_single' === $shipping_method->id ) {
+					add_filter( 'woocommerce_shipping_instance_form_fields_' . $shipping_method->id, array( $this, 'add_map_field' ) );
+				}
+			}
+		}
+	}
+
+
+	public function add_map_field( $settings ): array {
+
+		$has_intergrations = false;
+
+		$find_key = '';
+		$i        = 1;
+		foreach ( $settings as $key => $setting ) {
+
+			// divide fs settings array and put our settings before this field.
+			if ( 'method_integration' === $key ) {
+				$find_key          = $i;
+				$has_intergrations = true;
+			}
+			++$i;
+		}
+		// show our field near with native integration field.
+		if ( $has_intergrations ) {
+
+			$position = (int) $find_key - 1;
+
+			$settings_begin = array_slice( $settings, 0, $position, true );
+
+			$addtitional_settings = $this->settings_block_for_flexible_shipping();
+
+			$settings_end = array_slice( $settings, $position, count( $settings ) - $position, true );
+
+			$new_settings = array_merge( $settings_begin, $addtitional_settings, $settings_end );
+
+			return $new_settings;
+
+		} else {
+
+			return $settings + $this->settings_block_for_flexible_shipping();
+		}
+	}
+
+
+	public function check_paczka_weekend_fs_settings( $rates, $package ): array {
+
+		if ( ! EasyPack_Helper()->is_flexible_shipping_activated() ) {
+			return $rates;
+		}
+
+		foreach ( $rates as $rate_key => $rate ) {
+			if ( 'easypack_parcel_machines_weekend' === EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $rate->instance_id ) ) {
+
+				$paczka_weekend = new EasyPack_Shipping_Parcel_Machines_Weekend();
+				if ( ! $paczka_weekend->check_allowed_interval_for_weekend( $rate->instance_id ) ) {
+					unset( $rates[ $rate_key ] ); // hide Paczka w Weekend if not match into time interval.
+				}
+			}
+		}
+
+		return $rates;
+	}
+
+
+	public function settings_block_for_flexible_shipping(): array {
+		$settings = array();
+		if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
+			$settings['fs_inpost_pl_method'] = array(
+				'title'   => esc_html__( "Integration with 'InPost PL' plugin", 'woocommerce-inpost' ),
+				'type'    => 'select',
+				'default' => 'all',
+				'options' => array(
+					'0'                                 => esc_html__( 'None', 'woocommerce-inpost' ),
+					'easypack_parcel_machines'          => esc_html__( 'InPost Locker 24/7', 'woocommerce-inpost' ),
+					'easypack_parcel_machines_cod'      => esc_html__( 'InPost Locker 24/7 COD', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_c2c'     => esc_html__( 'InPost Courier C2C', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_c2c_cod' => esc_html__( 'InPost Courier C2C COD', 'woocommerce-inpost' ),
+					'easypack_parcel_machines_weekend'  => esc_html__( 'InPost Locker Weekend', 'woocommerce-inpost' ),
+					'easypack_shipping_courier'         => esc_html__( 'InPost Courier', 'woocommerce-inpost' ),
+					'easypack_cod_shipping_courier'     => esc_html__( 'InPost Courier COD', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_local_express' => esc_html__( 'InPost Courier Local Express', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_le_cod'  => esc_html__( 'InPost Courier Local Express COD', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_local_standard' => esc_html__( 'InPost Courier Local Standard', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_local_standard_cod' => esc_html__( 'InPost Courier Local Standard COD', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_lse'     => esc_html__( 'InPost Courier Local Super Express', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_lse_cod' => esc_html__( 'InPost Courier Local Super Express COD', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_palette' => esc_html__( 'InPost Courier Palette', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_palette_cod' => esc_html__( 'InPost Courier Palette COD', 'woocommerce-inpost' ),
+
+				),
+			);
+
+			$settings['fs_inpost_pl_weekend_day_from'] = array(
+				'title'   => esc_html__( 'Available from day of week', 'woocommerce' ),
+				'type'    => 'select',
+				'class'   => 'wc-enhanced-select fs-inpost-pl-weekend',
+				'default' => '4',
+				'options' => array(
+					'1' => esc_html__( 'Monday', 'woocommerce-inpost' ),
+					'2' => esc_html__( 'Tuesday', 'woocommerce-inpost' ),
+					'3' => esc_html__( 'Wednesday', 'woocommerce-inpost' ),
+					'4' => esc_html__( 'Thursday', 'woocommerce-inpost' ),
+					'5' => esc_html__( 'Friday', 'woocommerce-inpost' ),
+					'6' => esc_html__( 'Saturday', 'woocommerce-inpost' ),
+				),
+			);
+
+			$settings['fs_inpost_pl_weekend_hour_from'] = array(
+				'title'    => esc_html__( 'Available from hour', 'woocommerce-inpost' ),
+				'type'     => 'time',
+				'default'  => '',
+				'desc_tip' => false,
+				'class'    => 'fs-inpost-pl-weekend',
+			);
+
+			$settings['fs_inpost_pl_weekend_day_to'] = array(
+				'title'   => esc_html__( 'Available to day of week', 'woocommerce' ),
+				'type'    => 'select',
+				'class'   => 'wc-enhanced-select fs-inpost-pl-weekend',
+				'default' => '5',
+				'options' => array(
+					'1' => esc_html__( 'Monday', 'woocommerce-inpost' ),
+					'2' => esc_html__( 'Tuesday', 'woocommerce-inpost' ),
+					'3' => esc_html__( 'Wednesday', 'woocommerce-inpost' ),
+					'4' => esc_html__( 'Thursday', 'woocommerce-inpost' ),
+					'5' => esc_html__( 'Friday', 'woocommerce-inpost' ),
+					'6' => esc_html__( 'Saturday', 'woocommerce-inpost' ),
+				),
+			);
+
+			$settings['fs_inpost_pl_weekend_hour_to'] = array(
+				'title'    => esc_html__( 'Available to hour', 'woocommerce-inpost' ),
+				'type'     => 'time',
+				'default'  => '',
+				'desc_tip' => false,
+				'class'    => 'fs-inpost-pl-weekend',
+			);
+		}
+
+		return $settings;
 	}
 }

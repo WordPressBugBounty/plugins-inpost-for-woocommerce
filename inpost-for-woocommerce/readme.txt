@@ -4,7 +4,7 @@ Tags: inpost, paczkomaty, etykiety, przesyłki
 Requires at least: 5.3
 Tested up to: 6.7
 Requires PHP: 7.2
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -40,6 +40,9 @@ Po zainstalowaniu wtyczki należy skonfigurować sposób dostawy InPost oraz cen
 
 
 == Changelog ==
+
+= 1.6.1 =
+* Fix: integration with Flexible Shipping
 
 = 1.6.0 =
 * Fix: translations
