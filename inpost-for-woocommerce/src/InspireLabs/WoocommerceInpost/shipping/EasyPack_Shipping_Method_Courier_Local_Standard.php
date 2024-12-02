@@ -74,13 +74,25 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_Local_Standard' ) ) {
 					'custom_attributes' => [ 'required' => 'required' ],
 					'desc_tip'          => false,
 				],
-                /*'delivery_terms'              => [
-                    'title'    => __( 'Terms of delivery', 'woocommerce-inpost' ),
-                    'type'     => 'text',
-                    'default'  => __( '', 'woocommerce-inpost' ),
-                    'desc_tip' => false,
-                    'placeholder'       => '(2-3 dni)',
-                ],*/
+                'insurance_inpost_pl'              => [
+                    'title'    => __( 'Insurance', 'woocommerce-inpost' ),
+                    'label'       => __( 'Set from order amount', 'woocommerce-inpost' ),
+                    'type'        => 'checkbox',
+                    'description' => __( '', 'woocommerce-inpost' ),
+                    'default'     => 'no',
+                    'desc_tip'    => true,
+                ],
+                'insurance_value_inpost_pl' => [
+                    'title'             => __( 'Default insurance amount', 'woocommerce-inpost' ),
+                    'type'              => 'number',
+                    'custom_attributes' => [
+                        'step' => 'any',
+                        'min'  => '0',
+                    ],
+                    'default'           => '',
+                    'desc_tip'          => false,
+                    'placeholder'       => '0.00',
+                ],
 				'free_shipping_cost' => [
 					'title'             => __( 'Free shipping', 'woocommerce-inpost' ),
 					'type'              => 'number',
@@ -141,8 +153,9 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_Local_Standard' ) ) {
                         'woocommerce-inpost' ),
 					'class'    => 'wc-enhanced-select easypack_based_on',
 					'options'  => [
-						'price'  => __( 'Price', 'woocommerce-inpost' ),
-						'weight' => __( 'Weight', 'woocommerce-inpost' ),
+						'price'  => esc_html__( 'Price', 'woocommerce-inpost' ),
+						'weight' => esc_html__( 'Weight', 'woocommerce-inpost' ),
+                        'product_qty' => esc_html__( 'Products qty', 'woocommerce-inpost' ),
 					],
 				],
 				'rates'    => [
@@ -199,41 +212,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_Local_Standard' ) ) {
 
 		}
 
-		/**
-		 * @param unknown $package
-		 *
-		 */
-        public function calculate_shipping_table_rate( $package ) {
-            $rates = EasyPack_Helper()->get_saved_method_rates($this->id, $this->instance_id);
-            foreach ( $rates as $key => $rate ) {
-                if ( empty( $rates[ $key ]['min'] ) || trim( $rates[ $key ]['min'] ) == '' ) {
-                    $rates[ $key ]['min'] = 0;
-                }
-                if ( empty( $rates[ $key ]['max'] ) || trim( $rates[ $key ]['max'] ) == '' ) {
-                    $rates[ $key ]['max'] = PHP_INT_MAX;
-                }
-            }
-            $value = 0;
-            if ( $this->based_on == 'price' ) {
-                $value = $this->package_subtotal( $package['contents'] );
-            }
-            if ( $this->based_on == 'weight' ) {
-                $value = $this->package_weight( $package['contents'] );
-            }
-            foreach ( $rates as $rate ) {
-                if ( floatval( $rate['min'] ) <= $value && floatval( $rate['max'] ) >= $value ) {
-                    $add_rate = [
-                        //'id'    => $this->id,
-                        'id'    => $this->get_rate_id(),
-                        'label' => $this->title,
-                        'cost'  => $rate['cost'],
-                    ];
-                    $this->add_rate( $add_rate );
 
-                    return;
-                }
-            }
-        }
 
 		/**
 		 * @return ShipX_Shipment_Model
@@ -269,13 +248,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_Local_Standard' ) ) {
                     ? $parcels[0]['cod_amount']
                     : $order_amount;
 					
-                $insurance_mode = get_option('easypack_insurance_amount_mode', '2' );
-                if( '1' === $insurance_mode ) { // from order amount
-					$insurance_amount = floatval($order_amount);
-                }
-                if( '2' === $insurance_mode ) { // from settings
-                    $insurance_amount = floatval( get_option('easypack_insurance_amount_default') );
-                }
+                $insurance_amount = EasyPack_Helper()->get_insurance_amount( $order_id );
 					
                 $reference_number = EasyPack_Helper()->get_maybe_custom_reference_number( $order_id );
 

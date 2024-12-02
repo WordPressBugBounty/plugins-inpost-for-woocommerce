@@ -314,7 +314,7 @@ function inpost_pl_get_map_config_based_on_instance_id(instance_id, method) {
 			if (method_id === 'easypack_shipping_courier_c2c') {
 				map_config = 'parcelSend';
 			}
-			if (method_id === 'easypack_parcel_machines_weekend') {
+			if ( method_id === 'easypack_parcel_machines_weekend' || method_id === 'easypack_parcel_machines_weekend_cod' ) {
 				map_config = 'parcelCollect247';
 			}
 		}
@@ -326,7 +326,7 @@ function inpost_pl_get_map_config_based_on_instance_id(instance_id, method) {
 		if (method === 'easypack_shipping_courier_c2c') {
 			map_config = 'parcelSend';
 		}
-		if (method === 'easypack_parcel_machines_weekend') {
+		if (method === 'easypack_parcel_machines_weekend' || method === 'easypack_parcel_machines_weekend_cod') {
 			map_config = 'parcelCollect247';
 		}
 	}

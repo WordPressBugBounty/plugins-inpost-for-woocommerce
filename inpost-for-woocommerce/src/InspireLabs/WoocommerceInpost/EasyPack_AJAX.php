@@ -1,4 +1,7 @@
 <?php
+/**
+ * EasyPack AJAX
+ */
 
 namespace InspireLabs\WoocommerceInpost;
 
@@ -17,23 +20,22 @@ use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Method_Courier_Pale
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Method_Courier_Palette_COD;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Method_EsmartMix;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Parcel_Machines_Economy_COD;
+use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Parcel_Machines_Weekend_COD;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shippng_Parcel_Machines;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shippng_Parcel_Machines_COD;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Parcel_Machines_Weekend;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Parcel_Machines_Economy;
 
-/**
- * EasyPack AJAX
- *
- *
- */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 
+	/**
+	 * EasyPack AJAX actions
+	 */
 	class EasyPack_AJAX {
 
 		/**
@@ -44,323 +46,421 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 			add_action( 'admin_head', array( __CLASS__, 'wp_footer_easypack_nonce' ) );
 		}
 
-		public static function wp_footer_easypack_nonce() {
+		/**
+		 * Add nonce value
+		 *
+		 * @return void
+		 */
+		public static function wp_footer_easypack_nonce(): void {
 			?>
-            <script type="text/javascript">
-                var easypack_nonce = '<?php echo wp_create_nonce( 'easypack_nonce' ); ?>';
-            </script>
+			<script type="text/javascript">
+				var easypack_nonce = '<?php echo esc_attr( wp_create_nonce( 'easypack_nonce' ) ); ?>';
+			</script>
 			<?php
 		}
 
-		public static function ajax_easypack() {
+		/**
+		 * Sort ajax actions callbacks
+		 *
+		 * @return void
+		 * @throws \ReflectionException ReflectionException.
+		 */
+		public static function ajax_easypack(): void {
 			check_ajax_referer( 'easypack_nonce', 'security' );
 
 			if ( isset( $_POST['easypack_action'] ) ) {
-				$action = sanitize_text_field( $_POST['easypack_action'] );
-				
-				if ( $action == 'create_additional_package' ) {
-                    self::create_additional_package();
-                }
+				$action = sanitize_text_field( wp_unslash( $_POST['easypack_action'] ) );
 
-				if ( $action == 'dispatch_point' ) {
+				if ( 'create_additional_package' === $action ) {
+					self::create_additional_package();
+				}
+
+				if ( 'dispatch_point' === $action ) {
 					self::dispatch_point();
 				}
-				if ( $action == 'parcel_machines_create_package' ) {
+				if ( 'parcel_machines_create_package' === $action ) {
 					self::parcel_machines_create_package();
 				}
-                if ( $action == 'parcel_machines_weekend_create_package' ) {
-                    self::parcel_machines_weekend_create_package();
-                }
-				if ( $action == 'parcel_machines_cancel_package' ) {
+				if ( 'parcel_machines_weekend_create_package' === $action ) {
+					self::parcel_machines_weekend_create_package();
+				}
+				if ( 'parcel_machines_weekend_create_package_cod' === $action ) {
+					self::parcel_machines_weekend_create_package_cod();
+				}
+				if ( 'parcel_machines_cancel_package' === $action ) {
 					self::parcel_machines_cancel_package();
 				}
-                if ( $action == 'courier_c2c_create_package_cod' ) {
-                    self::courier_c2c_create_package_cod();
-                }
-                if ( $action == 'parcel_machines_economy' ) {
-                    self::parcel_machines_economy_create_package();
-                }
-                if ( $action == 'parcel_machines_economy_cod' ) {
-                    self::parcel_machines_economy_cod_create_package();
-                }
-
-
-				if ( $action == 'parcel_machines_cod_create_package' ) {
+				if ( 'courier_c2c_create_package_cod' === $action ) {
+					self::courier_c2c_create_package_cod();
+				}
+				if ( 'parcel_machines_economy' === $action ) {
+					self::parcel_machines_economy_create_package();
+				}
+				if ( 'parcel_machines_economy_cod' === $action ) {
+					self::parcel_machines_economy_cod_create_package();
+				}
+				if ( 'parcel_machines_cod_create_package' === $action ) {
 					self::parcel_machines_cod_create_package();
 				}
-				if ( $action == 'esmartmix_create_package' ) {
-                    self::esmartmix_create_package();
-                }
-				if ( $action == 'courier_create_package' ) {
+				if ( 'esmartmix_create_package' === $action ) {
+					self::esmartmix_create_package();
+				}
+				if ( 'courier_create_package' === $action ) {
 					self::courier_create_package();
 				}
-				if ( $action == 'courier_c2c_create_package' ) {
+				if ( 'courier_c2c_create_package' === $action ) {
 					self::courier_c2c_create_package();
 				}
-				if ( $action == 'courier_lse_create_package' ) {
+				if ( 'courier_lse_create_package' === $action ) {
 					self::courier_lse_create_package();
 				}
-				if ( $action == 'courier_lse_create_package_cod' ) {
+				if ( 'courier_lse_create_package_cod' === $action ) {
 					self::courier_lse_create_package_cod();
 				}
-				if ( $action == 'courier_local_standard_create_package' ) {
+				if ( 'courier_local_standard_create_package' === $action ) {
 					self::courier_local_standard_create_package();
 				}
-				if ( $action == 'courier_local_standard_cod_create_package' ) {
+				if ( 'courier_local_standard_cod_create_package' === $action ) {
 					self::courier_local_standard_cod_create_package();
 				}
-				if ( $action == 'courier_local_express_create_package' ) {
+				if ( 'courier_local_express_create_package' === $action ) {
 					self::courier_local_express_create_package();
 				}
-				if ( $action == 'courier_local_express_cod_create_package' ) {
+				if ( 'courier_local_express_cod_create_package' === $action ) {
 					self::courier_local_express_cod_create_package();
 				}
-				if ( $action == 'courier_palette_create_package' ) {
+				if ( 'courier_palette_create_package' === $action ) {
 					self::courier_palette_create_package();
 				}
-				if ( $action == 'courier_palette_cod_create_package' ) {
+				if ( 'courier_palette_cod_create_package' === $action ) {
 					self::courier_palette_cod_create_package();
 				}
-				if ( $action == 'courier_cod_create_package' ) {
+				if ( 'courier_cod_create_package' === $action ) {
 					self::courier_cod_create_package();
 				}
-				if ( $action == 'parcel_machines_cod_cancel_package' ) {
+				if ( 'parcel_machines_cod_cancel_package' === $action ) {
 					self::parcel_machines_cod_cancel_package();
 				}
 
-                if ( $action == 'easypack_create_bulk_labels' ) {
+				if ( 'easypack_create_bulk_labels' === $action ) {
 
-                    if( isset( $_POST['order_ids'] ) ) {
+					if ( isset( $_POST['order_ids'] ) ) {
 
-                        $data_string = sanitize_text_field( $_POST['order_ids'] );
-                        $order_ids_arr = json_decode( stripslashes( $data_string ), true );
+						$helper = EasyPack_Helper::EasyPack_Helper();
 
-                        // we need validate chosen orders if they already has status which is allowing to get labels
-                        $validated_ids = [];
-                        foreach( $order_ids_arr as $order_id ) {
-                            $is_tracking_exists = get_post_meta( $order_id, '_easypack_parcel_tracking', true );
-                            if( ! $is_tracking_exists ) {
-                                $order = wc_get_order( $order_id );
-                                if( $order && ! is_wp_error( $order ) ) {
-                                    $is_tracking_exists = $order->get_meta( '_easypack_parcel_tracking' );
-                                }
-                            }
+						$data_string   = sanitize_text_field( wp_unslash( $_POST['order_ids'] ) );
+						$order_ids_arr = json_decode( stripslashes( $data_string ), true );
+						$validated_ids = array();
 
-                            if( ! empty( $is_tracking_exists ) ) {
-                                $validated_ids[] = $order_id;
-                            }
-                        }
+						if ( is_array( $order_ids_arr ) ) {
+							$validated_ids = $helper->validate_order_ids_before_get_labels_from_api( $order_ids_arr );
+						}
 
-                        if( ! empty( $validated_ids ) ) {
-                            // this function echo pdf or zip string
-                            EasyPack_Helper::EasyPack_Helper()->print_stickers(false, $validated_ids);
-                            die;
-                        } else {
-                            echo json_encode( array( 'details' => __( 'Check your selection.', 'woocommerce-inpost' ) ) );
-                            die;
-                        }
-                    }
+						if ( ! empty( $validated_ids ) ) {
+							// this function echo pdf or zip string.
+							$helper->print_stickers( false, $validated_ids );
+							die;
 
-                    echo json_encode( array( 'details' => __( 'There are some validation errors.', 'woocommerce-inpost' ) ) );
-                    die;
-                }
+						} else {
+							echo wp_json_encode(
+								array(
+									'details' => esc_html__( 'Check your selection.', 'woocommerce-inpost' ),
+								)
+							);
+							die;
+						}
+					}
 
+					echo wp_json_encode( array( 'details' => esc_html__( 'There are some validation errors.', 'woocommerce-inpost' ) ) );
+					die;
+				}
 
-                if ( $action === 'easypack_create_additional_label' ) {
+				if ( 'easypack_create_additional_label' === $action ) {
 
-                    if( isset( $_POST['inpost_id'] ) ) {
+					if ( isset( $_POST['inpost_id'] ) ) {
+						$inpost_id = sanitize_text_field( wp_unslash( $_POST['inpost_id'] ) );
+						if ( ! empty( $inpost_id ) ) {
+							// this function echo pdf or zip string.
+							EasyPack_Helper::EasyPack_Helper()->print_sticker_by_inpost_id( $inpost_id );
+							die;
+						} else {
+							echo wp_json_encode( array( 'details' => esc_html__( 'Check your selection.', 'woocommerce-inpost' ) ) );
+							die;
+						}
+					}
 
-                        $inpost_id = sanitize_text_field( $_POST['inpost_id'] );
-
-                        if( ! empty( $inpost_id ) ) {
-                            // this function echo pdf or zip string
-                            EasyPack_Helper::EasyPack_Helper()->print_sticker_by_inpost_id( $inpost_id );
-                            die;
-                        } else {
-                            echo json_encode( array( 'details' => __( 'Check your selection.', 'woocommerce-inpost' ) ) );
-                            die;
-                        }
-                    }
-
-                    echo json_encode( array( 'details' => __( 'There are some validation errors.', 'woocommerce-inpost' ) ) );
-                    die;
-                }
-
+					echo wp_json_encode( array( 'details' => esc_html__( 'There are some validation errors.', 'woocommerce-inpost' ) ) );
+					die;
+				}
 			}
 		}
 
+		/**
+		 * Dispatch point
+		 *
+		 * @return void
+		 */
 		public static function dispatch_point() {
 			$dispatch_point_name = sanitize_text_field( $_POST['dispatch_point_name'] );
 			try {
 				$dispatch_point = EasyPack_API()->dispatch_point( $dispatch_point_name );
-				echo json_encode( $dispatch_point );
+				echo wp_json_encode( $dispatch_point );
 			} catch ( Exception $e ) {
 				echo 0;
 			}
 			wp_die();
 		}
 
+		/**
+		 * Parcel machines create package
+		 *
+		 * @return void
+		 * @throws \ReflectionException ReflectionException.
+		 */
 		public static function parcel_machines_create_package() {
 			EasyPack_Shippng_Parcel_Machines::ajax_create_package();
 		}
 
+		/**
+		 * Parcel machines cancel package
+		 *
+		 * @return void
+		 */
 		public static function parcel_machines_cancel_package() {
 			EasyPack_Shippng_Parcel_Machines::ajax_cancel_package();
 		}
 
+		/**
+		 * Parcel machines COD create package
+		 *
+		 * @return void
+		 * @throws \ReflectionException ReflectionException.
+		 */
 		public static function parcel_machines_cod_create_package() {
 			EasyPack_Shippng_Parcel_Machines_COD::ajax_create_package();
 		}
 
-        public static function parcel_machines_weekend_create_package() {
-            EasyPack_Shipping_Parcel_Machines_Weekend::ajax_create_package();
-        }
-
-        public static function parcel_machines_economy_create_package() {
-            EasyPack_Shipping_Parcel_Machines_Economy::ajax_create_package();
-        }
-
-        public static function parcel_machines_economy_cod_create_package() {
-            EasyPack_Shipping_Parcel_Machines_Economy_COD::ajax_create_package();
-        }
+		/**
+		 * Parcel machines weekend create package
+		 *
+		 * @return void
+		 * @throws \ReflectionException ReflectionException.
+		 */
+		public static function parcel_machines_weekend_create_package() {
+			EasyPack_Shipping_Parcel_Machines_Weekend::ajax_create_package();
+		}
 
 		/**
-		 * @throws \ReflectionException
+		 * Parcel machines weekend COD create package
+		 *
+		 * @return void
+		 * @throws \ReflectionException ReflectionException.
+		 */
+		public static function parcel_machines_weekend_create_package_cod() {
+			EasyPack_Shipping_Parcel_Machines_Weekend_COD::ajax_create_package();
+		}
+
+		/**
+		 * Parcel machines economy create package
+		 *
+		 * @return void
+		 * @throws \ReflectionException ReflectionException.
+		 */
+		public static function parcel_machines_economy_create_package() {
+			EasyPack_Shipping_Parcel_Machines_Economy::ajax_create_package();
+		}
+
+		/**
+		 * Parcel machines economy COD create package
+		 *
+		 * @return void
+		 * @throws \ReflectionException ReflectionException.
+		 */
+		public static function parcel_machines_economy_cod_create_package() {
+			EasyPack_Shipping_Parcel_Machines_Economy_COD::ajax_create_package();
+		}
+
+		/**
+		 * Courier create package
+		 *
+		 * @throws \ReflectionException ReflectionException.
 		 */
 		public static function courier_create_package() {
 			EasyPack_Shipping_Method_Courier::ajax_create_package();
 		}
 
-        /**
-         * @throws \ReflectionException
-         */
+		/**
+		 * Esmartmix create package
+		 *
+		 * @throws \ReflectionException ReflectionException.
+		 */
 		public static function esmartmix_create_package() {
-            EasyPack_Shipping_Method_EsmartMix::ajax_create_package();
-        }
-
-        /**
-         * @throws \ReflectionException
-         */
-        public static function courier_c2c_create_package_cod() {
-            EasyPack_Shipping_Method_Courier_C2C_COD::ajax_create_package();
-        }
+			EasyPack_Shipping_Method_EsmartMix::ajax_create_package();
+		}
 
 		/**
-		 * @throws \ReflectionException
+		 * Courier C2C create package COD
+		 *
+		 * @throws \ReflectionException ReflectionException.
+		 */
+		public static function courier_c2c_create_package_cod() {
+			EasyPack_Shipping_Method_Courier_C2C_COD::ajax_create_package();
+		}
+
+		/**
+		 * Courier C2C create package
+		 *
+		 * @throws \ReflectionException ReflectionException.
 		 */
 		public static function courier_c2c_create_package() {
 			EasyPack_Shipping_Method_Courier_C2C::ajax_create_package();
 		}
 
 		/**
-		 * @throws \ReflectionException
+		 * Courier LSE create package
+		 *
+		 * @throws \ReflectionException ReflectionException.
 		 */
 		public static function courier_lse_create_package() {
 			EasyPack_Shipping_Method_Courier_LSE::ajax_create_package();
 		}
 
 		/**
-		 * @throws \ReflectionException
+		 * Courier LSE create package COD
+		 *
+		 * @throws \ReflectionException ReflectionException.
 		 */
 		public static function courier_lse_create_package_cod() {
 			EasyPack_Shipping_Method_Courier_LSE_COD::ajax_create_package();
 		}
 
 		/**
-		 * @throws \ReflectionException
+		 * Courier local standard create package
+		 *
+		 * @throws \ReflectionException ReflectionException.
 		 */
 		public static function courier_local_standard_create_package() {
 			EasyPack_Shipping_Method_Courier_Local_Standard::ajax_create_package();
 		}
 
 		/**
-		 * @throws \ReflectionException
+		 * Courier local standard COD create package
+		 *
+		 * @throws \ReflectionException ReflectionException.
 		 */
 		public static function courier_local_standard_cod_create_package() {
 			EasyPack_Shipping_Method_Courier_Local_Standard_COD::ajax_create_package();
 		}
 
 		/**
-		 * @throws \ReflectionException
+		 * Courier local express create package
+		 *
+		 * @throws \ReflectionException ReflectionException.
 		 */
 		public static function courier_local_express_create_package() {
 			EasyPack_Shipping_Method_Courier_Local_Express::ajax_create_package();
 		}
 
+		/**
+		 * Courier local express COD create package
+		 *
+		 * @return void
+		 * @throws \ReflectionException ReflectionException.
+		 */
 		public static function courier_local_express_cod_create_package() {
 			EasyPack_Shipping_Method_Courier_Local_Express_COD::ajax_create_package();
 		}
 
 		/**
-		 * @throws \ReflectionException
+		 * Courier palette create package
+		 *
+		 * @throws \ReflectionException ReflectionException.
 		 */
 		public static function courier_palette_create_package() {
 			EasyPack_Shipping_Method_Courier_Palette::ajax_create_package();
 		}
 
 		/**
-		 * @throws \ReflectionException
+		 * Courier palette COD create package
+		 *
+		 * @throws \ReflectionException ReflectionException.
 		 */
 		public static function courier_palette_cod_create_package() {
 			EasyPack_Shipping_Method_Courier_Palette_COD::ajax_create_package();
 		}
 
 		/**
-		 * @throws \ReflectionException
+		 * Courier COD create package
+		 *
+		 * @throws \ReflectionException ReflectionException.
 		 */
 		public static function courier_cod_create_package() {
 			EasyPack_Shipping_Method_Courier_COD::ajax_create_package();
 		}
 
+		/**
+		 * Parcel machines COD cancel package
+		 *
+		 * @return void
+		 */
 		public static function parcel_machines_cod_cancel_package() {
 			EasyPack_Shippng_Parcel_Machines_COD::ajax_cancel_package();
 		}
 
-//		public static function easypack_dispatch_order() {
-//			EasyPack_Shippng_Parcel_Machines::ajax_dispatch_order();
-//		}
+		// public static function easypack_dispatch_order() {
+		// EasyPack_Shippng_Parcel_Machines::ajax_dispatch_order();
+		// }
 
+		/**
+		 * Create additional package
+		 *
+		 * @return void
+		 */
 		public static function create_additional_package() {
-            $shipping_method = sanitize_text_field( $_POST['easypack_additional_package_method_id'] );
-            $order_id = sanitize_text_field( $_POST['order_id'] );
-            try {
+			$shipping_method = sanitize_text_field( $_POST['easypack_additional_package_method_id'] );
+			$order_id        = sanitize_text_field( $_POST['order_id'] );
+			try {
 
-                $shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $shipping_method );
+				$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $shipping_method );
 
-                if( empty( $shipping_method_class_name ) )  {
-                    $inpost_method_name = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $shipping_method );
-                    $shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $inpost_method_name );
-                }
+				if ( empty( $shipping_method_class_name ) ) {
+					$inpost_method_name         = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $shipping_method );
+					$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $inpost_method_name );
+				}
 
-                if( empty($shipping_method_class_name) ) {
-                    $return_content = array( 'status' => 'bad', 'message' => __( 'Shipping method not found', 'woocommerce-inpost' ) );
-                    echo wp_json_encode( $return_content );
-                    wp_die();
-                }
+				if ( empty( $shipping_method_class_name ) ) {
+					$return_content = array(
+						'status'  => 'bad',
+						'message' => esc_html__( 'Shipping method not found', 'woocommerce-inpost' ),
+					);
+					echo wp_json_encode( $return_content );
+					wp_die();
+				}
 
-                $class_with_namespace = 'InspireLabs\WoocommerceInpost\shipping\\' . $shipping_method_class_name;
+				$class_with_namespace = 'InspireLabs\WoocommerceInpost\shipping\\' . $shipping_method_class_name;
 
-                if( class_exists( $class_with_namespace ) ) {
-                    $class_instance = new $class_with_namespace();
+				if ( class_exists( $class_with_namespace ) ) {
+					$class_instance = new $class_with_namespace();
 
-                    $ret['content'] = $class_instance::order_metabox_content( get_post( $order_id ), false, null, true );
-                    $ret['status'] = 'ok';
+					$ret['content'] = $class_instance::order_metabox_content( get_post( $order_id ), false, null, true );
+					$ret['status']  = 'ok';
 
-                    echo wp_json_encode( $ret );
-                    wp_die();
+					echo wp_json_encode( $ret );
+					wp_die();
 
-                } else {
-                    $return_content = array( 'status' => 'bad', 'message' => __( 'Error occured', 'woocommerce-inpost' ) );
-                    echo wp_json_encode( $return_content );
-                    wp_die();
-                }
-
-            } catch ( Exception $e ) {
-                echo 0;
-            }
-            wp_die();
-        }
-
+				} else {
+					$return_content = array(
+						'status'  => 'bad',
+						'message' => esc_html__( 'Error occured', 'woocommerce-inpost' ),
+					);
+					echo wp_json_encode( $return_content );
+					wp_die();
+				}
+			} catch ( Exception $e ) {
+				echo 0;
+			}
+			wp_die();
+		}
 	}
 
 endif;

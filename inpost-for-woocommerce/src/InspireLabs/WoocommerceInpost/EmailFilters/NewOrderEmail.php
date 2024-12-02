@@ -38,7 +38,8 @@ class NewOrderEmail {
             'easypack_parcel_machines_cod',
             'easypack_parcel_machines_economy',
             'easypack_parcel_machines_economy_cod',
-            'easypack_parcel_machines_weekend'
+            'easypack_parcel_machines_weekend',
+            'easypack_parcel_machines_weekend_cod'
         ];
 
 

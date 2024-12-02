@@ -22,6 +22,7 @@ use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Method_Courier_LSE_
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Method_Courier_Palette;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Method_Courier_Palette_COD;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Method_EsmartMix;
+use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Parcel_Machines_Weekend_COD;
 use InspireLabs\WoocommerceInpost\shipping\Easypack_Shipping_Rates;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shippng_Parcel_Machines;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shippng_Parcel_Machines_COD;
@@ -260,6 +261,7 @@ class EasyPack extends inspire_Plugin4 {
 			'easypack_parcel_machines_economy',
 			'easypack_parcel_machines_economy_cod',
 			'easypack_parcel_machines_weekend',
+			'easypack_parcel_machines_weekend_cod',
 		);
 
 		$fs_method_name = get_post_meta( $wcOrder->get_id(), '_fs_easypack_method_name', true );
@@ -348,6 +350,8 @@ class EasyPack extends inspire_Plugin4 {
 
 				$easyPack_Shippng_Parcel_Machines_Weekend = new EasyPack_Shipping_Parcel_Machines_Weekend();
 				$this->shipping_methods[]                 = $easyPack_Shippng_Parcel_Machines_Weekend;
+                $easyPack_Shippng_Parcel_Machines_Weekend_COD = new EasyPack_Shipping_Parcel_Machines_Weekend_COD();
+                $this->shipping_methods[]                 = $easyPack_Shippng_Parcel_Machines_Weekend_COD;
 			}
 
 			if ( in_array( EasyPack_Shipping_Parcel_Machines_Economy::SERVICE_ID, $servicesAllowed ) ) {
@@ -650,7 +654,9 @@ class EasyPack extends inspire_Plugin4 {
 			wp_enqueue_style( 'easypack-jbox-css', $this->getPluginCss() . 'jBox.all.min.css' );
 		}
 
-		wp_enqueue_script( 'easypack-admin', $this->getPluginJs() . 'admin.js', array( 'jquery' ) );
+		$admin_js_path     = $this->_pluginPath . '/resources/assets/js/admin.js';
+		$admin_js_path_ver = file_exists( $admin_js_path ) ? filemtime( $admin_js_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;
+		wp_enqueue_script( 'easypack-admin', $this->getPluginJs() . 'admin.js', array( 'jquery' ), $admin_js_path_ver, array( 'in_footer' => true ) );
 		wp_localize_script(
 			'easypack-admin',
 			'easypack_settings',
@@ -1022,6 +1028,13 @@ class EasyPack extends inspire_Plugin4 {
 	}
 
 
+	/**
+	 * Add integration fields with plugin Flexible Shipping.
+	 *
+	 * @param array $settings $settings.
+	 *
+	 * @return array
+	 */
 	public function add_map_field( $settings ): array {
 
 		$has_intergrations = false;
@@ -1059,6 +1072,14 @@ class EasyPack extends inspire_Plugin4 {
 	}
 
 
+	/**
+	 * Delete Paczka Weekend Shipping method from cart if time interval is not allowed.
+	 *
+	 * @param array $rates $rates.
+	 * @param mixed $package $package.
+	 *
+	 * @return array
+	 */
 	public function check_paczka_weekend_fs_settings( $rates, $package ): array {
 
 		if ( ! EasyPack_Helper()->is_flexible_shipping_activated() ) {
@@ -1066,7 +1087,10 @@ class EasyPack extends inspire_Plugin4 {
 		}
 
 		foreach ( $rates as $rate_key => $rate ) {
-			if ( 'easypack_parcel_machines_weekend' === EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $rate->instance_id ) ) {
+			if ( 'easypack_parcel_machines_weekend' === EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $rate->instance_id )
+				|| 'easypack_parcel_machines_weekend_cod' === EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $rate->instance_id )
+
+			) {
 
 				$paczka_weekend = new EasyPack_Shipping_Parcel_Machines_Weekend();
 				if ( ! $paczka_weekend->check_allowed_interval_for_weekend( $rate->instance_id ) ) {
@@ -1079,6 +1103,11 @@ class EasyPack extends inspire_Plugin4 {
 	}
 
 
+	/**
+	 * Additional settings fields visible on Flexible Shipping method setting's page.
+	 *
+	 * @return array
+	 */
 	public function settings_block_for_flexible_shipping(): array {
 		$settings = array();
 		if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
@@ -1087,21 +1116,23 @@ class EasyPack extends inspire_Plugin4 {
 				'type'    => 'select',
 				'default' => 'all',
 				'options' => array(
-					'0'                                 => esc_html__( 'None', 'woocommerce-inpost' ),
-					'easypack_parcel_machines'          => esc_html__( 'InPost Locker 24/7', 'woocommerce-inpost' ),
-					'easypack_parcel_machines_cod'      => esc_html__( 'InPost Locker 24/7 COD', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_c2c'     => esc_html__( 'InPost Courier C2C', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_c2c_cod' => esc_html__( 'InPost Courier C2C COD', 'woocommerce-inpost' ),
-					'easypack_parcel_machines_weekend'  => esc_html__( 'InPost Locker Weekend', 'woocommerce-inpost' ),
-					'easypack_shipping_courier'         => esc_html__( 'InPost Courier', 'woocommerce-inpost' ),
-					'easypack_cod_shipping_courier'     => esc_html__( 'InPost Courier COD', 'woocommerce-inpost' ),
+					'0'                                    => esc_html__( 'None', 'woocommerce-inpost' ),
+					'easypack_parcel_machines'             => esc_html__( 'InPost Locker 24/7', 'woocommerce-inpost' ),
+					'easypack_parcel_machines_cod'         => esc_html__( 'InPost Locker 24/7 COD', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_c2c'        => esc_html__( 'InPost Courier C2C', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_c2c_cod'    => esc_html__( 'InPost Courier C2C COD', 'woocommerce-inpost' ),
+					'easypack_parcel_machines_weekend'     => esc_html__( 'InPost Locker Weekend', 'woocommerce-inpost' ),
+					'easypack_parcel_machines_weekend_cod' => esc_html__( 'InPost Locker Weekend COD', 'woocommerce-inpost' ),
+					'easypack_shipping_courier'            => esc_html__( 'InPost Courier', 'woocommerce-inpost' ),
+					'easypack_cod_shipping_courier'        => esc_html__( 'InPost Courier COD', 'woocommerce-inpost' ),
+					'easypack_shipping_esmartmix'          => esc_html__( 'InPost Smart Courier', 'woocommerce-inpost' ),
 					'easypack_shipping_courier_local_express' => esc_html__( 'InPost Courier Local Express', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_le_cod'  => esc_html__( 'InPost Courier Local Express COD', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_le_cod'     => esc_html__( 'InPost Courier Local Express COD', 'woocommerce-inpost' ),
 					'easypack_shipping_courier_local_standard' => esc_html__( 'InPost Courier Local Standard', 'woocommerce-inpost' ),
 					'easypack_shipping_courier_local_standard_cod' => esc_html__( 'InPost Courier Local Standard COD', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_lse'     => esc_html__( 'InPost Courier Local Super Express', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_lse_cod' => esc_html__( 'InPost Courier Local Super Express COD', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_palette' => esc_html__( 'InPost Courier Palette', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_lse'        => esc_html__( 'InPost Courier Local Super Express', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_lse_cod'    => esc_html__( 'InPost Courier Local Super Express COD', 'woocommerce-inpost' ),
+					'easypack_shipping_courier_palette'    => esc_html__( 'InPost Courier Palette', 'woocommerce-inpost' ),
 					'easypack_shipping_courier_palette_cod' => esc_html__( 'InPost Courier Palette COD', 'woocommerce-inpost' ),
 
 				),
@@ -1151,6 +1182,28 @@ class EasyPack extends inspire_Plugin4 {
 				'default'  => '',
 				'desc_tip' => false,
 				'class'    => 'fs-inpost-pl-weekend',
+			);
+
+			$settings['fs_insurance_inpost_pl'] = array(
+				'title'    => esc_html__( 'Insurance', 'woocommerce-inpost' )
+								. ' InPost PL: '
+								. esc_html__( 'set from order amount', 'woocommerce-inpost' ),
+				'type'     => 'checkbox',
+				'default'  => 'no',
+				'desc_tip' => false,
+				'class'    => 'fs-inpost-pl-insurance',
+			);
+
+			$settings['fs_insurance_value_inpost_pl'] = array(
+				'title'             => esc_html__( 'Default insurance amount', 'woocommerce-inpost' ),
+				'type'              => 'number',
+				'custom_attributes' => array(
+					'step' => 'any',
+					'min'  => '0',
+				),
+				'default'           => '0.00',
+				'desc_tip'          => false,
+				'class'             => 'fs-inpost-pl-insurance-value',
 			);
 		}
 

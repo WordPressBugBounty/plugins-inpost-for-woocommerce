@@ -78,13 +78,25 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
                     'default'  => __( 'InPost Locker Weekend', 'woocommerce-inpost' ),
                     'desc_tip' => false,
                 ],
-                /*'delivery_terms'              => [
-                    'title'    => __( 'Terms of delivery', 'woocommerce-inpost' ),
-                    'type'     => 'text',
-                    'default'  => __( '', 'woocommerce-inpost' ),
-                    'desc_tip' => false,
-                    'placeholder'       => '(2-3 dni)',
-                ],*/
+                'insurance_inpost_pl'              => [
+                    'title'    => __( 'Insurance', 'woocommerce-inpost' ),
+                    'label'       => __( 'Set from order amount', 'woocommerce-inpost' ),
+                    'type'        => 'checkbox',
+                    'description' => __( '', 'woocommerce-inpost' ),
+                    'default'     => 'no',
+                    'desc_tip'    => true,
+                ],
+                'insurance_value_inpost_pl' => [
+                    'title'             => __( 'Default insurance amount', 'woocommerce-inpost' ),
+                    'type'              => 'number',
+                    'custom_attributes' => [
+                        'step' => 'any',
+                        'min'  => '0',
+                    ],
+                    'default'           => '',
+                    'desc_tip'          => false,
+                    'placeholder'       => '0.00',
+                ],
 
 
                 [
@@ -231,9 +243,10 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
                     ),
                     'class'    => 'wc-enhanced-select easypack_based_on',
                     'options'  => [
-                        'price'  => __( 'Price', 'woocommerce-inpost' ),
-                        'weight' => __( 'Weight', 'woocommerce-inpost' ),
-                        'size'   => __( 'Size (A, B, C)', 'woocommerce-inpost' ),
+                        'price'  => esc_html__( 'Price', 'woocommerce-inpost' ),
+                        'weight' => esc_html__( 'Weight', 'woocommerce-inpost' ),
+                        'product_qty' => esc_html__( 'Products qty', 'woocommerce-inpost' ),
+                        'size'   => esc_html__( 'Size (A, B, C)', 'woocommerce-inpost' ),
                     ],
                 ],
                 'rates'              => [
@@ -657,10 +670,10 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 
             if( empty( $week_day_from ) || empty( $week_day_to ) || empty( $week_hour_from ) || empty( $week_hour_to ) )
             {
-                $week_day_from = $this->instance_settings[ 'day_from' ];
-                $week_day_to = $this->instance_settings[ 'day_to' ];
-                $week_hour_from = $this->instance_settings[ 'hour_from' ];
-                $week_hour_to = $this->instance_settings[ 'hour_to' ];
+                $week_day_from = ! empty( $this->instance_settings[ 'day_from' ] ) ? $this->instance_settings[ 'day_from' ] : '';
+                $week_day_to = ! empty( $this->instance_settings[ 'day_to' ] ) ? $this->instance_settings[ 'day_to' ] : '' ;
+                $week_hour_from =  ! empty( $this->instance_settings[ 'hour_from' ] ) ? $this->instance_settings[ 'hour_from' ] : '';
+                $week_hour_to = ! empty( $this->instance_settings[ 'hour_to' ] ) ? $this->instance_settings[ 'hour_to' ] : '';
 
             }
 

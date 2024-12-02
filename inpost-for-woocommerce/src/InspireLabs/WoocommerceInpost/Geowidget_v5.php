@@ -227,6 +227,8 @@ class Geowidget_v5 {
 
 			case 'easypack_parcel_machines_weekend':
 				return 'parcelCollect247';
+            case 'easypack_parcel_machines_weekend_cod':
+                return 'parcelCollect247';
 			default:
 				return $default;
 

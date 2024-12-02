@@ -49,7 +49,11 @@ class Easypack_Shipping_Rates
 
 					$method_name = EasyPack_Helper()->validate_method_name( $method->get_method_id() );
 
-					if( $method_name === 'easypack_parcel_machines_weekend' || ( isset( $fs_method_name ) && $fs_method_name === 'easypack_parcel_machines_weekend' ) ) {
+					if( 'easypack_parcel_machines_weekend' === $method_name
+                        || 'easypack_parcel_machines_weekend_cod' === $method_name
+                        || ( isset( $fs_method_name ) && 'easypack_parcel_machines_weekend' === $fs_method_name )
+                        || ( isset( $fs_method_name ) && 'easypack_parcel_machines_weekend_cod' === $fs_method_name )
+                    ) {
 						$img = ' <span class="easypack-weekend-shipping-method-logo"><img style="" src="'
 							. EasyPack()->getPluginImages()
 							. 'logo/inpost-paczka-w-weekend.png" /></span>';

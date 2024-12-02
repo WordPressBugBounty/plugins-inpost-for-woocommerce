@@ -1,8 +1,6 @@
 <?php
 /**
  * EasyPack Shipping Method Parcel Machines
- *
- *
  */
 
 namespace InspireLabs\WoocommerceInpost\shipping;
@@ -41,7 +39,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 		const NONCE_ACTION = self::SERVICE_ID;
 
-		static $prevent_duplicate = [];
+		static $prevent_duplicate = array();
 
 		static $review_order_after_shipping_once = false;
 
@@ -60,12 +58,12 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		/**
 		 * Constructor for shipping class
 		 *
-		 *
 		 * @param int $instance_id Instance ID.
 		 * @access public
 		 * @return void
 		 */
 		public function __construct( $instance_id = 0 ) {
+			parent::__construct();
 
 			$this->instance_id = absint( $instance_id );
 			$this->supports    = array(
@@ -73,35 +71,33 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				'instance-settings',
 			);
 
-			$this->id = 'easypack_parcel_machines';
+			$this->id                 = 'easypack_parcel_machines';
 			$this->method_description
-			          = __( 'Allow customers to pick up orders themselves. By default, when using local pickup store base taxes will apply regardless of customer address.',
-				'woocommerce' );
+						= esc_html__(
+							'Inpost Parcel Locker. Allow customers to pick up orders themselves.',
+							'woocommerce-inpost'
+						);
 
 			$this->method_title = __( 'InPost Locker 24/7', 'woocommerce-inpost' );
 			$this->init();
-
-
 		}
 
 
 		/**
 		 * Init your settings
 		 *
-		 *
 		 * @access public
 		 * @return void
 		 */
-		function init(): void {
+		public function init(): void {
 
 			$this->init_form_fields();
 			$this->init_settings();
-			$this->title          = $this->get_option( 'title' );
-			$this->free_shipping_cost
-			                      = $this->get_option( 'free_shipping_cost' );
+			$this->title                    = $this->get_option( 'title' );
+			$this->free_shipping_cost       = $this->get_option( 'free_shipping_cost' );
 			$this->show_free_shipping_label
-			                      = $this->get_option( 'show_free_shipping_label' );
-			$this->type           = $this->get_option('type', 'class');
+									= $this->get_option( 'show_free_shipping_label' );
+			$this->type                     = $this->get_option( 'type', 'class' );
 
 			$this->flat_rate      = $this->get_option( 'flat_rate' );
 			$this->cost_per_order = $this->get_option( 'cost_per_order' );
@@ -118,54 +114,74 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 			EasyPack_Helper()->include_inline_css();
 
-			add_action( 'woocommerce_update_options_shipping_' . $this->id,
-				[ $this, 'process_admin_options' ] );
+			add_action(
+				'woocommerce_update_options_shipping_' . $this->id,
+				array( $this, 'process_admin_options' )
+			);
 
-			$hook_name = get_option('easypack_button_output', 'woocommerce_review_order_after_shipping' );
+			$hook_name = get_option( 'easypack_button_output', 'woocommerce_review_order_after_shipping' );
 
-			add_action( $hook_name,
-				[ $this, 'woocommerce_review_order_after_shipping' ] );
+			add_action(
+				$hook_name,
+				array( $this, 'woocommerce_review_order_after_shipping' )
+			);
 
-			add_action( 'woocommerce_checkout_update_order_meta',
-				[ $this, 'woocommerce_checkout_update_order_meta' ] );
+			add_action(
+				'woocommerce_checkout_update_order_meta',
+				array( $this, 'woocommerce_checkout_update_order_meta' )
+			);
 
-			add_action( 'woocommerce_checkout_process', [ $this, 'woocommerce_checkout_process' ], PHP_INT_MAX );
-			add_action( 'woocommerce_after_checkout_validation', [ $this, 'woocommerce_after_checkout_validation' ], 10, 2 );
+			add_action( 'woocommerce_checkout_process', array( $this, 'woocommerce_checkout_process' ), PHP_INT_MAX );
+			add_action( 'woocommerce_after_checkout_validation', array( $this, 'woocommerce_after_checkout_validation' ), 10, 2 );
 
-			add_action( 'save_post', [ $this, 'save_post' ] );
+			add_action( 'save_post', array( $this, 'save_post' ) );
 
-			add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ], 10, 2 );
+			add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 2 );
 
-			add_filter( 'woocommerce_cart_shipping_method_full_label',
-				[ $this, 'woocommerce_cart_shipping_method_full_label' ], 10, 2 );
+			add_filter(
+				'woocommerce_cart_shipping_method_full_label',
+				array( $this, 'woocommerce_cart_shipping_method_full_label' ),
+				10,
+				2
+			);
 
-			add_filter( 'woocommerce_order_shipping_to_display_shipped_via',
-				[ $this, 'woocommerce_order_shipping_to_display_shipped_via' ], 10, 2 );
+			add_filter(
+				'woocommerce_order_shipping_to_display_shipped_via',
+				array( $this, 'woocommerce_order_shipping_to_display_shipped_via' ),
+				10,
+				2
+			);
 
-			add_filter( 'woocommerce_my_account_my_orders_actions',
-				[ $this, 'woocommerce_my_account_my_orders_actions' ], 10, 2 );
+			add_filter(
+				'woocommerce_my_account_my_orders_actions',
+				array( $this, 'woocommerce_my_account_my_orders_actions' ),
+				10,
+				2
+			);
 
+			add_filter(
+				'woocommerce_order_shipping_to_display',
+				array( $this, 'woocommerce_order_shipping_to_display' ),
+				9999,
+				3
+			);
 
-			add_filter( 'woocommerce_order_shipping_to_display',
-				[ $this, 'woocommerce_order_shipping_to_display' ], 9999, 3 );
-
-			add_action('wp_head', array( $this, 'add_styles_for_my_orders_page' ), 100 );
-
+			add_action( 'wp_head', array( $this, 'add_styles_for_my_orders_page' ), 100 );
 		}
 
 		public function admin_options() {
 			?>
-            <table class="form-table">
+			<table class="form-table">
 				<?php $this->generate_settings_html(); ?>
-            </table>
+			</table>
 			<?php
 		}
 
 		public function generate_rates_html( $key, $data ) {
-			$rates = EasyPack_Helper()->get_saved_method_rates($this->id, $this->instance_id);
+			$rates = EasyPack_Helper()->get_saved_method_rates( $this->id, $this->instance_id );
 
 			ob_start();
-			include( 'views/html-rates.php' );
+			include 'views/html-rates.php';
 
 			return ob_get_clean();
 		}
@@ -173,49 +189,63 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 		public function init_form_fields() {
 
-			$settings = [
-				[
+			$settings = array(
+				array(
 					'title'       => __( 'General settings', 'woocommerce-inpost' ),
 					'type'        => 'title',
 					'description' => '',
 					'id'          => 'section_general_settings',
-				],
-				'logo_upload'        => [
-					'name'  => __( 'Change logo', '' ),
+				),
+				'logo_upload'                            => array(
+					'name'  => __( 'Change logo', 'woocommerce-inpost' ),
 					'title' => __( 'Upload custom logo', 'woocommerce-inpost' ),
 					'type'  => 'logo_upload',
 					'id'    => 'logo_upload',
-				],
-				'title'              => [
+				),
+				'title'                                  => array(
 					'title'    => __( 'Method title', 'woocommerce-inpost' ),
 					'type'     => 'text',
 					'default'  => __( 'InPost Locker 24/7', 'woocommerce-inpost' ),
 					'desc_tip' => false,
-				],
-				/*'delivery_terms'              => [
-					'title'    => __( 'Terms of delivery', 'woocommerce-inpost' ),
-					'type'     => 'text',
-					'default'  => __( '', 'woocommerce-inpost' ),
-					'desc_tip' => false,
-					'placeholder'       => '(2-3 dni)',
-				],*/
-				'free_shipping_cost' => [
-					'title'             => __( 'Free shipping', 'woocommerce-inpost' ),
+				),
+				'insurance_inpost_pl'                    => array(
+					'title'       => __( 'Insurance', 'woocommerce-inpost' ),
+					'label'       => __( 'Set from order amount', 'woocommerce-inpost' ),
+					'type'        => 'checkbox',
+					'description' => '',
+					'default'     => 'no',
+					'desc_tip'    => true,
+				),
+				'insurance_value_inpost_pl'              => array(
+					'title'             => __( 'Default insurance amount', 'woocommerce-inpost' ),
 					'type'              => 'number',
-					'custom_attributes' => [
+					'custom_attributes' => array(
 						'step' => 'any',
 						'min'  => '0',
-					],
+					),
 					'default'           => '',
-					'desc_tip'          => __( 'Enter the amount of the order from which the shipping will be free (does not include virtual products). ',
-						'woocommerce-inpost' ),
+					'desc_tip'          => false,
 					'placeholder'       => '0.00',
-				],
-				'show_free_shipping_label' => array(
-					'title'       => __( '', 'woocommerce-inpost' ),
+				),
+				'free_shipping_cost'                     => array(
+					'title'             => __( 'Free shipping', 'woocommerce-inpost' ),
+					'type'              => 'number',
+					'custom_attributes' => array(
+						'step' => 'any',
+						'min'  => '0',
+					),
+					'default'           => '',
+					'desc_tip'          => __(
+						'Enter the amount of the order from which the shipping will be free (does not include virtual products). ',
+						'woocommerce-inpost'
+					),
+					'placeholder'       => '0.00',
+				),
+				'show_free_shipping_label'               => array(
+					'title'       => '',
 					'label'       => __( 'Add label \'(free)\' to the end of title of shipping method', 'woocommerce-inpost' ),
 					'type'        => 'checkbox',
-					'description' => __( '', 'woocommerce-inpost' ),
+					'description' => '',
 					'default'     => 'yes',
 					'desc_tip'    => true,
 				),
@@ -227,112 +257,124 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 					'default'     => 'no',
 					'desc_tip'    => true,
 				),
-				'flat_rate'          => [
+				'flat_rate'                              => array(
 					'title'   => __( 'Flat rate', 'woocommerce-inpost' ),
 					'type'    => 'checkbox',
 					'label'   => __( 'Set a flat-rate shipping fee for the entire order.', 'woocommerce-inpost' ),
 					'class'   => 'easypack_flat_rate',
 					'default' => 'yes',
-				],
-				'cost_per_order'     => [
+				),
+				'cost_per_order'                         => array(
 					'title'             => __( 'Cost per order', 'woocommerce-inpost' ),
 					'type'              => 'number',
-					'custom_attributes' => [
+					'custom_attributes' => array(
 						'step' => 'any',
 						'min'  => '0',
-					],
+					),
 					'class'             => 'easypack_cost_per_order',
 					'default'           => '',
-					'desc_tip'          => __( 'Set a flat-rate shipping for all orders'
-						, 'woocommerce-inpost' ),
+					'desc_tip'          => __(
+						'Set a flat-rate shipping for all orders',
+						'woocommerce-inpost'
+					),
 					'placeholder'       => '0.00',
-				],
-				'tax_status'         => [
+				),
+				'tax_status'                             => array(
 					'title'   => __( 'Tax status', 'woocommerce' ),
 					'type'    => 'select',
 					'class'   => 'wc-enhanced-select',
 					'default' => 'none',
-					'options' => [
+					'options' => array(
 						'none'    => _x( 'None', 'Tax status', 'woocommerce-inpost' ),
 						'taxable' => __( 'Taxable', 'woocommerce-inpost' ),
-					],
-				],
+					),
+				),
 
-				[
+				array(
 					'title'       => __( 'Rates table', 'woocommerce-inpost' ),
 					'type'        => 'title',
 					'description' => '',
 					'id'          => 'section_general_settings',
-				],
-				'based_on'           => [
-					'title'    => __( 'Based on', 'woocommerce-inpost' ),
-					'type'     => 'select',
-					'desc_tip' => __( 'Select the method of calculating shipping cost. If the cost of shipping is to be calculated based on the weight of the cart and the products do not have a defined weight, the cost will be calculated incorrectly.',
-						'woocommerce-inpost' ),
-					'description' => sprintf( '<b id="easypack_dimensions_warning" style="color:red;display:none">%1s</b> %1s',
-						__('Attention!', 'woocommerce-inpost'),
-						__('Set the dimension in the settings of each product. The default value is size \'A\'', 'woocommerce-inpost' )
-
+				),
+				'based_on'                               => array(
+					'title'       => __( 'Based on', 'woocommerce-inpost' ),
+					'type'        => 'select',
+					'desc_tip'    => __(
+						'Select the method of calculating shipping cost. If the cost of shipping is to be calculated based on the weight of the cart and the products do not have a defined weight, the cost will be calculated incorrectly.',
+						'woocommerce-inpost'
 					),
-					'class'    => 'wc-enhanced-select easypack_based_on',
-					'options'  => [
-						'price'  => __( 'Price', 'woocommerce-inpost' ),
-						'weight' => __( 'Weight', 'woocommerce-inpost' ),
-						'size'   => __( 'Size (A, B, C)', 'woocommerce-inpost' ),
-					],
-				],
-				'rates'              => [
+					'description' => sprintf(
+						'<b id="easypack_dimensions_warning" style="color:red;display:none">%1s</b> %1s',
+						__( 'Attention!', 'woocommerce-inpost' ),
+						__( 'Set the dimension in the settings of each product. The default value is size \'A\'', 'woocommerce-inpost' )
+					),
+					'class'       => 'wc-enhanced-select easypack_based_on',
+					'options'     => array(
+						'price'       => esc_html__( 'Price', 'woocommerce-inpost' ),
+						'weight'      => esc_html__( 'Weight', 'woocommerce-inpost' ),
+						'product_qty' => esc_html__( 'Products qty', 'woocommerce-inpost' ),
+						'size'        => esc_html__( 'Size (A, B, C)', 'woocommerce-inpost' ),
+					),
+				),
+				'rates'                                  => array(
 					'title'    => '',
 					'type'     => 'rates',
 					'class'    => 'easypack_rates',
 					'default'  => '',
 					'desc_tip' => '',
-				],
+				),
 
-				'gabaryt_a'     => [
+				'gabaryt_a'                              => array(
 					'title'             => __( 'Size A', 'woocommerce-inpost' ),
 					'type'              => 'number',
-					'custom_attributes' => [ 'step' => 'any', 'min' => '0' ],
+					'custom_attributes' => array(
+						'step' => 'any',
+						'min'  => '0',
+					),
 					'class'             => 'easypack_gabaryt_a',
 					'default'           => '',
 					'desc_tip'          => __( 'Set a flat-rate shipping for size A', 'woocommerce-inpost' ),
 					'placeholder'       => '0.00',
-				],
+				),
 
-				'gabaryt_b'     => [
+				'gabaryt_b'                              => array(
 					'title'             => __( 'Size B', 'woocommerce-inpost' ),
 					'type'              => 'number',
-					'custom_attributes' => [ 'step' => 'any', 'min' => '0' ],
+					'custom_attributes' => array(
+						'step' => 'any',
+						'min'  => '0',
+					),
 					'class'             => 'easypack_gabaryt_b',
 					'default'           => '',
 					'desc_tip'          => __( 'Set a flat-rate shipping for size B', 'woocommerce-inpost' ),
 					'placeholder'       => '0.00',
-				],
+				),
 
-				'gabaryt_c'     => [
+				'gabaryt_c'                              => array(
 					'title'             => __( 'Size C', 'woocommerce-inpost' ),
 					'type'              => 'number',
-					'custom_attributes' => [ 'step' => 'any', 'min' => '0' ],
+					'custom_attributes' => array(
+						'step' => 'any',
+						'min'  => '0',
+					),
 					'class'             => 'easypack_gabaryt_c',
 					'default'           => '',
 					'desc_tip'          => __( 'Set a flat-rate shipping for size C', 'woocommerce-inpost' ),
 					'placeholder'       => '0.00',
-				],
-			];
+				),
+			);
 
 			$settings = $this->add_shipping_classes_settings( $settings );
 
 			$this->instance_form_fields = $settings;
 			$this->form_fields          = $settings;
-
-
 		}
 
 
 		public function generate_logo_upload_html( $key, $data ) {
 			$field_key = $this->get_field_key( $key );
 
-			$defaults = [
+			$defaults = array(
 				'title'             => 'Upload custom logo',
 				'disabled'          => false,
 				'class'             => '',
@@ -341,60 +383,63 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				'type'              => 'text',
 				'desc_tip'          => false,
 				'description'       => '',
-				'custom_attributes' => [],
-			];
+				'custom_attributes' => array(),
+			);
 
 			$data = wp_parse_args( $data, $defaults );
 
 			ob_start();
 			?>
-            <tr valign="top">
-                <th scope="row" class="titledesc">
-                    <label for="<?php echo esc_attr( $field_key ); ?>"><?php echo wp_kses_post( $data['title'] ); ?><?php echo $this->get_tooltip_html( $data ); // WPCS: XSS ok.
-						?></label>
-                </th>
-                <td class="forminp">
-                    <fieldset>
-                        <legend class="screen-reader-text">
-                            <span><?php echo wp_kses_post( $data['title'] ); ?></span>
-                        </legend>
-                        <img src='<?php echo esc_attr( $this->get_instance_option( $key ) ); ?>'
-                             style='width: 60px; height: auto; background-size: cover; display: <?php echo !empty( $this->get_instance_option( $key ) ) ? 'block' : 'none'; ?>; margin-bottom: 10px;'
-                             id='woo-inpost-logo-preview'>
-                        <ul id="woo-inpost-logo-action" style='display: <?php echo !empty( $this->get_instance_option( $key ) ) ? 'block' : 'none'; ?>;'>
-                            <li>
-                                <a id="woo-inpost-logo-delete" href="#" title="Delete image">
+			<tr valign="top">
+				<th scope="row" class="titledesc">
+					<label for="<?php echo esc_attr( $field_key ); ?>"><?php echo wp_kses_post( $data['title'] ); ?>
+											<?php
+											echo $this->get_tooltip_html( $data ); // WPCS: XSS ok.
+											?>
+					</label>
+				</th>
+				<td class="forminp">
+					<fieldset>
+						<legend class="screen-reader-text">
+							<span><?php echo wp_kses_post( $data['title'] ); ?></span>
+						</legend>
+						<img src='<?php echo esc_attr( $this->get_instance_option( $key ) ); ?>'
+							style='width: 60px; height: auto; background-size: cover; display: <?php echo ! empty( $this->get_instance_option( $key ) ) ? 'block' : 'none'; ?>; margin-bottom: 10px;'
+							id='woo-inpost-logo-preview'>
+						<ul id="woo-inpost-logo-action" style='display: <?php echo ! empty( $this->get_instance_option( $key ) ) ? 'block' : 'none'; ?>;'>
+							<li>
+								<a id="woo-inpost-logo-delete" href="#" title="Delete image">
 									<?php echo __( 'Delete', 'woocommerce-inpost' ); ?>
-                                </a>
-                            </li>
-                        </ul>
-                        <button class='woo-inpost-logo-upload-btn'>
+								</a>
+							</li>
+						</ul>
+						<button class='woo-inpost-logo-upload-btn'>
 							<?php echo __( 'Upload', 'woocommerce-inpost' ); ?>
-                        </button>
-                        <input class="input-text regular-input" type="hidden"
-                               name="<?php echo esc_attr( $field_key ); ?>"
-                               id="woocommerce_easypack_logo_upload"
-                               style="<?php echo esc_attr( $data['css'] ); ?>"
-                               value="<?php echo esc_attr( $this->get_instance_option( $key ) ); ?>"
-                               placeholder="<?php echo esc_attr( $data['placeholder'] ); ?>"/>
-						<?php echo $this->get_description_html( $data ); // WPCS: XSS ok.
+						</button>
+						<input class="input-text regular-input" type="hidden"
+								name="<?php echo esc_attr( $field_key ); ?>"
+								id="woocommerce_easypack_logo_upload"
+								style="<?php echo esc_attr( $data['css'] ); ?>"
+								value="<?php echo esc_attr( $this->get_instance_option( $key ) ); ?>"
+								placeholder="<?php echo esc_attr( $data['placeholder'] ); ?>"/>
+						<?php
+						echo $this->get_description_html( $data ); // WPCS: XSS ok.
 						?>
-                    </fieldset>
-                </td>
-            </tr>
+					</fieldset>
+				</td>
+			</tr>
 			<?php
 
 			return ob_get_clean();
 		}
 
 
-		public function add_rate( $args = [] ) {
+		public function add_rate( $args = array() ) {
 
-			$args['meta_data'] = [
+			$args['meta_data'] = array(
 				'logo' => $this->get_instance_option( 'logo_upload' ),
-				//'delivery_terms' => $this->get_instance_option( 'delivery_terms' ),
-			];
-
+				// 'delivery_terms' => $this->get_instance_option( 'delivery_terms' ),
+			);
 
 			parent::add_rate( $args );
 		}
@@ -406,7 +451,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 				$save_rates = array();
 
-				foreach( $_POST['rates'] as $key => $rate ) {
+				foreach ( $_POST['rates'] as $key => $rate ) {
 					$save_rates[ (int) $key ] = array_map( 'sanitize_text_field', $rate );
 				}
 
@@ -418,31 +463,36 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 			$total = WC()->cart->get_displayed_subtotal();
 
-			if (WC()->cart->display_prices_including_tax()) {
+			if ( WC()->cart->display_prices_including_tax() ) {
 				$total = $total - WC()->cart->get_discount_tax();
 			}
 
-			if ('no' === $this->ignore_discounts) {
+			if ( 'no' === $this->ignore_discounts ) {
 				$total = $total - WC()->cart->get_discount_total();
 			}
 
 			if ( ! empty( $this->free_shipping_cost )
-			     && $this->free_shipping_cost <= $total
+				&& $this->free_shipping_cost <= $total
 			) {
 
-				$add_free_ship_label = '';
-				if( 'yes' === $this->show_free_shipping_label ) {
-					$add_free_ship_label = __( ' (free)', 'woocommerce-inpost' );
+				// Add filter to allow disabling free shipping.
+				$allow_free_shipping = apply_filters( 'inpost_pl_allow_free_shipping', true, $total, $package );
+
+				if ( $allow_free_shipping ) {
+					$add_free_ship_label = '';
+					if ( 'yes' === $this->show_free_shipping_label ) {
+						$add_free_ship_label = __( ' (free)', 'woocommerce-inpost' );
+					}
+
+					$add_rate = array(
+						'id'    => $this->get_rate_id(),
+						'label' => $this->title . ' ' . $add_free_ship_label,
+						'cost'  => 0,
+					);
+					$this->add_rate( $add_rate );
+
+					return true;
 				}
-
-				$add_rate = [
-					'id'    => $this->get_rate_id(),
-					'label' => $this->title . ' ' .  $add_free_ship_label,
-					'cost'  => 0,
-				];
-				$this->add_rate( $add_rate );
-
-				return true;
 			}
 
 			return false;
@@ -450,29 +500,29 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 		public function calculate_shipping_flat( $package ) {
 
-			if ( $this->flat_rate == 'yes' ) {
+			if ( 'yes' === $this->flat_rate ) {
 
-				if( (float) $this->cost_per_order > 0 ) {
+				if ( (float) $this->cost_per_order > 0 ) {
 
-					$add_rate = [
-						'id' => $this->get_rate_id(),
+					$add_rate = array(
+						'id'    => $this->get_rate_id(),
 						'label' => $this->title,
-						'cost' => $this->cost_per_order,
-					];
-					$this->add_rate($add_rate);
+						'cost'  => $this->cost_per_order,
+					);
+					$this->add_rate( $add_rate );
 
 				} else {
 
 					$add_free_ship_label = '';
-					if( 'yes' === $this->show_free_shipping_label ) {
+					if ( 'yes' === $this->show_free_shipping_label ) {
 						$add_free_ship_label = __( ' (free)', 'woocommerce-inpost' );
 					}
 
-					$add_rate = [
+					$add_rate = array(
 						'id'    => $this->get_rate_id(),
-						'label' => $this->title . ' ' .  $add_free_ship_label,
+						'label' => $this->title . ' ' . $add_free_ship_label,
 						'cost'  => 0,
-					];
+					);
 					$this->add_rate( $add_rate );
 				}
 
@@ -485,7 +535,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		public function package_weight( $items ) {
 			$weight = 0;
 			foreach ( $items as $item ) {
-				if( ! empty( $item['data']->get_weight() ) ) {
+				if ( ! empty( $item['data']->get_weight() ) ) {
 					$weight += floatval( $item['data']->get_weight() ) * $item['quantity'];
 				}
 			}
@@ -493,67 +543,80 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			return $weight;
 		}
 
+
+		public function package_product_qty( $items ) {
+			$package_product_qty = 0;
+			foreach ( $items as $item ) {
+				$package_product_qty += intval( $item['quantity'] );
+			}
+			return $package_product_qty;
+		}
+
+
 		public function package_subtotal( $items ) {
 			$subtotal = 0;
 			foreach ( $items as $item ) {
 				$subtotal += $item['line_subtotal']
-				             + $item['line_subtotal_tax'];
+							+ $item['line_subtotal_tax'];
 			}
 
 			return $subtotal;
 		}
 
 		/**
-		 * @param unknown $package
+		 * Calculate shipping based on table rates
 		 *
+		 * @param array $package $package.
 		 */
-		public function calculate_shipping_table_rate( $package ) {
+		public function calculate_shipping_table_rate( array $package ): void {
 
-			// based on gabaryt
-			if ( $this->based_on == 'size' ) {
+			// based on gabaryt.
+			if ( 'size' === $this->based_on ) {
 
 				$max_gabaryt = $this->get_max_gabaryt( $package );
-				$cost = $this->instance_settings[ 'gabaryt_' . $max_gabaryt ];
+				$cost        = $this->instance_settings[ 'gabaryt_' . $max_gabaryt ];
 
-				$add_rate = [
-					'id'    => $this->get_rate_id(),
-					'label' => $this->title,
-					'cost'  => $cost,
+				$add_rate = array(
+					'id'      => $this->get_rate_id(),
+					'label'   => $this->title,
+					'cost'    => $cost,
 					'package' => $package,
-				];
+				);
 				$this->add_rate( $add_rate );
 
 				return;
 			}
 
-			$rates = EasyPack_Helper()->get_saved_method_rates($this->id, $this->instance_id);
+			$rates = EasyPack_Helper()->get_saved_method_rates( $this->id, $this->instance_id );
 
-			if( is_array( $rates ) ) {
+			if ( is_array( $rates ) ) {
 				foreach ( $rates as $key => $rate ) {
-					if ( empty( $rates[$key]['min'] ) || trim( $rates[$key]['min'] ) == '' ) {
-						$rates[$key]['min'] = 0;
+					if ( empty( $rates[ $key ]['min'] ) || '' === trim( $rates[ $key ]['min'] ) ) {
+						$rates[ $key ]['min'] = 0;
 					}
-					if ( empty( $rates[$key]['max'] ) || trim( $rates[$key]['max'] ) == '' ) {
-						$rates[$key]['max'] = PHP_INT_MAX;
+					if ( empty( $rates[ $key ]['max'] ) || '' === trim( $rates[ $key ]['max'] ) ) {
+						$rates[ $key ]['max'] = PHP_INT_MAX;
 					}
 				}
 			}
 			$value = 0;
-			if ( $this->based_on == 'price' ) {
+			if ( 'price' === $this->based_on ) {
 				$value = $this->package_subtotal( $package['contents'] );
 			}
-			if ( $this->based_on == 'weight' ) {
+			if ( 'product_qty' === $this->based_on ) {
+				$value = $this->package_product_qty( $package['contents'] );
+			}
+			if ( 'weight' === $this->based_on ) {
 				$value = $this->package_weight( $package['contents'] );
 			}
 			foreach ( $rates as $rate ) {
 				if ( floatval( $rate['min'] ) <= $value && floatval( $rate['max'] ) >= $value ) {
 
-					$add_rate = [
-						//'id'    => $this->id,
+					$add_rate = array(
 						'id'    => $this->get_rate_id(),
 						'label' => $this->title,
 						'cost'  => $rate['cost'],
-					];
+					);
 					$this->add_rate( $add_rate );
 
 					return;
@@ -562,11 +625,13 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		}
 
 		/**
+		 * Calculate shipping
+		 *
 		 * @param array $package
 		 */
-		public function calculate_shipping( $package = [] ) {
+		public function calculate_shipping( $package = array() ) {
 			if ( EasyPack_API()->normalize_country_code_for_inpost( $package['destination']['country'] )
-			     == EasyPack_API()->getCountry()
+				== EasyPack_API()->getCountry()
 			) {
 				/**
 				 * order to caluclate shipping:
@@ -574,28 +639,27 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				 * 2) based on shipping class if exists
 				 * 3) flat shipping settings (Cost per order)
 				 * 4) table of costs based on weight/gabaryt
-				 *
 				 */
 
 				if ( ! $this->calculate_shipping_free_shipping( $package ) ) {
 
 					$rate = array(
-						'id' => $this->get_rate_id(),
-						'label' => $this->title,
-						'cost' => 0,
+						'id'      => $this->get_rate_id(),
+						'label'   => $this->title,
+						'cost'    => 0,
 						'package' => $package,
 					);
 
 					// Calculate the costs.
 					$has_costs = false; // True when a cost is set. False if all costs are blank strings.
-					$cost = $this->get_option('cost');
+					$cost      = $this->get_option( 'cost' );
 
-					if ('' !== $cost) {
-						$has_costs = true;
+					if ( '' !== $cost ) {
+						$has_costs    = true;
 						$rate['cost'] = $this->evaluate_cost(
 							$cost,
 							array(
-								'qty' => $this->get_package_item_qty($package),
+								'qty'  => $this->get_package_item_qty( $package ),
 								'cost' => $package['contents_cost'],
 							)
 						);
@@ -604,36 +668,36 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 					// Add shipping class costs.
 					$shipping_classes = WC()->shipping()->get_shipping_classes();
 
-					if (!empty($shipping_classes)) {
-						$found_shipping_classes = $this->find_shipping_classes($package);
-						$highest_class_cost = 0;
+					if ( ! empty( $shipping_classes ) ) {
+						$found_shipping_classes = $this->find_shipping_classes( $package );
+						$highest_class_cost     = 0;
 
-						foreach ($found_shipping_classes as $shipping_class => $products) {
+						foreach ( $found_shipping_classes as $shipping_class => $products ) {
 							// Also handles BW compatibility when slugs were used instead of ids.
-							$shipping_class_term = get_term_by('slug', $shipping_class, 'product_shipping_class');
-							$class_cost_string = $shipping_class_term && $shipping_class_term->term_id ? $this->get_option('class_cost_' . $shipping_class_term->term_id, $this->get_option('class_cost_' . $shipping_class, '')) : $this->get_option('no_class_cost', '');
+							$shipping_class_term = get_term_by( 'slug', $shipping_class, 'product_shipping_class' );
+							$class_cost_string   = $shipping_class_term && $shipping_class_term->term_id ? $this->get_option( 'class_cost_' . $shipping_class_term->term_id, $this->get_option( 'class_cost_' . $shipping_class, '' ) ) : $this->get_option( 'no_class_cost', '' );
 
-							if ('' === $class_cost_string) {
+							if ( '' === $class_cost_string ) {
 								continue;
 							}
 
-							$has_costs = true;
+							$has_costs  = true;
 							$class_cost = $this->evaluate_cost(
 								$class_cost_string,
 								array(
-									'qty' => array_sum(wp_list_pluck($products, 'quantity')),
-									'cost' => array_sum(wp_list_pluck($products, 'line_total')),
+									'qty'  => array_sum( wp_list_pluck( $products, 'quantity' ) ),
+									'cost' => array_sum( wp_list_pluck( $products, 'line_total' ) ),
 								)
 							);
 
-							if ('class' === $this->type) {
+							if ( 'class' === $this->type ) {
 								$rate['cost'] += $class_cost;
 							} else {
 								$highest_class_cost = $class_cost > $highest_class_cost ? $class_cost : $highest_class_cost;
 							}
 						}
 
-						if ('order' === $this->type && $highest_class_cost) {
+						if ( 'order' === $this->type && $highest_class_cost ) {
 							$rate['cost'] += $highest_class_cost;
 						}
 					}
@@ -650,7 +714,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 					 */
 					do_action( 'woocommerce_' . $this->id . '_shipping_add_rate', $this, $rate );
 
-					if( ! $has_costs ) {
+					if ( ! $has_costs ) {
 						if ( ! $this->calculate_shipping_flat( $package ) ) {
 							$this->calculate_shipping_table_rate( $package );
 						}
@@ -665,34 +729,34 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		 */
 		public function woocommerce_review_order_after_shipping() {
 
-			if( get_option( 'easypack_js_map_button' ) !== 'yes') {
+			if ( get_option( 'easypack_js_map_button' ) !== 'yes' ) {
 
-				$chosen_shipping_methods = [];
-				$parcel_machine_id = '';
-				$fs_method_name = '';
+				$chosen_shipping_methods = array();
+				$parcel_machine_id       = '';
+				$fs_method_name          = '';
 
-				if (is_object(WC()->session)) {
-					$chosen_shipping_methods = WC()->session->get('chosen_shipping_methods');
+				if ( is_object( WC()->session ) ) {
+					$chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
 
-					if (EasyPack_Helper()->is_flexible_shipping_activated()) {
-						$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs($chosen_shipping_methods);
+					if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
+						$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs( $chosen_shipping_methods );
 					}
 
-					// remove digit postfix (for example "easypack_parcel_machines:18") in method name
-					foreach ($chosen_shipping_methods as $key => $method) {
-						$chosen_shipping_methods[$key] = EasyPack_Helper()->validate_method_name($method);
+					// remove digit postfix (for example "easypack_parcel_machines:18") in method name.
+					foreach ( $chosen_shipping_methods as $key => $method ) {
+						$chosen_shipping_methods[ $key ] = EasyPack_Helper()->validate_method_name( $method );
 					}
 
-					$parcel_machine_id = WC()->session->get('parcel_machine_id');
+					$parcel_machine_id = WC()->session->get( 'parcel_machine_id' );
 				}
 
-				$method_name = EasyPack_Helper()->validate_method_name($this->id);
+				$method_name = EasyPack_Helper()->validate_method_name( $this->id );
 
-				if (!empty($chosen_shipping_methods) && is_array($chosen_shipping_methods)) {
-					if (in_array($method_name, $chosen_shipping_methods) || $fs_method_name === $method_name) {
-						if (!self::$review_order_after_shipping_once) {
-							$args = ['parcel_machines' => []];
-							$args['parcel_machine_id'] = $parcel_machine_id;
+				if ( ! empty( $chosen_shipping_methods ) && is_array( $chosen_shipping_methods ) ) {
+					if ( in_array( $method_name, $chosen_shipping_methods, true ) || $fs_method_name === $method_name ) {
+						if ( ! self::$review_order_after_shipping_once ) {
+							$args                       = array( 'parcel_machines' => array() );
+							$args['parcel_machine_id']  = $parcel_machine_id;
 							$args['shipping_method_id'] = $this->id;
 							wc_get_template(
 								'checkout/easypack-review-order-after-shipping.php',
@@ -705,38 +769,37 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 						}
 					}
 				}
-
 			}
 		}
 
 
 		public function woocommerce_after_checkout_validation( $fields, $errors ) {
 
-			$chosen_shipping_methods = [];
+			$chosen_shipping_methods       = array();
 			$at_least_one_physical_product = false;
-			$fs_method_name = '';
+			$fs_method_name                = '';
 			static $alert_shown;
 
 			if ( is_object( WC()->session ) ) {
-				$chosen_shipping_methods = WC()->session->get('chosen_shipping_methods' );
-				if( EasyPack_Helper()->is_flexible_shipping_activated() ) {
+				$chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
+				if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
 					$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs( $chosen_shipping_methods );
 				}
-				$cart_contents = WC()->session->get('cart');
+				$cart_contents = WC()->session->get( 'cart' );
 
 				$at_least_one_physical_product = EasyPack_Helper()->physical_goods_in_cart( $cart_contents );
 			}
 
-			if( ! empty( $chosen_shipping_methods ) && is_array ( $chosen_shipping_methods ) ) {
+			if ( ! empty( $chosen_shipping_methods ) && is_array( $chosen_shipping_methods ) ) {
 
-				// remove digit postfix (for example "easypack_parcel_machines:18") in method name
+				// remove digit postfix (for example "easypack_parcel_machines:18") in method name.
 				foreach ( $chosen_shipping_methods as $key => $method ) {
-					$chosen_shipping_methods[$key] = EasyPack_Helper()->validate_method_name( $method );
+					$chosen_shipping_methods[ $key ] = EasyPack_Helper()->validate_method_name( $method );
 				}
 
 				$method_name = EasyPack_Helper()->validate_method_name( $this->id );
 
-				if ( in_array( $method_name, $chosen_shipping_methods ) || $fs_method_name === $method_name ) {
+				if ( in_array( $method_name, $chosen_shipping_methods, true ) || $fs_method_name === $method_name ) {
 
 					if ( false === $this->is_method_courier() && $at_least_one_physical_product ) {
 
@@ -745,49 +808,47 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 							if ( ! $alert_shown ) {
 
 								$alert_shown = true;
-								if( 'pl-PL' === get_bloginfo("language") ) {
-									$errors->add( 'validation', __( 'Paczkomat jest wymaganym polem', 'woocommerce-inpost') );
+								if ( 'pl-PL' === get_bloginfo( 'language' ) ) {
+									$errors->add( 'validation', __( 'Paczkomat jest wymaganym polem', 'woocommerce-inpost' ) );
 								} else {
-									$errors->add( 'validation', __( 'Parcel locker Inpost is required field', 'woocommerce-inpost') );
+									$errors->add( 'validation', __( 'Parcel locker Inpost is required field', 'woocommerce-inpost' ) );
 								}
-
 							}
 						}
 					}
 				}
 			}
-
 		}
 
 
 		public function woocommerce_checkout_process() {
 
-			$chosen_shipping_methods = [];
+			$chosen_shipping_methods       = array();
 			$at_least_one_physical_product = false;
-			$fs_method_name = '';
+			$fs_method_name                = '';
 			static $alert_shown;
 			static $alert_shown_phone;
 
 			if ( is_object( WC()->session ) ) {
-				$chosen_shipping_methods = WC()->session->get('chosen_shipping_methods' );
-				if( EasyPack_Helper()->is_flexible_shipping_activated() ) {
+				$chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
+				if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
 					$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs( $chosen_shipping_methods );
 				}
-				$cart_contents = WC()->session->get('cart');
+				$cart_contents = WC()->session->get( 'cart' );
 
 				$at_least_one_physical_product = EasyPack_Helper()->physical_goods_in_cart( $cart_contents );
 			}
 
-			if( ! empty( $chosen_shipping_methods ) && is_array ( $chosen_shipping_methods ) ) {
+			if ( ! empty( $chosen_shipping_methods ) && is_array( $chosen_shipping_methods ) ) {
 
-				// remove digit postfix (for example "easypack_parcel_machines:18") in method name
+				// remove digit postfix (for example "easypack_parcel_machines:18") in method name.
 				foreach ( $chosen_shipping_methods as $key => $method ) {
-					$chosen_shipping_methods[$key] = EasyPack_Helper()->validate_method_name( $method );
+					$chosen_shipping_methods[ $key ] = EasyPack_Helper()->validate_method_name( $method );
 				}
 
 				$method_name = EasyPack_Helper()->validate_method_name( $this->id );
 
-				if ( in_array( $method_name, $chosen_shipping_methods ) || $fs_method_name === $method_name ) {
+				if ( in_array( $method_name, $chosen_shipping_methods, true ) || $fs_method_name === $method_name ) {
 
 					if ( false === $this->is_method_courier() && $at_least_one_physical_product ) {
 
@@ -796,22 +857,22 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 							if ( ! $alert_shown ) {
 
 								$alert_shown = true;
-								if( 'pl-PL' === get_bloginfo("language") ) {
-									wc_add_notice(__('Musisz wybrać paczkomat', 'woocommerce-inpost'), 'error');
-									throw new Exception( "Inpost" );
+								if ( 'pl-PL' === get_bloginfo( 'language' ) ) {
+									wc_add_notice( __( 'Musisz wybrać paczkomat', 'woocommerce-inpost' ), 'error' );
+									throw new Exception( 'Inpost' );
 
 								} else {
-									wc_add_notice(__('Parcel locker must be choosen', 'woocommerce-inpost'), 'error');
-									throw new Exception( "Inpost" );
+									wc_add_notice( __( 'Parcel locker must be choosen', 'woocommerce-inpost' ), 'error' );
+									throw new Exception( 'Inpost' );
 								}
-
 							}
 						} else {
 							WC()->session->set( 'parcel_machine_id', $_POST['parcel_machine_id'] );
 						}
 					}
 
-					/*$billing_phone = $_POST['billing_phone'];
+					/*
+					$billing_phone = $_POST['billing_phone'];
 					if( ! empty( $billing_phone ) ) {
 						if ( false === EasyPack_API()->is_uk() ) {
 							$validate_phone = EasyPack_API()->validate_phone( $billing_phone );
@@ -823,7 +884,6 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 					}*/
 				}
 			}
-
 		}
 
 
@@ -831,10 +891,10 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			if ( isset( $_POST['parcel_machine_id'] ) && ! empty( $_POST['parcel_machine_id'] ) ) {
 				update_post_meta( $order_id, '_parcel_machine_id', sanitize_text_field( $_POST['parcel_machine_id'] ) );
 
-				if( 'yes' === get_option('woocommerce_custom_orders_table_enabled') ) {
+				if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
 					$order = wc_get_order( $order_id );
-					if ( $order && !is_wp_error($order) ) {
-						$order->update_meta_data('_parcel_machine_id', sanitize_text_field($_POST['parcel_machine_id']));
+					if ( $order && ! is_wp_error( $order ) ) {
+						$order->update_meta_data( '_parcel_machine_id', sanitize_text_field( $_POST['parcel_machine_id'] ) );
 						$order->save();
 					}
 				}
@@ -843,36 +903,35 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			if ( isset( $_POST['parcel_machine_desc'] ) && ! empty( $_POST['parcel_machine_desc'] ) ) {
 				update_post_meta( $order_id, '_parcel_machine_desc', sanitize_text_field( $_POST['parcel_machine_desc'] ) );
 
-				if( 'yes' === get_option('woocommerce_custom_orders_table_enabled') ) {
+				if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
 					$order = wc_get_order( $order_id );
-					if ( $order && !is_wp_error($order) ) {
-						$order->update_meta_data('_parcel_machine_desc', sanitize_text_field($_POST['parcel_machine_desc']));
+					if ( $order && ! is_wp_error( $order ) ) {
+						$order->update_meta_data( '_parcel_machine_desc', sanitize_text_field( $_POST['parcel_machine_desc'] ) );
 						$order->save();
 					}
 				}
 			}
 
-			// save easypack method name in metadata to show later required metabox in order details
-			if( EasyPack_Helper()->is_flexible_shipping_activated() ) {
+			// save easypack method name in metadata to show later required metabox in order details.
+			if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
 				$order = wc_get_order( $order_id );
-				foreach( $order->get_shipping_methods() as $shipping_method ) {
+				foreach ( $order->get_shipping_methods() as $shipping_method ) {
 					$fs_instance_id = $shipping_method->get_instance_id();
 				}
 
 				$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $fs_instance_id );
-				if( ! empty( $fs_method_name ) ) {
+				if ( ! empty( $fs_method_name ) ) {
 					update_post_meta( $order_id, '_fs_easypack_method_name', $fs_method_name );
 
-					if( 'yes' === get_option('woocommerce_custom_orders_table_enabled') ) {
+					if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
 						$order = wc_get_order( $order_id );
-						if ( $order && !is_wp_error($order) ) {
+						if ( $order && ! is_wp_error( $order ) ) {
 							$order->update_meta_data( '_fs_easypack_method_name', $fs_method_name );
 							$order->save();
 						}
 					}
 				}
 			}
-
 		}
 
 
@@ -892,15 +951,13 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			}
 
 			$status = get_post_meta( $post_id, '_easypack_status', true );
-			if ( $status == '' ) {
+			if ( '' === $status ) {
 				$status = 'new';
 			}
 
-			if ( $status == 'new' ) {
-
+			if ( 'new' === $status ) {
 				EasyPack_Helper()->set_data_to_order_meta( $_POST, $post_id );
 			}
-
 		}
 
 		public function get_logo() {
@@ -909,47 +966,49 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 			if ( empty( $custom_logo ) ) {
 				return '<img style="height:22px; float:right;" src="'
-				       . untrailingslashit( EasyPack()->getPluginImages()
-				                            . 'logo/small/white.png"/>' );
+						. untrailingslashit(
+							EasyPack()->getPluginImages()
+											. 'logo/small/white.png"/>'
+						);
 			} else {
 				return '<img style="height:22px; float:right;" src="'
-				       . untrailingslashit( $custom_logo );
+						. untrailingslashit( $custom_logo );
 			}
-
 		}
 
 		public function add_meta_boxes( $post_type, $post ) {
 
 			$order_id = null;
 
-			if( 'yes' === get_option('woocommerce_custom_orders_table_enabled') ) {
+			if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
 				// HPOS usage is enabled.
 				if ( is_a( $post, 'WC_Order' ) ) {
 					$order_id = $post->get_id();
 				}
-
 			} else {
 				// Traditional orders are in use.
 				if ( is_object( $post ) && $post->post_type == 'shop_order' ) {
 					$order_id = $post->ID;
 				}
-
 			}
 
-			if( $order_id ) {
+			if ( $order_id ) {
 				$order = wc_get_order( $order_id );
-				// show metabox only for matched shipping method (plus Flexible shipping integration)
-				$fs_method_name = get_post_meta( $order_id, '_fs_easypack_method_name', true);
+				// show metabox only for matched shipping method (plus Flexible shipping integration).
+				$fs_method_name = get_post_meta( $order_id, '_fs_easypack_method_name', true );
 
-				if ( $order->has_shipping_method($this->id) || $fs_method_name === $this->id ) {
-					add_meta_box('easypack_parcel_machines',
-						__('InPost', 'woocommerce-inpost')
+				if ( $order->has_shipping_method( $this->id ) || $fs_method_name === $this->id ) {
+					add_meta_box(
+						'easypack_parcel_machines',
+						esc_html__( 'InPost', 'woocommerce-inpost' )
 						. $this->get_logo(),
-						[$this, 'order_metabox'], null, 'side',
-						'default');
+						array( $this, 'order_metabox' ),
+						null,
+						'side',
+						'default'
+					);
 				}
 			}
-
 		}
 
 		public function order_metabox( $post ) {
@@ -959,10 +1018,12 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 
 		/**
+         * Ajax create package
+         *
 		 * @throws ReflectionException
 		 */
 		public static function ajax_create_package() {
-			$ret = [ 'status' => 'ok' ];
+			$ret = array( 'status' => 'ok' );
 
 			$shipment_model   = self::ajax_create_shipment_model();
 			$order_id         = $shipment_model->getInternalData()->getOrderId();
@@ -970,7 +1031,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			$status_service   = EasyPack::EasyPack()->get_shipment_status_service();
 			$shipment_array   = $shipment_service->shipment_to_array( $shipment_model );
 
-			$shipment_data = [];
+			$shipment_data = array();
 
 			try {
 
@@ -987,45 +1048,46 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 			} catch ( Exception $e ) {
 				\wc_get_logger()->debug( 'INPOST create_package Exception: ', array( 'source' => 'inpost-log' ) );
-				\wc_get_logger()->debug( print_r( $order_id, true), array( 'source' => 'inpost-log' ) );
-				\wc_get_logger()->debug( print_r( $e->getMessage(), true), array( 'source' => 'inpost-log' ) );
-				\wc_get_logger()->debug( print_r( $shipment_array, true), array( 'source' => 'inpost-log' ) );
+				\wc_get_logger()->debug( print_r( $order_id, true ), array( 'source' => 'inpost-log' ) );
+				\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-log' ) );
+				\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-log' ) );
 
-				$ret['status'] = 'error';
-				$ret['message']	= esc_html__( 'There are some errors. Please fix it:', 'woocommerce-inpost' )
-				                     . ' <br>'
-				                     . EasyPack_API()->translate_error( $e->getMessage() );
+				$ret['status']  = 'error';
+				$ret['message'] = esc_html__( 'There are some errors. Please fix it:', 'woocommerce-inpost' )
+									. ' <br>'
+									. EasyPack_API()->translate_error( $e->getMessage() );
 			}
 
-			if ( $ret['status'] == 'ok' ) {
-				$order = wc_get_order( $order_id );
+			if ( 'ok' === $ret['status'] ) {
+				$order        = wc_get_order( $order_id );
 				$tracking_url = EasyPack_Helper()->get_tracking_url();
 
 				$order->add_order_note(
-					__( 'Shipment created', 'woocommerce-inpost' ), false
+					__( 'Shipment created', 'woocommerce-inpost' ),
+					false
 				);
 
 				EasyPack_Helper()->set_order_status_completed( $order_id );
 
-				if( isset( $_POST['action']) && $_POST['action'] === 'easypack_bulk_create_shipments' ) {
-					if( isset($shipment_data['tracking']) && ! empty($shipment_data['tracking'])  ) {
+				if ( isset( $_POST['action'] ) && $_POST['action'] === 'easypack_bulk_create_shipments' ) {
+					if ( isset( $shipment_data['tracking'] ) && ! empty( $shipment_data['tracking'] ) ) {
 						$ret['tracking_number'] = $shipment_data['tracking'];
 					} else {
 						$ret['api_status'] = $status_service->getStatusDescription( $response['status'] );
 					}
 				} else {
 					$ret['content'] = self::order_metabox_content( get_post( $order_id ), false, $shipment_model );
-					if( isset($shipment_data['tracking']) && ! empty($shipment_data['tracking'])  ) {
+					if ( isset( $shipment_data['tracking'] ) && ! empty( $shipment_data['tracking'] ) ) {
 						$ret['tracking_number'] = $shipment_data['tracking'];
-						$ret['inpost_id'] = $shipment_data['inpost_id'];
+						$ret['inpost_id']       = $shipment_data['inpost_id'];
 					}
 					$ret['api_status'] = $shipment_data['status'];
 					$ret['ref_number'] = $shipment_array['reference'];
-					$ret['service'] = $shipment_data['service'];
+					$ret['service']    = $shipment_data['service'];
 				}
 
-				if( isset($shipment_data['tracking'])  && ! empty($shipment_data['tracking'])  ) {
-					(new TrackingInfoEmail())->send_tracking_info_email($order, $tracking_url, $shipment_data['tracking']);
+				if ( isset( $shipment_data['tracking'] ) && ! empty( $shipment_data['tracking'] ) ) {
+					( new TrackingInfoEmail() )->send_tracking_info_email( $order, $tracking_url, $shipment_data['tracking'] );
 				}
 			}
 			echo json_encode( $ret );
@@ -1033,9 +1095,11 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		}
 
 		/**
+         * Order metabox content
+         *
 		 * @param $post
-		 * @param bool $output
-		 * @param ShipX_Shipment_Model|null $shipment
+		 * @param bool                      $output $output.
+		 * @param ShipX_Shipment_Model|null $shipment $shipment.
 		 *
 		 * @return string
 		 * @throws Exception
@@ -1064,11 +1128,11 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			}
 
 			if ( $shipment instanceof ShipX_Shipment_Model
-			     && false === $shipment_service->is_shipment_match_to_current_api( $shipment )
+				&& false === $shipment_service->is_shipment_match_to_current_api( $shipment )
 			) {
 				wp_nonce_field( self::NONCE_ACTION, 'wp_nonce' );
 				$wrong_api_env = true;
-				include( 'views/html-order-matabox-parcel-machines.php' );
+				include 'views/html-order-matabox-parcel-machines.php';
 				if ( ! $output ) {
 					$out = ob_get_clean();
 
@@ -1093,7 +1157,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				$api_status_update_response = array();
 
 				if ( true === $output ) {
-					$status_srv = EasyPack()->get_shipment_status_service();
+					$status_srv                 = EasyPack()->get_shipment_status_service();
 					$api_status_update_response = $status_srv->refreshStatus( $shipment );
 				}
 
@@ -1103,13 +1167,13 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				$disabled          = true;
 			} else {
 				$package_sizes_display = EasyPack()->get_package_sizes_display();
-				$parcels = [];
-				$parcel  = new ShipX_Shipment_Parcel_Model();
+				$parcels               = array();
+				$parcel                = new ShipX_Shipment_Parcel_Model();
 				$parcel->setTemplate( get_option( 'easypack_default_package_size', 'small' ) );
 				$parcels[] = $parcel;
 
 				$parcel_machine_from_order = get_post_meta( $order_id, '_parcel_machine_id', true );
-				$parcel_machine_id = ! empty( $parcel_machine_from_order )
+				$parcel_machine_id         = ! empty( $parcel_machine_from_order )
 					? $parcel_machine_from_order
 					: get_option( 'easypack_default_machine_id' );
 
@@ -1123,18 +1187,18 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			$send_method_disabled = false;
 
 			if ( EasyPack_API()->getCountry() === EasyPack_API::COUNTRY_PL ) {
-				$send_methods = [
+				$send_methods = array(
 					'parcel_machine' => __( 'Parcel locker', 'woocommerce-inpost' ),
 					'courier'        => __( 'Courier', 'woocommerce-inpost' ),
-					'pop'            => __( 'POP', 'woocommerce-inpost' )
-				];
+					'pop'            => __( 'POP', 'woocommerce-inpost' ),
+				);
 			} else {
-				$send_methods = [
-					'parcel_machine' => __( 'Parcel locker', 'woocommerce-inpost' )
-				];
+				$send_methods = array(
+					'parcel_machine' => __( 'Parcel locker', 'woocommerce-inpost' ),
+				);
 			}
 			$selected_service = $shipment_service->get_customer_service_name_by_id( self::SERVICE_ID );
-			include( 'views/html-order-matabox-parcel-machines.php' );
+			include 'views/html-order-matabox-parcel-machines.php';
 
 			wp_nonce_field( self::NONCE_ACTION, 'wp_nonce' );
 			if ( ! $output ) {
@@ -1145,46 +1209,11 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		}
 
 
-		/**
-		 * @param ShipX_Shipment_Model $shipment_model
-		 *
-		 * @return string
-		 */
-		/*
-		public static function ajax_parcel_machines_get_stickers_url( $shipment_model ) {
-			$order_id = $shipment_model->getInternalData()->getOrderId();
-
-			try {
-				$label = EasyPack_API()->customer_parcel_sticker( $shipment_model->getInternalData()->getInpostId() );
-				$upload     = wp_upload_dir();
-				$upload_dir = $upload['basedir'];
-				$upload_dir = $upload_dir . DIRECTORY_SEPARATOR . 'woo_inpost_uploads' . DIRECTORY_SEPARATOR;
-
-				if ( ! is_dir( $upload_dir ) ) {
-					mkdir( $upload_dir, 0775 );
-				}
-
-				$label_name = 'label_' . $order_id . '.pdf';
-
-				if( isset( $label['body'] ) && !empty( $label['body'] ) ) {
-                    file_put_contents(
-                        $upload_dir . DIRECTORY_SEPARATOR . $label_name, $label['body']
-                    );
-                }
-
-				return content_url() . '/uploads/woo_inpost_uploads/' . $label_name;
-
-			} catch ( Exception $e ) {
-				$ret['status'] = 'error';
-				$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'woocommerce-inpost' ) . EasyPack_API()->translate_error( $e->getMessage() );
-
-				return $ret;
-			}
-		}
-		*/
 
 
 		/**
+         * Ajax create shipment model
+         *
 		 * @return ShipX_Shipment_Model
 		 */
 		public static function ajax_create_shipment_model() {
@@ -1194,13 +1223,13 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 			$insurance_amount = '';
 			$reference_number = '';
-			$send_method = '';
-			$parcels = [];
+			$send_method      = '';
+			$parcels          = array();
 
 			$courier_parcel_data = array();
 
 			// if Bulk create shipments.
-			if( isset( $_POST['action']) && 'easypack_bulk_create_shipments' === $_POST['action'] ) {
+			if ( isset( $_POST['action'] ) && 'easypack_bulk_create_shipments' === $_POST['action'] ) {
 
 				$parcels = array();
 
@@ -1216,27 +1245,16 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 						: array( Easypack_Helper()->get_parcel_size_from_settings( $order_id ) );
 				}
 
-
 				$parcel_machine_id = get_post_meta( $order_id, '_parcel_machine_id', true );
 
-				$insurance_mode = get_option('easypack_insurance_amount_mode', '2' );
-				if( '1' === $insurance_mode ) { // from order amount
-					$order = wc_get_order( $order_id );
-					if( $order && ! is_wp_error($order) && is_object($order) ) {
-						$insurance_amount = $order->get_total();
-						$insurance_amount = floatval($insurance_amount);
-					}
-				}
-				if( '2' === $insurance_mode ) { // from settings
-					$insurance_amount = floatval( get_option('easypack_insurance_amount_default') );
-				}
+				$insurance_amount = EasyPack_Helper()->get_insurance_amount( $order_id );
 
 				$reference_number = EasyPack_Helper()->get_maybe_custom_reference_number( $order_id );
 
-				if( 'yes' === get_option('easypack_add_order_note') ) {
+				if ( 'yes' === get_option( 'easypack_add_order_note' ) ) {
 					$order_note = '';
-					$order = wc_get_order( $order_id );
-					if( $order && ! is_wp_error($order) && is_object($order) ) {
+					$order      = wc_get_order( $order_id );
+					if ( $order && ! is_wp_error( $order ) && is_object( $order ) ) {
 						$order_note = $order->get_customer_note();
 					}
 					$reference_number = $reference_number . ' ' . $order_note;
@@ -1251,10 +1269,10 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				$parcel_machine_id = isset( $_POST['parcel_machine_id'] )
 					? sanitize_text_field( $_POST['parcel_machine_id'] ) : '';
 
-				if( isset( $_POST['insurance_amounts'] ) && is_array( $_POST['insurance_amounts'] ) ) {
-					$insurance_amounts = array_map('sanitize_text_field', $_POST['insurance_amounts']);
+				if ( isset( $_POST['insurance_amounts'] ) && is_array( $_POST['insurance_amounts'] ) ) {
+					$insurance_amounts = array_map( 'sanitize_text_field', $_POST['insurance_amounts'] );
 
-					if( isset($insurance_amounts[0]) && is_numeric($insurance_amounts[0]) && floatval($insurance_amounts[0]) > 0 ) {
+					if ( isset( $insurance_amounts[0] ) && is_numeric( $insurance_amounts[0] ) && floatval( $insurance_amounts[0] ) > 0 ) {
 						$insurance_amount = $insurance_amounts[0];
 					}
 				}
@@ -1277,7 +1295,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				(int) $order_id,
 				$send_method,
 				self::SERVICE_ID,
-				[],
+				array(),
 				$parcel_machine_id,
 				null,
 				$insurance_amount,
@@ -1291,7 +1309,10 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 		public static function ajax_cancel_package() {
 
-			$ret              = [ 'status' => 'ok', 'message' => '' ];
+			$ret              = array(
+				'status'  => 'ok',
+				'message' => '',
+			);
 			$order_id         = sanitize_text_field( $_POST['order_id'] );
 			$order            = wc_get_order( $order_id );
 			$post             = get_post( $order_id );
@@ -1302,7 +1323,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				$cancelled_parcel = EasyPack_API()->customer_parcel_cancel( $shipment->getInternalData()->getInpostId() );
 
 			} catch ( Exception $e ) {
-				$ret['status']  = 'error';
+				$ret['status']   = 'error';
 				$ret['message'] .= $e->getMessage();
 			}
 
@@ -1335,7 +1356,6 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				return $label;
 			}
 
-
 			return $label;
 		}
 
@@ -1347,32 +1367,30 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 			$shipping_method_id = '';
 
-			foreach( $order->get_items( 'shipping' ) as $item_id => $item ) {
+			foreach ( $order->get_items( 'shipping' ) as $item_id => $item ) {
 				$shipping_method_id = $item->get_method_id();
 			}
 
-			if( $shipping_method_id === 'easypack_parcel_machines_weekend' ) {
-				$img = ' <span class="easypack-shipping-method-logo" 
+			if ( 'easypack_parcel_machines_weekend' === $shipping_method_id || 'easypack_parcel_machines_weekend_cod' === $shipping_method_id ) {
+				$img                = ' <span class="easypack-shipping-method-logo" 
                                style="display: inline;">
                                <img style="max-width: 100px; max-height: 40px;	display: inline; border:none;" src="'
-				       . EasyPack()->getPluginImages()
-				       . 'logo/inpost-paczka-w-weekend.png" />
+						. EasyPack()->getPluginImages()
+						. 'logo/inpost-paczka-w-weekend.png" />
                          <span>';
-				$via .= $img;
+				$via               .= $img;
 				self::$logo_printed = 1;
 
-			} else {
+			} elseif ( $order->has_shipping_method( $this->id ) ) {
 
-				if ( $order->has_shipping_method( $this->id ) ) {
-					$img = ' <span class="easypack-shipping-method-logo" 
+					$img                = ' <span class="easypack-shipping-method-logo" 
                                style="display: inline;">
                                <img style="max-width: 100px; max-height: 40px;	display: inline; border:none;" src="'
-					       . EasyPack()->getPluginImages()
-					       . 'logo/small/white.png" />
+							. EasyPack()->getPluginImages()
+							. 'logo/small/white.png" />
                          <span>';
-					$via .= $img;
+					$via               .= $img;
 					self::$logo_printed = 1;
-				}
 			}
 
 			return $via;
@@ -1388,7 +1406,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		public function woocommerce_order_shipping_to_display( $shipping, $order, $tax_display ) {
 			if ( $order->has_shipping_method( $this->id ) ) {
 				if ( ! ( 0 < abs( (float) $order->get_shipping_total() ) ) && $order->get_shipping_method() ) {
-					if( ! stripos( $shipping, ':' ) ) {
+					if ( ! stripos( $shipping, ':' ) ) {
 						$shipping .= ': ' . wc_price( 0 );
 					}
 				}
@@ -1401,18 +1419,18 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 		function woocommerce_my_account_my_orders_actions( $actions, $order ) {
 			if ( $order->has_shipping_method( $this->id ) ) {
-				$status = $order->get_meta('_easypack_status');
-				if( ! $status ) {
+				$status = $order->get_meta( '_easypack_status' );
+				if ( ! $status ) {
 					$status = get_post_meta( $order->get_id(), '_easypack_status', true );
 				}
 
 				$tracking_url = false;
-				$fast_returns = get_option('easypack_fast_return');
+				$fast_returns = get_option( 'easypack_fast_return' );
 
 				if ( $status != 'new' ) {
-					$tracking_url = EasyPack_Helper()->get_tracking_url();
-					$tracking_number = $order->get_meta('_easypack_parcel_tracking');
-					if( ! $tracking_number ) {
+					$tracking_url    = EasyPack_Helper()->get_tracking_url();
+					$tracking_number = $order->get_meta( '_easypack_parcel_tracking' );
+					if ( ! $tracking_number ) {
 						$tracking_number = get_post_meta( $order->get_id(), '_easypack_parcel_tracking', true );
 					}
 
@@ -1420,17 +1438,17 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				}
 
 				if ( $tracking_number ) {
-					$actions['easypack_tracking'] = [
-						'url'  =>  esc_url( $tracking_url . $tracking_number ) ,
+					$actions['easypack_tracking'] = array(
+						'url'  => esc_url( $tracking_url . $tracking_number ),
 						'name' => __( 'Track shipment', 'woocommerce-inpost' ),
-					];
+					);
 				}
 
 				if ( ! empty( $fast_returns ) ) {
-					$actions['fast_return'] = [
-						'url' => get_option('easypack_fast_return'),
-						'name' => __('Szybkie zwroty', 'woocommerce-inpost'),
-					];
+					$actions['fast_return'] = array(
+						'url'  => get_option( 'easypack_fast_return' ),
+						'name' => __( 'Szybkie zwroty', 'woocommerce-inpost' ),
+					);
 				}
 			}
 
@@ -1440,37 +1458,39 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		/**
 		 * @return ShipX_Shipment_Service
 		 */
-		public function getShipmentService() {
+		/*public function getShipmentService() {
 			return $this->shipment_service;
-		}
+		}*/
 
 		/**
 		 * @param ShipX_Shipment_Service $shipment_service
 		 */
-		public function setShipmentService( $shipment_service ) {
+		/*public function setShipmentService( $shipment_service ) {
 			$this->shipment_service = $shipment_service;
-		}
+		}*/
 
 		/**
 		 * @return bool
 		 */
 		protected function is_method_courier() {
 			return $this->id === 'easypack_shipping_courier'
-			       || $this->id === 'easypack_shipping_esmartmix'
-			       || $this->id === 'easypack_cod_shipping_courier'
-			       || $this->id === 'easypack_shipping_courier_c2c'
-			       || $this->id === 'easypack_shipping_courier_c2c_cod'
-			       || $this->id === 'easypack_shipping_courier_lse'
-			       || $this->id === 'easypack_shipping_courier_local_standard'
-			       || $this->id === 'easypack_shipping_courier_local_express'
-			       || $this->id === 'easypack_shipping_courier_palette'
-			       || $this->id === 'easypack_shipping_courier_lse_cod'
-			       || $this->id === 'easypack_shipping_courier_local_standard_cod'
-			       || $this->id === 'easypack_shipping_courier_local_express_cod'
-			       || $this->id === 'easypack_shipping_courier_palette_cod';
+					|| $this->id === 'easypack_shipping_esmartmix'
+					|| $this->id === 'easypack_cod_shipping_courier'
+					|| $this->id === 'easypack_shipping_courier_c2c'
+					|| $this->id === 'easypack_shipping_courier_c2c_cod'
+					|| $this->id === 'easypack_shipping_courier_lse'
+					|| $this->id === 'easypack_shipping_courier_local_standard'
+					|| $this->id === 'easypack_shipping_courier_local_express'
+					|| $this->id === 'easypack_shipping_courier_palette'
+					|| $this->id === 'easypack_shipping_courier_lse_cod'
+					|| $this->id === 'easypack_shipping_courier_local_standard_cod'
+					|| $this->id === 'easypack_shipping_courier_local_express_cod'
+					|| $this->id === 'easypack_shipping_courier_palette_cod';
 		}
 
 		/**
+         * Get single product dimensions
+         *
 		 * @param int $wc_order_id
 		 *
 		 * @return ShipX_Shipment_Parcel_Dimensions_Model
@@ -1492,7 +1512,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 					return new ShipX_Shipment_Parcel_Dimensions_Model();
 				}
 
-				if( ! $product || is_wp_error($product) ) {
+				if ( ! $product || is_wp_error( $product ) ) {
 					continue;
 				}
 
@@ -1515,8 +1535,6 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 					return $dims;
 				}
-
-
 			}
 
 			return new ShipX_Shipment_Parcel_Dimensions_Model();
@@ -1527,29 +1545,27 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		 */
 		public function get_max_gabaryt( $package ) {
 
-			if ( isset( $package['contents'] ) && ! empty( $package['contents'] ) )  {
+			if ( isset( $package['contents'] ) && ! empty( $package['contents'] ) ) {
 
 				$possible_gabaryts = array();
 
 				foreach ( $package['contents'] as $cart_item_key => $cart_item ) {
-					$product_id = $cart_item['product_id'];
+					$product_id          = $cart_item['product_id'];
 					$possible_gabaryts[] = get_post_meta( $product_id, EasyPack::ATTRIBUTE_PREFIX . '_parcel_dimensions', true );
 
 				}
 
 				if ( ! empty( $possible_gabaryts ) ) {
-					if ( in_array('large', $possible_gabaryts ) ) {
+					if ( in_array( 'large', $possible_gabaryts ) ) {
 						return 'c';
 					}
-					if ( in_array('medium', $possible_gabaryts ) ) {
+					if ( in_array( 'medium', $possible_gabaryts ) ) {
 						return 'b';
 					}
-
 				}
 			}
 			// by default
 			return 'a';
-
 		}
 
 
@@ -1563,12 +1579,15 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		 * @return void
 		 */
 		public function add_styles_for_my_orders_page() {
-			if( ! empty(get_option('easypack_fast_return') ) ) {
-				echo wp_kses( "<style>.woocommerce-button.wp-element-button.button.view {
+			if ( ! empty( get_option( 'easypack_fast_return' ) ) ) {
+				echo wp_kses(
+					'<style>.woocommerce-button.wp-element-button.button.view {
                       margin-right: 5px;
                       margin-bottom: 5px;
                     }
-                    </style>", [ 'style' => [] ] );
+                    </style>',
+					array( 'style' => array() )
+				);
 			}
 		}
 
@@ -1668,8 +1687,8 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		}
 
 
-		public function add_shipping_classes_settings( $settings) {
-			$cost_desc = __( 'Enter a cost (excl. tax) or sum, e.g. <code>10.00 * [qty]</code>.', 'woocommerce' ) . '<br/><br/>' . __( 'Use <code>[qty]</code> for the number of items, <br/><code>[cost]</code> for the total cost of items, and <code>[fee percent="10" min_fee="20" max_fee=""]</code> for percentage based fees.', 'woocommerce' );
+		public function add_shipping_classes_settings( $settings ) {
+			$cost_desc        = __( 'Enter a cost (excl. tax) or sum, e.g. <code>10.00 * [qty]</code>.', 'woocommerce' ) . '<br/><br/>' . __( 'Use <code>[qty]</code> for the number of items, <br/><code>[cost]</code> for the total cost of items, and <code>[fee percent="10" min_fee="20" max_fee=""]</code> for percentage based fees.', 'woocommerce' );
 			$shipping_classes = WC()->shipping()->get_shipping_classes();
 			if ( ! empty( $shipping_classes ) ) {
 				$settings['class_costs'] = array(
@@ -1728,133 +1747,129 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			$status_service,
 			$shipment_array,
 			$response
-		)
-		{
+		) {
 
-			$shipment_data = [];
-			$additional_packages = [];
-			$internal_data = null;
+			$shipment_data       = array();
+			$additional_packages = array();
+			$internal_data       = null;
 
-			$order = wc_get_order($order_id);
+			$order         = wc_get_order( $order_id );
 			$inpost_method = $shipment_array['service'];
 
-			if (!$order || is_wp_error($order)) return $shipment_data;
+			if ( ! $order || is_wp_error( $order ) ) {
+				return $shipment_data;
+			}
 
 			$is_additional_package_processing = false;
 
-			if (isset($_POST['easypack_additional_package']) && 'true' === $_POST['easypack_additional_package']) {
+			if ( isset( $_POST['easypack_additional_package'] ) && 'true' === $_POST['easypack_additional_package'] ) {
 				$is_additional_package_processing = true;
 			}
 
-			if (!$is_additional_package_processing) {
-				update_post_meta($order_id, '_easypack_parcel_create_args', $shipment_array);
-				if ('yes' === get_option('woocommerce_custom_orders_table_enabled')) {
-					if ($order && !is_wp_error($order)) {
-						$order->update_meta_data('_easypack_parcel_create_args', $shipment_array);
+			if ( ! $is_additional_package_processing ) {
+				update_post_meta( $order_id, '_easypack_parcel_create_args', $shipment_array );
+				if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
+					if ( $order && ! is_wp_error( $order ) ) {
+						$order->update_meta_data( '_easypack_parcel_create_args', $shipment_array );
 						$order->save();
 					}
 				}
 			} else {
-				$additional_packages = EasyPack_Helper()->get_saved_additional_packages($order_id);
+				$additional_packages = EasyPack_Helper()->get_saved_additional_packages( $order_id );
 
-				$additional_package = [];
+				$additional_package = array();
 
-				$additional_package[$inpost_method]['inpost_id'] = $response['id'];
-				$additional_package[$inpost_method]['status'] = $status_service->getStatusDescription($response['status']);
-				$additional_package[$inpost_method]['apistatus'] = $response['status'];
-				$additional_package[$inpost_method]['ref_number'] = $shipment_array['reference'];
-				$additional_package[$inpost_method]['args'] = $shipment_array;
-				//$additional_package[$inpost_method]['url'] = $response['href'];
+				$additional_package[ $inpost_method ]['inpost_id']  = $response['id'];
+				$additional_package[ $inpost_method ]['status']     = $status_service->getStatusDescription( $response['status'] );
+				$additional_package[ $inpost_method ]['apistatus']  = $response['status'];
+				$additional_package[ $inpost_method ]['ref_number'] = $shipment_array['reference'];
+				$additional_package[ $inpost_method ]['args']       = $shipment_array;
+				// $additional_package[$inpost_method]['url'] = $response['href'];
 			}
 
-
-			if (! $is_additional_package_processing ) {
+			if ( ! $is_additional_package_processing ) {
 				$internal_data = $shipment_model->getInternalData();
-				$internal_data->setInpostId($response['id']);
-				$internal_data->setStatus($response['status']);
-				$internal_data->setStatusTitle($status_service->getStatusTitle($response['status']));
-				$internal_data->setStatusDescription($status_service->getStatusDescription($response['status']));
-				$internal_data->setStatusChangedTimestamp(time());
-				$internal_data->setCreatedAt(time());
-				$internal_data->setUrl($response['href']);
+				$internal_data->setInpostId( $response['id'] );
+				$internal_data->setStatus( $response['status'] );
+				$internal_data->setStatusTitle( $status_service->getStatusTitle( $response['status'] ) );
+				$internal_data->setStatusDescription( $status_service->getStatusDescription( $response['status'] ) );
+				$internal_data->setStatusChangedTimestamp( time() );
+				$internal_data->setCreatedAt( time() );
+				$internal_data->setUrl( $response['href'] );
 			}
 
-			for ($i = 0; $i < 3; $i++) {
-				sleep(1);
-				//$search_in_api = EasyPack_API()->customer_parcel_get_by_id( $shipment_model->getInternalData()->getInpostId() );
+			for ( $i = 0; $i < 3; $i++ ) {
+				sleep( 1 );
+				// $search_in_api = EasyPack_API()->customer_parcel_get_by_id( $shipment_model->getInternalData()->getInpostId() );
 				$search_in_api = EasyPack_API()->customer_parcel_get_by_id( $response['id'] );
 
-				if (isset($search_in_api['items'][0]['tracking_number'])) {
+				if ( isset( $search_in_api['items'][0]['tracking_number'] ) ) {
 					$shipment_data['tracking'] = $search_in_api['items'][0]['tracking_number'];
 					$shipment_model->getInternalData()->setTrackingNumber( $search_in_api['items'][0]['tracking_number'] );
 					break;
 				}
 
 				// ?? API changed ?? key: items => parcels
-				if (isset($search_in_api['parcels'][0]['tracking_number'])) {
+				if ( isset( $search_in_api['parcels'][0]['tracking_number'] ) ) {
 					$shipment_data['tracking'] = $search_in_api['parcels'][0]['tracking_number'];
 					$shipment_model->getInternalData()->setTrackingNumber( $search_in_api['parcels'][0]['tracking_number'] );
 					break;
 				}
 			}
 
-
 			$shipment_data['inpost_id'] = $response['id'];
-			$shipment_data['status'] = $status_service->getStatusDescription($response['status']);
-			$shipment_data['service'] = $shipment_service->get_customer_service_name_by_id(self::SERVICE_ID);
+			$shipment_data['status']    = $status_service->getStatusDescription( $response['status'] );
+			$shipment_data['service']   = $shipment_service->get_customer_service_name_by_id( self::SERVICE_ID );
 
-			//$internal_data = $shipment_model->getInternalData();
-			//$internal_data->setLabelUrl( $label_url );
+			// $internal_data = $shipment_model->getInternalData();
+			// $internal_data->setLabelUrl( $label_url );
 
-			if( $internal_data ) {
+			if ( $internal_data ) {
 				$shipment_model->setInternalData( $internal_data );
 			}
 
-			if( ! $is_additional_package_processing ) {
-				update_post_meta($order_id, '_easypack_status', 'created');
-				if ('yes' === get_option('woocommerce_custom_orders_table_enabled')) {
-					if ($order && !is_wp_error($order)) {
-						$order->update_meta_data('_easypack_status', 'created');
+			if ( ! $is_additional_package_processing ) {
+				update_post_meta( $order_id, '_easypack_status', 'created' );
+				if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
+					if ( $order && ! is_wp_error( $order ) ) {
+						$order->update_meta_data( '_easypack_status', 'created' );
 						$order->save();
 					}
 				}
 			}
 
-			if( isset($shipment_data['inpost_id']) && ! empty( $shipment_data['inpost_id'] ) ) {
+			if ( isset( $shipment_data['inpost_id'] ) && ! empty( $shipment_data['inpost_id'] ) ) {
 
-				if( ! $is_additional_package_processing ) {
-					if( isset($shipment_data['tracking']) && ! empty( $shipment_data['tracking'] ) ) {
-						$shipment_model->getInternalData()->setTrackingNumber($shipment_data['tracking']);
-						update_post_meta($order_id, '_easypack_parcel_tracking', $shipment_data['tracking']);
-						if ($order && !is_wp_error($order)) {
-							$order->update_meta_data('_easypack_parcel_tracking', $shipment_data['tracking']);
+				if ( ! $is_additional_package_processing ) {
+					if ( isset( $shipment_data['tracking'] ) && ! empty( $shipment_data['tracking'] ) ) {
+						$shipment_model->getInternalData()->setTrackingNumber( $shipment_data['tracking'] );
+						update_post_meta( $order_id, '_easypack_parcel_tracking', $shipment_data['tracking'] );
+						if ( $order && ! is_wp_error( $order ) ) {
+							$order->update_meta_data( '_easypack_parcel_tracking', $shipment_data['tracking'] );
 							$order->save();
 						}
 					}
-
 				} else {
-					$additional_package[$inpost_method]['tracking'] = isset($shipment_data['tracking']) ? $shipment_data['tracking'] : '';
-					$additional_packages[] = $additional_package;
+					$additional_package[ $inpost_method ]['tracking'] = isset( $shipment_data['tracking'] ) ? $shipment_data['tracking'] : '';
+					$additional_packages[]                            = $additional_package;
 
 					update_post_meta( $order_id, '_easypack_additional_packages', $additional_packages );
-					if( $order && ! is_wp_error($order) ) {
+					if ( $order && ! is_wp_error( $order ) ) {
 						$order->update_meta_data( '_easypack_additional_packages', $additional_packages );
 						$order->save();
 					}
 				}
 			}
 
-			//zapisz koszt przesyłki do przesyłki
+			// zapisz koszt przesyłki do przesyłki
 			$price_calculator = EasyPack()->get_shipment_price_calculator_service();
 
-			if( ! $is_additional_package_processing ) {
+			if ( ! $is_additional_package_processing ) {
 				$shipment_service->update_shipment_to_db( $shipment_model );
 			}
 
 			return $shipment_data;
-
 		}
-
 	}
 
 

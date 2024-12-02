@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: InPost for WooCommerce 1.5.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-inpost\n"
 "POT-Creation-Date: 2018-08-24 13:01:34+00:00\n"
-"PO-Revision-Date: 2024-11-13 14:38+0100\n"
+"PO-Revision-Date: 2024-12-02 09:14+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -650,7 +650,7 @@ msgstr "Proszę wprowadź prawiłowy numer telefonu dla UK."
 #: classes/shipping/method-courier-local-super-express-cod.php:71
 #: classes/shipping/method-courier-palette-cod.php:71
 msgid "InPost Courier COD"
-msgstr "InPost Kurier Standard COD"
+msgstr "InPost Kurier Standard Pobranie"
 
 #: classes/shipping/method-courier-cod.php:56
 #: classes/shipping/method-courier-local-express-cod.php:56
@@ -907,7 +907,7 @@ msgstr "Paczkomat"
 
 #: classes/shipping/method-courier-local-express-cod.php:27
 msgid "InPost Courier Local Express COD"
-msgstr "InPost Kurier Lokalny Express COD"
+msgstr "InPost Kurier Lokalny Express Pobranie"
 
 #: classes/shipping/method-courier-local-express.php:27
 msgid "InPost Courier Local Express"
@@ -924,7 +924,7 @@ msgstr "InPost Kurier Standard"
 
 #: classes/shipping/method-courier-local-standard-cod.php:27
 msgid "InPost Courier Local Standard COD"
-msgstr "InPost Kurier lokalny Standard COD"
+msgstr "InPost Kurier lokalny Standard Pobranie"
 
 #: classes/shipping/method-courier-local-standard.php:27
 msgid "InPost Courier Local Standard"
@@ -932,7 +932,7 @@ msgstr "InPost Kurier Lokalny Standard"
 
 #: classes/shipping/method-courier-local-super-express-cod.php:27
 msgid "InPost Courier Local Super Express COD"
-msgstr "InPost Kurier Lokalny Super Express COD"
+msgstr "InPost Kurier Lokalny Super Express Pobranie"
 
 #: classes/shipping/method-courier-local-super-express.php:27
 msgid "InPost Courier Local Super Express"
@@ -940,7 +940,7 @@ msgstr "InPost Kurier Lokalny Super Express"
 
 #: classes/shipping/method-courier-palette-cod.php:27
 msgid "InPost Courier Palette COD"
-msgstr "InPost Kurier Paleta COD"
+msgstr "InPost Kurier Paleta Pobranie"
 
 #: classes/shipping/method-courier-palette.php:27
 msgid "InPost Courier Palette"
@@ -949,7 +949,7 @@ msgstr "InPost Kurier Paleta"
 #: classes/shipping/method-parcel-machines-cod.php:26
 #: classes/shipping/method-parcel-machines-cod.php:66
 msgid "InPost Locker 24/7 COD"
-msgstr "InPost Paczkomat 24/7 COD"
+msgstr "InPost Paczkomat 24/7 Pobranie"
 
 #: classes/shipping/method-parcel-machines-cod.php:106
 #: classes/shipping/method-parcel-machines.php:197
@@ -1561,8 +1561,29 @@ msgstr " (darmowa wysyłka)"
 msgid "Parcel locker Weekend"
 msgstr "Paczka w Weekend"
 
+msgid "Parcel locker Weekend COD"
+msgstr "Paczka w Weekend Pobranie"
+
+msgid "Change logo"
+msgstr "Zmień logo"
+
+msgid "Products qty"
+msgstr "Ilość produktów"
+
+msgid "InPost SmartCourier"
+msgstr "InPost SmartKurier"
+
+msgid "InPost Smart Courier"
+msgstr "InPost Smart Kurier"
+
+msgid "Inpost Parcel Locker. Allow customers to pick up orders themselves."
+msgstr "Paczkomat InPost. Metoda pozwala klientom na samodzielny odbiór przesyłek."
+
 msgid "InPost Locker Weekend"
 msgstr "InPost Paczka w Weekend"
+
+msgid "InPost Locker Weekend COD"
+msgstr "InPost Paczka w Weekend Pobranie"
 
 msgid "Allow customers to pick up orders in weekend."
 msgstr "Ta metoda umożliwia klientom odbiór przesyłek w weekend."
@@ -1691,10 +1712,10 @@ msgid "InPost Locker Economy"
 msgstr "InPost Paczkomat Paczka Ekonomiczna"
 
 msgid "InPost Locker Economy COD"
-msgstr "InPost Paczkomat Paczka Ekonomiczna COD"
+msgstr "InPost Paczkomat Paczka Ekonomiczna Pobranie"
 
 msgid "InPost Courier C2C COD"
-msgstr "InPost Kurier C2C COD"
+msgstr "InPost Kurier C2C Pobranie"
 
 msgid "This method limits the ability to download the label only 48 hours after the package is created"
 msgstr "Metoda ta ogranicza możliwość pobierania etykiety dopiero po 48 godzinach od utworzenia opakowania"
@@ -1926,6 +1947,9 @@ msgstr "Ustaw wartość"
 
 msgid "Set from order amount"
 msgstr "Ustaw z kwoty zamówienia"
+
+msgid "set from order amount"
+msgstr "ustaw z kwoty zamówienia"
 
 msgid "No parcels selected to create manifest."
 msgstr "Nie wybrano żadnych przesyłek do utworzenia potwierdzenia nadania."

@@ -230,7 +230,9 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 				],
 
 				[ 'type' => 'sectionend', 'id' => 'general_options' ],
-
+				
+				
+				/*
 				[
 					'title' => __( 'Insurance', 'woocommerce-inpost' ),
 					'type'  => 'title',
@@ -266,6 +268,7 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 
 
 				[ 'type' => 'sectionend', 'id' => 'general_options' ],
+				*/
 
 
 				[

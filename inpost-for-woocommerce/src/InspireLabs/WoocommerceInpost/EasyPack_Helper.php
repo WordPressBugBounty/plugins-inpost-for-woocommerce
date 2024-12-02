@@ -6,8 +6,10 @@ use InspireLabs\WoocommerceInpost\EasyPack;
 use Exception;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shippng_Parcel_Machines;
 use InspireLabs\WoocommerceInpost\shipx\models\courier_pickup\ShipX_Dispatch_Order_Model;
+use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 use Requests_Utility_CaseInsensitiveDictionary;
 use WC_Shipping_Method;
+
 
 /**
  * EasyPack Helper
@@ -495,6 +497,9 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 				case 'easypack_parcel_machines_weekend':
 					$class_name = 'EasyPack_Shipping_Parcel_Machines_Weekend';
 					break;
+                case 'easypack_parcel_machines_weekend_cod':
+                    $class_name = 'EasyPack_Shipping_Parcel_Machines_Weekend_COD';
+                    break;
 				case 'easypack_shipping_courier':
 					$class_name = 'EasyPack_Shipping_Method_Courier';
 					break;
@@ -1060,6 +1065,129 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			}
 
 			return $reference_number;
+		}
+
+
+		/**
+		 * Validate if orders have inpost statuses or inpost IDs
+		 *
+		 * @param array $arr $arr.
+		 * @return array
+		 */
+		public function validate_order_ids_before_get_labels_from_api( array $arr ): array {
+			// we need validate chosen orders if they already has status which is allowing to get labels.
+			$validated_ids = array();
+
+			foreach ( $arr as $order_id ) {
+
+				$is_tracking_exists = get_post_meta( $order_id, '_easypack_parcel_tracking', true );
+				if ( ! $is_tracking_exists ) {
+					$order = wc_get_order( $order_id );
+					if ( $order && ! is_wp_error( $order ) ) {
+						$is_tracking_exists = $order->get_meta( '_easypack_parcel_tracking' );
+					}
+				}
+
+				if ( ! empty( $is_tracking_exists ) ) {
+					$validated_ids[] = $order_id;
+				} else {
+
+					// $shipment = $order->get_meta( '_shipx_shipment_object' );
+					$shipment = get_post_meta( $order_id, '_shipx_shipment_object', true );
+
+					if ( ! $shipment instanceof ShipX_Shipment_Model ) {
+						if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
+							$from_order_meta_raw = isset( get_post_meta( $order_id )['_shipx_shipment_object'][0] )
+								? get_post_meta( $order_id )['_shipx_shipment_object'][0]
+								: '';
+
+							if ( ! empty( $from_order_meta_raw ) ) {
+								$shipment = unserialize( $from_order_meta_raw );
+							}
+						}
+					}
+
+					if ( is_object( $shipment ) && $shipment instanceof ShipX_Shipment_Model ) {
+						$inpost_id = $shipment->getInternalData()->getInpostId();
+						if ( ! empty( $inpost_id ) ) {
+							$validated_ids[] = $order_id;
+						}
+					}
+				}
+			}
+
+			return $validated_ids;
+		}
+
+
+
+		/**
+		 * Get insurance amount
+		 *
+		 * @param int $order_id $order_id.
+		 *
+		 * @return false|float
+		 */
+		public function get_insurance_amount( $order_id ) {
+
+			/**
+			 * Priority to get insurance:
+			 * 1) from shipping method settings if method linked to FS.
+			 * 2) from shipping method settings.
+			 * 3) from old settings (deleted already).
+			 */
+
+			$insurance_amount = false;
+
+			$order = wc_get_order( $order_id );
+
+			if ( ! $order || is_wp_error( $order ) ) {
+				return false;
+			}
+
+			$shipping_method_name = '';
+			$method_instance_id   = '';
+
+			foreach ( $order->get_shipping_methods() as $shipping_method ) {
+				$method_instance_id   = $shipping_method->get_instance_id();
+				$shipping_method_name = $shipping_method->get_method_id();
+			}
+
+			$shipping_method_settings_name = 'woocommerce_' . $shipping_method_name . '_' . $method_instance_id . '_settings';
+
+			$shipping_method_settings = get_option( $shipping_method_settings_name );
+
+			if ( $this->is_flexible_shipping_activated() ) {
+				if ( isset( $shipping_method_settings['fs_insurance_inpost_pl'] ) && 'yes' === $shipping_method_settings['fs_insurance_inpost_pl'] ) {
+					$insurance_amount = $order->get_total();
+				}
+				if ( isset( $shipping_method_settings['fs_insurance_inpost_pl'] ) && 'no' === $shipping_method_settings['fs_insurance_inpost_pl'] ) {
+					$insurance_amount = floatval( $shipping_method_settings['fs_insurance_value_inpost_pl'] );
+				}
+			}
+
+			if ( is_bool( $insurance_amount ) && ! $insurance_amount ) {
+
+				if ( ! empty( $shipping_method_settings['insurance_inpost_pl'] ) ) {
+					if ( 'yes' === $shipping_method_settings['insurance_inpost_pl'] ) {
+						$insurance_amount = $order->get_total();
+					}
+					if ( 'no' === $shipping_method_settings['insurance_inpost_pl'] ) {
+						$insurance_amount = floatval( $shipping_method_settings['insurance_value_inpost_pl'] );
+					}
+				} else {
+					// From old general settings.
+					$insurance_mode = get_option( 'easypack_insurance_amount_mode', '2' );
+					if ( '1' === $insurance_mode ) {
+						$insurance_amount = $order->get_total();
+					}
+					if ( '2' === $insurance_mode ) {
+						$insurance_amount = floatval( get_option( 'easypack_insurance_amount_default' ) );
+					}
+				}
+			}
+
+			return $insurance_amount ? $insurance_amount : 0.00;
 		}
 	}
 
