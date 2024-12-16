@@ -159,18 +159,7 @@ jQuery( document ).ready(
 					function (ind, elem) {
 						jQuery( elem ).remove();
 					}
-				);
-				// empty hidden values of selected point.
-				jQuery( 'input[name=parcel_machine_id]' ).each(
-					function (ind, elem) {
-						jQuery( elem ).val( '' );
-					}
-				);
-				jQuery( 'input[name=parcel_machine_desc]' ).each(
-					function (ind, elem) {
-						jQuery( elem ).val( '' );
-					}
-				);
+				);				
 
 				if ( typeof method != 'undefined' && method !== null ) {
 					let config = 'parcelCollect';

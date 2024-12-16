@@ -64,7 +64,7 @@ class Geowidget_v5 {
 				WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
 				array( 'in_footer' => true )
 			);
-			if ( ( 'yes' !== get_option( 'easypack_js_map_button' ) ) && ! has_block( 'woocommerce/checkout' ) ) {
+			if (  'yes' !== get_option( 'easypack_js_map_button' ) ) {
 				wp_enqueue_script(
 					'inpost-pl-manage-geowidget',
 					$this->get_easypack_js_src(),

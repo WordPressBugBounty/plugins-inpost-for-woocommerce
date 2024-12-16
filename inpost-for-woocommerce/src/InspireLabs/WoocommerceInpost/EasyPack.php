@@ -1075,31 +1075,33 @@ class EasyPack extends inspire_Plugin4 {
 	/**
 	 * Delete Paczka Weekend Shipping method from cart if time interval is not allowed.
 	 *
-	 * @param array $rates $rates.
+	 * @param mixed $rates $rates.
 	 * @param mixed $package $package.
 	 *
-	 * @return array
+	 * @return mixed
 	 */
 	public function check_paczka_weekend_fs_settings( $rates, $package ): array {
 
 		if ( ! EasyPack_Helper()->is_flexible_shipping_activated() ) {
-			return $rates;
+			return is_array( $rates ) ? $rates : array();
 		}
+		
+		if ( is_array( $rates ) && ! empty( $rates ) ) {
+			foreach ( $rates as $rate_key => $rate ) {
+				if ( 'easypack_parcel_machines_weekend' === EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $rate->instance_id )
+					|| 'easypack_parcel_machines_weekend_cod' === EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $rate->instance_id )
 
-		foreach ( $rates as $rate_key => $rate ) {
-			if ( 'easypack_parcel_machines_weekend' === EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $rate->instance_id )
-				|| 'easypack_parcel_machines_weekend_cod' === EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $rate->instance_id )
+				) {
 
-			) {
-
-				$paczka_weekend = new EasyPack_Shipping_Parcel_Machines_Weekend();
-				if ( ! $paczka_weekend->check_allowed_interval_for_weekend( $rate->instance_id ) ) {
-					unset( $rates[ $rate_key ] ); // hide Paczka w Weekend if not match into time interval.
+					$paczka_weekend = new EasyPack_Shipping_Parcel_Machines_Weekend();
+					if ( ! $paczka_weekend->check_allowed_interval_for_weekend( $rate->instance_id ) ) {
+						unset( $rates[ $rate_key ] ); // hide Paczka w Weekend if not match into time interval.
+					}
 				}
 			}
 		}
 
-		return $rates;
+		return is_array( $rates ) ? $rates : array();
 	}
 
 
