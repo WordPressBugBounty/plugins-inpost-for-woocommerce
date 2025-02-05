@@ -121,6 +121,17 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 				'terms'    => sanitize_text_field( wp_unslash( $_REQUEST['product_type'] ) ),
 			);
 		}
+		
+		if ( ! empty( $_REQUEST['product_shipping_class'] ) ) {
+            $shipping_class_slug = sanitize_text_field( wp_unslash( $_REQUEST['product_shipping_class'] ) );
+            $args['tax_query'] = array(
+                array(
+                    'taxonomy' => 'product_shipping_class',
+                    'field'    => 'slug',
+                    'terms'    => $shipping_class_slug,
+                ),
+            );
+        }
 
 		$query = new WP_Query( $args );
 		return $query->found_posts;
@@ -173,6 +184,17 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 				'terms'    => sanitize_text_field( $_REQUEST['product_type'] ),
 			);
 		}
+		
+		if ( ! empty( $_REQUEST['product_shipping_class'] ) ) {
+            $shipping_class_slug = sanitize_text_field( wp_unslash( $_REQUEST['product_shipping_class'] ) );
+            $args['tax_query'] = array(
+                array(
+                    'taxonomy' => 'product_shipping_class',
+                    'field'    => 'slug',
+                    'terms'    => $shipping_class_slug,
+                ),
+            );
+        }
 
 		$product_query = new WP_Query( $args );
 		return array_map( 'wc_get_product', $product_query->posts );
@@ -497,6 +519,30 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 					'200' => '200',
 					'500' => '500',
 				);
+				
+				// Get all shipping classes.
+                $shipping_classes = array();
+                if( is_object( WC()->shipping() ) ) {
+                    $all_shipping_classes = WC()->shipping()->get_shipping_classes();
+                    foreach ($all_shipping_classes as $shipping_class) {
+                        $shipping_classes[$shipping_class->slug] = $shipping_class->name;
+                    }
+                }
+
+                echo '<select name="product_shipping_class" id="dropdown_shipping_classes">';
+                echo '<option value="">' . esc_html__( 'Per shipping class', 'woocommerce-inpost' ) . '</option>';
+                if( ! empty( $shipping_classes ) && is_array( $shipping_classes ) ) {
+                    foreach ( $shipping_classes as $value => $label ) {
+                        echo '<option value="' . esc_attr($value) . '"';
+                        if ( isset( $_GET['product_shipping_class'] ) && $_GET['product_shipping_class'] === $value ) {
+                            echo ' selected="selected"';
+                        }
+                        echo '>' . esc_html( $label ) . '</option>';
+                    }
+                }
+                echo '</select>';
+				
+				
 				echo '<select name="per_page" id="dropdown_product_qty">';
 				echo '<option value="">' . esc_html__( 'Per page', 'woocommerce-inpost' ) . '</option>';
 				foreach ( $product_qtys as $value => $label ) {

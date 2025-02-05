@@ -282,10 +282,12 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
                         $fs_method_name = EasyPack_Helper()->get_method_linked_to_fs($chosen_shipping_methods);
                     }
 
-                    // remove digit postfix (for example "easypack_parcel_machines:18") in method name
-                    foreach ($chosen_shipping_methods as $key => $method) {
-                        $chosen_shipping_methods[$key] = EasyPack_Helper()->validate_method_name($method);
-                    }
+					if ( ! empty( $chosen_shipping_methods ) && is_array( $chosen_shipping_methods ) ) {
+						// remove digit postfix (for example "easypack_parcel_machines:18") in method name
+						foreach ($chosen_shipping_methods as $key => $method) {
+							$chosen_shipping_methods[$key] = EasyPack_Helper()->validate_method_name($method);
+						}
+					}
 
                     $parcel_machine_id = WC()->session->get('parcel_machine_id');
                 }

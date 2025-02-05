@@ -130,30 +130,17 @@ class Geowidget_v5 {
 			}
 		}
 
-		if ( ( is_a( $current_screen, 'WP_Screen' ) && 'shop_order' === $current_screen->id )
-			|| 'woocommerce_page_wc-orders' === $current_screen->id ) {
-			if ( isset( $_GET['action'] ) && 'edit' === $_GET['action'] ) {
-				wp_enqueue_script(
-					'geowidget-inpost',
-					$this->get_geowidget_js_src(),
-					array( 'jquery' ),
-					WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
-					array( 'in_footer' => true )
-				);
-			}
+		if ( EasyPack_Helper()->is_admin_orders_or_plugin_settings_related_page() ) {
+			wp_enqueue_script(
+				'geowidget-inpost',
+				$this->get_geowidget_js_src(),
+				array( 'jquery' ),
+				WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
+				array( 'in_footer' => true )
+			);
+			
 		}
-
-		if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
-			if ( isset( $_GET['tab'] ) && 'easypack_general' === $_GET['tab'] ) {
-				wp_enqueue_script(
-					'geowidget-inpost',
-					$this->get_geowidget_js_src(),
-					array( 'jquery' ),
-					WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
-					array( 'in_footer' => true )
-				);
-			}
-		}
+		
 	}
 
 	/**

@@ -25,12 +25,18 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 		protected static $instance;
 		protected static $css_embeded;
+		
+		private $cached_zones = array();
 
 		public function __construct() {
 			add_filter( 'query_vars', array( $this, 'query_vars' ) );
 
 			add_action( 'woocommerce_before_my_account', array( $this, 'woocommerce_before_my_account' ) );
 			add_filter( 'woocommerce_screen_ids', array( $this, 'woocommerce_screen_ids' ) );
+			
+			add_action( 'woocommerce_shipping_zone_method_added', array( $this, 'clear_zones_cache' ) );
+            add_action( 'woocommerce_shipping_zone_method_deleted', array( $this, 'clear_zones_cache' ) );
+            add_action( 'woocommerce_shipping_zone_method_status_toggled', array( $this, 'clear_zones_cache' ) );
 		}
 
 		public static function EasyPack_Helper() {
@@ -421,18 +427,21 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		/**
 		 * Integration with plugin "Flexible shipping" (get shipping method linked in FS settings)
 		 *
-		 * @param array $chosen_shipping_methods $chosen_shipping_methods.
+		 * @param mixed $chosen_shipping_methods $chosen_shipping_methods.
 		 *
 		 * @return string
 		 */
 		public function get_method_linked_to_fs( $chosen_shipping_methods ) {
-			$method_linked_to_fs = '';
-			foreach ( $chosen_shipping_methods as $shipping_method ) {
-				if ( 0 === strpos( $shipping_method, 'flexible_shipping_single' ) ) {
+			$method_linked_to_fs = '';			
+			
+			if ( ! empty( $chosen_shipping_methods ) && is_array( $chosen_shipping_methods ) ) {
+				foreach ( $chosen_shipping_methods as $shipping_method ) {
+					if ( 0 === strpos( $shipping_method, 'flexible_shipping_single' ) ) {
 
-					$shipping_method_instance_id = $this->validate_method_instance_id( $shipping_method );
-					if ( isset( $shipping_method_instance_id ) ) {
-						$method_linked_to_fs = $this->get_method_linked_to_fs_by_instance_id( $shipping_method_instance_id );
+						$shipping_method_instance_id = $this->validate_method_instance_id( $shipping_method );
+						if ( isset( $shipping_method_instance_id ) ) {
+							$method_linked_to_fs = $this->get_method_linked_to_fs_by_instance_id( $shipping_method_instance_id );
+						}
 					}
 				}
 			}
@@ -850,7 +859,9 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 			$configured_shipping_methods = array();
 
-			$delivery_zones = \WC_Shipping_Zones::get_zones();
+			//$delivery_zones = \WC_Shipping_Zones::get_zones();
+			
+			$delivery_zones = $this->get_cached_zones();
 
 			foreach ( (array) $delivery_zones as $key => $the_zone ) {
 				if ( isset( $the_zone['shipping_methods'] ) ) {
@@ -1189,6 +1200,78 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 			return $insurance_amount ? $insurance_amount : 0.00;
 		}
+		
+		
+		
+		public function is_admin_orders_or_plugin_settings_related_page() {
+			
+			if( ! is_admin() ) {
+                return;
+            }
+			
+
+            if( ! function_exists( 'get_current_screen' ) ) {
+                return;
+            }		
+			
+
+            global $pagenow, $post_type, $post;
+            $current_screen = get_current_screen();
+
+            $order_id = null;
+
+            if ( 'shop_order' === $post_type || 'shop_order_placehold' === $post_type || 'shop_order' === $current_screen->post_type ) {
+                if( isset( $_GET['action'] ) && 'edit' === $_GET['action'] ) {
+                    if ( isset($_GET['page']) && 'wc-orders' === $_GET['page'] ) {
+                        $order_id = $_GET['id'] ? $_GET['id'] : null;
+                    } elseif ( isset( $_GET['post'] ) && is_numeric( $_GET['post'] ) ) {
+                        $order_id = $_GET['post'];
+                    }
+                }
+            }
+
+            if( $order_id ) {
+                $order = wc_get_order( $order_id );
+                if( $order && is_a( $order, 'WC_Order' ) ) {
+                    
+                    if( ! empty( $order->get_meta( '_parcel_machine_id' ) ) ) {                        
+                        return true;
+                    } else if( ! empty( get_post_meta( $order_id, '_parcel_machine_id', true ) ) ) {
+						return true;
+					}
+                }
+            }
+
+            if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
+                if ( isset( $_GET['tab'] ) && 'easypack_general' === $_GET['tab'] ) {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+		
+		
+		
+		public function clear_zones_cache() {
+            $this->cached_zones = null;
+        }
+		
+		
+
+        private function get_cached_zones() {
+            if ( empty( $this->cached_zones ) ) {
+                if( class_exists('WC_Shipping_Zones') ) {
+                    $this->cached_zones = \WC_Shipping_Zones::get_zones();
+                }
+            }
+            return $this->cached_zones;
+        }
+		
+		
+		
+		
 	}
 
 

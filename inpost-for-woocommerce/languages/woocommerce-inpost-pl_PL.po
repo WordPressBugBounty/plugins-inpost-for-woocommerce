@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: InPost for WooCommerce 1.5.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-inpost\n"
 "POT-Creation-Date: 2018-08-24 13:01:34+00:00\n"
-"PO-Revision-Date: 2024-12-02 09:14+0100\n"
+"PO-Revision-Date: 2025-02-05 10:07+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -2022,3 +2022,9 @@ msgstr "InPost PL tworzenie przesyłek gab. B"
 
 msgid "InPost PL create shipments C"
 msgstr "InPost PL tworzenie przesyłek gab. C"
+
+msgid "Per shipping class"
+msgstr "Według klasy wysyłki"
+
+msgid "Add label (free) to the end of title of shipping method"
+msgstr "Dodaj tekst '(darmowa wysyłka)' na końcu tytułu metody wysyłki"

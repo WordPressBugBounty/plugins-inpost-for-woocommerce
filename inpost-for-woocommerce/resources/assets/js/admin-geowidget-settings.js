@@ -16,6 +16,18 @@ document.addEventListener( 'click', function (e) {
     if ( target.classList.contains( 'settings-geowidget' ) ) {
         e.preventDefault();
         e.stopPropagation();
+		
+		jQuery( '.jBox-container' ).each(
+            function (i, elem) {
+                jQuery( elem ).remove();
+            }
+        );
+
+        jQuery( '.jBox-overlay' ).each(
+            function (i, elem) {
+                jQuery( elem ).remove();
+            }
+        );
 
         easypack_current_metabox = jQuery(target).closest('.postbox');
         config = jQuery(easypack_current_metabox).find('#parcel_machine_id').data('geowidget_config');
