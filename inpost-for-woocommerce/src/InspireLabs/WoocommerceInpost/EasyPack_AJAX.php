@@ -44,6 +44,8 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 		public static function init() {
 			add_action( 'wp_ajax_easypack', array( __CLASS__, 'ajax_easypack' ) );
 			add_action( 'admin_head', array( __CLASS__, 'wp_footer_easypack_nonce' ) );
+			add_action( 'wp_ajax_inpost_save_to_wc_session', array( __CLASS__, 'save_to_wc_session' ) );
+            add_action( 'wp_ajax_nopriv_inpost_save_to_wc_session', array( __CLASS__, 'save_to_wc_session' ) );
 		}
 
 		/**
@@ -461,6 +463,45 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 			}
 			wp_die();
 		}
+		
+		
+		
+		/**
+         * Ajax handler to save paczkomat number into WC session
+         */
+        public static function save_to_wc_session(): void {
+
+            check_ajax_referer('easypack_nonce', 'security');
+
+            self::save_point_to_wc_session();
+        }
+		
+		
+		/**
+         * Save paczkomat point number into WC session
+         *
+         * @return void
+         */
+        public static function save_point_to_wc_session() {
+
+            if( ! empty( $_POST['key']) && 'inpost_pl_wc_paczkomat' === $_POST['key'] ) {
+
+                $key = sanitize_text_field(wp_unslash( $_POST['key'] ) );
+                $value = isset( $_POST['value'] ) ? sanitize_text_field( wp_unslash( $_POST['value'] ) ) : '';
+
+                if ( is_object(  WC() ) && property_exists( WC(), 'session' ) ) {
+                    WC()->session->set( $key, $value );
+                    wp_send_json_success('Data saved to session');
+
+                } else {
+                    wp_send_json_error('WC session not available');
+                    
+                }
+
+            }
+
+            wp_die();
+        }
 	}
 
 endif;

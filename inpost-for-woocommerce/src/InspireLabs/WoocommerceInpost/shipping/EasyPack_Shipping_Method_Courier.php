@@ -351,6 +351,10 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 			$label_url        = '';
 
             $shipment_data = [];
+			
+			if( empty( $shipment_array['receiver']['address']['country_code'] ) ) {
+                $shipment_array['receiver']['address']['country_code'] = 'PL';
+            }
 
             //\wc_get_logger()->debug( 'Inpost Courier: ', array( 'source' => 'inpost-courier-log' ) );
             //\wc_get_logger()->debug( print_r( $shipment_array, true), array( 'source' => 'inpost-courier-log' ) );

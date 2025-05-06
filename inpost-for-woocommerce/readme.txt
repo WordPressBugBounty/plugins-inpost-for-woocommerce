@@ -2,9 +2,9 @@
 Contributors: inspirelabs
 Tags: inpost, paczkomaty, etykiety, przesyłki
 Requires at least: 5.3
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 7.2
-Stable tag: 1.6.4
+Stable tag: 1.6.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -12,22 +12,24 @@ InPost PL dla WooCommerce to dedykowana wtyczka do integracji, stworzona z myśl
 
 == Description ==
 
-InPost PL dla WooCommerce to dedykowana wtyczka do integracji, stworzona z myślą o małych i średnich firmach, które chcą w szybki i wygodny sposób zintegrować się z usługami InPost.
+InPost PL to wtyczka do integracji, którą stworzyliśmy z myślą o małych i średnich firmach prowadzących sprzedaż na platformie WooCommerce.
+Dzięki niej szybko i wygodnie połączysz się z naszymi systemami InPost, co pozwoli Ci na sprawne zarządzanie wysyłkami i sprawi, że obsługa wysyłek będzie prostsza i szybsza.
 
-### Jakie korzyści daje zainstalowanie wtyczki?
+### Co zyskasz instalując wtyczkę?
 
-* dostęp do wszystkich usług kurierskich i Paczkomatowych InPost wraz z ich opisem i aktualnym brandingiem
-* stale aktualizowaną mapę Paczkomatów i PaczkoPunktów
-* szybki dostęp do bieżących informacji
-* automatyczny proces transferu danych adresata w celu realizacji zamówienia
-* usprawnienie edycji danych i generowania etykiet nadawczych, a także podgląd historii wysyłek
+* Dostęp do wszystkich naszych usług InPost m.in. InPost Paczkomat® 24/7, Kurier InPost, Paczka w Weekend, Szybkie Zwroty
+* Pewność, że masz aktualną i czytelną mapę naszych punktów odbioru (urządzeń Paczkomat® oraz PaczkoPunktów), dzięki której Twoi Klienci będą mogli w łatwy i wygodny sposób kierować swoje zamówienia z Twojego e-sklepu
+* Więcej czasu dla swojego biznesu, dzięki zautomatyzowanemu procesowi transferu danych adresata oraz punktu odbioru w celu realizacji zamówienia
+* Proste i szybkie generowanie etykiet nadawczych, zleceń podjazdów kurierskich oraz przygotowanie zwrotów przesyłek
+* Możliwość włączenia lub wyłączenia konkretnych produktów z dostawy InPost
+* Możliwość zarządzania i monitorowania przesyłek oraz złożonych zleceń odbioru paczek
 
-Po zainstalowaniu wtyczki należy skonfigurować sposób dostawy InPost oraz ceny poszczególnych usług, dzięki czemu użytkownik sklepu internetowego będzie mógł wybrać odpowiednią metodę dostawy dla swojego zamówienia.
+Po zainstalowaniu wtyczki skonfiguruj sposób dostawy InPost oraz ceny poszczególnych usług, dzięki czemu Twoi Klienci będą mogli wybrać swój ulubiony sposób dostawy przesyłek.
 
-**Pełna dokumentacja oraz instrukcja instalacji wtyczki znajduje się pod adresem:**
+**Pełną dokumentację oraz instrukcję instalacji wtyczki znajdziesz na stronie:**
 [https://dokumentacja-inpost.atlassian.net/wiki/spaces/PL/pages/61833233/WooCommerce](https://dokumentacja-inpost.atlassian.net/wiki/spaces/PL/pages/61833233/WooCommerce)
 
-**W przypadku pytań/problemów związanych z wtyczką, prosimy o kontakt [przez formularz InPost](https://inpost.pl/formularz-wsparcie)**.
+**W przypadku pytań/problemów związanych z wtyczką zachęcamy do skorzystania z naszego [formularza InPost](https://inpost.pl/formularz-wsparcie)**.
 
 
 == Screenshots ==
@@ -40,6 +42,11 @@ Po zainstalowaniu wtyczki należy skonfigurować sposób dostawy InPost oraz cen
 
 
 == Changelog ==
+
+= 1.6.5 =
+* Fix: integration with Inpost International plugin
+* Fix: Paczka w Weekend Pobranie
+* Feat: warning message about Delivery point missed for Google Pay or Apple Pay method on Checkout page
 
 = 1.6.4 =
 * Fix: PHP warning for digital products in checkout

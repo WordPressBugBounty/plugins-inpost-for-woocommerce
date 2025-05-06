@@ -1,7 +1,17 @@
 var geowidgetModal;
 
 function selectPointCallbackDefault(point) {
-    jQuery('#easypack_default_machine_id').val(point.name);
+	
+	let point_name = '';
+	if( 'name' in point ) {
+		point_name = point.name;
+		if (point_name.startsWith("PL_")) {
+			// Remove first 3 characters "PL_".
+			point_name = point_name.slice(3);
+		}
+	}
+	
+    jQuery('#easypack_default_machine_id').val(point_name);
     geowidgetModal.close()
 }
 

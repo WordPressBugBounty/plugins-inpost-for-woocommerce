@@ -373,6 +373,10 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C_COD' ) ) {
             $status_service   = EasyPack::EasyPack()->get_shipment_status_service();
 
             $shipment_data = [];
+			
+			if( empty( $shipment_array['receiver']['address']['country_code'] ) ) {
+                $shipment_array['receiver']['address']['country_code'] = 'PL';
+            }
 
             try {
 

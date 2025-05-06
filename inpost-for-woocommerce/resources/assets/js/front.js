@@ -26,6 +26,15 @@ function inpost_pl_select_point_callback_js_mode(point) {
 	let parcelMachineAddressDesc = '';
 	let address_line1            = '';
 	let address_line2            = '';
+	
+	let point_name = '';
+	if( 'name' in point ) {
+		point_name = point.name;
+		if (point_name.startsWith("PL_")) {
+			// Remove first 3 characters "PL_".
+			point_name = point_name.slice(3);
+		}
+	}
 
 	if ( typeof point.location_description != 'undefined' && point.location_description !== null ) {
 		parcelMachineAddressDesc = point.location_description;
@@ -40,20 +49,20 @@ function inpost_pl_select_point_callback_js_mode(point) {
 	if ( point.location_description ) {
 
 		selected_point_data = '<div class="easypack_selected_point_data" id="easypack_selected_point_data" style="margin-bottom:15px">\n'
-			+ '<div id="selected-parcel-machine-id">' + point.name + '</div>\n'
+			+ '<div id="selected-parcel-machine-id">' + point_name + '</div>\n'
 			+ '<span id="selected-parcel-machine-desc">' + address_line1 + '<br>' + address_line2 + '</span><br>'
 			+ '<span id="selected-parcel-machine-desc1">(' + point.location_description + ')</span>' +
 			'<input type="hidden" id="parcel_machine_id"\n' +
-			'name="parcel_machine_id" class="parcel_machine_id" value="' + point.name + '"/>\n' +
+			'name="parcel_machine_id" class="parcel_machine_id" value="' + point_name + '"/>\n' +
 			'<input type="hidden" id="parcel_machine_desc"\n' +
 			'name="parcel_machine_desc" class="parcel_machine_desc" value="' + parcelMachineAddressDesc + '"/></div>\n';
 
 	} else {
 		selected_point_data = '<div class="easypack_selected_point_data" id="easypack_selected_point_data" style="margin-bottom:15px">\n'
-			+ '<div id="selected-parcel-machine-id">' + point.name + '</div>\n'
+			+ '<div id="selected-parcel-machine-id">' + point_name + '</div>\n'
 			+ '<span id="selected-parcel-machine-desc">' + point.address.line1 + '<br>' + address_line2 + '</span><br>'
 			'<input type="hidden" id="parcel_machine_id"\n' +
-			'name="parcel_machine_id" class="parcel_machine_id" value="' + point.name + '"/>\n' +
+			'name="parcel_machine_id" class="parcel_machine_id" value="' + point_name + '"/>\n' +
 			'<input type="hidden" id="parcel_machine_desc"\n' +
 			'name="parcel_machine_desc" class="parcel_machine_desc" value="' + parcelMachineAddressDesc + '"/></div>';
 	}
@@ -80,7 +89,7 @@ function inpost_pl_select_point_callback_js_mode(point) {
 	var additionalInput1   = document.createElement( 'input' );
 	additionalInput1.type  = 'hidden';
 	additionalInput1.name  = 'parcel_machine_id';
-	additionalInput1.value = point.name;
+	additionalInput1.value = point_name;
 	additionalInput1.classList.add( 'inpost_pl_additional_validation_field' );
 
 	var additionalInput2   = document.createElement( 'input' );

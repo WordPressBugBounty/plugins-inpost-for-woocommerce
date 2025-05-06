@@ -21,11 +21,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly.
 
-if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
+if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 	/**
 	 * EasyPack_Shipping_Parcel_Machines_Weekend_COD
 	 */
-	class EasyPack_Shipping_Parcel_Machines_Weekend_COD extends EasyPack_Shippng_Parcel_Machines {
+	class EasyPack_Shipping_Parcel_Machines_Weekend_COD extends EasyPack_Shipping_Parcel_Machines_Weekend {
 
 		/**
 		 * SERVICE_ID
@@ -608,7 +608,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 		 *
 		 * @throws ReflectionException ReflectionException.
 		 */
-		public static function ajax_create_package( bool $courier = false ) {
+		public static function ajax_create_package( $courier = false ) {
 			$ret = array( 'status' => 'ok' );
 
 			$shipment_model = self::ajax_create_shipment_model();
@@ -621,6 +621,10 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 
 			// required parameter for Paczka w Weekend.
 			$shipment_array['end_of_week_collection'] = true;
+			
+			if( empty( $shipment_array['receiver']['address']['country_code'] ) ) {
+                $shipment_array['receiver']['address']['country_code'] = 'PL';
+            }
 
 			$shipment_data = array();
 

@@ -891,18 +891,25 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 		public function woocommerce_checkout_update_order_meta( $order_id ) {
 			if ( isset( $_POST['parcel_machine_id'] ) && ! empty( $_POST['parcel_machine_id'] ) ) {
-				update_post_meta( $order_id, '_parcel_machine_id', sanitize_text_field( $_POST['parcel_machine_id'] ) );
+				
+				$paczkomat_id = sanitize_text_field( $_POST['parcel_machine_id'] );
+				if ( 'PL_' === substr( $paczkomat_id, 0, 3 ) ) {
+					$paczkomat_id = substr( $paczkomat_id, 3 );
+				}
+				
+				update_post_meta( $order_id, '_parcel_machine_id', $paczkomat_id );
 
 				if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
 					$order = wc_get_order( $order_id );
 					if ( $order && ! is_wp_error( $order ) ) {
-						$order->update_meta_data( '_parcel_machine_id', sanitize_text_field( $_POST['parcel_machine_id'] ) );
+						$order->update_meta_data( '_parcel_machine_id', $paczkomat_id );
 						$order->save();
 					}
 				}
 			}
 
-			if ( isset( $_POST['parcel_machine_desc'] ) && ! empty( $_POST['parcel_machine_desc'] ) ) {
+			if ( isset( $_POST['parcel_machine_desc'] ) && ! empty( $_POST['parcel_machine_desc'] ) ) {				
+								
 				update_post_meta( $order_id, '_parcel_machine_desc', sanitize_text_field( $_POST['parcel_machine_desc'] ) );
 
 				if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
@@ -1032,6 +1039,10 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			$shipment_service = EasyPack::EasyPack()->get_shipment_service();
 			$status_service   = EasyPack::EasyPack()->get_shipment_status_service();
 			$shipment_array   = $shipment_service->shipment_to_array( $shipment_model );
+			
+			if( empty( $shipment_array['receiver']['address']['country_code'] ) ) {
+                $shipment_array['receiver']['address']['country_code'] = 'PL';
+            }
 
 			$shipment_data = array();
 

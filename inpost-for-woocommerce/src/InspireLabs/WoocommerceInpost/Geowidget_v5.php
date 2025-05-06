@@ -83,6 +83,8 @@ class Geowidget_v5 {
 							? get_option( 'easypack_geowidget_sandbox_token' )
 							: get_option( 'easypack_geowidget_production_token' ),
 						'inpost_methods'     => EasyPack_Helper()->get_inpost_methods(),
+						'ajaxurl'            => admin_url( 'admin-ajax.php' ),
+                        'security'           => wp_create_nonce( 'easypack_nonce' ),
 					)
 				);
 			}

@@ -2,6 +2,75 @@ let inpostplGeowidgetModal;
 let inpostplMapConfig;
 let inpostplMapToken = '';
 
+function inpost_pl_validate_parcel_machine_for_gpay() {
+
+	let checked_shipping_input = document.querySelector('#shipping_method input[name^="shipping_method["]:checked');
+	if (checked_shipping_input !== undefined && checked_shipping_input !== null) {
+		let id = checked_shipping_input.value;
+		console.log('Shipping method ID:', id);
+
+		if (id.indexOf('easypack_parcel_machines') !== -1) {
+			let hidden_input = document.querySelector('#parcel_machine_id');
+			if (hidden_input !== undefined && hidden_input !== null) {
+				let paczkomat_id = hidden_input.value;
+				console.log('Paczkomat ID:', paczkomat_id);
+
+				if (paczkomat_id.trim() === '') {
+					return false;
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
+
+
+function inpost_pl_get_map_config_by_shipping_instance_id(instance_id, method) {
+	let map_config     = 'parcelCollect';
+	let inpost_methods = inpost_pl_get_configured_inpost_methods_data();
+
+	if (instance_id !== undefined && instance_id !== null && instance_id !== '') {
+		let selected_method = inpost_methods[instance_id];
+		if (typeof selected_method != 'undefined' && selected_method !== null) {
+			let method_id = selected_method.inpost_title;
+			if (method_id === 'easypack_parcel_machines_cod') {
+				map_config = 'parcelCollectPayment';
+			}
+			if (method_id === 'easypack_shipping_courier_c2c') {
+				map_config = 'parcelSend';
+			}
+			if (method_id === 'easypack_parcel_machines_weekend' || method_id === 'easypack_parcel_machines_weekend_cod') {
+				map_config = 'parcelCollect247';
+			}
+		}
+
+	} else {
+		if (method === 'easypack_parcel_machines_cod') {
+			map_config = 'parcelCollectPayment';
+		}
+		if (method === 'easypack_shipping_courier_c2c') {
+			map_config = 'parcelSend';
+		}
+		if (method === 'easypack_parcel_machines_weekend' || method === 'easypack_parcel_machines_weekend_cod') {
+			map_config = 'parcelCollect247';
+		}
+	}
+
+	return map_config;
+}
+
+function inpost_pl_get_configured_inpost_methods_data() {
+	if (typeof inpost_pl_map != 'undefined' && inpost_pl_map !== null) {
+		if ( inpost_pl_map.inpost_methods ) {
+			return inpost_pl_map.inpost_methods;
+		}
+	}
+	return [];
+}
+
+
 function inpost_pl_select_point_callback(point) {
 
 	let parcelMachineAddressDesc = '';
@@ -9,9 +78,18 @@ function inpost_pl_select_point_callback(point) {
 		parcelMachineAddressDesc = point.location_description;
 	}
 
+	let point_name = '';
+	if( 'name' in point ) {
+		point_name = point.name;
+		if (point_name.startsWith("PL_")) {
+			// Remove first 3 characters "PL_".
+			point_name = point_name.slice(3);
+		}
+	}
+
 	jQuery( 'input[name=parcel_machine_id]' ).each(
 		function (ind, elem) {
-			jQuery( elem ).val( point.name );
+			jQuery( elem ).val( point_name );
 		}
 	);
 	jQuery( 'input[name=parcel_machine_desc]' ).each(
@@ -29,9 +107,7 @@ function inpost_pl_select_point_callback(point) {
 
 	let visible_point_data = '';
 
-	if ( typeof point.name != 'undefined' && point.name !== null ) {
-		visible_point_data += point.name + '<br>';
-	}
+	visible_point_data += point_name + '<br>';
 
 	if ( typeof point.address.line1 != 'undefined' && point.address.line1 !== null ) {
 		visible_point_data += point.address.line1 + '<br>';
@@ -54,7 +130,7 @@ function inpost_pl_select_point_callback(point) {
 	var additionalInput1   = document.createElement( 'input' );
 	additionalInput1.type  = 'hidden';
 	additionalInput1.name  = 'parcel_machine_id';
-	additionalInput1.value = point.name;
+	additionalInput1.value = point_name;
 
 	var additionalInput2   = document.createElement( 'input' );
 	additionalInput2.type  = 'hidden';
@@ -67,6 +143,29 @@ function inpost_pl_select_point_callback(point) {
 	}
 
 	inpostplGeowidgetModal.close();
+
+	let data = {
+		action: 'inpost_save_to_wc_session',
+		security: inpost_pl_map.security,
+		key: 'inpost_pl_wc_paczkomat',
+		value: point_name
+	};
+
+	jQuery.ajax({
+		type: 'POST',
+		url: inpost_pl_map.ajaxurl,
+		data: data,
+		dataType: 'json',
+		success: function(response) {
+			console.log( 'Paczkomat saved in session data:', response );
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+			console.log("Error response saving paczkomato into session");
+			console.log(textStatus);
+			console.log('Error: ' + errorThrown + ' ' + jqXHR.responseText);
+
+		}
+	});
 }
 
 
@@ -171,45 +270,81 @@ document.addEventListener(
 );
 
 
-function inpost_pl_get_map_config_by_shipping_instance_id(instance_id, method) {
-	let map_config     = 'parcelCollect';
-	let inpost_methods = inpost_pl_get_configured_inpost_methods_data();
+window.addEventListener('message', function(event) {
 
-	if (instance_id !== undefined && instance_id !== null && instance_id !== '') {
-		let selected_method = inpost_methods[instance_id];
-		if (typeof selected_method != 'undefined' && selected_method !== null) {
-			let method_id = selected_method.inpost_title;
-			if (method_id === 'easypack_parcel_machines_cod') {
-				map_config = 'parcelCollectPayment';
-			}
-			if (method_id === 'easypack_shipping_courier_c2c') {
-				map_config = 'parcelSend';
-			}
-			if (method_id === 'easypack_parcel_machines_weekend' || method_id === 'easypack_parcel_machines_weekend_cod') {
-				map_config = 'parcelCollect247';
-			}
+	let parsedData;
+	try {
+		if (typeof event.data === 'string') {
+			parsedData = JSON.parse(event.data);
+		} else {
+			parsedData = event.data;
 		}
 
-	} else {
-		if (method === 'easypack_parcel_machines_cod') {
-			map_config = 'parcelCollectPayment';
+		if (
+			parsedData.message.payload &&
+			parsedData.message.payload.event === "shippingratechange" &&
+			parsedData.message.payload.data &&
+			parsedData.message.payload.data.shippingRate &&
+			parsedData.message.payload.data.shippingRate.id
+		) {
+			let chosen_shipping_method = parsedData.message.payload.data.shippingRate.id;
+
+			console.log('Chosen_shipping_method:');
+			console.log(chosen_shipping_method);
+
+			if ( chosen_shipping_method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
+				let checked_shipping_input = document.querySelector('#shipping_method input[name^="shipping_method["]:checked');
+				if (checked_shipping_input !== undefined && checked_shipping_input !== null) {
+					let id = checked_shipping_input.value;
+					console.log('Shipping method ID:', id);
+
+					if (id.indexOf('easypack_parcel_machines') !== -1) {
+						let hidden_input = document.querySelector('#parcel_machine_id');
+						if (hidden_input !== undefined && hidden_input !== null) {
+							let paczkomat_id = hidden_input.value;
+							console.log('Paczkomat ID:', paczkomat_id);
+
+							if (paczkomat_id.trim() === '') {
+								alert('Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.');
+								return false;
+							}
+						}
+					}
+				}
+			}
 		}
-		if (method === 'easypack_shipping_courier_c2c') {
-			map_config = 'parcelSend';
+
+
+		//console.log('Check JS parsedData');
+		//console.log(parsedData);
+
+		// Now check for Google Pay click using the parsed data
+		if (
+			parsedData.type === "parent" &&
+			parsedData.message &&
+			parsedData.message.action === "stripe-frame-event" &&
+			parsedData.message.payload &&
+			parsedData.message.payload.event === "click" &&
+			parsedData.message.payload.data
+		) {
+
+			if(
+				"google_pay" === parsedData.message.payload.data.paymentMethodType
+				|| "apple_pay" === parsedData.message.payload.data.paymentMethodType
+				|| "apple_pay_inner" === parsedData.message.payload.data.paymentMethodType
+			) {
+				//console.log('Google Pay or Apple Pay button click detected');
+				if ( ! inpost_pl_validate_parcel_machine_for_gpay() ) {
+					//console.log('Parcel machine validation failed');
+
+					alert('Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.');
+
+					return false;
+				}
+			}
+
 		}
-		if (method === 'easypack_parcel_machines_weekend' || method === 'easypack_parcel_machines_weekend_cod') {
-			map_config = 'parcelCollect247';
-		}
+	} catch (err) {
+		//console.log('Error processing message:', err);
 	}
-
-	return map_config;
-}
-
-function inpost_pl_get_configured_inpost_methods_data() {
-	if (typeof inpost_pl_map != 'undefined' && inpost_pl_map !== null) {
-		if ( inpost_pl_map.inpost_methods ) {
-			return inpost_pl_map.inpost_methods;
-		}
-	}
-	return [];
-}
+});

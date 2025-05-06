@@ -1,5 +1,29 @@
 let inpostPlGeowidgetModalBlock;
 
+
+function inpost_pl_validate_parcel_machine_for_gpay_block() {
+
+	let selected_shipping_radio   = document.querySelector( '#shipping-option .wc-block-components-radio-control__input:checked' );
+	if (selected_shipping_radio !== undefined && selected_shipping_radio !== null) {
+		let id = selected_shipping_radio.value;
+		console.log('Shipping method ID:', id);
+
+		if ( id.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
+			let hidden_input = document.getElementById( 'inpost-parcel-locker-id' );
+			if ( hidden_input !== undefined && hidden_input !== null ) {
+				let paczkomat_id = hidden_input.value;
+				console.log('Paczkomat ID:', paczkomat_id);
+
+				if (paczkomat_id.trim() === '') {
+					return false;
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
 function inpost_pl_get_shipping_method_block() {
 	let data                = {};
 	let shipping_block_html = jQuery( '.wc-block-components-shipping-rates-control' );
@@ -49,15 +73,7 @@ function inpost_pl_select_point_callback_blocks(point) {
 	let address_line1 = '';
 	let address_line2 = '';
 
-	if ( typeof point.location_description != 'undefined' && point.location_description !== null ) {
-		parcelMachineAddressDesc = point.location_description;
-	}
-	if ( typeof point.address.line2 != 'undefined' && point.address.line2 !== null ) {
-		address_line2 = point.address.line2;
-	}
-	if ( typeof point.address.line1 != 'undefined' && point.address.line1 !== null ) {
-		address_line1 = point.address.line1;
-	}
+	let point_name = '';	
 
 	if (point) {
 		jQuery( '#easypack_selected_point_data' ).each(
@@ -65,26 +81,74 @@ function inpost_pl_select_point_callback_blocks(point) {
 				jQuery( elem ).remove();
 			}
 		);
-		inpost_pl_change_react_input_value( document.getElementById( 'inpost-parcel-locker-id' ), point.name );
+
+
+		if( 'name' in point ) {
+			point_name = point.name;
+			if (point_name.startsWith("PL_")) {
+				// Remove first 3 characters "PL_".
+				point_name = point_name.slice(3);
+			}
+		}
+
+		inpost_pl_change_react_input_value( document.getElementById( 'inpost-parcel-locker-id' ), point_name );
+
+		if ( typeof point.location_description != 'undefined' && point.location_description !== null ) {
+			parcelMachineAddressDesc = point.location_description;
+		}
+		if ( typeof point.address.line2 != 'undefined' && point.address.line2 !== null ) {
+			address_line2 = point.address.line2;
+		}
+		if ( typeof point.address.line1 != 'undefined' && point.address.line1 !== null ) {
+			address_line1 = point.address.line1;
+		}
+
+
+		if (point.location_description) {
+
+			selected_point_data = '<div class="easypack_selected_point_data" id="easypack_selected_point_data">\n'
+				+ '<div id="selected-parcel-machine-id">' + point_name + '</div>\n'
+				+ '<span id="selected-parcel-machine-desc">' + address_line1 + '<br>' + address_line2 + '</span><br>'
+				+ '<span id="selected-parcel-machine-desc1">(' + point.location_description + ')</span></div>';
+
+		} else {
+			selected_point_data = '<div class="easypack_selected_point_data" id="easypack_selected_point_data">\n'
+				+ '<div id="selected-parcel-machine-id">' + point_name + '</div>\n'
+				+ '<span id="selected-parcel-machine-desc">' + address_line1 + '<br>' + address_line2 + '</span></div>';
+		}
+
+		jQuery( '#inpost_pl_selected_point_data_wrap' ).html( selected_point_data );
+		jQuery( '#inpost_pl_selected_point_data_wrap' ).show();
+		jQuery( "#easypack_block_type_geowidget" ).text( easypack_block.button_text2 );
+
+		let data = {
+			action: 'inpost_save_to_wc_session',
+			security: easypack_block.security,
+			key: 'inpost_pl_wc_paczkomat',
+			value: point_name
+		};
+
+		//console.log(data);
+
+		jQuery.ajax({
+			type: 'POST',
+			url: easypack_block.ajaxurl,
+			data: data,
+			dataType: 'json',
+			success: function(response) {
+				console.log('Paczkomat saved in session data:', response);
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				console.log("Error response saving paczkomato into session");
+				console.log(textStatus);
+				console.log('Error: ' + errorThrown + ' ' + jqXHR.responseText);
+			}
+		});
 
 	}
 
-	if (point.location_description) {
 
-		selected_point_data = '<div class="easypack_selected_point_data" id="easypack_selected_point_data">\n'
-			+ '<div id="selected-parcel-machine-id">' + point.name + '</div>\n'
-			+ '<span id="selected-parcel-machine-desc">' + address_line1 + '<br>' + address_line2 + '</span><br>'
-			+ '<span id="selected-parcel-machine-desc1">(' + point.location_description + ')</span></div>';
 
-	} else {
-		selected_point_data = '<div class="easypack_selected_point_data" id="easypack_selected_point_data">\n'
-			+ '<div id="selected-parcel-machine-id">' + point.name + '</div>\n'
-			+ '<span id="selected-parcel-machine-desc">' + address_line1 + '<br>' + address_line2 + '</span></div>';
-	}
-
-	jQuery( '#inpost_pl_selected_point_data_wrap' ).html( selected_point_data );
-	jQuery( '#inpost_pl_selected_point_data_wrap' ).show();
-	jQuery( "#easypack_block_type_geowidget" ).text( easypack_block.button_text2 );
 
 	inpostPlGeowidgetModalBlock.close();
 }
@@ -266,7 +330,7 @@ document.addEventListener(
 				}
 			}
 		}
-
+		
 		if ( target.classList.contains( 'wc-block-components-button__text' ) ) {
 			let parent = target.parentNode;
 			if ( parent.classList.contains( 'wc-block-components-checkout-place-order-button' ) ) {
@@ -342,3 +406,78 @@ function inpost_pl_get_configured_inpost_methods() {
 	}
 	return [];
 }
+
+
+window.addEventListener('message', function(event) {
+
+	let parsedData;
+	try {
+		if (typeof event.data === 'string') {
+			parsedData = JSON.parse(event.data);
+		} else {
+			parsedData = event.data;
+		}
+
+		if (
+			parsedData.message.payload &&
+			parsedData.message.payload.event === "shippingratechange" &&
+			parsedData.message.payload.data &&
+			parsedData.message.payload.data.shippingRate &&
+			parsedData.message.payload.data.shippingRate.id
+		) {
+			let chosen_shipping_method = parsedData.message.payload.data.shippingRate.id;
+
+			console.log('Chosen_shipping_method:');
+			console.log(chosen_shipping_method);
+
+			if ( chosen_shipping_method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
+				let selected_shipping_radio   = document.querySelector( '#shipping-option .wc-block-components-radio-control__input:checked' );
+				if (selected_shipping_radio !== undefined && selected_shipping_radio !== null) {
+					let id = selected_shipping_radio.value;
+					console.log('Shipping method ID:', id);
+
+					if (id.indexOf('easypack_parcel_machines') !== -1) {
+						let hidden_input = document.getElementById( 'inpost-parcel-locker-id' );
+						if (hidden_input !== undefined && hidden_input !== null) {
+							let paczkomat_id = hidden_input.value;
+							console.log('Paczkomat ID:', paczkomat_id);
+
+							if (paczkomat_id.trim() === '') {
+								alert('Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.');
+								return false;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// Now check for Google Pay click.
+		if (
+			parsedData.type === "parent" &&
+			parsedData.message &&
+			parsedData.message.action === "stripe-frame-event" &&
+			parsedData.message.payload &&
+			parsedData.message.payload.event === "click" &&
+			parsedData.message.payload.data
+		) {
+			if(
+				"google_pay" === parsedData.message.payload.data.paymentMethodType
+				|| "apple_pay" === parsedData.message.payload.data.paymentMethodType
+				|| "apple_pay_inner" === parsedData.message.payload.data.paymentMethodType
+			) {
+				//console.log('Google Pay button or ApplePay button click detected');
+				if ( ! inpost_pl_validate_parcel_machine_for_gpay_block() ) {
+					//console.log('Parcel machine validation failed');
+
+					alert('Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.');
+
+					return false;
+				}
+			}
+
+		}
+	} catch (err) {
+		//console.log('Error processing message:', err);
+	}
+});

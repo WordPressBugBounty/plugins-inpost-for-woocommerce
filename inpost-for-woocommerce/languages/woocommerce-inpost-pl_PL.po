@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: InPost for WooCommerce 1.5.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-inpost\n"
 "POT-Creation-Date: 2018-08-24 13:01:34+00:00\n"
-"PO-Revision-Date: 2025-02-05 10:07+0100\n"
+"PO-Revision-Date: 2025-05-06 13:59+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -385,7 +385,7 @@ msgstr "Pobranie"
 #: classes/shipping/views/html-order-metabox-courier-cod.php:241
 #: classes/shipping/views/html-order-metabox-courier.php:238
 msgid "Send method"
-msgstr "Sposób wysyłki"
+msgstr "Sposób nadania"
 
 #: classes/admin/class-shipment-manager-list-table.php:439
 msgid "Shipping address"
@@ -2028,3 +2028,6 @@ msgstr "Według klasy wysyłki"
 
 msgid "Add label (free) to the end of title of shipping method"
 msgstr "Dodaj tekst '(darmowa wysyłka)' na końcu tytułu metody wysyłki"
+
+msgid "Show available hooks on checkout page to administrators"
+msgstr "Pokaż dostępne WC Hooks na stronie Checkout administratorom"
