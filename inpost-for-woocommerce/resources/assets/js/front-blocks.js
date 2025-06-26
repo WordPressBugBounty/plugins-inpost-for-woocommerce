@@ -241,6 +241,44 @@ jQuery( document ).ready(
 						content: '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback_blocks" token="' + token + '" language="pl" config="' + config + '"></inpost-geowidget>'
 					}
 				);
+				
+				
+				jQuery( "#easypack_block_type_geowidget" ).on(
+					'click',
+					function (e) {
+						e.preventDefault();
+						console.log('inpost-pl: click on map button jQuery');						
+						if ( typeof inpostPlGeowidgetModalBlock != 'undefined' && inpostPlGeowidgetModalBlock !== null ) {
+
+							let checked_radio_control = jQuery( 'input[name^="radio-control-"]:checked' );
+							if ( typeof checked_radio_control != 'undefined' && checked_radio_control !== null) {
+								let id          = jQuery( checked_radio_control ).attr( 'id' );
+								let instance_id = null;
+								let method_id   = null;
+								let method_data = null;
+								if (typeof id != 'undefined' && id !== null) {
+									method_data = id.split( ":" );
+									instance_id = method_data[method_data.length - 1];
+									method_id   = method_data[0];
+
+									if (typeof method_id != 'undefined' && method_id !== null) {
+										let token  = easypack_block.geowidget_v5_token;
+										let config = 'parcelCollect';
+
+										config = inpost_pl_get_map_config_based_on_instance_id( instance_id, method_id );
+
+										let map_content = '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback_blocks" token="' + token + '" language="pl" config="' + config + '"></inpost-geowidget>';
+										inpostPlGeowidgetModalBlock.setContent( map_content );
+									}
+								}
+							}
+
+							if ( ! inpostPlGeowidgetModalBlock.isOpen ) {
+								inpostPlGeowidgetModalBlock.open();
+							}
+						}						
+					});
+					
 
 				jQuery( 'input[name^="radio-control-"]' ).on(
 					'change',

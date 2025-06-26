@@ -665,7 +665,7 @@ class EasyPack extends inspire_Plugin4 {
 				'default_logo' => EasyPack()->getPluginImages() . 'logo/small/white.png',
 			)
 		);
-		wp_enqueue_media(); // logo upload dependency
+		
 
 		if ( EasyPack_Helper()->is_required_pages_for_modal() ) {
 			wp_enqueue_script( 'easypack-admin-modal', $this->getPluginJs() . 'modal.js', array( 'jquery' ) );
@@ -702,6 +702,9 @@ class EasyPack extends inspire_Plugin4 {
 
 		if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
 			if ( isset( $_GET['tab'] ) && $_GET['tab'] == 'shipping' && isset( $_GET['instance_id'] ) ) {
+				
+				wp_enqueue_media(); // logo upload dependency.
+				
 				wp_register_script(
 					'easypack-shipping-method-settings',
 					$this->getPluginJs() . 'shipping-settings-page.js',
@@ -934,10 +937,14 @@ class EasyPack extends inspire_Plugin4 {
 		global $woocommerce;
 
 		// API doesn't accept COD amount > 5000.
-		$methods_to_disable = array(
+		$methods_to_disable_5000 = array(
 			'easypack_parcel_machines_economy_cod',
 			'easypack_parcel_machines_cod',
 			'easypack_shipping_courier_c2c_cod',
+			'easypack_parcel_machines_weekend_cod',
+		);
+
+		$methods_to_disable_15000 = array(
 			'easypack_cod_shipping_courier',
 		);
 
@@ -945,8 +952,14 @@ class EasyPack extends inspire_Plugin4 {
 
 		if ( $order_total_amount > 5000 ) {
 			foreach ( $rates as $rate_key => $rate ) {
-				if ( in_array( $rate->method_id, $methods_to_disable, true ) ) {
+				if ( in_array( $rate->method_id, $methods_to_disable_5000, true ) ) {
 					unset( $rates[ $rate_key ] );
+				}
+
+				if ( $order_total_amount > 15000 ) {
+					if ( in_array( $rate->method_id, $methods_to_disable_15000, true ) ) {
+						unset( $rates[ $rate_key ] );
+					}
 				}
 
 				if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
@@ -959,8 +972,14 @@ class EasyPack extends inspire_Plugin4 {
 
 					if ( ! empty( $linked_method ) && 0 === strpos( $rate_key, 'flexible_shipping' ) ) {
 						if ( 0 === strpos( $linked_method, 'easypack_' ) ) {
-							if ( in_array( $linked_method, $methods_to_disable, true ) ) {
+							if ( in_array( $linked_method, $methods_to_disable_5000, true ) ) {
 								unset( $rates[ $rate_key ] );
+							}
+
+							if ( $order_total_amount > 15000 ) {
+								if ( in_array( $linked_method, $methods_to_disable_15000, true ) ) {
+									unset( $rates[ $rate_key ] );
+								}
 							}
 						}
 					}
