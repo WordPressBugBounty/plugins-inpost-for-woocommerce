@@ -1,67 +1,60 @@
 <?php
 /**
- * Customer completed order email (plain text)
+ * Seller create the parcel and tracking number - plain email template
  *
- * This template can be overridden by copying it to yourtheme/woocommerce/emails/plain/customer-completed-order.php.
- *
- * HOWEVER, on occasion WooCommerce will need to update template files and you
- * (the theme developer) will need to copy the new files to your theme to
- * maintain compatibility. We try to do this as little as possible, but it does
- * happen. When this occurs the version of the template file will be bumped and
- * the readme will list any important changes.
+ * This template can be overridden by copying it to yourtheme/woocommerce/emails/plain/send-tracking-to-buyer.php
  *
  * @see https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates\Emails\Plain
  * @version 3.7.0
+ *
+ * @param string $tracking_link URL for tracking shipment
+ * @param array $tracking_numbers Array of tracking numbers
+ * @param mixed $order WooCommerce order object
+ * @param mixed $mailer WooCommerce mailer instance
+ * @param string|false $heading Optional. Email heading text. Default false
  */
 
 defined( 'ABSPATH' ) || exit;
-
-use InspireLabs\WoocommerceInpost\EasyPack;
 
 echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
 echo esc_html( wp_strip_all_tags( $email_heading ) );
 echo "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
 
-/* translators: %s: Customer first name */
-echo sprintf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) ) . "\n\n";
-/* translators: %s: Site title */
-echo esc_html__( 'A tracking number has been given for your order. It will soon move on its journey', 'woocommerce-inpost' ) . "\n\n";
-if( ! empty( $tracking_number ) ) {
-    /*echo sprintf( esc_html__( 'Your tracking number: %s', 'woocommerce-inpost' ), esc_attr( $tracking_number ) ) . "\n\n";*/
-    echo esc_html__( 'Tracking link:', 'woocommerce-inpost' ) . "\n\n";
-    echo sprintf(__( '<a href="%s">%s</a>' ), esc_url( $tracking_link . $tracking_number ) ) . "\n\n";
+if (!empty($tracking_numbers)) {
+    /* translators: %s: Customer first name */
+    echo sprintf(esc_html__('Hi %s,', 'woocommerce'), esc_html($order->get_billing_first_name())) . "\n\n";
+
+    if (count($tracking_numbers) === 1) {
+        $tracking_number = reset($tracking_numbers);
+        echo esc_html__('A tracking number has been given for your order. It will soon move on its journey', 'woocommerce-inpost') . "\n\n";
+        echo esc_html__('Tracking link:', 'woocommerce-inpost') . "\n";
+        echo esc_url($tracking_link . $tracking_number) . "\n\n";
+    } elseif (count($tracking_numbers) > 1) {
+        echo esc_html__('For your order was created multi-package. It will soon move on its journey', 'woocommerce-inpost') . "\n\n";
+        echo esc_html__('Tracking links:', 'woocommerce-inpost') . "\n";
+        foreach ($tracking_numbers as $tracking_number) {
+            echo esc_url($tracking_link . $tracking_number) . "\n";
+        }
+        echo "\n";
+    }
 }
 
-/*
- * @hooked WC_Emails::order_details() Shows the order details table.
- * @hooked WC_Structured_Data::generate_order_data() Generates structured data.
- * @hooked WC_Structured_Data::output_structured_data() Outputs structured data.
- * @since 2.5.0
- */
-do_action( 'woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email );
+echo "----------------------------------------\n\n";
+
+do_action('woocommerce_email_order_details', $order, $sent_to_admin, true, $email);
 
 echo "\n----------------------------------------\n\n";
 
-/*
- * @hooked WC_Emails::order_meta() Shows order meta data.
- */
-do_action( 'woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email );
+do_action('woocommerce_email_order_meta', $order, $sent_to_admin, true, $email);
 
-/*
- * @hooked WC_Emails::customer_details() Shows customer details
- * @hooked WC_Emails::email_address() Shows email address
- */
-do_action( 'woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email );
+do_action('woocommerce_email_customer_details', $order, $sent_to_admin, true, $email);
 
-echo "\n\n----------------------------------------\n\n";
+echo "\n----------------------------------------\n\n";
 
-/**
- * Show user-defined additional content - this is set in each email's settings.
- */
-if ( isset( $additional_content ) ) {
-	echo esc_html( wp_strip_all_tags( wptexturize( $additional_content ) ) );
-	echo "\n\n----------------------------------------\n\n";
+if (isset($additional_content)) {
+    echo esc_html(wp_strip_all_tags(wptexturize($additional_content)));
+    echo "\n\n----------------------------------------\n\n";
 }
 
-echo wp_kses_post( apply_filters( 'woocommerce_email_footer_text', get_option( 'woocommerce_email_footer_text' ) ) );
+echo wp_kses_post(apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text')));

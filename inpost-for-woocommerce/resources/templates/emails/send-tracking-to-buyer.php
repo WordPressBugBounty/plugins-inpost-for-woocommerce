@@ -13,10 +13,16 @@
  * @see https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates\Emails
  * @version 3.7.0
+ *
+ * @param string $tracking_link URL for tracking shipment.
+ * @param array $tracking_numbers Array of tracking numbers.
+ * @param mixed $order WooCommerce order object.
+ * @param mixed $mailer WooCommerce mailer instance.
+ * @param string|false $heading Optional. Email heading text. Default false.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
 
 use InspireLabs\WoocommerceInpost\EasyPack;
@@ -27,13 +33,38 @@ use InspireLabs\WoocommerceInpost\EasyPack;
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 <?php /* translators: %s: Customer first name */ ?>
-    <p><?php printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) ); ?></p>
-    <p><?php esc_html_e( 'A tracking number has been given for your order. It will soon move on its journey', 'woocommerce-inpost' ); ?></p>
-    <?php if( ! empty( $tracking_number ) ) { ?>
-        <!--<p><?php /* printf( esc_html_e( 'Your tracking number: %s', 'woocommerce-inpost' ),  esc_html( $tracking_number ) ); */?></p>-->
-        <p><?php esc_html_e( 'Tracking link:', 'woocommerce-inpost' ); ?></p>
-        <p><?php printf( __( '<a href="%s">%s</a>' ), esc_url( $tracking_link . $tracking_number ),   esc_attr( $tracking_link . $tracking_number ) ); ?></p><br>
-    <?php } ?>
+	<?php
+	if ( ! empty( $tracking_numbers ) ) {
+		if ( count( $tracking_numbers ) === 1 ) {
+			$tracking_number = reset( $tracking_numbers );
+			?>
+			<p><?php printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) ); ?></p>
+			<p><?php esc_html_e( 'A tracking number has been given for your order. It will soon move on its journey', 'woocommerce-inpost' ); ?></p>
+			<p><?php esc_html_e( 'Tracking link:', 'woocommerce-inpost' ); ?></p>
+			<p><?php printf( '<a href="%s" target="_blank">%s</a>', esc_url( $tracking_link . $tracking_number ), esc_attr( $tracking_link . $tracking_number ) ); ?></p>
+            <br>
+			<?php
+		} elseif ( count( $tracking_numbers ) > 1 ) {
+			$multi_tracking = '';
+			foreach ( $tracking_numbers as $tracking_number ) {
+				$multi_tracking .= sprintf(
+					'<p><a href="%s">%s</a></p>',
+					esc_url( $tracking_link . $tracking_number ),
+					esc_attr( $tracking_number )
+				);
+			}
+			?>
+			<p><?php printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) ); ?></p>
+			<p><?php esc_html_e( 'For your order was created multi-package. It will soon move on its journey', 'woocommerce-inpost' ); ?></p>
+			<p><?php esc_html_e( 'Tracking links:', 'woocommerce-inpost' ); ?></p>
+			<?php
+			echo wp_kses_post( $multi_tracking );
+		}
+
+		?>
+
+
+	<?php } ?>
 <?php
 
 /*
@@ -59,7 +90,7 @@ do_action( 'woocommerce_email_customer_details', $order, $sent_to_admin, $plain_
  * Show user-defined additional content - this is set in each email's settings.
  */
 if ( isset( $additional_content ) ) {
-    echo wp_kses_post( wpautop( wptexturize( $additional_content ) ) );
+	echo wp_kses_post( wpautop( wptexturize( $additional_content ) ) );
 }
 
 /*

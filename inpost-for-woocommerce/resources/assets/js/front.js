@@ -26,13 +26,13 @@ function inpost_pl_select_point_callback_js_mode(point) {
 	let parcelMachineAddressDesc = '';
 	let address_line1            = '';
 	let address_line2            = '';
-	
+
 	let point_name = '';
-	if( 'name' in point ) {
+	if ( 'name' in point ) {
 		point_name = point.name;
-		if (point_name.startsWith("PL_")) {
+		if (point_name.startsWith( "PL_" )) {
 			// Remove first 3 characters "PL_".
-			point_name = point_name.slice(3);
+			point_name = point_name.slice( 3 );
 		}
 	}
 
@@ -84,6 +84,9 @@ function inpost_pl_select_point_callback_js_mode(point) {
 
 	let point_address = address_line1 + '<br>' + address_line2;
 
+	let EasyPackPointObject = { 'pointName': point_name, 'pointDesc': parcelMachineAddressDesc, 'visiblePointData': point_address };
+	localStorage.setItem( 'EasyPackPointObject', JSON.stringify( EasyPackPointObject ) );
+
 	// for some templates like Divi - add hidden fields for Inpost Parcel locker dynamically.
 	var form               = document.getElementsByClassName( 'checkout woocommerce-checkout' )[0];
 	var additionalInput1   = document.createElement( 'input' );
@@ -104,6 +107,49 @@ function inpost_pl_select_point_callback_js_mode(point) {
 	}
 
 	inpostjsGeowidgetModal.close();
+}
+
+function inpost_pl_js_set_locker_from_local_storage() {
+	let EasyPackPointObject = localStorage.getItem( 'EasyPackPointObject' );
+
+	if (EasyPackPointObject !== null) {
+		let selected_point_data      = '';
+		let point,
+			visible_desc,
+			desc;
+
+		let pointData = JSON.parse( EasyPackPointObject );
+		if (typeof pointData != 'undefined' && pointData !== null) {
+			if (typeof pointData.pointName != 'undefined' && pointData.pointName !== null) {
+				point = pointData.pointName;
+			}
+			if (typeof pointData.visiblePointData != 'undefined' && pointData.visiblePointData !== null) {
+				visible_desc = pointData.visiblePointData;
+			}
+			if (typeof pointData.pointDesc != 'undefined' && pointData.pointDesc !== null && typeof pointData.visiblePointData != 'undefined' && pointData.visiblePointData !== null) {
+				desc = pointData.pointDesc;
+				selected_point_data = '<div class="easypack_selected_point_data" id="easypack_selected_point_data" style="margin-bottom:15px">\n'
+					+ '<div id="selected-parcel-machine-id">' + point + '</div>\n'
+					+ '<span id="selected-parcel-machine-desc1">(' + visible_desc + ')</span>' +
+					'<input type="hidden" id="parcel_machine_id"\n' +
+					'name="parcel_machine_id" class="parcel_machine_id" value="' + point + '"/>\n' +
+					'<input type="hidden" id="parcel_machine_desc"\n' +
+					'name="parcel_machine_desc" class="parcel_machine_desc" value="' + pointData.pointDesc + '"/></div>\n';
+			} else {
+				selected_point_data = '<div class="easypack_selected_point_data" id="easypack_selected_point_data" style="margin-bottom:15px">\n'
+					+ '<div id="selected-parcel-machine-id">' + point + '</div>\n'
+				'<input type="hidden" id="parcel_machine_id"\n' +
+				'name="parcel_machine_id" class="parcel_machine_id" value="' + point + '"/>\n' +
+				'<input type="hidden" id="parcel_machine_desc"\n' +
+				'name="parcel_machine_desc" class="parcel_machine_desc" value="' + pointData.pointDesc + '"/></div>';
+			}
+
+			jQuery('#easypack_js_type_geowidget').after(selected_point_data);
+			jQuery("#easypack_js_type_geowidget").text(easypack_front_map.button_text2);
+		}
+
+
+	}
 }
 
 
@@ -134,6 +180,100 @@ jQuery( document ).ready(
 			}
 		);
 
+		if ( typeof method != 'undefined' && method !== null ) {
+
+			console.log( 'Inpost PL: ready' );
+			console.log( method );
+
+			let config = 'parcelCollect';
+			config     = inpost_pl_js_get_map_config_based_on_instance_id( postfix, method );
+
+			let wH = jQuery( window ).height() - 80;
+
+			let map_content = '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback_js_mode" token="' + token + '" language="pl" config="' + config + '"></inpost-geowidget>';
+			inpostjsGeowidgetModal.setContent( map_content );
+
+			let selector              = method + ':' + postfix;
+			let shipping_option_input = null;
+			let li_parent             = null;
+
+			console.log( "Inpost PL: shipping option input value" );
+			console.log( selector );
+
+			let shipping_options_block = jQuery( '#shipping_method' );
+			if ( typeof shipping_options_block != 'undefined' && shipping_options_block !== null ) {
+				jQuery( shipping_options_block ).find( 'input' ).each(
+					function (index, input) {
+						if ( selector === jQuery( input ).val() ) {
+							shipping_option_input = input;
+							console.log( "Inpost PL: shipping option input" );
+							console.log( shipping_option_input );
+						}
+					}
+				);
+			}
+
+			let map_button = '<div class="easypack_show_geowidget" id="easypack_js_type_geowidget">\n' +
+				easypack_front_map.button_text1 + '</div>';
+			if ( shipping_option_input ) {
+				li_parent = jQuery( shipping_option_input ).closest( 'li' );
+				console.log( "Inpost PL: li_parent" );
+				console.log( li_parent );
+			}
+
+			if ( method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
+				if ( typeof li_parent != 'undefined' && li_parent !== null ) {
+					jQuery( li_parent ).after( map_button );
+					console.log( "Inpost PL: add map button" );
+					inpost_pl_js_set_locker_from_local_storage();
+
+				}
+
+			} else {
+				let inpost_methods        = inpost_pl_js_get_configured_inpost_methods();
+				let linked_fs_method_data = inpost_methods[postfix];
+				if ( typeof linked_fs_method_data != 'undefined' && linked_fs_method_data !== null ) {
+					let linked_fs_method = linked_fs_method_data.inpost_title;
+					if ( linked_fs_method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
+						if (typeof li_parent != 'undefined' && li_parent !== null) {
+							jQuery( li_parent ).after( map_button );
+							inpost_pl_js_set_locker_from_local_storage();
+						}
+					}
+				}
+			}
+
+			jQuery( '#easypack_js_type_geowidget' ).on(
+				'click',
+				function () {
+					if ( typeof inpostjsGeowidgetModal != 'undefined' && inpostjsGeowidgetModal !== null ) {
+						if ( ! inpostjsGeowidgetModal.isOpen) {
+							console.log( 'inpost geowidget open jQuery' );
+							inpostjsGeowidgetModal.open();
+						}
+					}
+				}
+			);
+
+			// open modal with map.
+			document.addEventListener(
+				'click',
+				function (e) {
+					e          = e || window.event;
+					var target = e.target || e.srcElement;
+
+					if (target.hasAttribute( 'id' ) && target.getAttribute( 'id' ) === 'easypack_js_type_geowidget') {
+						e.preventDefault();
+						if ( typeof inpostjsGeowidgetModal != 'undefined' && inpostjsGeowidgetModal !== null ) {
+							if ( ! inpostjsGeowidgetModal.isOpen ) {
+								inpostjsGeowidgetModal.open();
+							}
+						}
+					}
+				}
+			);
+		}
+
 		jQuery( document.body ).on(
 			'update_checkout',
 			function () {
@@ -147,6 +287,99 @@ jQuery( document ).ready(
 						jQuery( elem ).remove();
 					}
 				);
+
+				if ( typeof method != 'undefined' && method !== null ) {
+
+					console.log( 'Inpost PL: ready' );
+					console.log( method );
+
+					let config = 'parcelCollect';
+					config     = inpost_pl_js_get_map_config_based_on_instance_id( postfix, method );
+
+					let wH = jQuery( window ).height() - 80;
+
+					let map_content = '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback_js_mode" token="' + token + '" language="pl" config="' + config + '"></inpost-geowidget>';
+					inpostjsGeowidgetModal.setContent( map_content );
+
+					let selector              = method + ':' + postfix;
+					let shipping_option_input = null;
+					let li_parent             = null;
+
+					console.log( "Inpost PL: shipping option input value" );
+					console.log( selector );
+
+					let shipping_options_block = jQuery( '#shipping_method' );
+					if ( typeof shipping_options_block != 'undefined' && shipping_options_block !== null ) {
+						jQuery( shipping_options_block ).find( 'input' ).each(
+							function (index, input) {
+								if ( selector === jQuery( input ).val() ) {
+									shipping_option_input = input;
+									console.log( "Inpost PL: shipping option input" );
+									console.log( shipping_option_input );
+								}
+							}
+						);
+					}
+
+					let map_button = '<div class="easypack_show_geowidget" id="easypack_js_type_geowidget">\n' +
+						easypack_front_map.button_text1 + '</div>';
+					if ( shipping_option_input ) {
+						li_parent = jQuery( shipping_option_input ).closest( 'li' );
+						console.log( "Inpost PL: li_parent" );
+						console.log( li_parent );
+					}
+
+					if ( method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
+						if ( typeof li_parent != 'undefined' && li_parent !== null ) {
+							jQuery( li_parent ).after( map_button );
+							inpost_pl_js_set_locker_from_local_storage();
+							console.log( "Inpost PL: add map button" );
+						}
+
+					} else {
+						let inpost_methods        = inpost_pl_js_get_configured_inpost_methods();
+						let linked_fs_method_data = inpost_methods[postfix];
+						if ( typeof linked_fs_method_data != 'undefined' && linked_fs_method_data !== null ) {
+							let linked_fs_method = linked_fs_method_data.inpost_title;
+							if ( linked_fs_method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
+								if (typeof li_parent != 'undefined' && li_parent !== null) {
+									jQuery( li_parent ).after( map_button );
+									inpost_pl_js_set_locker_from_local_storage();
+								}
+							}
+						}
+					}
+
+					jQuery( '#easypack_js_type_geowidget' ).on(
+						'click',
+						function () {
+							if ( typeof inpostjsGeowidgetModal != 'undefined' && inpostjsGeowidgetModal !== null ) {
+								if ( ! inpostjsGeowidgetModal.isOpen) {
+									console.log( 'inpost geowidget open jQuery' );
+									inpostjsGeowidgetModal.open();
+								}
+							}
+						}
+					);
+
+					// open modal with map.
+					document.addEventListener(
+						'click',
+						function (e) {
+							e          = e || window.event;
+							var target = e.target || e.srcElement;
+
+							if (target.hasAttribute( 'id' ) && target.getAttribute( 'id' ) === 'easypack_js_type_geowidget') {
+								e.preventDefault();
+								if ( typeof inpostjsGeowidgetModal != 'undefined' && inpostjsGeowidgetModal !== null ) {
+									if ( ! inpostjsGeowidgetModal.isOpen ) {
+										inpostjsGeowidgetModal.open();
+									}
+								}
+							}
+						}
+					);
+				}
 
 			}
 		);
@@ -168,7 +401,7 @@ jQuery( document ).ready(
 					function (ind, elem) {
 						jQuery( elem ).remove();
 					}
-				);				
+				);
 
 				if ( typeof method != 'undefined' && method !== null ) {
 					let config = 'parcelCollect';
@@ -205,6 +438,7 @@ jQuery( document ).ready(
 					if ( method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
 						if ( typeof li_parent != 'undefined' && li_parent !== null ) {
 							jQuery( li_parent ).after( map_button );
+							inpost_pl_js_set_locker_from_local_storage();
 						}
 
 					} else {
@@ -215,6 +449,7 @@ jQuery( document ).ready(
 							if ( linked_fs_method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
 								if (typeof li_parent != 'undefined' && li_parent !== null) {
 									jQuery( li_parent ).after( map_button );
+									inpost_pl_js_set_locker_from_local_storage();
 								}
 							}
 						}
@@ -252,6 +487,22 @@ jQuery( document ).ready(
 				}
 			}
 		);
+
+
+		document.addEventListener(
+			'change',
+			function (e) {
+				e          = e || window.event;
+				var target = e.target;
+				if (target.hasAttribute( 'name' )) {
+					if (target.getAttribute('name') === 'shipping_method[0]') {
+						localStorage.setItem( 'EasyPackPointObject', null );
+						console.log('reset local storage value');
+					}
+				}
+			}
+		);
+
 	}
 );
 

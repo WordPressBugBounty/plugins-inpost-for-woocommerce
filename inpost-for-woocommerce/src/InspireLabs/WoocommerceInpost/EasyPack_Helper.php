@@ -9,6 +9,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\courier_pickup\ShipX_Dispatch_Ord
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 use Requests_Utility_CaseInsensitiveDictionary;
 use WC_Shipping_Method;
+use WP_Error;
 
 
 /**
@@ -25,7 +26,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 		protected static $instance;
 		protected static $css_embeded;
-		
+
 		private $cached_zones = array();
 
 		public function __construct() {
@@ -33,10 +34,10 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 			add_action( 'woocommerce_before_my_account', array( $this, 'woocommerce_before_my_account' ) );
 			add_filter( 'woocommerce_screen_ids', array( $this, 'woocommerce_screen_ids' ) );
-			
+
 			add_action( 'woocommerce_shipping_zone_method_added', array( $this, 'clear_zones_cache' ) );
-            add_action( 'woocommerce_shipping_zone_method_deleted', array( $this, 'clear_zones_cache' ) );
-            add_action( 'woocommerce_shipping_zone_method_status_toggled', array( $this, 'clear_zones_cache' ) );
+			add_action( 'woocommerce_shipping_zone_method_deleted', array( $this, 'clear_zones_cache' ) );
+			add_action( 'woocommerce_shipping_zone_method_status_toggled', array( $this, 'clear_zones_cache' ) );
 		}
 
 		public static function EasyPack_Helper() {
@@ -432,8 +433,8 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		 * @return string
 		 */
 		public function get_method_linked_to_fs( $chosen_shipping_methods ) {
-			$method_linked_to_fs = '';			
-			
+			$method_linked_to_fs = '';
+
 			if ( ! empty( $chosen_shipping_methods ) && is_array( $chosen_shipping_methods ) ) {
 				foreach ( $chosen_shipping_methods as $shipping_method ) {
 					if ( 0 === strpos( $shipping_method, 'flexible_shipping_single' ) ) {
@@ -506,9 +507,9 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 				case 'easypack_parcel_machines_weekend':
 					$class_name = 'EasyPack_Shipping_Parcel_Machines_Weekend';
 					break;
-                case 'easypack_parcel_machines_weekend_cod':
-                    $class_name = 'EasyPack_Shipping_Parcel_Machines_Weekend_COD';
-                    break;
+				case 'easypack_parcel_machines_weekend_cod':
+					$class_name = 'EasyPack_Shipping_Parcel_Machines_Weekend_COD';
+					break;
 				case 'easypack_shipping_courier':
 					$class_name = 'EasyPack_Shipping_Method_Courier';
 					break;
@@ -859,8 +860,8 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 			$configured_shipping_methods = array();
 
-			//$delivery_zones = \WC_Shipping_Zones::get_zones();
-			
+			// $delivery_zones = \WC_Shipping_Zones::get_zones();
+
 			$delivery_zones = $this->get_cached_zones();
 
 			foreach ( (array) $delivery_zones as $key => $the_zone ) {
@@ -1200,78 +1201,147 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 			return $insurance_amount ? $insurance_amount : 0.00;
 		}
-		
-		
-		
+
+
+
 		public function is_admin_orders_or_plugin_settings_related_page() {
-			
-			if( ! is_admin() ) {
-                return;
-            }
-			
 
-            if( ! function_exists( 'get_current_screen' ) ) {
-                return;
-            }		
-			
+			if ( ! is_admin() ) {
+				return;
+			}
 
-            global $pagenow, $post_type, $post;
-            $current_screen = get_current_screen();
+			if ( ! function_exists( 'get_current_screen' ) ) {
+				return;
+			}
 
-            $order_id = null;
+			global $pagenow, $post_type, $post;
+			$current_screen = get_current_screen();
 
-            if ( 'shop_order' === $post_type || 'shop_order_placehold' === $post_type || 'shop_order' === $current_screen->post_type ) {
-                if( isset( $_GET['action'] ) && 'edit' === $_GET['action'] ) {
-                    if ( isset($_GET['page']) && 'wc-orders' === $_GET['page'] ) {
-                        $order_id = $_GET['id'] ? $_GET['id'] : null;
-                    } elseif ( isset( $_GET['post'] ) && is_numeric( $_GET['post'] ) ) {
-                        $order_id = $_GET['post'];
-                    }
-                }
-            }
+			$order_id = null;
 
-            if( $order_id ) {
-                $order = wc_get_order( $order_id );
-                if( $order && is_a( $order, 'WC_Order' ) ) {
-                    
-                    if( ! empty( $order->get_meta( '_parcel_machine_id' ) ) ) {                        
-                        return true;
-                    } else if( ! empty( get_post_meta( $order_id, '_parcel_machine_id', true ) ) ) {
+			if ( 'shop_order' === $post_type || 'shop_order_placehold' === $post_type || 'shop_order' === $current_screen->post_type ) {
+				if ( isset( $_GET['action'] ) && 'edit' === $_GET['action'] ) {
+					if ( isset( $_GET['page'] ) && 'wc-orders' === $_GET['page'] ) {
+						$order_id = $_GET['id'] ? $_GET['id'] : null;
+					} elseif ( isset( $_GET['post'] ) && is_numeric( $_GET['post'] ) ) {
+						$order_id = $_GET['post'];
+					}
+				}
+			}
+
+			if ( $order_id ) {
+				$order = wc_get_order( $order_id );
+				if ( $order && is_a( $order, 'WC_Order' ) ) {
+
+					if ( ! empty( $order->get_meta( '_parcel_machine_id' ) ) ) {
+						return true;
+					} elseif ( ! empty( get_post_meta( $order_id, '_parcel_machine_id', true ) ) ) {
 						return true;
 					}
-                }
-            }
+				}
+			}
 
-            if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
-                if ( isset( $_GET['tab'] ) && 'easypack_general' === $_GET['tab'] ) {
-                    return true;
-                }
-            }
+			if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
+				if ( isset( $_GET['tab'] ) && 'easypack_general' === $_GET['tab'] ) {
+					return true;
+				}
+			}
 
-            return false;
+			return false;
+		}
 
-        }
-		
-		
-		
+
+
 		public function clear_zones_cache() {
-            $this->cached_zones = null;
-        }
-		
-		
+			$this->cached_zones = null;
+		}
 
-        private function get_cached_zones() {
-            if ( empty( $this->cached_zones ) ) {
-                if( class_exists('WC_Shipping_Zones') ) {
-                    $this->cached_zones = \WC_Shipping_Zones::get_zones();
-                }
-            }
-            return $this->cached_zones;
-        }
-		
-		
-		
-		
+
+
+		private function get_cached_zones() {
+			if ( empty( $this->cached_zones ) ) {
+				if ( class_exists( 'WC_Shipping_Zones' ) ) {
+					$this->cached_zones = \WC_Shipping_Zones::get_zones();
+				}
+			}
+			return $this->cached_zones;
+		}
+
+
+		/**
+		 * Retrieves the locker ID associated with an order, checking both order metadata and post meta.
+		 *
+		 * First attempts to retrieve the locker ID from the order's metadata using `_parcel_machine_id`.
+		 * If not found, it falls back to retrieving it from the order's post meta using the same key.
+		 *
+		 * @param int|string $order_id The ID of the order.
+		 *
+		 * @return string|null The locker ID if found, otherwise null.
+		 */
+		public function get_locker_id_from_meta( $order_id ) {
+			$locker_id = null;
+
+			$order = wc_get_order( $order_id );
+			if ( $order && ! is_wp_error( $order ) ) {
+				$locker_id = $order->get_meta( '_parcel_machine_id' );
+			}
+
+			if ( empty( $locker_id ) ) {
+				$locker_id = get_post_meta( $order_id, '_parcel_machine_id', true );
+			}
+
+			return $locker_id;
+		}
+
+
+
+		/**
+		 * Retrieves the InPost ID associated with a WooCommerce order.
+		 *
+		 * First attempts to get the InPost ID from the order meta using WC Order object.
+		 * If unsuccessful, tries to retrieve it from post meta, handling both standard
+		 * and custom orders table scenarios.
+		 *
+		 * @param int $order_id The WooCommerce order ID.
+		 *
+		 * @return string|int|null The InPost shipment ID if found, null otherwise
+		 *
+		 * @throws WP_Error Potentially from wc_get_order().
+		 */
+		public function get_inpost_id_by_order( $order_id ) {
+
+			$inpost_id = null;
+
+			$order = wc_get_order( $order_id );
+			if ( $order && ! is_wp_error( $order ) ) {
+				$shipment = $order->get_meta( '_shipx_shipment_object' );
+				if ( is_object( $shipment ) && $shipment instanceof ShipX_Shipment_Model ) {
+					$inpost_id = $shipment->getInternalData()->getInpostId();
+				}
+			}
+
+			if ( ! $inpost_id ) {
+				$shipment = get_post_meta( $order_id, '_shipx_shipment_object', true );
+
+				if ( ! $shipment instanceof ShipX_Shipment_Model ) {
+					if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
+						$from_order_meta_raw = isset( get_post_meta( $order_id )['_shipx_shipment_object'][0] )
+							? get_post_meta( $order_id )['_shipx_shipment_object'][0]
+							: '';
+
+						if ( ! empty( $from_order_meta_raw ) ) {
+							$shipment = unserialize( $from_order_meta_raw );
+						}
+					}
+				}
+
+				if ( is_object( $shipment ) && $shipment instanceof ShipX_Shipment_Model ) {
+					$inpost_id = $shipment->getInternalData()->getInpostId();
+				}
+			}
+
+			return $inpost_id;
+		}
 	}
 
 

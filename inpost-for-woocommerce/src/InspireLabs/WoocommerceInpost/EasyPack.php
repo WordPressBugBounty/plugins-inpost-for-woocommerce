@@ -9,6 +9,7 @@ use InspireLabs\WoocommerceInpost\admin\Alerts;
 use InspireLabs\WoocommerceInpost\admin\EasyPack_Product_Shipping_Method_Selector;
 use InspireLabs\WoocommerceInpost\admin\EasyPack_Settings_General;
 use InspireLabs\WoocommerceInpost\EmailFilters\NewOrderEmail;
+use InspireLabs\WoocommerceInpost\EmailFilters\TrackingInfoEmail;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Method_Courier;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Method_Courier_C2C;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Method_Courier_C2C_COD;
@@ -85,15 +86,29 @@ class EasyPack extends inspire_Plugin4 {
 		return plugins_url() . '/woo-inpost/web/labels/';
 	}
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 		parent::__construct();
+		$this->hooks();
+	}
+
+
+	/**
+	 * Hooks
+	 *
+	 * @return void
+	 */
+	public function hooks() {
+
 		add_action( 'plugins_loaded', array( $this, 'init_easypack' ), 100 );
 		add_action( 'woocommerce_init', array( $this, 'add_settings_to_flexible_shipping' ) );
-		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+
 		add_filter( 'woocommerce_package_rates', array( $this, 'check_paczka_weekend_fs_settings' ), 10, 2 );
 
 		add_action(
-			'init',
+			'after_setup_theme',
 			function () {
 				if ( 'yes' === get_option( 'easypack_debug_mode' ) ) {
 					if ( current_user_can( 'administrator' ) ) {
@@ -104,6 +119,8 @@ class EasyPack extends inspire_Plugin4 {
 				}
 			}
 		);
+
+		add_action( 'send_tracking_numbers_email', array( $this, 'send_tracking_numbers_email_callback' ) );
 	}
 
 	/**
@@ -345,18 +362,18 @@ class EasyPack extends inspire_Plugin4 {
 
 		if ( is_array( $servicesAllowed ) && ! empty( $servicesAllowed ) ) {
 			if ( in_array( EasyPack_Shippng_Parcel_Machines::SERVICE_ID, $servicesAllowed ) ) {
-				
+
 				$easyPack_Shippng_Parcel_Machines = new EasyPack_Shippng_Parcel_Machines();
 				$this->shipping_methods[]         = $easyPack_Shippng_Parcel_Machines;
 
-                $easyPack_Shippng_Parcel_Machines_Cod = new EasyPack_Shippng_Parcel_Machines_COD();
-                $this->shipping_methods[]             = $easyPack_Shippng_Parcel_Machines_Cod;
+				$easyPack_Shippng_Parcel_Machines_Cod = new EasyPack_Shippng_Parcel_Machines_COD();
+				$this->shipping_methods[]             = $easyPack_Shippng_Parcel_Machines_Cod;
 
 				$easyPack_Shippng_Parcel_Machines_Weekend = new EasyPack_Shipping_Parcel_Machines_Weekend();
 				$this->shipping_methods[]                 = $easyPack_Shippng_Parcel_Machines_Weekend;
-                
-                $easyPack_Shippng_Parcel_Machines_Weekend_COD = new EasyPack_Shipping_Parcel_Machines_Weekend_COD();
-                $this->shipping_methods[]                 = $easyPack_Shippng_Parcel_Machines_Weekend_COD;
+
+				$easyPack_Shippng_Parcel_Machines_Weekend_COD = new EasyPack_Shipping_Parcel_Machines_Weekend_COD();
+				$this->shipping_methods[]                     = $easyPack_Shippng_Parcel_Machines_Weekend_COD;
 			}
 
 			if ( in_array( EasyPack_Shipping_Parcel_Machines_Economy::SERVICE_ID, $servicesAllowed ) ) {
@@ -370,66 +387,65 @@ class EasyPack extends inspire_Plugin4 {
 			if ( in_array( EasyPack_Shipping_Method_EsmartMix::SERVICE_ID, $servicesAllowed ) ) {
 				$easyPack_Shipping_Method_EsmartMix = new EasyPack_Shipping_Method_EsmartMix();
 				$this->shipping_methods[]           = $easyPack_Shipping_Method_EsmartMix;
-			}			
+			}
 
-            if ( in_array( EasyPack_Shipping_Method_Courier_Local_Standard::SERVICE_ID, $servicesAllowed ) ) {
-                $shipping_Method_Courier_local_standard = new EasyPack_Shipping_Method_Courier_Local_Standard();
-                $this->shipping_methods[]               = $shipping_Method_Courier_local_standard;
-            }
+			if ( in_array( EasyPack_Shipping_Method_Courier_Local_Standard::SERVICE_ID, $servicesAllowed ) ) {
+				$shipping_Method_Courier_local_standard = new EasyPack_Shipping_Method_Courier_Local_Standard();
+				$this->shipping_methods[]               = $shipping_Method_Courier_local_standard;
+			}
 
-            if ( in_array( EasyPack_Shipping_Method_Courier_LSE_COD::SERVICE_ID, $servicesAllowed ) ) {
-                $shipping_Method_Courier_LSE_COD = new EasyPack_Shipping_Method_Courier_LSE_COD();
-                $this->shipping_methods[]        = $shipping_Method_Courier_LSE_COD;
-            }
+			if ( in_array( EasyPack_Shipping_Method_Courier_LSE_COD::SERVICE_ID, $servicesAllowed ) ) {
+				$shipping_Method_Courier_LSE_COD = new EasyPack_Shipping_Method_Courier_LSE_COD();
+				$this->shipping_methods[]        = $shipping_Method_Courier_LSE_COD;
+			}
 
-            if ( in_array( EasyPack_Shipping_Method_Courier_COD::SERVICE_ID, $servicesAllowed ) ) {
-                $shipping_Method_Courier_COD = new EasyPack_Shipping_Method_Courier_COD();
-                $this->shipping_methods[]    = $shipping_Method_Courier_COD;
-            }
+			if ( in_array( EasyPack_Shipping_Method_Courier_COD::SERVICE_ID, $servicesAllowed ) ) {
+				$shipping_Method_Courier_COD = new EasyPack_Shipping_Method_Courier_COD();
+				$this->shipping_methods[]    = $shipping_Method_Courier_COD;
+			}
 
-            if ( in_array( EasyPack_Shipping_Method_Courier::SERVICE_ID, $servicesAllowed ) ) {
-                $shipping_Method_Courier  = new EasyPack_Shipping_Method_Courier();
-                $this->shipping_methods[] = $shipping_Method_Courier;
-            }
+			if ( in_array( EasyPack_Shipping_Method_Courier::SERVICE_ID, $servicesAllowed ) ) {
+				$shipping_Method_Courier  = new EasyPack_Shipping_Method_Courier();
+				$this->shipping_methods[] = $shipping_Method_Courier;
+			}
 
-            if ( in_array( EasyPack_Shipping_Method_Courier_LSE::SERVICE_ID, $servicesAllowed ) ) {
-                $shipping_Method_Courier_LSE = new EasyPack_Shipping_Method_Courier_LSE();
-                $this->shipping_methods[]    = $shipping_Method_Courier_LSE;
-            }
+			if ( in_array( EasyPack_Shipping_Method_Courier_LSE::SERVICE_ID, $servicesAllowed ) ) {
+				$shipping_Method_Courier_LSE = new EasyPack_Shipping_Method_Courier_LSE();
+				$this->shipping_methods[]    = $shipping_Method_Courier_LSE;
+			}
 
-            if ( in_array( EasyPack_Shipping_Method_Courier_Local_Standard_COD::SERVICE_ID, $servicesAllowed ) ) {
-                $shipping_Method_Courier_local_standard_cod = new EasyPack_Shipping_Method_Courier_Local_Standard_COD();
-                $this->shipping_methods[]                   = $shipping_Method_Courier_local_standard_cod;
-            }
+			if ( in_array( EasyPack_Shipping_Method_Courier_Local_Standard_COD::SERVICE_ID, $servicesAllowed ) ) {
+				$shipping_Method_Courier_local_standard_cod = new EasyPack_Shipping_Method_Courier_Local_Standard_COD();
+				$this->shipping_methods[]                   = $shipping_Method_Courier_local_standard_cod;
+			}
 
-            if ( in_array( EasyPack_Shipping_Method_Courier_Local_Express::SERVICE_ID, $servicesAllowed ) ) {
-                $shipping_Method_Courier_local_express = new EasyPack_Shipping_Method_Courier_Local_Express();
-                $this->shipping_methods[]              = $shipping_Method_Courier_local_express;
-            }
+			if ( in_array( EasyPack_Shipping_Method_Courier_Local_Express::SERVICE_ID, $servicesAllowed ) ) {
+				$shipping_Method_Courier_local_express = new EasyPack_Shipping_Method_Courier_Local_Express();
+				$this->shipping_methods[]              = $shipping_Method_Courier_local_express;
+			}
 
-            if ( in_array( EasyPack_Shipping_Method_Courier_Local_Express_COD::SERVICE_ID, $servicesAllowed ) ) {
-                $shipping_Method_Courier_local_express_cod = new EasyPack_Shipping_Method_Courier_Local_Express_COD();
-                $this->shipping_methods[]                  = $shipping_Method_Courier_local_express_cod;
-            }
+			if ( in_array( EasyPack_Shipping_Method_Courier_Local_Express_COD::SERVICE_ID, $servicesAllowed ) ) {
+				$shipping_Method_Courier_local_express_cod = new EasyPack_Shipping_Method_Courier_Local_Express_COD();
+				$this->shipping_methods[]                  = $shipping_Method_Courier_local_express_cod;
+			}
 
-            if ( in_array( EasyPack_Shipping_Method_Courier_Palette::SERVICE_ID, $servicesAllowed ) ) {
-                $shipping_Method_Courier_Palette = new EasyPack_Shipping_Method_Courier_Palette();
-                $this->shipping_methods[]        = $shipping_Method_Courier_Palette;
-            }
+			if ( in_array( EasyPack_Shipping_Method_Courier_Palette::SERVICE_ID, $servicesAllowed ) ) {
+				$shipping_Method_Courier_Palette = new EasyPack_Shipping_Method_Courier_Palette();
+				$this->shipping_methods[]        = $shipping_Method_Courier_Palette;
+			}
 
-            if ( in_array( EasyPack_Shipping_Method_Courier_Palette_COD::SERVICE_ID, $servicesAllowed ) ) {
-                $shipping_Method_Courier_Palette_Cod = new EasyPack_Shipping_Method_Courier_Palette_COD();
-                $this->shipping_methods[]            = $shipping_Method_Courier_Palette_Cod;
-            }
+			if ( in_array( EasyPack_Shipping_Method_Courier_Palette_COD::SERVICE_ID, $servicesAllowed ) ) {
+				$shipping_Method_Courier_Palette_Cod = new EasyPack_Shipping_Method_Courier_Palette_COD();
+				$this->shipping_methods[]            = $shipping_Method_Courier_Palette_Cod;
+			}
 
-            if ( in_array( EasyPack_Shipping_Method_Courier_C2C::SERVICE_ID, $servicesAllowed ) ) {
-                $shipping_Method_Courier_c2c = new EasyPack_Shipping_Method_Courier_C2C();
-                $this->shipping_methods[]    = $shipping_Method_Courier_c2c;
+			if ( in_array( EasyPack_Shipping_Method_Courier_C2C::SERVICE_ID, $servicesAllowed ) ) {
+				$shipping_Method_Courier_c2c = new EasyPack_Shipping_Method_Courier_C2C();
+				$this->shipping_methods[]    = $shipping_Method_Courier_c2c;
 
-                $shipping_Method_Courier_c2c_cod = new EasyPack_Shipping_Method_Courier_C2C_COD();
-                $this->shipping_methods[]        = $shipping_Method_Courier_c2c_cod;
-            }
-
+				$shipping_Method_Courier_c2c_cod = new EasyPack_Shipping_Method_Courier_C2C_COD();
+				$this->shipping_methods[]        = $shipping_Method_Courier_c2c_cod;
+			}
 		}
 
 		EasyPack_Product_Shipping_Method_Selector::$inpost_methods = $this->shipping_methods;
@@ -559,13 +575,6 @@ class EasyPack extends inspire_Plugin4 {
 		);
 	}
 
-	public function load_plugin_textdomain() {
-		load_plugin_textdomain(
-			'woocommerce-inpost',
-			false,
-			dirname( plugin_basename( WOOCOMMERCE_INPOST_PLUGIN_FILE ) ) . '/languages/'
-		);
-	}
 
 	function getTemplatePathFull() {
 		return implode( '/', array( $this->_pluginPath, $this->getTemplatePath() ) );
@@ -665,7 +674,6 @@ class EasyPack extends inspire_Plugin4 {
 				'default_logo' => EasyPack()->getPluginImages() . 'logo/small/white.png',
 			)
 		);
-		
 
 		if ( EasyPack_Helper()->is_required_pages_for_modal() ) {
 			wp_enqueue_script( 'easypack-admin-modal', $this->getPluginJs() . 'modal.js', array( 'jquery' ) );
@@ -702,9 +710,9 @@ class EasyPack extends inspire_Plugin4 {
 
 		if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
 			if ( isset( $_GET['tab'] ) && $_GET['tab'] == 'shipping' && isset( $_GET['instance_id'] ) ) {
-				
+
 				wp_enqueue_media(); // logo upload dependency.
-				
+
 				wp_register_script(
 					'easypack-shipping-method-settings',
 					$this->getPluginJs() . 'shipping-settings-page.js',
@@ -849,7 +857,7 @@ class EasyPack extends inspire_Plugin4 {
 				'easypack_block',
 				array(
 					'ajaxurl'            => admin_url( 'admin-ajax.php' ),
-                    'security'           => wp_create_nonce( 'easypack_nonce' ),
+					'security'           => wp_create_nonce( 'easypack_nonce' ),
 					'button_text1'       => __( 'Select Parcel Locker', 'woocommerce-inpost' ),
 					'button_text2'       => __( 'Change Parcel Locker', 'woocommerce-inpost' ),
 					'phone_text'         => __( 'Phone number (required)', 'woocommerce-inpost' ),
@@ -869,9 +877,9 @@ class EasyPack extends inspire_Plugin4 {
 			return;
 		}
 
-        $order_id = $order->get_id();
+		$order_id           = $order->get_id();
 		$shipping_method_id = null;
-        $fs_method_name = '';
+		$fs_method_name     = '';
 
 		foreach ( $order->get_items( 'shipping' ) as $item_id => $item ) {
 			$shipping_method_id          = $item->get_method_id();
@@ -885,9 +893,9 @@ class EasyPack extends inspire_Plugin4 {
 			$parcel_machine_id = sanitize_text_field( $request_body['extensions']['inpost']['inpost-parcel-locker-id'] );
 
 			if ( 'PL_' === substr( $parcel_machine_id, 0, 3 ) ) {
-                $parcel_machine_id = substr( $parcel_machine_id, 3 );
-            }
-			
+				$parcel_machine_id = substr( $parcel_machine_id, 3 );
+			}
+
 			update_post_meta( $order_id, '_parcel_machine_id', $parcel_machine_id );
 			$order->update_meta_data( '_parcel_machine_id', $parcel_machine_id );
 			$order->save();
@@ -902,32 +910,29 @@ class EasyPack extends inspire_Plugin4 {
 					update_post_meta( $order_id, '_fs_easypack_method_name', $fs_method_name );
 				}
 			}
-
 		} else {
 
-            // additional check if used Google Pay payment method - we extract paczkomat number from WC session.
-            if ( 0 === strpos( $shipping_method_id, 'easypack_parcel_machines' ) || 0 === strpos( $fs_method_name, 'easypack_parcel_machines' ) ) {
+			// additional check if used Google Pay payment method - we extract paczkomat number from WC session.
+			if ( 0 === strpos( $shipping_method_id, 'easypack_parcel_machines' ) || 0 === strpos( $fs_method_name, 'easypack_parcel_machines' ) ) {
 
-                if ( is_object(  WC() ) && property_exists( WC(), 'session' ) ) {
-                    $inpost_pl_paczkomat = WC()->session->get( 'inpost_pl_wc_paczkomat' );
+				if ( is_object( WC() ) && property_exists( WC(), 'session' ) ) {
+					$inpost_pl_paczkomat = WC()->session->get( 'inpost_pl_wc_paczkomat' );
 
-                    if ( $inpost_pl_paczkomat ) {
+					if ( $inpost_pl_paczkomat ) {
 
-                        if ( 'PL_' === substr( $inpost_pl_paczkomat, 0, 3 ) ) {
-                            $inpost_pl_paczkomat = substr( $inpost_pl_paczkomat, 3 );
-                        }
+						if ( 'PL_' === substr( $inpost_pl_paczkomat, 0, 3 ) ) {
+							$inpost_pl_paczkomat = substr( $inpost_pl_paczkomat, 3 );
+						}
 
-                        update_post_meta( $order_id, '_parcel_machine_id', $inpost_pl_paczkomat );
-                        $order->update_meta_data( '_parcel_machine_id', $inpost_pl_paczkomat );
-                        $order->save();
+						update_post_meta( $order_id, '_parcel_machine_id', $inpost_pl_paczkomat );
+						$order->update_meta_data( '_parcel_machine_id', $inpost_pl_paczkomat );
+						$order->save();
 					}
-                    // Clear session data.
-                    WC()->session->__unset( 'inpost_pl_wc_paczkomat' );
+					// Clear session data.
+					WC()->session->__unset( 'inpost_pl_wc_paczkomat' );
 				}
 			}
 		}
-
-
 	}
 
 
@@ -1137,7 +1142,7 @@ class EasyPack extends inspire_Plugin4 {
 		if ( ! EasyPack_Helper()->is_flexible_shipping_activated() ) {
 			return is_array( $rates ) ? $rates : array();
 		}
-		
+
 		if ( is_array( $rates ) && ! empty( $rates ) ) {
 			foreach ( $rates as $rate_key => $rate ) {
 				if ( 'easypack_parcel_machines_weekend' === EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $rate->instance_id )
@@ -1262,5 +1267,22 @@ class EasyPack extends inspire_Plugin4 {
 		}
 
 		return $settings;
+	}
+
+
+	/**
+	 * Cron callback to send one or several tracking numbers.
+	 *
+	 * @param mixed $order_id $order_id.
+	 *
+	 * @return void.
+	 */
+	public function send_tracking_numbers_email_callback( $order_id ) {
+
+		if ( empty( $order_id ) ) {
+			return;
+		}
+
+		( new TrackingInfoEmail() )->send_tracking_info_email( $order_id );
 	}
 }

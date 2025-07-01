@@ -154,13 +154,14 @@ class ShipX_Shipment_Service
         $receiver->setLastName($order->get_shipping_last_name());
         $receiver->setEmail($order->get_billing_email());
         //$receiver->setPhone($order->get_billing_phone());
-
+        
         $order_phone = '';
-        if( ! empty($order->get_billing_phone()) ) {
-            $order_phone = trim( $order->get_billing_phone() );
-        } else if( ! empty($order->get_shipping_phone()) ) {
+        if( ! empty($order->get_shipping_phone()) ) {
             $order_phone = trim( $order->get_shipping_phone() );
+        } else if( ! empty($order->get_billing_phone()) ) {
+            $order_phone = trim( $order->get_billing_phone() );
         }
+		
         $receiver_phone = preg_replace('/^\+48|\D/', '', $order_phone );
         $receiver->setPhone( $receiver_phone );
 

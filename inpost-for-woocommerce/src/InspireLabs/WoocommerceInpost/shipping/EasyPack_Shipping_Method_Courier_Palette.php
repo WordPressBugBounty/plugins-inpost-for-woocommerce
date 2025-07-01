@@ -5,6 +5,7 @@ namespace InspireLabs\WoocommerceInpost\shipping;
 use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\EasyPack_Helper;
 use Exception;
+use InspireLabs\WoocommerceInpost\EmailFilters\TrackingInfoEmail;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Dimensions_Model;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Model;
@@ -401,8 +402,12 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_Palette' ) ) {
                     $ret['service'] = $shipment_data['service'];
                 }
 
-                if( isset($shipment_data['tracking'])  && ! empty($shipment_data['tracking'])  ) {
-                    (new TrackingInfoEmail())->send_tracking_info_email($order, $tracking_url, $shipment_data['tracking']);
+                if ( 'yes' === get_option( 'easypack_delivery_notice' ) ) {
+                    wp_schedule_single_event(
+                        time() + 60,
+                        'send_tracking_numbers_email',
+                        array( $order_id )
+                    );
                 }
             }
 			echo json_encode( $ret );

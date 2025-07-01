@@ -3,16 +3,16 @@ let inpostPlGeowidgetModalBlock;
 
 function inpost_pl_validate_parcel_machine_for_gpay_block() {
 
-	let selected_shipping_radio   = document.querySelector( '#shipping-option .wc-block-components-radio-control__input:checked' );
+	let selected_shipping_radio = document.querySelector( '#shipping-option .wc-block-components-radio-control__input:checked' );
 	if (selected_shipping_radio !== undefined && selected_shipping_radio !== null) {
 		let id = selected_shipping_radio.value;
-		console.log('Shipping method ID:', id);
+		console.log( 'Shipping method ID:', id );
 
 		if ( id.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
 			let hidden_input = document.getElementById( 'inpost-parcel-locker-id' );
 			if ( hidden_input !== undefined && hidden_input !== null ) {
 				let paczkomat_id = hidden_input.value;
-				console.log('Paczkomat ID:', paczkomat_id);
+				console.log( 'Paczkomat ID:', paczkomat_id );
 
 				if (paczkomat_id.trim() === '') {
 					return false;
@@ -73,7 +73,7 @@ function inpost_pl_select_point_callback_blocks(point) {
 	let address_line1 = '';
 	let address_line2 = '';
 
-	let point_name = '';	
+	let point_name = '';
 
 	if (point) {
 		jQuery( '#easypack_selected_point_data' ).each(
@@ -82,12 +82,11 @@ function inpost_pl_select_point_callback_blocks(point) {
 			}
 		);
 
-
-		if( 'name' in point ) {
+		if ( 'name' in point ) {
 			point_name = point.name;
-			if (point_name.startsWith("PL_")) {
+			if (point_name.startsWith( "PL_" )) {
 				// Remove first 3 characters "PL_".
-				point_name = point_name.slice(3);
+				point_name = point_name.slice( 3 );
 			}
 		}
 
@@ -102,7 +101,6 @@ function inpost_pl_select_point_callback_blocks(point) {
 		if ( typeof point.address.line1 != 'undefined' && point.address.line1 !== null ) {
 			address_line1 = point.address.line1;
 		}
-
 
 		if (point.location_description) {
 
@@ -128,31 +126,118 @@ function inpost_pl_select_point_callback_blocks(point) {
 			value: point_name
 		};
 
-		//console.log(data);
+		// console.log(data);
 
-		jQuery.ajax({
-			type: 'POST',
-			url: easypack_block.ajaxurl,
-			data: data,
-			dataType: 'json',
-			success: function(response) {
-				console.log('Paczkomat saved in session data:', response);
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				console.log("Error response saving paczkomato into session");
-				console.log(textStatus);
-				console.log('Error: ' + errorThrown + ' ' + jqXHR.responseText);
+		jQuery.ajax(
+			{
+				type: 'POST',
+				url: easypack_block.ajaxurl,
+				data: data,
+				dataType: 'json',
+				success: function (response) {
+					console.log( 'Paczkomat saved in session data:', response );
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log( "Error response saving paczkomato into session" );
+					console.log( textStatus );
+					console.log( 'Error: ' + errorThrown + ' ' + jqXHR.responseText );
+				}
 			}
-		});
+		);
 
 	}
-
-
-
 
 	inpostPlGeowidgetModalBlock.close();
 }
 
+
+function inpost_pl_create_validation_modal() {
+	// Create main modal container.
+	const modal = document.createElement( 'div' );
+	modal.id    = 'inpost_pl_checkout_validation_modal';
+	Object.assign(
+		modal.style,
+		{
+			display: 'none',
+			position: 'fixed',
+			top: '0',
+			left: '0',
+			width: '100%',
+			height: '100%',
+			backgroundColor: 'rgba(0, 0, 0, 0.5)',
+			justifyContent: 'center',
+			alignItems: 'center',
+			zIndex: '1000'
+		}
+	);
+
+	// Create modal content container.
+	const modalContent = document.createElement( 'div' );
+	Object.assign(
+		modalContent.style,
+		{
+			backgroundColor: 'white',
+			width: '90%',
+			maxWidth: '300px',
+			padding: '20px',
+			position: 'relative',
+			textAlign: 'center',
+			borderRadius: '10px',
+			boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)'
+		}
+	);
+
+	// Create close button (×).
+	const closeSpan       = document.createElement( 'span' );
+	closeSpan.id          = 'inp_pl_close_modal_cross';
+	closeSpan.textContent = '×';
+	Object.assign(
+		closeSpan.style,
+		{
+			position: 'absolute',
+			top: '10px',
+			right: '15px',
+			fontSize: '20px',
+			cursor: 'pointer'
+		}
+	);
+
+	// Create message div.
+	const messageDiv       = document.createElement( 'div' );
+	messageDiv.textContent = 'Musisz wybrać paczkomat.';
+	Object.assign(
+		messageDiv.style,
+		{
+			margin: '20px 0',
+			fontSize: '18px'
+		}
+	);
+
+	// Create OK button.
+	const okButton       = document.createElement( 'button' );
+	okButton.id          = 'inp_pl_close_modal_button';
+	okButton.textContent = 'Ok';
+	Object.assign(
+		okButton.style,
+		{
+			padding: '10px 20px',
+			backgroundColor: '#FFA900',
+			color: 'white',
+			border: 'none',
+			borderRadius: '5px',
+			cursor: 'pointer',
+			fontSize: '16px'
+		}
+	);
+
+	// Assemble the modal.
+	modalContent.appendChild( closeSpan );
+	modalContent.appendChild( messageDiv );
+	modalContent.appendChild( okButton );
+	modal.appendChild( modalContent );
+
+	return modal;
+}
 
 jQuery( document ).ready(
 	function () {
@@ -160,53 +245,9 @@ jQuery( document ).ready(
 		let inpost_methods = inpost_pl_get_configured_inpost_methods();
 		console.log( inpost_methods );
 
-		let modal       = document.createElement( 'div' );
-		modal.innerHTML = `
-		<div id="inpost_pl_checkout_validation_modal" style="
-			display: none;
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%; 
-			height: 100%; 
-			background-color: rgba( 0, 0, 0, 0.5 );
-			justify-content: center;
-			align-items: center;
-			z-index: 1000;">
-			<div style="
-			background-color: white;
-			width: 90%; 
-			max-width: 300px;
-			padding: 20px;
-			position: relative;
-			text-align: center;
-			border-radius: 10px;
-			box-shadow: 0px 4px 10px rgba( 0, 0, 0, 0.1 );">
-			<span id="inp_pl_close_modal_cross" style="
-				position: absolute;
-				top: 10px;
-				right: 15px;
-				font-size: 20px;
-				cursor: pointer;">&times;</span>
-			<div style="margin:20px 0; font-size:18px;">
-				Musisz wybrać paczkomat.
-			</div>
-			<button id="inp_pl_close_modal_button" style="
-				padding: 10px 20px;
-				background-color: #FFA900;
-				color: white;
-				border: none;
-				border-radius: 5px;
-				cursor: pointer;
-				font-size: 16px;">
-				Ok
-			</button>
-			</div>
-		</div>
-		`;
-
+		let validation_modal = inpost_pl_create_validation_modal();
 		// Append modal to body.
-		document.body.appendChild( modal );
+		document.body.appendChild( validation_modal );
 
 		// Event Listeners for closing modal.
 		let modal_close_1 = document.getElementById( 'inp_pl_close_modal_cross' );
@@ -241,13 +282,12 @@ jQuery( document ).ready(
 						content: '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback_blocks" token="' + token + '" language="pl" config="' + config + '"></inpost-geowidget>'
 					}
 				);
-				
-				
+
 				jQuery( "#easypack_block_type_geowidget" ).on(
 					'click',
 					function (e) {
 						e.preventDefault();
-						console.log('inpost-pl: click on map button jQuery');						
+						console.log( 'inpost-pl: click on map button jQuery' );
 						if ( typeof inpostPlGeowidgetModalBlock != 'undefined' && inpostPlGeowidgetModalBlock !== null ) {
 
 							let checked_radio_control = jQuery( 'input[name^="radio-control-"]:checked' );
@@ -276,9 +316,9 @@ jQuery( document ).ready(
 							if ( ! inpostPlGeowidgetModalBlock.isOpen ) {
 								inpostPlGeowidgetModalBlock.open();
 							}
-						}						
-					});
-					
+						}
+					}
+				);
 
 				jQuery( 'input[name^="radio-control-"]' ).on(
 					'change',
@@ -368,7 +408,7 @@ document.addEventListener(
 				}
 			}
 		}
-		
+
 		if ( target.classList.contains( 'wc-block-components-button__text' ) ) {
 			let parent = target.parentNode;
 			if ( parent.classList.contains( 'wc-block-components-checkout-place-order-button' ) ) {
@@ -446,76 +486,79 @@ function inpost_pl_get_configured_inpost_methods() {
 }
 
 
-window.addEventListener('message', function(event) {
+window.addEventListener(
+	'message',
+	function (event) {
 
-	let parsedData;
-	try {
-		if (typeof event.data === 'string') {
-			parsedData = JSON.parse(event.data);
-		} else {
-			parsedData = event.data;
-		}
+		let parsedData;
+		try {
+			if (typeof event.data === 'string') {
+				parsedData = JSON.parse( event.data );
+			} else {
+				parsedData = event.data;
+			}
 
-		if (
+			if (
 			parsedData.message.payload &&
 			parsedData.message.payload.event === "shippingratechange" &&
 			parsedData.message.payload.data &&
 			parsedData.message.payload.data.shippingRate &&
 			parsedData.message.payload.data.shippingRate.id
-		) {
-			let chosen_shipping_method = parsedData.message.payload.data.shippingRate.id;
+			) {
+				let chosen_shipping_method = parsedData.message.payload.data.shippingRate.id;
 
-			console.log('Chosen_shipping_method:');
-			console.log(chosen_shipping_method);
+				console.log( 'Chosen_shipping_method:' );
+				console.log( chosen_shipping_method );
 
-			if ( chosen_shipping_method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
-				let selected_shipping_radio   = document.querySelector( '#shipping-option .wc-block-components-radio-control__input:checked' );
-				if (selected_shipping_radio !== undefined && selected_shipping_radio !== null) {
-					let id = selected_shipping_radio.value;
-					console.log('Shipping method ID:', id);
+				if ( chosen_shipping_method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
+					let selected_shipping_radio = document.querySelector( '#shipping-option .wc-block-components-radio-control__input:checked' );
+					if (selected_shipping_radio !== undefined && selected_shipping_radio !== null) {
+						let id = selected_shipping_radio.value;
+						console.log( 'Shipping method ID:', id );
 
-					if (id.indexOf('easypack_parcel_machines') !== -1) {
-						let hidden_input = document.getElementById( 'inpost-parcel-locker-id' );
-						if (hidden_input !== undefined && hidden_input !== null) {
-							let paczkomat_id = hidden_input.value;
-							console.log('Paczkomat ID:', paczkomat_id);
+						if (id.indexOf( 'easypack_parcel_machines' ) !== -1) {
+							let hidden_input = document.getElementById( 'inpost-parcel-locker-id' );
+							if (hidden_input !== undefined && hidden_input !== null) {
+								let paczkomat_id = hidden_input.value;
+								console.log( 'Paczkomat ID:', paczkomat_id );
 
-							if (paczkomat_id.trim() === '') {
-								alert('Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.');
-								return false;
+								if (paczkomat_id.trim() === '') {
+									alert( 'Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.' );
+									return false;
+								}
 							}
 						}
 					}
 				}
 			}
-		}
 
-		// Now check for Google Pay click.
-		if (
+			// Now check for Google Pay click.
+			if (
 			parsedData.type === "parent" &&
 			parsedData.message &&
 			parsedData.message.action === "stripe-frame-event" &&
 			parsedData.message.payload &&
 			parsedData.message.payload.event === "click" &&
 			parsedData.message.payload.data
-		) {
-			if(
-				"google_pay" === parsedData.message.payload.data.paymentMethodType
-				|| "apple_pay" === parsedData.message.payload.data.paymentMethodType
-				|| "apple_pay_inner" === parsedData.message.payload.data.paymentMethodType
 			) {
-				//console.log('Google Pay button or ApplePay button click detected');
-				if ( ! inpost_pl_validate_parcel_machine_for_gpay_block() ) {
-					//console.log('Parcel machine validation failed');
+				if (
+					"google_pay" === parsedData.message.payload.data.paymentMethodType
+					|| "apple_pay" === parsedData.message.payload.data.paymentMethodType
+					|| "apple_pay_inner" === parsedData.message.payload.data.paymentMethodType
+				) {
+					// console.log('Google Pay button or ApplePay button click detected');
+					if ( ! inpost_pl_validate_parcel_machine_for_gpay_block() ) {
+							// console.log('Parcel machine validation failed');
 
-					alert('Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.');
+							alert( 'Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.' );
 
-					return false;
+							return false;
+					}
 				}
-			}
 
+			}
+		} catch (err) {
+			// console.log('Error processing message:', err);
 		}
-	} catch (err) {
-		//console.log('Error processing message:', err);
 	}
-});
+);

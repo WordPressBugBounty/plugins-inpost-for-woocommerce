@@ -4,7 +4,7 @@ Tags: inpost, paczkomaty, etykiety, przesyłki
 Requires at least: 5.3
 Tested up to: 6.8
 Requires PHP: 7.2
-Stable tag: 1.6.6
+Stable tag: 1.6.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -42,6 +42,11 @@ Po zainstalowaniu wtyczki skonfiguruj sposób dostawy InPost oraz ceny poszczeg�
 
 
 == Changelog ==
+
+= 1.6.7 =
+* Fix: compatibility with InPost Pay (get parcel locker details from order meta)
+* Fix: emails with tracking number(s)
+* Fix: disappearing selected locker on JS event "updated_checkout"
 
 = 1.6.6 =
 * Fix: Kurier Pobranie - limit 15 000 zł

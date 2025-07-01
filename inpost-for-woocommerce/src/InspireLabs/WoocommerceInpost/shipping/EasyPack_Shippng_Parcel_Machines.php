@@ -891,12 +891,12 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 		public function woocommerce_checkout_update_order_meta( $order_id ) {
 			if ( isset( $_POST['parcel_machine_id'] ) && ! empty( $_POST['parcel_machine_id'] ) ) {
-				
+
 				$paczkomat_id = sanitize_text_field( $_POST['parcel_machine_id'] );
 				if ( 'PL_' === substr( $paczkomat_id, 0, 3 ) ) {
 					$paczkomat_id = substr( $paczkomat_id, 3 );
 				}
-				
+
 				update_post_meta( $order_id, '_parcel_machine_id', $paczkomat_id );
 
 				if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
@@ -908,8 +908,8 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				}
 			}
 
-			if ( isset( $_POST['parcel_machine_desc'] ) && ! empty( $_POST['parcel_machine_desc'] ) ) {				
-								
+			if ( isset( $_POST['parcel_machine_desc'] ) && ! empty( $_POST['parcel_machine_desc'] ) ) {
+
 				update_post_meta( $order_id, '_parcel_machine_desc', sanitize_text_field( $_POST['parcel_machine_desc'] ) );
 
 				if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
@@ -1027,8 +1027,8 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 
 		/**
-         * Ajax create package
-         *
+		 * Ajax create package
+		 *
 		 * @throws ReflectionException
 		 */
 		public static function ajax_create_package() {
@@ -1039,10 +1039,10 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			$shipment_service = EasyPack::EasyPack()->get_shipment_service();
 			$status_service   = EasyPack::EasyPack()->get_shipment_status_service();
 			$shipment_array   = $shipment_service->shipment_to_array( $shipment_model );
-			
-			if( empty( $shipment_array['receiver']['address']['country_code'] ) ) {
-                $shipment_array['receiver']['address']['country_code'] = 'PL';
-            }
+
+			if ( empty( $shipment_array['receiver']['address']['country_code'] ) ) {
+				$shipment_array['receiver']['address']['country_code'] = 'PL';
+			}
 
 			$shipment_data = array();
 
@@ -1099,8 +1099,12 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 					$ret['service']    = $shipment_data['service'];
 				}
 
-				if ( isset( $shipment_data['tracking'] ) && ! empty( $shipment_data['tracking'] ) ) {
-					( new TrackingInfoEmail() )->send_tracking_info_email( $order, $tracking_url, $shipment_data['tracking'] );
+				if ( 'yes' === get_option( 'easypack_delivery_notice' ) ) {
+					wp_schedule_single_event(
+						time() + 60,
+						'send_tracking_numbers_email',
+						array( $order_id )
+					);
 				}
 			}
 			echo json_encode( $ret );
@@ -1108,8 +1112,8 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		}
 
 		/**
-         * Order metabox content
-         *
+		 * Order metabox content
+		 *
 		 * @param $post
 		 * @param bool                      $output $output.
 		 * @param ShipX_Shipment_Model|null $shipment $shipment.
@@ -1225,8 +1229,8 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 
 		/**
-         * Ajax create shipment model
-         *
+		 * Ajax create shipment model
+		 *
 		 * @return ShipX_Shipment_Model
 		 */
 		public static function ajax_create_shipment_model() {
@@ -1471,14 +1475,16 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		/**
 		 * @return ShipX_Shipment_Service
 		 */
-		/*public function getShipmentService() {
+		/*
+		public function getShipmentService() {
 			return $this->shipment_service;
 		}*/
 
 		/**
 		 * @param ShipX_Shipment_Service $shipment_service
 		 */
-		/*public function setShipmentService( $shipment_service ) {
+		/*
+		public function setShipmentService( $shipment_service ) {
 			$this->shipment_service = $shipment_service;
 		}*/
 
@@ -1502,8 +1508,8 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		}
 
 		/**
-         * Get single product dimensions
-         *
+		 * Get single product dimensions
+		 *
 		 * @param int $wc_order_id
 		 *
 		 * @return ShipX_Shipment_Parcel_Dimensions_Model
@@ -1816,13 +1822,6 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				// $search_in_api = EasyPack_API()->customer_parcel_get_by_id( $shipment_model->getInternalData()->getInpostId() );
 				$search_in_api = EasyPack_API()->customer_parcel_get_by_id( $response['id'] );
 
-				if ( isset( $search_in_api['items'][0]['tracking_number'] ) ) {
-					$shipment_data['tracking'] = $search_in_api['items'][0]['tracking_number'];
-					$shipment_model->getInternalData()->setTrackingNumber( $search_in_api['items'][0]['tracking_number'] );
-					break;
-				}
-
-				// ?? API changed ?? key: items => parcels
 				if ( isset( $search_in_api['parcels'][0]['tracking_number'] ) ) {
 					$shipment_data['tracking'] = $search_in_api['parcels'][0]['tracking_number'];
 					$shipment_model->getInternalData()->setTrackingNumber( $search_in_api['parcels'][0]['tracking_number'] );
@@ -1875,7 +1874,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			}
 
 			// zapisz koszt przesyłki do przesyłki
-			$price_calculator = EasyPack()->get_shipment_price_calculator_service();
+			// $price_calculator = EasyPack()->get_shipment_price_calculator_service();
 
 			if ( ! $is_additional_package_processing ) {
 				$shipment_service->update_shipment_to_db( $shipment_model );

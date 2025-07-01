@@ -46,7 +46,7 @@ if ( true === $wrong_api_env ) {
 
 $first_parcel      = true;
 $shipment_service  = EasyPack()->get_shipment_service();
-$parcel_machine_id = ! empty( $parcel_machine_id ) ? $parcel_machine_id : esc_attr( get_post_meta( $order_id, '_parcel_machine_id', true ) );
+$parcel_machine_id = Easypack_Helper()->get_locker_id_from_meta( $order_id );
 
 $class             = array( 'wc-enhanced-select' );
 $custom_attributes = array( 'style' => 'width:100%;' );

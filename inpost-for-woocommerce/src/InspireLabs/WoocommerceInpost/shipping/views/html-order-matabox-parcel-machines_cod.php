@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <?php
 $status_service = EasyPack()->get_shipment_status_service();
+$parcel_machine_id = Easypack_Helper()->get_locker_id_from_meta( $order_id );
 ?>
 
 <?php if ( true === $wrong_api_env ): ?>

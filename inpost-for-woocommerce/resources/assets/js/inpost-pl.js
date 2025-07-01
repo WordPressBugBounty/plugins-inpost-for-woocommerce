@@ -4,16 +4,16 @@ let inpostplMapToken = '';
 
 function inpost_pl_validate_parcel_machine_for_gpay() {
 
-	let checked_shipping_input = document.querySelector('#shipping_method input[name^="shipping_method["]:checked');
+	let checked_shipping_input = document.querySelector( '#shipping_method input[name^="shipping_method["]:checked' );
 	if (checked_shipping_input !== undefined && checked_shipping_input !== null) {
 		let id = checked_shipping_input.value;
-		console.log('Shipping method ID:', id);
+		console.log( 'Shipping method ID:', id );
 
-		if (id.indexOf('easypack_parcel_machines') !== -1) {
-			let hidden_input = document.querySelector('#parcel_machine_id');
+		if (id.indexOf( 'easypack_parcel_machines' ) !== -1) {
+			let hidden_input = document.querySelector( '#parcel_machine_id' );
 			if (hidden_input !== undefined && hidden_input !== null) {
 				let paczkomat_id = hidden_input.value;
-				console.log('Paczkomat ID:', paczkomat_id);
+				console.log( 'Paczkomat ID:', paczkomat_id );
 
 				if (paczkomat_id.trim() === '') {
 					return false;
@@ -79,11 +79,11 @@ function inpost_pl_select_point_callback(point) {
 	}
 
 	let point_name = '';
-	if( 'name' in point ) {
+	if ( 'name' in point ) {
 		point_name = point.name;
-		if (point_name.startsWith("PL_")) {
+		if (point_name.startsWith( "PL_" )) {
 			// Remove first 3 characters "PL_".
-			point_name = point_name.slice(3);
+			point_name = point_name.slice( 3 );
 		}
 	}
 
@@ -125,6 +125,9 @@ function inpost_pl_select_point_callback(point) {
 		}
 	);
 
+	let EasyPackPointObject = { 'pointName': point_name, 'pointDesc': parcelMachineAddressDesc, 'visiblePointData': visible_point_data };
+	localStorage.setItem( 'EasyPackPointObject', JSON.stringify( EasyPackPointObject ) );
+
 	// for some templates like Divi - add hidden fields for Parcel locker validation dynamically.
 	var form               = document.getElementsByClassName( 'checkout woocommerce-checkout' )[0];
 	var additionalInput1   = document.createElement( 'input' );
@@ -151,21 +154,23 @@ function inpost_pl_select_point_callback(point) {
 		value: point_name
 	};
 
-	jQuery.ajax({
-		type: 'POST',
-		url: inpost_pl_map.ajaxurl,
-		data: data,
-		dataType: 'json',
-		success: function(response) {
-			console.log( 'Paczkomat saved in session data:', response );
-		},
-		error: function (jqXHR, textStatus, errorThrown) {
-			console.log("Error response saving paczkomato into session");
-			console.log(textStatus);
-			console.log('Error: ' + errorThrown + ' ' + jqXHR.responseText);
+	jQuery.ajax(
+		{
+			type: 'POST',
+			url: inpost_pl_map.ajaxurl,
+			data: data,
+			dataType: 'json',
+			success: function (response) {
+				console.log( 'Paczkomat saved in session data:', response );
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				console.log( "Error response saving paczkomato into session" );
+				console.log( textStatus );
+				console.log( 'Error: ' + errorThrown + ' ' + jqXHR.responseText );
 
+			}
 		}
-	});
+	);
 }
 
 
@@ -238,11 +243,80 @@ jQuery( document ).ready(
 				let instance_id   = shipping_data.postfix;
 				inpostplMapConfig = 'parcelCollect';
 
-				if (typeof method != 'undefined' && method !== null) {
+				if ( typeof method != 'undefined' && method !== null ) {
 					inpostplMapConfig = inpost_pl_get_map_config_by_shipping_instance_id( instance_id, method );
 
 					let map_content = '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback" token="' + inpostplMapToken + '" language="pl" config="' + inpostplMapConfig + '"></inpost-geowidget>';
 					inpostplGeowidgetModal.setContent( map_content );
+
+					let EasyPackPointObject = localStorage.getItem( 'EasyPackPointObject' );
+
+					if (EasyPackPointObject !== null) {
+						let point,
+							visible_desc,
+							desc;
+
+						let pointData = JSON.parse( EasyPackPointObject );
+						if (typeof pointData != 'undefined' && pointData !== null) {
+							if (typeof pointData.pointName != 'undefined' && pointData.pointName !== null) {
+								point = pointData.pointName;
+							}
+							if (typeof pointData.visiblePointData != 'undefined' && pointData.visiblePointData !== null) {
+								visible_desc = pointData.visiblePointData;
+							}
+							if (typeof pointData.pointDesc != 'undefined' && pointData.pointDesc !== null) {
+								desc = pointData.pointDesc;
+							}
+
+							if (typeof point != 'undefined' && point !== null) {
+								jQuery('#easypack_show_geowidget').text(inpost_pl_map.button_text2);
+								jQuery('input[name=parcel_machine_id]').each(
+									function (ind, elem) {
+										jQuery(elem).val(point);
+									}
+								);
+								jQuery('#divi_parcel_machine_id').val(point);
+
+								if (typeof visible_desc != 'undefined' && visible_desc !== null) {
+									jQuery('*[id*=selected-parcel-machine-id]').each(
+										function (ind, elem) {
+											jQuery(elem).html(visible_desc);
+										}
+									);
+									jQuery('*[id*=selected-parcel-machine]').each(
+										function (ind, elem) {
+											jQuery(elem).removeClass('hidden-paczkomat-data');
+										}
+									);
+								}
+							}
+
+							if (typeof desc != 'undefined' && desc !== null) {
+								jQuery('input[name=parcel_machine_desc]').each(
+									function (ind, elem) {
+										jQuery(elem).val(desc);
+									}
+								);
+								jQuery('#divi_parcel_machine_desc').val(desc);
+							}
+						}
+					}
+
+				}
+			}
+		);
+
+
+		document.addEventListener(
+			'change',
+			function (e) {
+				e          = e || window.event;
+				var target = e.target;
+				if (target.hasAttribute( 'name' )) {
+					if (target.getAttribute('name') === 'shipping_method[0]') {
+						localStorage.setItem( 'EasyPackPointObject', null );
+						console.log('reset local storage value');
+					}
 				}
 			}
 		);
@@ -270,81 +344,83 @@ document.addEventListener(
 );
 
 
-window.addEventListener('message', function(event) {
+window.addEventListener(
+	'message',
+	function (event) {
 
-	let parsedData;
-	try {
-		if (typeof event.data === 'string') {
-			parsedData = JSON.parse(event.data);
-		} else {
-			parsedData = event.data;
-		}
+		let parsedData;
+		try {
+			if (typeof event.data === 'string') {
+				parsedData = JSON.parse( event.data );
+			} else {
+				parsedData = event.data;
+			}
 
-		if (
+			if (
 			parsedData.message.payload &&
 			parsedData.message.payload.event === "shippingratechange" &&
 			parsedData.message.payload.data &&
 			parsedData.message.payload.data.shippingRate &&
 			parsedData.message.payload.data.shippingRate.id
-		) {
-			let chosen_shipping_method = parsedData.message.payload.data.shippingRate.id;
+			) {
+				let chosen_shipping_method = parsedData.message.payload.data.shippingRate.id;
 
-			console.log('Chosen_shipping_method:');
-			console.log(chosen_shipping_method);
+				console.log( 'Chosen_shipping_method:' );
+				console.log( chosen_shipping_method );
 
-			if ( chosen_shipping_method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
-				let checked_shipping_input = document.querySelector('#shipping_method input[name^="shipping_method["]:checked');
-				if (checked_shipping_input !== undefined && checked_shipping_input !== null) {
-					let id = checked_shipping_input.value;
-					console.log('Shipping method ID:', id);
+				if ( chosen_shipping_method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
+					let checked_shipping_input = document.querySelector( '#shipping_method input[name^="shipping_method["]:checked' );
+					if (checked_shipping_input !== undefined && checked_shipping_input !== null) {
+						let id = checked_shipping_input.value;
+						console.log( 'Shipping method ID:', id );
 
-					if (id.indexOf('easypack_parcel_machines') !== -1) {
-						let hidden_input = document.querySelector('#parcel_machine_id');
-						if (hidden_input !== undefined && hidden_input !== null) {
-							let paczkomat_id = hidden_input.value;
-							console.log('Paczkomat ID:', paczkomat_id);
+						if (id.indexOf( 'easypack_parcel_machines' ) !== -1) {
+							let hidden_input = document.querySelector( '#parcel_machine_id' );
+							if (hidden_input !== undefined && hidden_input !== null) {
+								let paczkomat_id = hidden_input.value;
+								console.log( 'Paczkomat ID:', paczkomat_id );
 
-							if (paczkomat_id.trim() === '') {
-								alert('Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.');
-								return false;
+								if (paczkomat_id.trim() === '') {
+									alert( 'Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.' );
+									return false;
+								}
 							}
 						}
 					}
 				}
 			}
-		}
 
+			// console.log('Check JS parsedData');
+			// console.log(parsedData);
 
-		//console.log('Check JS parsedData');
-		//console.log(parsedData);
-
-		// Now check for Google Pay click using the parsed data
-		if (
+			// Now check for Google Pay click using the parsed data
+			if (
 			parsedData.type === "parent" &&
 			parsedData.message &&
 			parsedData.message.action === "stripe-frame-event" &&
 			parsedData.message.payload &&
 			parsedData.message.payload.event === "click" &&
 			parsedData.message.payload.data
-		) {
-
-			if(
-				"google_pay" === parsedData.message.payload.data.paymentMethodType
-				|| "apple_pay" === parsedData.message.payload.data.paymentMethodType
-				|| "apple_pay_inner" === parsedData.message.payload.data.paymentMethodType
 			) {
-				//console.log('Google Pay or Apple Pay button click detected');
-				if ( ! inpost_pl_validate_parcel_machine_for_gpay() ) {
-					//console.log('Parcel machine validation failed');
 
-					alert('Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.');
+				if (
+					"google_pay" === parsedData.message.payload.data.paymentMethodType
+					|| "apple_pay" === parsedData.message.payload.data.paymentMethodType
+					|| "apple_pay_inner" === parsedData.message.payload.data.paymentMethodType
+				) {
+					// console.log('Google Pay or Apple Pay button click detected');
+					if ( ! inpost_pl_validate_parcel_machine_for_gpay() ) {
+							// console.log('Parcel machine validation failed');
 
-					return false;
+							alert( 'Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.' );
+
+							return false;
+					}
 				}
-			}
 
+			}
+		} catch (err) {
+			// console.log('Error processing message:', err);
 		}
-	} catch (err) {
-		//console.log('Error processing message:', err);
 	}
-});
+);

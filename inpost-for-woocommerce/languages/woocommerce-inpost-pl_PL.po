@@ -5,14 +5,14 @@ msgstr ""
 "Project-Id-Version: InPost for WooCommerce 1.5.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-inpost\n"
 "POT-Creation-Date: 2018-08-24 13:01:34+00:00\n"
-"PO-Revision-Date: 2025-05-06 13:59+0200\n"
+"PO-Revision-Date: 2025-06-30 15:11+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
 #: classes/admin/class-dispatch-orders.php:171
 #: classes/admin/class-post-types.php:29
@@ -2031,3 +2031,9 @@ msgstr "Dodaj tekst '(darmowa wysyłka)' na końcu tytułu metody wysyłki"
 
 msgid "Show available hooks on checkout page to administrators"
 msgstr "Pokaż dostępne WC Hooks na stronie Checkout administratorom"
+
+msgid "For your order was created multi-package. It will soon move on its journey"
+msgstr "Do Twojego zamówienia została stworzona Przesyłka wielopaczkowa. Niedługo ruszy w dalszą podróż"
+
+msgid "Tracking links:"
+msgstr "Linki do śledzenia:"
