@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: InPost for WooCommerce 1.5.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-inpost\n"
 "POT-Creation-Date: 2018-08-24 13:01:34+00:00\n"
-"PO-Revision-Date: 2025-06-30 15:11+0200\n"
+"PO-Revision-Date: 2025-07-16 09:44+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -1457,7 +1457,7 @@ msgid "The configuration of the dispatch points is incomplete. The field %s is m
 msgstr "Błąd konfiguracji punktów odbioru. Brakuje pola: %s w punkcie odbioru nr: %s"
 
 msgid "No dispatch points or wrong configuration. Add dispatch points on the InPost options page."
-msgstr "Brak punktów obdioru albo zła konfiguracja. Dodaj punkty odbioru na ekranie ustawień InPost."
+msgstr "Brak dodanych punktów odbioru w konfiguracji modułu. Dodaj punkt odbioru w ustawieniach wtyczki."
 
 msgid "Parcel locker label format"
 msgstr "Format etykiety paczkomatowej, który będzie dostępny do pobrania"
@@ -2037,3 +2037,6 @@ msgstr "Do Twojego zamówienia została stworzona Przesyłka wielopaczkowa. Nied
 
 msgid "Tracking links:"
 msgstr "Linki do śledzenia:"
+
+msgid "Inpost Parcel Locker COD. Allow customers to pick up orders themselves."
+msgstr "Paczkomat InPost Pobranie. Metoda pozwala klientom na samodzielny odbiór przesyłek."

@@ -51,6 +51,11 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 
 			$this->id           = 'easypack_parcel_machines_cod';
 			$this->method_title = __( 'InPost Locker 24/7 COD', 'woocommerce-inpost' );
+			$this->method_description
+                = esc_html__(
+                'Inpost Parcel Locker COD. Allow customers to pick up orders themselves.',
+                'woocommerce-inpost'
+            );
 			$this->init();
 		}
 

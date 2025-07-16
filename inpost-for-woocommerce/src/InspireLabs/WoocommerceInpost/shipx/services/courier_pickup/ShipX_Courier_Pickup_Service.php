@@ -25,7 +25,7 @@ class ShipX_Courier_Pickup_Service {
 
 		if ( empty( $dpoints['street'] ) ) {
 			$alerts = new Alerts();
-			$alerts->add_error( 'Woocommerce Inpost: '
+			$alerts->add_error( 'InPost PL: '
 			                    . __( 'No dispatch points or wrong configuration. Add dispatch points on the InPost options page.', 'woocommerce-inpost' ) );
 			$alerts->print_alerts();
 
@@ -69,7 +69,7 @@ class ShipX_Courier_Pickup_Service {
 
 	private function dpoint_error( $name, $key ) {
 		$alerts = new Alerts();
-		$alerts->add_error( 'Woocommerce Inpost: '
+		$alerts->add_error( 'InPost PL: '
 		                    . sprintf( __( 'The configuration of the dispatch points is incomplete. The field %s is missing at pickup point #%s', 'woocommerce-inpost' ),
 				$name, $key + 1 ) );
 		$alerts->print_alerts();

@@ -104,7 +104,7 @@ class EasyPack extends inspire_Plugin4 {
 
 		add_action( 'plugins_loaded', array( $this, 'init_easypack' ), 100 );
 		add_action( 'woocommerce_init', array( $this, 'add_settings_to_flexible_shipping' ) );
-
+		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_filter( 'woocommerce_package_rates', array( $this, 'check_paczka_weekend_fs_settings' ), 10, 2 );
 
 		add_action(
@@ -1285,4 +1285,14 @@ class EasyPack extends inspire_Plugin4 {
 
 		( new TrackingInfoEmail() )->send_tracking_info_email( $order_id );
 	}
+	
+	
+	public function load_plugin_textdomain() {
+		load_plugin_textdomain(
+			'woocommerce-inpost',
+			false,
+			dirname( plugin_basename( WOOCOMMERCE_INPOST_PLUGIN_FILE ) ) . '/languages/'
+		);
+	}
+
 }
