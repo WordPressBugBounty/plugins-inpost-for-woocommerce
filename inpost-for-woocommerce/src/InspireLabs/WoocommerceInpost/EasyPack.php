@@ -672,6 +672,8 @@ class EasyPack extends inspire_Plugin4 {
 			'easypack_settings',
 			array(
 				'default_logo' => EasyPack()->getPluginImages() . 'logo/small/white.png',
+                'ajaxurl' => admin_url( 'admin-ajax.php' ),
+                'nonce'   => wp_create_nonce( 'easypack-shipment-manager' ),
 			)
 		);
 

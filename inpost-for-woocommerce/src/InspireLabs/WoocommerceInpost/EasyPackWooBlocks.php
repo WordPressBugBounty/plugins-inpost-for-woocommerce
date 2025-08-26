@@ -34,7 +34,7 @@ class EasyPackWooBlocks implements IntegrationInterface {
 	public function initialize() {
 
 		$plugin_data = new EasyPack();
-		$script_url  = $plugin_data->getPluginJs() . 'blocks/inpost-pl-block.js';
+		$script_url  = $plugin_data->getPluginJs() . 'build/inpostpl-block-frontend.js';
 
 		$dep = array(
 			'dependencies' => array( 'wc-settings', 'wp-data', 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n', 'wp-primitives' ),
@@ -49,6 +49,15 @@ class EasyPackWooBlocks implements IntegrationInterface {
 			$script_asset['dependencies'],
 			$script_asset['version'],
 			true
+		);
+
+		$translations_folder = plugin_dir_path( WOOCOMMERCE_INPOST_PLUGIN_FILE );
+		$translations_folder = $translations_folder . 'language';
+
+		wp_set_script_translations(
+			'inpost-pl-wc-blocks-integration',
+			'woocommerce-inpost',
+			$translations_folder
 		);
 	}
 
@@ -78,6 +87,7 @@ class EasyPackWooBlocks implements IntegrationInterface {
 	public function get_script_data() {
 		return array(
 			'configured_methods' => EasyPack_Helper()->get_inpost_methods(),
+			'map_btn_text'       => esc_html__( 'Select Parcel Locker', 'woocommerce-inpost' ),
 		);
 	}
 

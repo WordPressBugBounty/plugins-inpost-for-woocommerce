@@ -46,6 +46,7 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 			add_action( 'admin_head', array( __CLASS__, 'wp_footer_easypack_nonce' ) );
 			add_action( 'wp_ajax_inpost_save_to_wc_session', array( __CLASS__, 'save_to_wc_session' ) );
             add_action( 'wp_ajax_nopriv_inpost_save_to_wc_session', array( __CLASS__, 'save_to_wc_session' ) );
+			add_action( 'wp_ajax_posting_confirmation_request', array( __CLASS__, 'posting_confirmation_request_callback' ) );
 		}
 
 		/**
@@ -502,6 +503,35 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 
             wp_die();
         }
+		
+		
+		
+		public static function posting_confirmation_request_callback(): void {
+
+            check_ajax_referer('easypack-shipment-manager', 'nonce');
+
+            $orders = isset( $_POST['parcels'] ) ? (array) $_POST['parcels'] : array();
+            $orders = array_map( 'sanitize_text_field', $orders );
+
+            if ( empty( $orders ) ) {
+                return;
+            }
+
+            $shipment_service = EasyPack()->get_shipment_service();
+            $shipment_ids     = array();
+
+            foreach ( $orders as $order ) {
+                $inpost_internal_data = $shipment_service->get_shipment_by_order_id( (int) $order );
+
+                if ( $inpost_internal_data && is_object( $inpost_internal_data ) ) {
+                    $shipment_ids[] = $inpost_internal_data->getInternalData()->getInpostId();
+                }
+            }
+
+            EasyPack_Helper()->post_confirmation_pdf( $shipment_ids );
+
+        }
+		
 	}
 
 endif;

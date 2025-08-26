@@ -396,7 +396,7 @@ document.addEventListener(
 			}
 		}
 
-		if ( target.classList.contains( 'wc-block-components-checkout-place-order-button' )
+		if ( target.closest( '.wc-block-components-checkout-place-order-button' ) || target.classList.contains( 'wc-block-components-checkout-place-order-button' )
 			|| target.classList.contains( 'wc-block-checkout__actions_row' ) ) {
 
 			let reactjs_input       = document.getElementById( 'inpost-parcel-locker-id' );
@@ -405,20 +405,6 @@ document.addEventListener(
 				reactjs_input_lalue = reactjs_input.value;
 				if ( ! reactjs_input_lalue ) {
 					inpost_pl_open_validation_modal();
-				}
-			}
-		}
-
-		if ( target.classList.contains( 'wc-block-components-button__text' ) ) {
-			let parent = target.parentNode;
-			if ( parent.classList.contains( 'wc-block-components-checkout-place-order-button' ) ) {
-				let reactjs_input       = document.getElementById( 'inpost-parcel-locker-id' );
-				let reactjs_input_lalue = false;
-				if (typeof reactjs_input != 'undefined' && reactjs_input !== null) {
-					reactjs_input_lalue = reactjs_input.value;
-					if ( ! reactjs_input_lalue ) {
-						inpost_pl_open_validation_modal();
-					}
 				}
 			}
 		}

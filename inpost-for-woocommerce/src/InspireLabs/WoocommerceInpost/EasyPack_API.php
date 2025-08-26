@@ -81,13 +81,6 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				$this->country = self::COUNTRY_PL;
 			}
 
-			if ( self::COUNTRY_UK === $this->normalize_country_code_for_inpost(
-				get_option( 'easypack_api_country' )
-			)
-			) {
-				$this->country = self::COUNTRY_UK;
-			}
-
 			$this->api_url = $this->make_api_url();
 		}
 
@@ -325,7 +318,6 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				'Content-Type'  => 'application/json',
 			);
 
-			$request_args['body'] = $args;
 			$request_args['body'] = json_encode( $args );
 
 			$response = wp_remote_post( $url, $request_args );
@@ -340,7 +332,9 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 			}
 
 			if ( is_wp_error( $response ) ) {
+
 				throw new Exception( $response->get_error_message() );
+
 			} else {
 
 				if ( $this->is_binary_response( $response ) ) {
@@ -351,10 +345,12 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				}
 
 				$ret = json_decode( $response['body'], true );
+
 				if ( ! is_array( $ret ) ) {
 					throw new Exception( __( 'Bad API response. Check API URL', 'woocommerce-inpost' ), 503 );
+
 				} elseif ( isset( $ret['status'] ) ) {
-						$errors = '';
+                    $errors = '';
 					if ( isset( $ret['error'] ) && ! empty( $ret['error'] ) ) {
 						if ( is_array( $ret['details'] ) ) {
 							if ( count( $ret['details'] ) ) {
@@ -708,6 +704,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 
 		public function customer_parcel_create( $args ) {
+
 			$organizationId = get_option( 'easypack_organization_id' );
 			$response       = $this->post( sprintf( '/organizations/%d/shipments', $organizationId ), $args );
 

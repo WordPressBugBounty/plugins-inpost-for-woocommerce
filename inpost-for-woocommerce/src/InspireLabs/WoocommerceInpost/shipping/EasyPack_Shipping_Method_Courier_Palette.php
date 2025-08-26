@@ -352,10 +352,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_Palette' ) ) {
 			$label_url      = '';
 
             $shipment_data = [];
-			
-			if( empty( $shipment_array['receiver']['address']['country_code'] ) ) {
-                $shipment_array['receiver']['address']['country_code'] = 'PL';
-            }
+
 
 			try {
 

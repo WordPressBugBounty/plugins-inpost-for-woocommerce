@@ -359,11 +359,6 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 
 			$shipment_data = array();
 
-			if ( empty( $shipment_array['receiver']['address']['country_code'] ) ) {
-				$shipment_array['receiver']['address']['country_code'] = 'PL';
-			}
-
-
 			try {
 
 				$response = EasyPack_API()->customer_parcel_create( $shipment_array );

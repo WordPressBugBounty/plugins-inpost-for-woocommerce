@@ -343,10 +343,6 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
             unset( $shipment_array['internal_data']);
             unset( $shipment_array['commercial_product_identifier']);
 			
-			if( empty( $shipment_array['receiver']['address']['country_code'] ) ) {
-                $shipment_array['receiver']['address']['country_code'] = 'PL';
-            }
-
 
             try {
 

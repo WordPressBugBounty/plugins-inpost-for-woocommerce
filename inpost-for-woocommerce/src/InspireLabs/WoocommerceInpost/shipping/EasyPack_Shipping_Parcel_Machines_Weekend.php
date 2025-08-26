@@ -442,10 +442,6 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 
 			// required parameter for Paczka w Weekend
 			$shipment_array['end_of_week_collection'] = true;
-			
-			if( empty( $shipment_array['receiver']['address']['country_code'] ) ) {
-                $shipment_array['receiver']['address']['country_code'] = 'PL';
-            }
 
             $shipment_data = [];
 

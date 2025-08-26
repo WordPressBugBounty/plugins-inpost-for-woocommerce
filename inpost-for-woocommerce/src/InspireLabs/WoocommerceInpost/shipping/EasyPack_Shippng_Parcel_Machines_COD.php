@@ -477,11 +477,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 				$cod->setAmount( $order->get_total() );
 				$shipment_model->setCod( $cod );
 			}
-			
-			if( empty( $shipment_array['receiver']['address']['country_code'] ) ) {
-                $shipment_array['receiver']['address']['country_code'] = 'PL';
-            }
-			
+
 
             $shipment_data = [];
 

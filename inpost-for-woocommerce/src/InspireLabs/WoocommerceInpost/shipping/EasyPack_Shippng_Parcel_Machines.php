@@ -1040,10 +1040,6 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			$status_service   = EasyPack::EasyPack()->get_shipment_status_service();
 			$shipment_array   = $shipment_service->shipment_to_array( $shipment_model );
 
-			if ( empty( $shipment_array['receiver']['address']['country_code'] ) ) {
-				$shipment_array['receiver']['address']['country_code'] = 'PL';
-			}
-
 			$shipment_data = array();
 
 			try {

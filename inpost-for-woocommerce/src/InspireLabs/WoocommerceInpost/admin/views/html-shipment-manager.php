@@ -216,8 +216,10 @@ use InspireLabs\WoocommerceInpost\shipx\models\courier_pickup\ShipX_Dispatch_Ord
 		<div style="float:left;">
 			<p>
 				<a id="easypack_create_posting_confirmation" class="button-primary"
-					href=""><?php esc_html_e( 'Create posting confirmation', 'woocommerce-inpost' ); ?></a>
+					href=""><?php esc_html_e( 'Create posting confirmation', 'woocommerce-inpost' ); ?>
+				</a>
 			</p>
+			<span id="inpost_confirmation_error_response"></span>
 		</div>
 		<div style="float:left;">
 			<p><span id="easypack_spinner_posting_confirmation" class="spinner"></span></p>
@@ -231,7 +233,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\courier_pickup\ShipX_Dispatch_Ord
 				<span>
 				<?php else : ?>
 					<span class="tips" data-tip="
-					<?php 
+					<?php
 					esc_html_e(
 						'From the list, select the packages that you want to be collected to be sent. If Courier has been chosen, the collection of your packages by a courier will be arranged.',
 						'woocommerce-inpost'
@@ -463,10 +465,15 @@ use InspireLabs\WoocommerceInpost\shipx\models\courier_pickup\ShipX_Dispatch_Ord
 	});
 
 
-	jQuery('#easypack_create_posting_confirmation').click(function () {
-		var parcels = [];
-		var count_parcels = 0;
+	jQuery('#easypack_create_posting_confirmation').click(function (e) {
+		e.preventDefault();
+		let parcels = [];
+		let count_parcels = 0;
+		let first_order = '';
 		jQuery('input.easypack_parcel').each(function (i) {
+			if (0 === i ) {
+				first_order = jQuery(this).val();
+			}
 			if (jQuery(this).is(':checked')) {
 				parcels[i] = jQuery(this).val();
 				count_parcels++;
@@ -478,11 +485,55 @@ use InspireLabs\WoocommerceInpost\shipx\models\courier_pickup\ShipX_Dispatch_Ord
 			return false;
 		}
 
-		jQuery('#easypack_posting_confirmation_request').val('1');
-		jQuery('#easypack_shipment_form').attr('target', '_blank');
-		jQuery('#easypack_shipment_form').submit();
-		jQuery('#easypack_shipment_form').attr('target', '_self');
-		jQuery('#easypack_posting_confirmation_request').val('0');
+		jQuery('#inpost_confirmation_error_response').html('');
+
+		let data = {
+			action: 'posting_confirmation_request',
+			nonce: easypack_settings.nonce,
+			parcels: parcels
+		};
+
+		jQuery.ajax(
+			{
+				type: 'POST',
+				url: easypack_settings.ajaxurl,
+				data: data,
+				xhrFields: {
+					responseType: 'blob'  // This is key!
+				},
+				success: function (response) {
+					console.log( 'posting_confirmation_request:' );
+
+					try {
+						let filename = 'inpost_posting_confirmation_' + first_order + '.pdf';
+						let url = URL.createObjectURL(response);
+
+						// Option A: Download.
+						let link = document.createElement('a');
+						link.href = url;
+						link.download = filename;
+						link.click();
+
+						// Option B: View in new window
+						// window.open(url);
+
+						// Clean up.
+						setTimeout(() => URL.revokeObjectURL(url), 1000);
+					} catch (e) {
+						let error                = "<span class='inpost_confirmation_error_response' style='font-weight:bold; color:#ff0000'>" +
+							"Error:<br><pre>" + e + "<pre></span>";
+						jQuery( '#inpost_confirmation_error_response' ).html( error );
+					}
+
+
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log( "Error response posting_confirmation" );
+					console.log( textStatus );
+					console.log( 'Error: ' + errorThrown + ' ' + jqXHR.responseText );
+				}
+			}
+		);
 
 		return false;
 	});

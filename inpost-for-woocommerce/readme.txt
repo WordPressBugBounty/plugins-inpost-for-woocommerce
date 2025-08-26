@@ -4,7 +4,7 @@ Tags: inpost, paczkomaty, etykiety, przesyłki
 Requires at least: 5.3
 Tested up to: 6.8
 Requires PHP: 7.2
-Stable tag: 1.6.9
+Stable tag: 1.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -42,6 +42,9 @@ Po zainstalowaniu wtyczki skonfiguruj sposób dostawy InPost oraz ceny poszczeg�
 
 
 == Changelog ==
+
+= 1.7.0 =
+* Fix: validation if Pickup chosen in Checkout Block
 
 = 1.6.9 =
 * Feat: update JS lib for map

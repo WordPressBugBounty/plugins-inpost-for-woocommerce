@@ -396,10 +396,6 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Economy_COD' ) ) {
             $shipment_array   = $shipment_service->shipment_to_array( $shipment_model );
             $status_service   = EasyPack::EasyPack()->get_shipment_status_service();
             $label_url        = '';
-			
-			if( empty( $shipment_array['receiver']['address']['country_code'] ) ) {
-                $shipment_array['receiver']['address']['country_code'] = 'PL';
-            }
 
             $shipment_data = [];
 
