@@ -484,40 +484,6 @@ window.addEventListener(
 				parsedData = event.data;
 			}
 
-			if (
-			parsedData.message.payload &&
-			parsedData.message.payload.event === "shippingratechange" &&
-			parsedData.message.payload.data &&
-			parsedData.message.payload.data.shippingRate &&
-			parsedData.message.payload.data.shippingRate.id
-			) {
-				let chosen_shipping_method = parsedData.message.payload.data.shippingRate.id;
-
-				console.log( 'Chosen_shipping_method:' );
-				console.log( chosen_shipping_method );
-
-				if ( chosen_shipping_method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
-					let selected_shipping_radio = document.querySelector( '#shipping-option .wc-block-components-radio-control__input:checked' );
-					if (selected_shipping_radio !== undefined && selected_shipping_radio !== null) {
-						let id = selected_shipping_radio.value;
-						console.log( 'Shipping method ID:', id );
-
-						if (id.indexOf( 'easypack_parcel_machines' ) !== -1) {
-							let hidden_input = document.getElementById( 'inpost-parcel-locker-id' );
-							if (hidden_input !== undefined && hidden_input !== null) {
-								let paczkomat_id = hidden_input.value;
-								console.log( 'Paczkomat ID:', paczkomat_id );
-
-								if (paczkomat_id.trim() === '') {
-									alert( 'Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.' );
-									return false;
-								}
-							}
-						}
-					}
-				}
-			}
-
 			// Now check for Google Pay click.
 			if (
 			parsedData.type === "parent" &&

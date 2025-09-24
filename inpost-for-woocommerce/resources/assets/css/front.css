@@ -175,6 +175,9 @@
     font-weight: bold;
     background: #9cf9b7;
     padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
 }
 
 .easypack-woocommerce-checkout-block-alert {
@@ -184,4 +187,52 @@
 
 .easypack-woocommerce-checkout-block-alert:hover {
     cursor: pointer;
+}
+
+
+#inpost-pl-typ-map-data {
+    margin-top: 20px;
+}
+
+span.inpost-pl-select-from-points-preloader {
+    display: none;
+}
+
+.inpost-pl-related-point-btn:hover {
+    cursor: pointer !important;
+    background: #ddf6dd !important;
+}
+
+.inpost_pl_geowidget_related_preloader {
+    display:none;
+    margin-bottom: 10px;
+}
+
+.inpost_pl_geowidget_related_preloader > img {
+    display:flex;
+    margin: auto;
+}
+
+.inpost-pl-related-points-container {
+    padding: 20px;
+}
+
+.hidden-inpost-pl-typ-data {
+    display: none; !important;
+}
+
+.inpost-pl-related-locker-info {
+    color: #666;
+    font-weight: bold;
+}
+
+.inpost_pl_geowidget_typ {
+    border: 1px solid #000;
+    padding: 20px;
+}
+
+div.inpost_pl_locker_changed {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.5em;
 }

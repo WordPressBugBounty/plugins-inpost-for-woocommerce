@@ -64,7 +64,7 @@ class Geowidget_v5 {
 				WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
 				array( 'in_footer' => true )
 			);
-			if (  'yes' !== get_option( 'easypack_js_map_button' ) ) {
+			if ( 'yes' !== get_option( 'easypack_js_map_button' ) ) {
 				wp_enqueue_script(
 					'inpost-pl-manage-geowidget',
 					$this->get_easypack_js_src(),
@@ -76,15 +76,18 @@ class Geowidget_v5 {
 					'inpost-pl-manage-geowidget',
 					'inpost_pl_map',
 					array(
-						'button_text1'       => __( 'Select Parcel Locker', 'woocommerce-inpost' ),
-						'button_text2'       => __( 'Change Parcel Locker', 'woocommerce-inpost' ),
-						'selected_text'      => __( 'Selected parcel locker:', 'woocommerce-inpost' ),
+						'button_text1'       => esc_html__( 'Select Parcel Locker', 'woocommerce-inpost' ),
+						'button_text2'       => esc_html__( 'Change Parcel Locker', 'woocommerce-inpost' ),
+						'error_text'         => esc_html__( 'Some error is occured', 'woocommerce-inpost' ),
+						'selected_text'      => esc_html__( 'Selected parcel locker:', 'woocommerce-inpost' ),
+						'updated_text'       => esc_html__( 'Pick up point has been successfuly written', 'woocommerce-inpost' ),
 						'geowidget_v5_token' => EasyPack::ENVIRONMENT_SANDBOX === $this->environment
 							? get_option( 'easypack_geowidget_sandbox_token' )
 							: get_option( 'easypack_geowidget_production_token' ),
 						'inpost_methods'     => EasyPack_Helper()->get_inpost_methods(),
 						'ajaxurl'            => admin_url( 'admin-ajax.php' ),
-                        'security'           => wp_create_nonce( 'easypack_nonce' ),
+						'security'           => wp_create_nonce( 'easypack_nonce' ),
+						'preloader'          => esc_url( EasyPack()->getPluginImages() . 'inpost-pl-loader.gif' ),
 					)
 				);
 			}
@@ -140,9 +143,8 @@ class Geowidget_v5 {
 				WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
 				array( 'in_footer' => true )
 			);
-			
+
 		}
-		
 	}
 
 	/**
@@ -216,8 +218,8 @@ class Geowidget_v5 {
 
 			case 'easypack_parcel_machines_weekend':
 				return 'parcelCollect247';
-            case 'easypack_parcel_machines_weekend_cod':
-                return 'parcelCollect247';
+			case 'easypack_parcel_machines_weekend_cod':
+				return 'parcelCollect247';
 			default:
 				return $default;
 

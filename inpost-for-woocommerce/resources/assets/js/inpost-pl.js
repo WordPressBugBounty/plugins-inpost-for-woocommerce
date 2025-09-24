@@ -1,6 +1,7 @@
 let inpostplGeowidgetModal;
 let inpostplMapConfig;
 let inpostplMapToken = '';
+let inpost_pl_is_ajax_get_point_running = false;
 
 function inpost_pl_validate_parcel_machine_for_gpay() {
 
@@ -73,6 +74,8 @@ function inpost_pl_get_configured_inpost_methods_data() {
 
 function inpost_pl_select_point_callback(point) {
 
+	jQuery('.hidden-inpost-pl-typ-data').css( 'display', 'none' );
+
 	let parcelMachineAddressDesc = '';
 	if ( typeof point.location_description != 'undefined' && point.location_description !== null ) {
 		parcelMachineAddressDesc = point.location_description;
@@ -125,6 +128,20 @@ function inpost_pl_select_point_callback(point) {
 		}
 	);
 
+	let is_need_write_missed_locker = false;
+	let typ_page = jQuery( '#selected-parcel-locker-pl-id' );
+	if ( typeof typ_page != 'undefined' && typ_page !== null ) {
+		if ( typ_page.length > 0 ) {
+			is_need_write_missed_locker = true;
+			jQuery(typ_page).html(point_name);
+			let typ_page_desc = jQuery('#selected-parcel-machine-desc');
+			if (typeof typ_page_desc != 'undefined' && typ_page_desc !== null) {
+				jQuery(typ_page_desc).html(visible_point_data);
+			}
+			jQuery('.hidden-inpost-pl-typ-data').css('display', 'block');
+		}
+	}
+
 	let EasyPackPointObject = { 'pointName': point_name, 'pointDesc': parcelMachineAddressDesc, 'visiblePointData': visible_point_data };
 	localStorage.setItem( 'EasyPackPointObject', JSON.stringify( EasyPackPointObject ) );
 
@@ -164,13 +181,88 @@ function inpost_pl_select_point_callback(point) {
 				console.log( 'Paczkomat saved in session data:', response );
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
-				console.log( "Error response saving paczkomato into session" );
+				console.log( "Error response saving paczkomat into session" );
 				console.log( textStatus );
 				console.log( 'Error: ' + errorThrown + ' ' + jqXHR.responseText );
 
 			}
 		}
 	);
+
+	if( is_need_write_missed_locker ) {
+
+		let preloader_gif = inpost_pl_map.preloader;
+		let preloader = '<span class="inpost-pl-typ-preloader"><img src="' + preloader_gif + '" alt="inpost-pl-typ-preloader"></span>';
+
+		let data = {
+			action: 'update_locker_from_typ_page',
+			order_id: jQuery('#inpost-pl-typ-map-data').attr('data-id'),
+			inpost_pl_locker: point_name,
+			inpost_pl_locker_desc: parcelMachineAddressDesc,
+			security: inpost_pl_map.security
+		};
+
+
+		jQuery.ajax(
+			{
+				type: 'POST',
+				url: inpost_pl_map.ajaxurl,
+				data: data,
+				dataType: 'json',
+				beforeSend: function () {
+					inpost_pl_is_ajax_get_point_running = true;
+					jQuery('.inpost_pl_geowidget_related_preloader').css('display', 'flex');
+					jQuery('.inpost_pl_locker_changed').each(
+						function (ind, elem) {
+							jQuery( elem ).remove();
+						}
+					);
+					jQuery('.inpost-pl-related-point-btn').each(
+						function (ind, elem) {
+							jQuery( elem ).css('background', '#fff');
+						}
+					);
+				},
+				success: function (data, textStatus, jqXHR) {
+					console.log( 'inpost_pl_update_locker_from_map result:' );
+					console.log( data );
+
+					if( 'success' in data ) {
+						if( data.success ) {
+							jQuery('#inpost-pl-typ-map-data').before('<div class="inpost_pl_locker_changed" style="color:#26be22; font-weight: bold">' + inpost_pl_map.updated_text + ': ' + point_name + '</div>');
+						} else {
+							jQuery('#inpost-pl-typ-map-data').before('<div class="inpost_pl_locker_changed" style="color:#e03636; font-weight: bold">' + inpost_pl_map.error_text + '</div>');
+						}
+
+					} else {
+						jQuery('#inpost-pl-typ-map-data').before('<div class="inpost_pl_locker_changed" style="color:#e03636; font-weight: bold">' + inpost_pl_map.error_text + '</div>');
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log( 'inpost_pl_update_locker_from_map_error' );
+					console.log( 'error: ' + jqXHR.status );
+					jQuery('#inpost-pl-typ-map-data').before('<div class="inpost_pl_locker_changed" style="color:#e03636; font-weight: bold">' + inpost_pl_map.error_text + '</div>');
+					return false;
+				},
+				complete: function () {
+					console.log( 'Complete' );
+					inpost_pl_is_ajax_get_point_running = false;
+
+					jQuery('.inpost-pl-typ-preloader').each(
+						function (ind, elem) {
+							jQuery( elem ).remove();
+						}
+					);
+					jQuery('.inpost_pl_geowidget_related_preloader').each(
+						function (ind, elem) {
+							jQuery( elem ).css('display', 'none');
+						}
+					);
+				}
+			}
+		);
+
+	}
 }
 
 
@@ -320,6 +412,82 @@ jQuery( document ).ready(
 				}
 			}
 		);
+
+		jQuery( '.inpost-pl-related-point-btn' ).click(
+			function (e) {
+				e.preventDefault();
+
+				let this_btn = jQuery(this);
+
+				if( inpost_pl_is_ajax_get_point_running ) {
+					return false;
+				}
+
+				jQuery('.inpost-pl-related-point-btn').each(
+					function (ind, elem) {
+						jQuery( elem ).css('background', '#fff');
+					}
+				);
+
+				let nearest_point_selected = jQuery(this_btn).attr('data-id');
+
+				let data = {
+					action: 'update_locker_from_typ_page',
+					order_id: jQuery('#inpost-pl-related-data-order').val(),
+					inpost_pl_locker: nearest_point_selected,
+					inpost_pl_locker_desc: jQuery(this_btn).attr('data-address-id'),
+					security: inpost_pl_map.security
+				};
+
+				jQuery.ajax(
+					{
+						type: 'POST',
+						url: inpost_pl_map.ajaxurl,
+						data: data,
+						dataType: 'json',
+						beforeSend: function () {
+							inpost_pl_is_ajax_get_point_running = true;
+							jQuery('.hidden-inpost-pl-typ-data').css( 'display', 'none' );
+							jQuery(this_btn).find('.inpost-pl-select-from-points-preloader').css('display', 'block');
+							jQuery('.inpost_pl_locker_changed').each(
+								function (ind, elem) {
+									jQuery( elem ).remove();
+								}
+							);
+						},
+						success: function (data, textStatus, jqXHR) {
+							console.log( 'inpost_pl_choose_locker_from_nearest result:' );
+							console.log( data );
+
+							if( 'success' in data ) {
+								if( data.success ) {
+									jQuery(this_btn).css('background', '#afeaad');
+									jQuery(this_btn).find('.inpost-pl-related-locker-info').after('<div class="inpost_pl_locker_changed" style="color:#26be22; font-weight: bold">' + inpost_pl_map.updated_text + ': ' + nearest_point_selected + '</div>');
+									jQuery('#inpost-pl-typ-map-data').before('<div class="inpost_pl_locker_changed" style="color:#26be22; font-weight: bold">' + inpost_pl_map.updated_text + ': ' + nearest_point_selected + '</div>');
+								} else {
+									jQuery('#inpost-pl-typ-map-data').before('<div class="inpost_pl_locker_changed" style="color:#e03636; font-weight: bold">' + inpost_pl_map.error_text + '</div>');
+								}
+
+							} else {
+								jQuery('#inpost-pl-typ-map-data').before('<div class="inpost_pl_locker_changed" style="color:#e03636; font-weight: bold">' + inpost_pl_map.error_text + '</div>');
+							}
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							console.log( 'inpost_pl_choose_locker_from_nearest_error' );
+							console.log( 'error: ' + jqXHR.status );
+							jQuery('#inpost-pl-typ-map-data').before('<div class="inpost_pl_locker_changed" style="color:#e03636; font-weight: bold">' + inpost_pl_map.error_text + '</div>');
+							return false;
+						},
+						complete: function () {
+							console.log( 'Complete' );
+							inpost_pl_is_ajax_get_point_running = false;
+
+							jQuery(this_btn).find('.inpost-pl-select-from-points-preloader').css('display', 'none');
+						}
+					}
+				);
+			}
+		);
 	}
 );
 
@@ -355,43 +523,6 @@ window.addEventListener(
 			} else {
 				parsedData = event.data;
 			}
-
-			if (
-			parsedData.message.payload &&
-			parsedData.message.payload.event === "shippingratechange" &&
-			parsedData.message.payload.data &&
-			parsedData.message.payload.data.shippingRate &&
-			parsedData.message.payload.data.shippingRate.id
-			) {
-				let chosen_shipping_method = parsedData.message.payload.data.shippingRate.id;
-
-				console.log( 'Chosen_shipping_method:' );
-				console.log( chosen_shipping_method );
-
-				if ( chosen_shipping_method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
-					let checked_shipping_input = document.querySelector( '#shipping_method input[name^="shipping_method["]:checked' );
-					if (checked_shipping_input !== undefined && checked_shipping_input !== null) {
-						let id = checked_shipping_input.value;
-						console.log( 'Shipping method ID:', id );
-
-						if (id.indexOf( 'easypack_parcel_machines' ) !== -1) {
-							let hidden_input = document.querySelector( '#parcel_machine_id' );
-							if (hidden_input !== undefined && hidden_input !== null) {
-								let paczkomat_id = hidden_input.value;
-								console.log( 'Paczkomat ID:', paczkomat_id );
-
-								if (paczkomat_id.trim() === '') {
-									alert( 'Wygląda na to, że zapomniałeś wybrać paczkomat.' + "\n\n" + ' Jeśli tak, zamknij okno modalne, wybierz punkt za pomocą przycisku "Wybierz punkt odbioru", a następnie wróć do płatności.' );
-									return false;
-								}
-							}
-						}
-					}
-				}
-			}
-
-			// console.log('Check JS parsedData');
-			// console.log(parsedData);
 
 			// Now check for Google Pay click using the parsed data
 			if (

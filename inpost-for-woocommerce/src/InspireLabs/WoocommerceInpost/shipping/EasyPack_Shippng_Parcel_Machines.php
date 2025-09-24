@@ -808,7 +808,6 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 						if ( empty( $_POST['parcel_machine_id'] ) ) {
 
 							if ( ! $alert_shown ) {
-
 								$alert_shown = true;
 								if ( 'pl-PL' === get_bloginfo( 'language' ) ) {
 									$errors->add( 'validation', __( 'Paczkomat jest wymaganym polem', 'woocommerce-inpost' ) );
@@ -855,9 +854,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 					if ( false === $this->is_method_courier() && $at_least_one_physical_product ) {
 
 						if ( empty( $_POST['parcel_machine_id'] ) ) {
-
 							if ( ! $alert_shown ) {
-
 								$alert_shown = true;
 								if ( 'pl-PL' === get_bloginfo( 'language' ) ) {
 									wc_add_notice( __( 'Musisz wybrać paczkomat', 'woocommerce-inpost' ), 'error' );
@@ -969,6 +966,16 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			}
 		}
 
+
+		/**
+		 * Gets the InPost logo HTML for display in admin interface.
+		 *
+		 * Returns HTML image tag with InPost white logo, using custom logo
+		 * if available or falling back to default plugin logo with
+		 * consistent styling for admin metabox headers.
+		 *
+		 * @return string HTML image tag containing the logo.
+		 */
 		public function get_logo() {
 
 			$custom_logo = null;
@@ -985,6 +992,18 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			}
 		}
 
+
+		/**
+		 * Adds InPost metabox to order edit screen for compatible shipping methods.
+		 *
+		 * Handles both HPOS and traditional order storage, validates order existence,
+		 * checks for matching shipping method or Flexible Shipping integration,
+		 * and adds the InPost metabox with logo to the order sidebar.
+		 *
+		 * @param string           $post_type The post type being edited.
+		 * @param WP_Post|WC_Order $post The post or order object being edited.
+		 * @return void
+		 */
 		public function add_meta_boxes( $post_type, $post ) {
 
 			$order_id = null;
@@ -1002,11 +1021,17 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			}
 
 			if ( $order_id ) {
+
 				$order = wc_get_order( $order_id );
+				if ( ! $order || is_wp_error( $order ) ) {
+					return;
+				}
+
+				$fs_method_name = $order->get_meta( '_fs_easypack_method_name' );
 				// show metabox only for matched shipping method (plus Flexible shipping integration).
-				$fs_method_name = get_post_meta( $order_id, '_fs_easypack_method_name', true );
 
 				if ( $order->has_shipping_method( $this->id ) || $fs_method_name === $this->id ) {
+
 					add_meta_box(
 						'easypack_parcel_machines',
 						esc_html__( 'InPost', 'woocommerce-inpost' )
@@ -1020,6 +1045,16 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			}
 		}
 
+
+		/**
+		 * Renders the order metabox for the current post.
+		 *
+		 * Delegates to the static metabox content method to display
+		 * order-related information and controls.
+		 *
+		 * @param WP_Post|WC_Order $post The WordPress post object representing the order.
+		 * @return void
+		 */
 		public function order_metabox( $post ) {
 			self::order_metabox_content( $post );
 		}
@@ -1410,11 +1445,16 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		}
 
 		/**
-		 * @param $shipping
-		 * @param $order
-		 * @param $tax_display
+		 * Modifies shipping display for InPost orders with zero shipping cost.
 		 *
-		 * @return mixed|string
+		 * Adds zero price display to shipping method name when order uses this
+		 * shipping method and has no shipping cost, ensuring consistent formatting
+		 * with colon separator and price display.
+		 *
+		 * @param string   $shipping The shipping display string.
+		 * @param WC_Order $order The WooCommerce order object.
+		 * @param string   $tax_display The tax display setting.
+		 * @return string Modified shipping display string.
 		 */
 		public function woocommerce_order_shipping_to_display( $shipping, $order, $tax_display ) {
 			if ( $order->has_shipping_method( $this->id ) ) {
@@ -1430,6 +1470,18 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			return $shipping;
 		}
 
+
+		/**
+		 * Adds InPost-specific actions to My Account order actions.
+		 *
+		 * Adds tracking and fast returns links for orders using this shipping method,
+		 * retrieves shipment status and tracking number from order metadata,
+		 * and displays appropriate action buttons based on shipment status.
+		 *
+		 * @param array    $actions Existing order actions array.
+		 * @param WC_Order $order The WooCommerce order object.
+		 * @return array Modified actions array with InPost-specific actions.
+		 */
 		function woocommerce_my_account_my_orders_actions( $actions, $order ) {
 			if ( $order->has_shipping_method( $this->id ) ) {
 				$status = $order->get_meta( '_easypack_status' );
@@ -1468,39 +1520,29 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			return $actions;
 		}
 
-		/**
-		 * @return ShipX_Shipment_Service
-		 */
-		/*
-		public function getShipmentService() {
-			return $this->shipment_service;
-		}*/
 
 		/**
-		 * @param ShipX_Shipment_Service $shipment_service
-		 */
-		/*
-		public function setShipmentService( $shipment_service ) {
-			$this->shipment_service = $shipment_service;
-		}*/
-
-		/**
-		 * @return bool
+		 * Checks if the current shipping method is a courier-based service.
+		 *
+		 * Determines whether the method ID matches any of the InPost courier
+		 * shipping options including standard, express, COD, and palette services.
+		 *
+		 * @return bool True if method is courier-based, false otherwise.
 		 */
 		protected function is_method_courier() {
-			return $this->id === 'easypack_shipping_courier'
-					|| $this->id === 'easypack_shipping_esmartmix'
-					|| $this->id === 'easypack_cod_shipping_courier'
-					|| $this->id === 'easypack_shipping_courier_c2c'
-					|| $this->id === 'easypack_shipping_courier_c2c_cod'
-					|| $this->id === 'easypack_shipping_courier_lse'
-					|| $this->id === 'easypack_shipping_courier_local_standard'
-					|| $this->id === 'easypack_shipping_courier_local_express'
-					|| $this->id === 'easypack_shipping_courier_palette'
-					|| $this->id === 'easypack_shipping_courier_lse_cod'
-					|| $this->id === 'easypack_shipping_courier_local_standard_cod'
-					|| $this->id === 'easypack_shipping_courier_local_express_cod'
-					|| $this->id === 'easypack_shipping_courier_palette_cod';
+			return 'easypack_shipping_courier' === $this->id
+					|| 'easypack_shipping_esmartmix' === $this->id
+					|| 'easypack_cod_shipping_courier' === $this->id
+					|| 'easypack_shipping_courier_c2c' === $this->id
+					|| 'easypack_shipping_courier_c2c_cod' === $this->id
+					|| 'easypack_shipping_courier_lse' === $this->id
+					|| 'easypack_shipping_courier_local_standard' === $this->id
+					|| 'easypack_shipping_courier_local_express' === $this->id
+					|| 'easypack_shipping_courier_palette' === $this->id
+					|| 'easypack_shipping_courier_lse_cod' === $this->id
+					|| 'easypack_shipping_courier_local_standard_cod' === $this->id
+					|| 'easypack_shipping_courier_local_express_cod' === $this->id
+					|| 'easypack_shipping_courier_palette_cod' === $this->id;
 		}
 
 		/**
@@ -1829,9 +1871,6 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			$shipment_data['status']    = $status_service->getStatusDescription( $response['status'] );
 			$shipment_data['service']   = $shipment_service->get_customer_service_name_by_id( self::SERVICE_ID );
 
-			// $internal_data = $shipment_model->getInternalData();
-			// $internal_data->setLabelUrl( $label_url );
-
 			if ( $internal_data ) {
 				$shipment_model->setInternalData( $internal_data );
 			}
@@ -1869,7 +1908,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				}
 			}
 
-			// zapisz koszt przesyłki do przesyłki
+			// zapisz koszt przesyłki do przesyłki.
 			// $price_calculator = EasyPack()->get_shipment_price_calculator_service();
 
 			if ( ! $is_additional_package_processing ) {

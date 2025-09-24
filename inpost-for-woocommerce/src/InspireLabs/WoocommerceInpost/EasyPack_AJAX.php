@@ -45,8 +45,10 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 			add_action( 'wp_ajax_easypack', array( __CLASS__, 'ajax_easypack' ) );
 			add_action( 'admin_head', array( __CLASS__, 'wp_footer_easypack_nonce' ) );
 			add_action( 'wp_ajax_inpost_save_to_wc_session', array( __CLASS__, 'save_to_wc_session' ) );
-            add_action( 'wp_ajax_nopriv_inpost_save_to_wc_session', array( __CLASS__, 'save_to_wc_session' ) );
+			add_action( 'wp_ajax_nopriv_inpost_save_to_wc_session', array( __CLASS__, 'save_to_wc_session' ) );
 			add_action( 'wp_ajax_posting_confirmation_request', array( __CLASS__, 'posting_confirmation_request_callback' ) );
+			add_action( 'wp_ajax_update_locker_from_typ_page', array( __CLASS__, 'update_locker_from_typ_page_callback' ) );
+			add_action( 'wp_ajax_nopriv_update_locker_from_typ_page', array( __CLASS__, 'update_locker_from_typ_page_callback' ) );
 		}
 
 		/**
@@ -410,9 +412,6 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 			EasyPack_Shippng_Parcel_Machines_COD::ajax_cancel_package();
 		}
 
-		// public static function easypack_dispatch_order() {
-		// EasyPack_Shippng_Parcel_Machines::ajax_dispatch_order();
-		// }
 
 		/**
 		 * Create additional package
@@ -464,74 +463,129 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 			}
 			wp_die();
 		}
-		
-		
-		
+
+
+
 		/**
-         * Ajax handler to save paczkomat number into WC session
-         */
-        public static function save_to_wc_session(): void {
+		 * Ajax handler to save paczkomat number into WC session
+		 */
+		public static function save_to_wc_session(): void {
+			self::save_point_to_wc_session();
+		}
 
-            check_ajax_referer('easypack_nonce', 'security');
 
-            self::save_point_to_wc_session();
-        }
-		
-		
 		/**
-         * Save paczkomat point number into WC session
-         *
-         * @return void
-         */
-        public static function save_point_to_wc_session() {
+		 * Save paczkomat point number into WC session
+		 *
+		 * @return void
+		 */
+		public static function save_point_to_wc_session() {
 
-            if( ! empty( $_POST['key']) && 'inpost_pl_wc_paczkomat' === $_POST['key'] ) {
+			check_ajax_referer( 'easypack_nonce', 'security' );
 
-                $key = sanitize_text_field(wp_unslash( $_POST['key'] ) );
-                $value = isset( $_POST['value'] ) ? sanitize_text_field( wp_unslash( $_POST['value'] ) ) : '';
+			if ( ! empty( $_POST['key'] ) && 'inpost_pl_wc_paczkomat' === $_POST['key'] ) {
 
-                if ( is_object(  WC() ) && property_exists( WC(), 'session' ) ) {
-                    WC()->session->set( $key, $value );
-                    wp_send_json_success('Data saved to session');
+				$key   = sanitize_text_field( wp_unslash( $_POST['key'] ) );
+				$value = isset( $_POST['value'] ) ? sanitize_text_field( wp_unslash( $_POST['value'] ) ) : '';
 
-                } else {
-                    wp_send_json_error('WC session not available');
-                    
-                }
+				if ( is_object( WC() ) && property_exists( WC(), 'session' ) ) {
+					WC()->session->set( $key, $value );
+					wp_send_json_success( 'Data saved to session' );
 
-            }
+				} else {
+					wp_send_json_error( 'WC session not available' );
 
-            wp_die();
-        }
-		
-		
-		
+				}
+			}
+
+			wp_die();
+		}
+
+
+		/**
+		 * AJAX callback to handle posting confirmation request for multiple shipments.
+		 *
+		 * Validates nonce and sanitizes order IDs, retrieves InPost shipment IDs
+		 * for each order, and generates posting confirmation PDF for the
+		 * collected shipment identifiers.
+		 *
+		 * @return void Outputs PDF or handles errors.
+		 */
 		public static function posting_confirmation_request_callback(): void {
 
-            check_ajax_referer('easypack-shipment-manager', 'nonce');
+			check_ajax_referer( 'easypack-shipment-manager', 'nonce' );
 
-            $orders = isset( $_POST['parcels'] ) ? (array) $_POST['parcels'] : array();
-            $orders = array_map( 'sanitize_text_field', $orders );
+			$orders = isset( $_POST['parcels'] ) ? (array) $_POST['parcels'] : array();
+			$orders = array_map( 'sanitize_text_field', $orders );
 
-            if ( empty( $orders ) ) {
-                return;
-            }
+			if ( empty( $orders ) ) {
+				return;
+			}
 
-            $shipment_service = EasyPack()->get_shipment_service();
-            $shipment_ids     = array();
+			$shipment_service = EasyPack()->get_shipment_service();
+			$shipment_ids     = array();
 
-            foreach ( $orders as $order ) {
-                $inpost_internal_data = $shipment_service->get_shipment_by_order_id( (int) $order );
+			foreach ( $orders as $order ) {
+				$inpost_internal_data = $shipment_service->get_shipment_by_order_id( (int) $order );
 
-                if ( $inpost_internal_data && is_object( $inpost_internal_data ) ) {
-                    $shipment_ids[] = $inpost_internal_data->getInternalData()->getInpostId();
-                }
-            }
+				if ( $inpost_internal_data && is_object( $inpost_internal_data ) ) {
+					$shipment_ids[] = $inpost_internal_data->getInternalData()->getInpostId();
+				}
+			}
 
-            EasyPack_Helper()->post_confirmation_pdf( $shipment_ids );
+			EasyPack_Helper()->post_confirmation_pdf( $shipment_ids );
+		}
 
-        }
-		
+
+
+		/**
+		 * AJAX callback to update locker selection from TYP page.
+		 *
+		 * Validates nonce and input data, retrieves order object, updates
+		 * parcel machine ID and description metadata, saves changes,
+		 * and returns JSON success or error response.
+		 *
+		 * @return void Outputs JSON response and exits.
+		 */
+		public static function update_locker_from_typ_page_callback() {
+
+			check_ajax_referer( 'easypack_nonce', 'security' );
+
+			$order_id               = null;
+			$full_point_description = array();
+			$new_locker             = null;
+			$locker_desc            = null;
+			$locker_data            = array();
+
+			if ( empty( $_POST['inpost_pl_locker'] ) || empty( $_POST['order_id'] ) ) {
+				return;
+			}
+
+			$order_id = sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
+
+			$order = wc_get_order( $order_id );
+
+			if ( ! $order || is_wp_error( $order ) ) {
+				return;
+			}
+
+			$new_locker = sanitize_text_field( wp_unslash( $_POST['inpost_pl_locker'] ) );
+
+			if ( ! empty( $_POST['inpost_pl_locker_desc'] ) ) {
+				$locker_desc = sanitize_text_field( wp_unslash( $_POST['inpost_pl_locker_desc'] ) );
+			}
+
+			if ( ! empty( $new_locker ) ) {
+				$order->update_meta_data( '_parcel_machine_id', $new_locker );
+				if ( ! empty( $locker_desc ) ) {
+					$order->update_meta_data( '_parcel_machine_desc', $locker_desc );
+				}
+				$order->save();
+				wp_send_json_success( 'locker_updated' );
+			}
+
+			wp_send_json_error();
+		}
 	}
 
 endif;

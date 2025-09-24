@@ -166,6 +166,8 @@ class EasyPack extends inspire_Plugin4 {
 		add_action( 'woocommerce_before_checkout_form', array( $this, 'clear_wc_shipping_cache' ) );
 		add_filter( 'woocommerce_locate_template', array( $this, 'easypack_woo_templates' ), 1, 3 );
 
+		add_action( 'woocommerce_before_thankyou', array( $this, 'possibility_setup_missed_locker_on_typ' ), 20 );
+
 		// integration Products table start.
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_product_table_assets' ), 100 );
 		add_action( 'wp_ajax_inpost_product_table', array( $this, 'inpost_product_table_callback' ) );
@@ -672,8 +674,8 @@ class EasyPack extends inspire_Plugin4 {
 			'easypack_settings',
 			array(
 				'default_logo' => EasyPack()->getPluginImages() . 'logo/small/white.png',
-                'ajaxurl' => admin_url( 'admin-ajax.php' ),
-                'nonce'   => wp_create_nonce( 'easypack-shipment-manager' ),
+				'ajaxurl'      => admin_url( 'admin-ajax.php' ),
+				'nonce'        => wp_create_nonce( 'easypack-shipment-manager' ),
 			)
 		);
 
@@ -888,6 +890,18 @@ class EasyPack extends inspire_Plugin4 {
 			$shipping_method_instance_id = $item->get_instance_id();
 		}
 
+		if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
+			foreach ( $order->get_shipping_methods() as $shipping_method ) {
+				$fs_instance_id = $shipping_method->get_instance_id();
+			}
+
+			$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $fs_instance_id );
+			if ( ! empty( $fs_method_name ) ) {
+				$order->update_meta_data( '_fs_easypack_method_name', $fs_method_name );
+				$order->save();
+			}
+		}
+
 		$request_body = json_decode( $request->get_body(), true );
 
 		if ( ! empty( $request_body['extensions']['inpost']['inpost-parcel-locker-id'] ) ) {
@@ -902,16 +916,6 @@ class EasyPack extends inspire_Plugin4 {
 			$order->update_meta_data( '_parcel_machine_id', $parcel_machine_id );
 			$order->save();
 
-			if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
-				foreach ( $order->get_shipping_methods() as $shipping_method ) {
-					$fs_instance_id = $shipping_method->get_instance_id();
-				}
-
-				$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $fs_instance_id );
-				if ( ! empty( $fs_method_name ) ) {
-					update_post_meta( $order_id, '_fs_easypack_method_name', $fs_method_name );
-				}
-			}
 		} else {
 
 			// additional check if used Google Pay payment method - we extract paczkomat number from WC session.
@@ -1287,8 +1291,16 @@ class EasyPack extends inspire_Plugin4 {
 
 		( new TrackingInfoEmail() )->send_tracking_info_email( $order_id );
 	}
-	
-	
+
+
+	/**
+	 * Loads the plugin text domain for internationalization.
+	 *
+	 * Sets up translation files from the plugin's languages directory
+	 * to enable multilingual support for the WooCommerce InPost plugin.
+	 *
+	 * @return void
+	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain(
 			'woocommerce-inpost',
@@ -1297,4 +1309,173 @@ class EasyPack extends inspire_Plugin4 {
 		);
 	}
 
+
+	/**
+	 * Displays locker selection interface for orders missing parcel machine assignment.
+	 *
+	 * Checks if order uses InPost shipping method but lacks locker selection,
+	 * fetches nearby pickup points via API based on postal code, displays
+	 * warning message with selectable points list and map widget for locker selection.
+	 *
+	 * @param int $order_id The WooCommerce order ID to check.
+	 * @return void Outputs HTML interface or returns early if conditions not met.
+	 */
+	public function possibility_setup_missed_locker_on_typ( $order_id ) {
+
+		if ( ! $order_id ) {
+			return;
+		}
+
+		$order = wc_get_order( $order_id );
+
+		if ( ! $order || is_wp_error( $order ) ) {
+			return;
+		}
+
+		$parcel_machine_id = $order->get_meta( '_parcel_machine_id' );
+		if ( ! empty( $parcel_machine_id ) ) {
+			return;
+		}
+
+		$is_inpost_method_with_locker = false;
+		$fs_method_name               = '';
+		foreach ( $order->get_shipping_methods() as $shipping_method ) {
+			$shipping_method_instance_id = $shipping_method->get_instance_id();
+			$shipping_method_id          = $shipping_method->get_method_id();
+			$fs_method_name              = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $shipping_method_instance_id );
+			if ( 0 === strpos( $shipping_method_id, 'easypack_parcel_machines' ) || 0 === strpos( $fs_method_name, 'easypack_parcel_machines' ) ) {
+				$is_inpost_method_with_locker = true;
+			}
+		}
+
+		if ( $is_inpost_method_with_locker ) {
+
+			$zip_code = $order->get_shipping_postcode();
+			if ( empty( $zip_code ) ) {
+				$zip_code = $order->get_billing_postcode();
+			}
+
+			if ( ! empty( $zip_code ) ) {
+
+				$points_data = array();
+
+				$api_url = 'https://api.inpost.pl/v1/points';
+
+				if ( 'sandbox' === get_option( 'easypack_api_environment' ) ) {
+					$api_url = 'https://sandbox-api-gateway-pl.easypack24.net/v1/points';
+				}
+
+				$url = $api_url . '?relative_post_code=' . $zip_code . '&max_distance=3000&limit=5';
+
+				$args = array(
+					'method'  => 'GET',
+					'headers' => array(
+						'Authorization' => 'Bearer ' . get_option( 'easypack_token' ),
+						'Accept'        => 'application/json',
+						'Content-Type'  => 'application/json',
+					),
+				);
+
+				$response = wp_remote_get( $url, $args );
+				$code     = wp_remote_retrieve_response_code( $response );
+
+				if ( 200 === $code ) {
+					$response_body = wp_remote_retrieve_body( $response );
+
+					try {
+						$points_data = json_decode( $response_body, true );
+					} catch ( Exception $e ) {
+
+					}
+				}
+			}
+
+			echo '<div class="pre-order-details-message" style="padding: 5px; margin-bottom: 20px; border-radius: 5px;">';
+			echo '<div class="pre-order-details-message-wrap" style="background: #f65d5d;padding:30px;">';
+			echo '<p style="color:#fff">⚠️ <b>' . esc_html__( 'It seems you forgot to select the InPost pick up point.', 'woocommerce-inpost' ) . '</b></p>';
+			echo '<p style="color:#fff"><b>' . esc_html__( 'If so, please select InPost pick up point from this list or on the map.', 'woocommerce-inpost' ) . '</b></p>';
+			echo '</div>';
+
+			if ( ! empty( $points_data['items'] ) ) {
+				echo '<div class="inpost-pl-related-points-container" style="background: #fcc905; margin-top: 15px;">';
+
+				foreach ( $points_data['items'] as $point ) {
+					// Get address lines.
+					$address_line1 = isset( $point['address']['line1'] ) ? esc_html( $point['address']['line1'] ) : '';
+					$address_line2 = isset( $point['address']['line2'] ) ? esc_html( $point['address']['line2'] ) : '';
+
+					// Get point name for data-id.
+					$point_id = isset( $point['name'] ) ? esc_attr( $point['name'] ) : '';
+
+					// Get point type for display (optional - shows if it's locker or shop).
+					$point_type = '';
+					if ( isset( $point['type'] ) && is_array( $point['type'] ) ) {
+						if ( in_array( 'parcel_locker', $point['type'] ) ) {
+							$point_type = '📦 ' . esc_html__( 'Paczkomat', 'woocommerce-inpost' );
+						} elseif ( in_array( 'pok', $point['type'] ) || in_array( 'pop', $point['type'] ) ) {
+							$point_type = '🏪 ' . esc_html__( 'POP', 'woocommerce-inpost' );
+						}
+					}
+
+					// Get distance (optional).
+					$distance = isset( $point['distance'] ) ? ' (' . round( $point['distance'] / 1000, 1 ) . ' km)' : '';
+
+					// Create button with address as two lines.
+					echo '<button class="inpost-pl-related-point-btn" data-id="' . $point_id . '" data-address-id="' . $address_line1 . ' ' . $address_line2 . '" style="
+                            display: block;
+                            width: 100%;
+                            margin: 8px 0;
+                            padding: 12px 15px;
+                            background: #fff;
+                            border: 3px solid #ddd;
+                            border-radius: 6px;
+                            text-align: left;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            font-size: 14px;
+                            line-height: 1.4;
+                        ">';
+
+					// Display point type and ID.
+					if ( $point_type ) {
+						echo '<span class="inpost-pl-related-locker-info">' . esc_html( $point_type ) . ' - ' . esc_html( $point_id ) . esc_html( $distance ) . '</span><br>';
+					}
+
+					// Display address line 1.
+					if ( $address_line1 ) {
+						echo '<b>' . esc_html( $address_line1 ) . '</b><br>';
+					}
+
+					// Display address line 2.
+					if ( $address_line2 ) {
+						echo '<span style="color: #555;">' . esc_html( $address_line2 ) . '</span>';
+					}
+
+					echo '<span class="inpost-pl-select-from-points-preloader"><img src="' . esc_url( $this->getPluginImages() . 'inpost-pl-loader.gif' ) . '"></span>';
+					echo '</button>';
+				}
+			}
+
+			echo '</div><input type="hidden" id="inpost-pl-related-data-order" value="' . esc_attr( $order_id ) . '">';
+
+			echo '<div id="inpost-pl-typ-map-data" data-id="' . esc_attr( $order_id ) . '">
+                    <div class="inpost_pl_geowidget_related_preloader">
+                         <img src="' . esc_url( $this->getPluginImages() . 'inpost-pl-loader.gif' ) . '">
+                    </div>
+                    <div class="easypack_show_geowidget inpost_pl_geowidget_typ" id="easypack_show_geowidget">
+                        ' . esc_html__( 'Select parcel locker', 'woocommerce-inpost' ) . '
+                    </div>
+                    <div id="selected-parcel-machine" class="hidden-inpost-pl-typ-data">
+                        <div>
+                          <span class="font-height-600">'
+							. esc_html__( 'Selected parcel locker:', 'woocommerce-inpost' ) .
+							'</span>
+                        </div>
+                        <span class="italic" id="selected-parcel-locker-pl-id" style="display: none;"></span>
+                        <br><span class="italic" id="selected-parcel-machine-desc"></span>
+                    </div>
+                </div>';
+
+		}
+	}
 }
