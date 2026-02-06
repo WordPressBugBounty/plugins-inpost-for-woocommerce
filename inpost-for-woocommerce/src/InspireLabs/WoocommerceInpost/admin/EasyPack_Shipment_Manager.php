@@ -143,20 +143,20 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 			try {
 				$courier_pickup_service->createDispatchOrder( $dispatch_point_arr, $shipments_to_pick_up );
 				$message = __( 'Shipments dispathed ', 'woocommerce-inpost' );
-				printf( '<div class="updated"><p>%s</p></div>', $message );
+				printf( '<div class="updated"><p>%s</p></div>', esc_html( $message ) );
 
 
 			} catch ( Exception $e ) {
 				$class   = "error";
 				$message = __( 'Error while creating manifest: ', 'woocommerce-inpost' ) . $e->getMessage();
-				printf( '<div class="%s"><p>%s</p></div>', $class, $message );
+				printf( '<div class="%s"><p>%s</p></div>', esc_attr( $class ), wp_kses_post( $message ) );
 			}
 		}
 
 		private static function cancel_courier() {
 			return false;
 
-            //
+            // cance courier.
 			$shipment_service       = EasyPack()->get_shipment_service();
 			$courier_pickup_service = EasyPack()->get_courier_pickup_service();
 
@@ -183,13 +183,13 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 					$shipments_to_pick_up );
 
 				$message = __( 'Shipments dispathed ', 'woocommerce-inpost' );
-				printf( '<div class="updated"><p>%s</p></div>', $message );
+				printf( '<div class="updated"><p>%s</p></div>', esc_html( $message ) );
 
 
 			} catch ( Exception $e ) {
 				$class   = "error";
 				$message = __( 'Error while creating manifest: ', 'woocommerce-inpost' ) . $e->getMessage();
-				printf( '<div class="%s"><p>%s</p></div>', $class, $message );
+				printf( '<div class="%s"><p>%s</p></div>', esc_attr( $class ) , wp_kses_post( $message ) );
 			}
 
 

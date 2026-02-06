@@ -1,6 +1,10 @@
 <?php
 namespace InspireLabs\WoocommerceInpost\shipx\models\organization\services;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 class ShipX_Service_Model
 {
     /**

@@ -19,11 +19,11 @@ $field    = $this->get_field_key( $key );
 			<thead>
 				<tr>
 					<th class="sort">&nbsp;</th>
-					<th class="price"><?php _e( 'Min', 'woocommerce-inpost' ); ?></th>
-					<th class="price"><?php _e( 'Max', 'woocommerce-inpost' ); ?></th>
-					<th class="price"><?php _e( 'Cost', 'woocommerce-inpost' ); ?></th>
-					<th class="price"><?php _e( '%', 'woocommerce-inpost' ); ?>&nbsp;<span class="tips" data-tip="<?php esc_attr_e( 'The commission is added to the shipping cost according to the formula: [value of the cart] * [%] + [shipping cost].', 'woocommerce-inpost' ); ?>">[?]</span></th>
-					<th class="action"><?php _e( 'Action', 'woocommerce-inpost' ); ?></th>
+					<th class="price"><?php esc_html_e( 'Min', 'woocommerce-inpost' ); ?></th>
+					<th class="price"><?php esc_html_e( 'Max', 'woocommerce-inpost' ); ?></th>
+					<th class="price"><?php esc_html_e( 'Cost', 'woocommerce-inpost' ); ?></th>
+					<th class="price"><?php esc_html_e( '%', 'woocommerce-inpost' ); ?>&nbsp;<span class="tips" data-tip="<?php esc_attr_e( 'The commission is added to the shipping cost according to the formula: [value of the cart] * [%] + [shipping cost].', 'woocommerce-inpost' ); ?>">[?]</span></th>
+					<th class="action"><?php esc_html_e( 'Action', 'woocommerce-inpost' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -46,7 +46,7 @@ $field    = $this->get_field_key( $key );
                                     <input class="input-text regular-input" type="number" style="" value="<?php echo esc_attr( $rate['percent'] ); ?>" placeholder="0.00" step="any" min="0" name=rates[<?php echo esc_attr( $count ); ?>][percent]>
                                 </td>
                                 <td class="action">
-                                    <a id="delete_rate_<?php echo esc_attr( $count ); ?>" href="#" class="button delete_rate" data-id="<?php echo esc_attr( $count ); ?>"><?php _e( 'Delete row', 'woocommerce-inpost' ); ?></a>
+                                    <a id="delete_rate_<?php echo esc_attr( $count ); ?>" href="#" class="button delete_rate" data-id="<?php echo esc_attr( $count ); ?>"><?php esc_html_e( 'Delete row', 'woocommerce-inpost' ); ?></a>
                                 </td>
                             </tr>
                         <?php endif; ?>
@@ -56,7 +56,7 @@ $field    = $this->get_field_key( $key );
 			<tfoot>
 				<tr>
 					<th colspan="6">
-						<a id="insert_rate" href="#" class="button plus insert"><?php _e( 'Insert row', 'woocommerce-inpost' ); ?></a>
+						<a id="insert_rate" href="#" class="button plus insert"><?php esc_html_e( 'Insert row', 'woocommerce-inpost' ); ?></a>
 					</th>
 				</tr>
 			</tfoot>
@@ -78,7 +78,7 @@ $field    = $this->get_field_key( $key );
 									<input class="input-text regular-input" type="number" style="" value="<?php echo esc_attr( $commission ); ?>" placeholder="0.00" step="any" min="0" name=rates[' + id + '][percent]>\
 								</td>\
 								<td>\
-									<a id="delete_rate_'+id+'" href="#" class="button delete_rate" data-id="'+id+'"><?php _e( 'Delete row', 'woocommerce-inpost' ); ?></a>\
+									<a id="delete_rate_'+id+'" href="#" class="button delete_rate" data-id="'+id+'"><?php esc_html_e( 'Delete row', 'woocommerce-inpost' ); ?></a>\
 								</td>\
 							</tr>';
 				var $tbody = jQuery('.easypack_rates').find('tbody');
@@ -99,7 +99,7 @@ $field    = $this->get_field_key( $key );
 					return false;
 				});
 				jQuery(document).on('click', '.delete_rate',  function() {
-					if (confirm('<?php _e( 'Are you sure?' , 'woocommerce-inpost' ); ?>')) {
+					if (confirm('<?php esc_html_e( 'Are you sure?' , 'woocommerce-inpost' ); ?>')) {
 						jQuery(this).closest('tr').remove();
 					}
 					return false;

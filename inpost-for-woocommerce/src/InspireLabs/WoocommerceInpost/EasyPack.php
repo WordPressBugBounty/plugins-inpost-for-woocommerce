@@ -2,6 +2,10 @@
 
 namespace InspireLabs\WoocommerceInpost;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 use Exception;
 use InspireLabs\WoocommerceInpost\admin\EasyPack_Custom_Product_List_Table;
 use InspireLabs\WoocommerceInpost\EasyPack_Helper;
@@ -27,19 +31,23 @@ use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Parcel_Machines_Wee
 use InspireLabs\WoocommerceInpost\shipping\Easypack_Shipping_Rates;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shippng_Parcel_Machines;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shippng_Parcel_Machines_COD;
+use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Cod_Model;
+use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Contstants;
 use InspireLabs\WoocommerceInpost\shipx\services\courier_pickup\ShipX_Courier_Pickup_Service;
 use InspireLabs\WoocommerceInpost\shipx\services\organization\ShipX_Organization_Service;
 use InspireLabs\WoocommerceInpost\shipx\services\shipment\ShipX_Shipment_Price_Calculator_Service;
 use InspireLabs\WoocommerceInpost\shipx\services\shipment\ShipX_Shipment_Service;
 use InspireLabs\WoocommerceInpost\shipx\services\shipment\ShipX_Shipment_Status_Service;
+use stdClass;
 use WC_Order;
+use WC_Order_Item_Shipping;
 use WC_Shipping_Method;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Parcel_Machines_Weekend;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Parcel_Machines_Economy;
 use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shipping_Parcel_Machines_Economy_COD;
 use InspireLabs\WoocommerceInpost\EasyPackBulkOrders;
-use function DebugQuickLook\Formatting\wrap_warning_types;
 use Automattic\WooCommerce\Utilities\OrderUtil;
+use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 
 
 class EasyPack extends inspire_Plugin4 {
@@ -48,7 +56,8 @@ class EasyPack extends inspire_Plugin4 {
 
 	const CLASSES_DIRECTORY = __DIR__ . DIRECTORY_SEPARATOR . 'classes';
 
-	const ATTRIBUTE_PREFIX = 'woo_inpost';
+	const ATTRIBUTE_PREFIX           = 'woo_inpost';
+	const ATTRIBUTE_TEMPLATES_PREFIX = 'easypack_courier_tmplts';
 
 	const ENVIRONMENT_PRODUCTION = 'production';
 
@@ -103,7 +112,7 @@ class EasyPack extends inspire_Plugin4 {
 	public function hooks() {
 
 		add_action( 'plugins_loaded', array( $this, 'init_easypack' ), 100 );
-		add_action( 'woocommerce_init', array( $this, 'add_settings_to_flexible_shipping' ) );
+		add_action( 'before_woocommerce_init', array( $this, 'add_settings_to_flexible_shipping' ) );
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_filter( 'woocommerce_package_rates', array( $this, 'check_paczka_weekend_fs_settings' ), 10, 2 );
 
@@ -121,6 +130,16 @@ class EasyPack extends inspire_Plugin4 {
 		);
 
 		add_action( 'send_tracking_numbers_email', array( $this, 'send_tracking_numbers_email_callback' ) );
+
+		add_action( 'woocommerce_checkout_process', array( $this, 'validation_old_checkout' ), 9999 );
+
+		add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'update_order_meta_old_checkout' ) );
+
+		add_action( 'send_shipment_automatically', array( $this, 'send_shipment_automatically_callback' ) );
+		add_action( 'woocommerce_payment_complete', array( $this, 'create_shipment_automatically' ), 20 );
+		add_action( 'woocommerce_order_status_changed', array( $this, 'create_shipment_automatically_on_paid' ), 10, 4 );
+
+		add_filter( 'woocommerce_order_item_get_formatted_meta_data', array( $this, 'wc_order_shipping_method_logo' ), 10, 2 );
 	}
 
 	/**
@@ -158,7 +177,7 @@ class EasyPack extends inspire_Plugin4 {
 
 		add_filter( 'woocommerce_get_settings_pages', array( $this, 'woocommerce_get_settings_pages' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ), 75 );
-		// add_action( 'woocommerce_checkout_after_order_review', [ $this, 'woocommerce_checkout_after_order_review' ] );
+
 		add_filter( 'woocommerce_order_item_display_meta_value', array( $this, 'change_order_item_meta_value' ), 20, 3 );
 		add_action( 'woocommerce_cart_item_removed', array( $this, 'clear_wc_shipping_cache' ) );
 		add_action( 'woocommerce_add_to_cart', array( $this, 'clear_wc_shipping_cache' ) );
@@ -194,6 +213,7 @@ class EasyPack extends inspire_Plugin4 {
 			( new Easypack_Shipping_Rates() )->init();
 			( new EasyPackBulkOrders() )->hooks();
 			( new EasyPackCoupons() )->hooks();
+			( new EasyPack_Webhook() )->hooks();
 
 			// integration with Woocommerce blocks start.
 			add_action(
@@ -309,7 +329,17 @@ class EasyPack extends inspire_Plugin4 {
 	}
 
 
+	/**
+	 * Initializes all available InPost shipping methods based on organization settings.
+	 *
+	 * @return void
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 */
 	public function init_shipping_methods() {
+
+		$merchant_services = array();
 
 		$main_methods = array(
 			'inpost_locker_standard',
@@ -323,47 +353,32 @@ class EasyPack extends inspire_Plugin4 {
 			'inpost_courier_alcohol',
 		);
 
-		$stored_organization = get_option( 'woo_inpost_organisation' );
-
-		$servicesAllowed = array();
+		$stored_organization = get_option( 'inpost_pl_organisation_services' );
 
 		// get Shipping methods from stored settings.
 		if ( ! empty( $stored_organization ) && is_array( $stored_organization ) ) {
 			if ( isset( $stored_organization['services'] ) && is_array( $stored_organization['services'] ) ) {
 				foreach ( $main_methods as $service ) {
 					if ( in_array( $service, $stored_organization['services'] ) ) {
-						$servicesAllowed[] = $service;
+						$merchant_services[] = $service;
 					}
 				}
 			}
 		}
 
-		// trying to connect to API during 60 seconds and save data to settings or show special message.
-		if ( empty( $servicesAllowed ) || ! is_array( $servicesAllowed ) ) {
-
-			$now                 = time();
-			$limit_time_to_retry = 60 + (int) get_option( 'easypack_api_limit_connection', 0 ); // saved during saving API key.
-
-			if ( $limit_time_to_retry > $now ) {
-				// try to connect to API only for 60 sec to avoid make website slow.
-				$this->get_or_update_data_from_api();
-			} elseif ( ! empty( get_option( 'easypack_organization_id' ) )
-					&& ! empty( get_option( 'easypack_token' ) )
-				) {
-
-					$alerts = new Alerts();
-					$error  = sprintf(
-						'%s <a target="_blank" href="https://inpost.pl/formularz-wsparcie">%s</a>',
-						__( 'We were unable to connect to the API within 60 seconds. Please try to re-save settings later or', 'woocommerce-inpost' ),
-						__( 'contact to support', 'woocommerce-inpost' )
-					);
-
-					$alerts->add_error( $error );
-			}
+		if ( empty( $merchant_services ) ) {
+            // base method.
+            $merchant_services = array( 'inpost_locker_standard' );
+			$this->get_merchant_services();
 		}
 
-		if ( is_array( $servicesAllowed ) && ! empty( $servicesAllowed ) ) {
-			if ( in_array( EasyPack_Shippng_Parcel_Machines::SERVICE_ID, $servicesAllowed ) ) {
+        if ( ( time() - (int) get_option( 'inpost_pl_last_time_update_services', 0 ) ) > 86400 ) {
+
+            $this->get_merchant_services();
+        }
+
+		if ( is_array( $merchant_services ) && ! empty( $merchant_services ) ) {
+			if ( in_array( EasyPack_Shippng_Parcel_Machines::SERVICE_ID, $merchant_services ) ) {
 
 				$easyPack_Shippng_Parcel_Machines = new EasyPack_Shippng_Parcel_Machines();
 				$this->shipping_methods[]         = $easyPack_Shippng_Parcel_Machines;
@@ -378,7 +393,7 @@ class EasyPack extends inspire_Plugin4 {
 				$this->shipping_methods[]                     = $easyPack_Shippng_Parcel_Machines_Weekend_COD;
 			}
 
-			if ( in_array( EasyPack_Shipping_Parcel_Machines_Economy::SERVICE_ID, $servicesAllowed ) ) {
+			if ( in_array( EasyPack_Shipping_Parcel_Machines_Economy::SERVICE_ID, $merchant_services ) ) {
 				$easyPack_Shippng_Parcel_Machines_Economy = new EasyPack_Shipping_Parcel_Machines_Economy();
 				$this->shipping_methods[]                 = $easyPack_Shippng_Parcel_Machines_Economy;
 
@@ -386,62 +401,62 @@ class EasyPack extends inspire_Plugin4 {
 				$this->shipping_methods[]                     = $easyPack_Shippng_Parcel_Machines_Economy_COD;
 			}
 
-			if ( in_array( EasyPack_Shipping_Method_EsmartMix::SERVICE_ID, $servicesAllowed ) ) {
+			if ( in_array( EasyPack_Shipping_Method_EsmartMix::SERVICE_ID, $merchant_services ) ) {
 				$easyPack_Shipping_Method_EsmartMix = new EasyPack_Shipping_Method_EsmartMix();
 				$this->shipping_methods[]           = $easyPack_Shipping_Method_EsmartMix;
 			}
 
-			if ( in_array( EasyPack_Shipping_Method_Courier_Local_Standard::SERVICE_ID, $servicesAllowed ) ) {
+			if ( in_array( EasyPack_Shipping_Method_Courier_Local_Standard::SERVICE_ID, $merchant_services ) ) {
 				$shipping_Method_Courier_local_standard = new EasyPack_Shipping_Method_Courier_Local_Standard();
 				$this->shipping_methods[]               = $shipping_Method_Courier_local_standard;
 			}
 
-			if ( in_array( EasyPack_Shipping_Method_Courier_LSE_COD::SERVICE_ID, $servicesAllowed ) ) {
+			if ( in_array( EasyPack_Shipping_Method_Courier_LSE_COD::SERVICE_ID, $merchant_services ) ) {
 				$shipping_Method_Courier_LSE_COD = new EasyPack_Shipping_Method_Courier_LSE_COD();
 				$this->shipping_methods[]        = $shipping_Method_Courier_LSE_COD;
 			}
 
-			if ( in_array( EasyPack_Shipping_Method_Courier_COD::SERVICE_ID, $servicesAllowed ) ) {
+			if ( in_array( EasyPack_Shipping_Method_Courier_COD::SERVICE_ID, $merchant_services ) ) {
 				$shipping_Method_Courier_COD = new EasyPack_Shipping_Method_Courier_COD();
 				$this->shipping_methods[]    = $shipping_Method_Courier_COD;
 			}
 
-			if ( in_array( EasyPack_Shipping_Method_Courier::SERVICE_ID, $servicesAllowed ) ) {
+			if ( in_array( EasyPack_Shipping_Method_Courier::SERVICE_ID, $merchant_services ) ) {
 				$shipping_Method_Courier  = new EasyPack_Shipping_Method_Courier();
 				$this->shipping_methods[] = $shipping_Method_Courier;
 			}
 
-			if ( in_array( EasyPack_Shipping_Method_Courier_LSE::SERVICE_ID, $servicesAllowed ) ) {
+			if ( in_array( EasyPack_Shipping_Method_Courier_LSE::SERVICE_ID, $merchant_services ) ) {
 				$shipping_Method_Courier_LSE = new EasyPack_Shipping_Method_Courier_LSE();
 				$this->shipping_methods[]    = $shipping_Method_Courier_LSE;
 			}
 
-			if ( in_array( EasyPack_Shipping_Method_Courier_Local_Standard_COD::SERVICE_ID, $servicesAllowed ) ) {
+			if ( in_array( EasyPack_Shipping_Method_Courier_Local_Standard_COD::SERVICE_ID, $merchant_services ) ) {
 				$shipping_Method_Courier_local_standard_cod = new EasyPack_Shipping_Method_Courier_Local_Standard_COD();
 				$this->shipping_methods[]                   = $shipping_Method_Courier_local_standard_cod;
 			}
 
-			if ( in_array( EasyPack_Shipping_Method_Courier_Local_Express::SERVICE_ID, $servicesAllowed ) ) {
+			if ( in_array( EasyPack_Shipping_Method_Courier_Local_Express::SERVICE_ID, $merchant_services ) ) {
 				$shipping_Method_Courier_local_express = new EasyPack_Shipping_Method_Courier_Local_Express();
 				$this->shipping_methods[]              = $shipping_Method_Courier_local_express;
 			}
 
-			if ( in_array( EasyPack_Shipping_Method_Courier_Local_Express_COD::SERVICE_ID, $servicesAllowed ) ) {
+			if ( in_array( EasyPack_Shipping_Method_Courier_Local_Express_COD::SERVICE_ID, $merchant_services ) ) {
 				$shipping_Method_Courier_local_express_cod = new EasyPack_Shipping_Method_Courier_Local_Express_COD();
 				$this->shipping_methods[]                  = $shipping_Method_Courier_local_express_cod;
 			}
 
-			if ( in_array( EasyPack_Shipping_Method_Courier_Palette::SERVICE_ID, $servicesAllowed ) ) {
+			if ( in_array( EasyPack_Shipping_Method_Courier_Palette::SERVICE_ID, $merchant_services ) ) {
 				$shipping_Method_Courier_Palette = new EasyPack_Shipping_Method_Courier_Palette();
 				$this->shipping_methods[]        = $shipping_Method_Courier_Palette;
 			}
 
-			if ( in_array( EasyPack_Shipping_Method_Courier_Palette_COD::SERVICE_ID, $servicesAllowed ) ) {
+			if ( in_array( EasyPack_Shipping_Method_Courier_Palette_COD::SERVICE_ID, $merchant_services ) ) {
 				$shipping_Method_Courier_Palette_Cod = new EasyPack_Shipping_Method_Courier_Palette_COD();
 				$this->shipping_methods[]            = $shipping_Method_Courier_Palette_Cod;
 			}
 
-			if ( in_array( EasyPack_Shipping_Method_Courier_C2C::SERVICE_ID, $servicesAllowed ) ) {
+			if ( in_array( EasyPack_Shipping_Method_Courier_C2C::SERVICE_ID, $merchant_services ) ) {
 				$shipping_Method_Courier_c2c = new EasyPack_Shipping_Method_Courier_C2C();
 				$this->shipping_methods[]    = $shipping_Method_Courier_c2c;
 
@@ -453,10 +468,18 @@ class EasyPack extends inspire_Plugin4 {
 		EasyPack_Product_Shipping_Method_Selector::$inpost_methods = $this->shipping_methods;
 	}
 
+
+	/**
+	 * Registers InPost shipping methods with WooCommerce.
+	 *
+	 * @param array $methods Array of shipping methods.
+	 * @return array Modified array of shipping methods.
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 */
 	public function woocommerce_shipping_methods( $methods ) {
-
 		foreach ( $this->shipping_methods as $shipping_method ) {
-
 			$methods[ $shipping_method->id ] = get_class( $shipping_method );
 		}
 
@@ -483,6 +506,10 @@ class EasyPack extends inspire_Plugin4 {
 		}
 
 		if ( is_array( $rates ) && ! empty( $rates ) ) {
+			
+			$fs_linked_methods_disabled = array();
+            $fs_linked_methods_enabled = array();
+			
 			foreach ( $rates as $k => $rate_object ) {
 				// if Flexible shipping is active we need check if some our Easypack methods is linked to FS.
 				if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
@@ -502,7 +529,10 @@ class EasyPack extends inspire_Plugin4 {
 						if ( 0 === strpos( $linked_method, 'easypack_' ) ) {
 							if ( in_array( $k, $methods_allowed_by_cart ) ) {
 								$rates_allowed[ $k ] = $rate_object;
-							}
+                                $fs_linked_methods_enabled[] = $k;
+							} else {
+                                $fs_linked_methods_disabled[] = $k;
+                            }
 						}
 					}
 				}
@@ -518,7 +548,35 @@ class EasyPack extends inspire_Plugin4 {
 		}
 
 		if ( ! empty( $rates_allowed ) ) {
-			$packages[0]['rates'] = $rates_allowed;
+			
+			if( ! empty($fs_linked_methods_disabled) ) {
+                foreach ($fs_linked_methods_disabled as $method_id ) {
+                    unset($rates_allowed[$method_id]);
+                }
+            }
+			
+			$packages[0]['rates'] = $rates_allowed;			
+			
+		} else {
+			// No InPost allowed methods.
+            if( empty( $methods_allowed_by_cart ) ) {
+
+                if ( isset( $packages[0]['rates'] ) && is_array( $packages[0]['rates'] ) && ! empty( $packages[0]['rates'] ) ) {
+
+                    foreach ( $packages[0]['rates'] as $k => $rate ) {
+                        if ( 0 === strpos( $k, 'easypack_' ) ) {
+                            unset( $packages[0]['rates'][ $k ] );
+                        }
+                    }
+
+                    if( ! empty( $fs_linked_methods_enabled ) ) {
+                        foreach ($fs_linked_methods_enabled as $method_id ) {
+                            unset( $packages[0]['rates'][ $method_id ] );
+                        }
+                    }
+                }
+
+            }
 		}
 
 		return $packages;
@@ -585,7 +643,7 @@ class EasyPack extends inspire_Plugin4 {
 
 	public function enqueue_scripts() {
 		if ( is_cart() || is_checkout() || has_block( 'woocommerce/checkout' ) || 'yes' === get_option( 'easypack_debug_mode_enqueue_scripts' ) ) {
-			wp_enqueue_style( 'easypack-front', $this->getPluginCss() . 'front.css' );
+			wp_enqueue_style( 'easypack-front', $this->getPluginCss() . 'front.css', array(), WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION );
 		}
 
 		if ( is_checkout() || has_block( 'woocommerce/checkout' ) || get_option( 'easypack_debug_mode_enqueue_scripts' ) === 'yes' ) {
@@ -617,6 +675,11 @@ class EasyPack extends inspire_Plugin4 {
 							? get_option( 'easypack_geowidget_sandbox_token' )
 							: get_option( 'easypack_geowidget_production_token' ),
 						'inpost_methods'     => EasyPack_Helper()->get_inpost_methods(),
+						'error_text'         => esc_html__( 'Some error is occured', 'woocommerce-inpost' ),
+						'updated_text'       => esc_html__( 'Pick up point has been successfuly written', 'woocommerce-inpost' ),
+						'ajaxurl'            => admin_url( 'admin-ajax.php' ),
+						'security'           => wp_create_nonce( 'easypack_nonce' ),
+						'preloader'          => esc_url( $this->getPluginImages() . 'inpost-pl-loader.gif' ),
 					)
 				);
 			}
@@ -646,7 +709,7 @@ class EasyPack extends inspire_Plugin4 {
 				}
 			} elseif ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-orders' === $current_screen->id ) {
 
-					wp_enqueue_style( 'easypack-admin', $this->getPluginCss() . 'admin.css', array(), $admin_css_path_ver );
+				wp_enqueue_style( 'easypack-admin', $this->getPluginCss() . 'admin.css', array(), $admin_css_path_ver );
 			}
 		} else {
 
@@ -662,8 +725,8 @@ class EasyPack extends inspire_Plugin4 {
 		}
 
 		if ( EasyPack_Helper()->is_required_pages_for_modal() ) {
-			wp_enqueue_style( 'easypack-admin-modal', $this->getPluginCss() . 'modal.css' );
-			wp_enqueue_style( 'easypack-jbox-css', $this->getPluginCss() . 'jBox.all.min.css' );
+			wp_enqueue_style( 'easypack-admin-modal', $this->getPluginCss() . 'modal.css', array(), WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION );
+			wp_enqueue_style( 'easypack-jbox-css', $this->getPluginCss() . 'jBox.all.min.css', array(), WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION );
 		}
 
 		$admin_js_path     = $this->_pluginPath . '/resources/assets/js/admin.js';
@@ -673,15 +736,16 @@ class EasyPack extends inspire_Plugin4 {
 			'easypack-admin',
 			'easypack_settings',
 			array(
-				'default_logo' => EasyPack()->getPluginImages() . 'logo/small/white.png',
-				'ajaxurl'      => admin_url( 'admin-ajax.php' ),
-				'nonce'        => wp_create_nonce( 'easypack-shipment-manager' ),
+				'default_logo'      => EasyPack()->getPluginImages() . 'logo/small/white.png',
+				'ajaxurl'           => admin_url( 'admin-ajax.php' ),
+				'nonce'             => wp_create_nonce( 'easypack-shipment-manager' ),
+				'courier_templates' => get_option( 'easypack_courier_tmplts_dmtemplates', array() ),
 			)
 		);
 
 		if ( EasyPack_Helper()->is_required_pages_for_modal() ) {
-			wp_enqueue_script( 'easypack-admin-modal', $this->getPluginJs() . 'modal.js', array( 'jquery' ) );
-			wp_enqueue_script( 'easypack-jquery-modal', $this->getPluginJs() . 'jBox.all.min.js', array( 'jquery' ) );
+			wp_enqueue_script( 'easypack-admin-modal', $this->getPluginJs() . 'modal.js', array( 'jquery' ), WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION, array( 'in_footer' => true ) );
+			wp_enqueue_script( 'easypack-jquery-modal', $this->getPluginJs() . 'jBox.all.min.js', array( 'jquery' ), WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION, array( 'in_footer' => true ) );
 		}
 
 		if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
@@ -690,7 +754,7 @@ class EasyPack extends inspire_Plugin4 {
 					'easypack-admin-settings-page',
 					$this->getPluginJs() . 'admin-settings-page.js',
 					array( 'jquery' ),
-					'',
+					WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
 					true
 				);
 
@@ -703,6 +767,7 @@ class EasyPack extends inspire_Plugin4 {
 							'Does not work simultaneously with the option \'JS mode of map button\'',
 							'woocommerce-inpost'
 						),
+						'webhook_notice'       => __( 'Copied!', 'woocommerce-inpost' ),
 					)
 				);
 
@@ -721,7 +786,7 @@ class EasyPack extends inspire_Plugin4 {
 					'easypack-shipping-method-settings',
 					$this->getPluginJs() . 'shipping-settings-page.js',
 					array( 'jquery' ),
-					'',
+					WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
 					true
 				);
 
@@ -824,6 +889,15 @@ class EasyPack extends inspire_Plugin4 {
 	}
 
 
+
+	/**
+	 * Returns available package size options with dimensions.
+	 *
+	 * Provides an array of standard InPost package sizes (gabaryt)
+	 * with their dimensions translated for display in the interface.
+	 *
+	 * @return array Array of package sizes with translated labels.
+	 */
 	public function get_package_sizes_gabaryt() {
 		return array(
 			'small'  => __( 'Size A (8 x 38 x 64 cm)', 'woocommerce-inpost' ),
@@ -833,19 +907,48 @@ class EasyPack extends inspire_Plugin4 {
 	}
 
 
+	/**
+	 * Retrieves or updates data from the InPost API.
+	 *
+	 * Attempts to fetch organization data using stored API credentials.
+	 * Validates that API key and organization ID are available before making the request.
+	 * Handles and returns any errors encountered during the API communication.
+	 *
+	 * @return string|false Error message if an error occurred, false otherwise.
+	 */
 	private function get_or_update_data_from_api() {
+
+		$error = false;
+
+		$organization_id = get_option( 'easypack_organization_id' );
+		$api_key         = get_option( 'easypack_token' );
+
+		if ( empty( $api_key ) || empty( $organization_id ) ) {
+			$error = esc_html__( 'API key or Organization ID is empty', 'woocommerce-inpost' );
+			return $error;
+		}
+
 		try {
 			$organization_service = self::EasyPack()->get_organization_service();
 			$organization         = $organization_service->query_organisation();
 			if ( ! is_object( $organization ) ) {
-				throw new Exception( 'Query organisation failed' );
+				$error = esc_html__( "Error when trying to get API services. Check wc-logs, file 'inpost-pl-services-error'", 'woocommerce-inpost' );
 			}
 		} catch ( Exception $e ) {
-			error_log( $e->getMessage() );
+			$error = $e->getMessage();
 		}
+
+		return $error;
 	}
 
 
+	/**
+	 * Enqueues JavaScript for InPost blocks on checkout pages.
+	 *
+	 * Loads the front-blocks.js script when on checkout pages with WooCommerce blocks,
+	 * or when debug mode is enabled. Includes version control based on file modification time
+	 * and localizes the script with necessary configuration data and translations.
+	 */
 	public function enqueue_block_script() {
 		if ( ( is_checkout() && has_block( 'woocommerce/checkout' ) ) || has_block( 'woocommerce/checkout' ) || 'yes' === get_option( 'easypack_debug_mode_enqueue_scripts' ) ) {
 
@@ -854,7 +957,8 @@ class EasyPack extends inspire_Plugin4 {
 				'easypack-front-blocks-js',
 				$this->getPluginJs() . 'front-blocks.js',
 				array( 'jquery' ),
-				file_exists( $front_blocks_js_path ) ? filemtime( $front_blocks_js_path ) : '1.4.6',
+				file_exists( $front_blocks_js_path ) ? filemtime( $front_blocks_js_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
+				array( 'in_footer' => true )
 			);
 			wp_localize_script(
 				'easypack-front-blocks-js',
@@ -862,12 +966,13 @@ class EasyPack extends inspire_Plugin4 {
 				array(
 					'ajaxurl'            => admin_url( 'admin-ajax.php' ),
 					'security'           => wp_create_nonce( 'easypack_nonce' ),
-					'button_text1'       => __( 'Select Parcel Locker', 'woocommerce-inpost' ),
-					'button_text2'       => __( 'Change Parcel Locker', 'woocommerce-inpost' ),
-					'phone_text'         => __( 'Phone number (required)', 'woocommerce-inpost' ),
+					'button_text1'       => esc_html__( 'Select Parcel Locker', 'woocommerce-inpost' ),
+					'button_text2'       => esc_html__( 'Change Parcel Locker', 'woocommerce-inpost' ),
+					'phone_text'         => esc_html__( 'Phone number (required)', 'woocommerce-inpost' ),
 					'geowidget_v5_token' => self::ENVIRONMENT_SANDBOX === self::get_environment()
 						? get_option( 'easypack_geowidget_sandbox_token' )
 						: get_option( 'easypack_geowidget_production_token' ),
+					'inpost_methods'     => EasyPack_Helper()->get_inpost_methods(),
 				)
 			);
 
@@ -1421,7 +1526,7 @@ class EasyPack extends inspire_Plugin4 {
 					$distance = isset( $point['distance'] ) ? ' (' . round( $point['distance'] / 1000, 1 ) . ' km)' : '';
 
 					// Create button with address as two lines.
-					echo '<button class="inpost-pl-related-point-btn" data-id="' . $point_id . '" data-address-id="' . $address_line1 . ' ' . $address_line2 . '" style="
+					echo '<button class="inpost-pl-related-point-btn" data-id="' . esc_attr( $point_id ) . '" data-address-id="' . esc_attr( $address_line1 ) . ' ' . esc_attr( $address_line2 ) . '" style="
                             display: block;
                             width: 100%;
                             margin: 8px 0;
@@ -1468,8 +1573,8 @@ class EasyPack extends inspire_Plugin4 {
                     <div id="selected-parcel-machine" class="hidden-inpost-pl-typ-data">
                         <div>
                           <span class="font-height-600">'
-							. esc_html__( 'Selected parcel locker:', 'woocommerce-inpost' ) .
-							'</span>
+				. esc_html__( 'Selected parcel locker:', 'woocommerce-inpost' ) .
+				'</span>
                         </div>
                         <span class="italic" id="selected-parcel-locker-pl-id" style="display: none;"></span>
                         <br><span class="italic" id="selected-parcel-machine-desc"></span>
@@ -1477,5 +1582,543 @@ class EasyPack extends inspire_Plugin4 {
                 </div>';
 
 		}
+	}
+
+
+	/**
+	 * Updates order meta data for the old checkout process with EasyPack information.
+	 *
+	 * @param int $order_id The ID of the order being processed.
+	 * @return void
+	 *
+	 * @since 1.7.2
+	 * @access public
+	 */
+	public function update_order_meta_old_checkout( $order_id ) {
+
+		$order = wc_get_order( $order_id );
+		if ( ! $order || is_wp_error( $order ) ) {
+			return;
+		}
+
+		if ( ! empty( $_POST['parcel_machine_id'] ) ) {
+			$paczkomat_id = sanitize_text_field( wp_unslash( $_POST['parcel_machine_id'] ) );
+			if ( 'PL_' === substr( $paczkomat_id, 0, 3 ) ) {
+				$paczkomat_id = substr( $paczkomat_id, 3 );
+			}
+			$order->update_meta_data( '_parcel_machine_id', $paczkomat_id );
+			$order->save();
+		}
+
+		if ( ! empty( $_POST['parcel_machine_desc'] ) ) {
+			$paczkomat_desc = sanitize_text_field( wp_unslash( $_POST['parcel_machine_desc'] ) );
+			$order->update_meta_data( '_parcel_machine_desc', $paczkomat_desc );
+			$order->save();
+		}
+
+		// save easypack method name in metadata to show later required metabox in order details.
+		if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
+			foreach ( $order->get_shipping_methods() as $shipping_method ) {
+				$fs_instance_id = $shipping_method->get_instance_id();
+			}
+
+			$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $fs_instance_id );
+			if ( ! empty( $fs_method_name ) ) {
+				$order->update_meta_data( '_fs_easypack_method_name', $fs_method_name );
+				$order->save();
+			}
+		}
+	}
+
+
+
+	/**
+	 * Validates the old checkout process for EasyPack shipping methods.
+	 *
+	 * @return void
+	 * @throws Exception When validation fails.
+	 *
+	 * @since 1.7.2
+	 * @access public
+	 */
+	public function validation_old_checkout() {
+
+		$chosen_shipping_methods       = array();
+		$at_least_one_physical_product = false;
+		$fs_method_name                = '';
+		static $alert_shown;
+		static $alert_shown_phone;
+
+		if ( ! is_object( WC()->session ) ) {
+			return;
+		}
+
+		$chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
+		if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
+			$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs( $chosen_shipping_methods );
+		}
+		$cart_contents = WC()->session->get( 'cart' );
+
+		$at_least_one_physical_product = EasyPack_Helper()->physical_goods_in_cart( $cart_contents );
+
+		if ( ! $at_least_one_physical_product ) {
+			return;
+		}
+
+		if ( ! empty( $chosen_shipping_methods ) && is_array( $chosen_shipping_methods ) ) {
+
+			$selected_shipping_method_name = '';
+			if ( ! empty( $chosen_shipping_methods[0] ) ) {
+				$selected_shipping_method_name = EasyPack_Helper()->validate_method_name( $chosen_shipping_methods[0] );
+			}
+
+			$locker_require_methods = array(
+				'easypack_parcel_machines',
+				'easypack_parcel_machines_cod',
+				'easypack_parcel_machines_economy',
+				'easypack_parcel_machines_economy_cod',
+				'easypack_parcel_machines_weekend',
+				'easypack_parcel_machines_weekend_cod',
+			);
+
+			if ( in_array( $selected_shipping_method_name, $locker_require_methods, true ) || in_array( $fs_method_name, $locker_require_methods, true ) ) {
+				if ( empty( $_POST['parcel_machine_id'] ) ) {
+					if ( ! $alert_shown ) {
+						$alert_shown = true;
+						if ( 'pl-PL' === get_bloginfo( 'language' ) ) {
+							wc_add_notice( 'Musisz wybrać paczkomat InPost', 'error' );
+							throw new Exception( 'InPost PL' );
+
+						} else {
+							wc_add_notice( 'Parcel locker InPost must be choosen', 'error' );
+							throw new Exception( 'InPost PL' );
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Retrieves or updates merchant services from the InPost API.
+	 *
+	 * If forced, clears cached data and fetches fresh data from API.
+	 * Otherwise, checks if cached data is older than 24 hours and updates if needed.
+	 * Implements error handling with a 1-hour timeout between API calls on failure.
+	 *
+	 * @param bool $forced Whether to force update regardless of cache status.
+	 */
+	public function get_merchant_services( $forced = false ) {
+
+		if ( $forced ) {
+			delete_option( 'inpost_pl_last_time_update_services' );
+			delete_option( 'inpost_pl_organisation_services' );
+			delete_option( 'inpost_pl_api_returned_error' );
+			$this->get_or_update_data_from_api();
+		}
+
+        // try to connect to API only once per 1 hour to avoid make website slow.
+        $maybe_timeout = get_option( 'inpost_pl_api_returned_error' );
+        $now           = time();
+        if ( $maybe_timeout && $maybe_timeout > $now ) {
+            return;
+        } else {
+            delete_option( 'inpost_pl_api_returned_error' );
+        }
+
+        $maybe_error = $this->get_or_update_data_from_api();
+
+        if ( ! empty( $maybe_error ) ) {
+            $timeout = time() + 300;
+            update_option( 'inpost_pl_api_returned_error', $timeout );
+
+            if ( $forced ) {
+                $alerts = new Alerts();
+                $error  = sprintf(
+                    '%s %s <br><a target="_blank" href="https://inpost.pl/formularz-wsparcie">%s</a>',
+                    'InPost PL: ' . esc_html__( 'Some error occured whe we try to get list of services:', 'woocommerce-inpost' ),
+                    esc_html( $maybe_error ),
+                    esc_html__( 'contact to support', 'woocommerce-inpost' )
+                );
+
+                $alerts->add_error( $error );
+            }
+        }
+
+	}
+
+
+	/**
+	 * Creates a shipment automatically for an order if enabled.
+	 *
+	 * @param int $order_id The order ID.
+	 * @return void
+	 *
+	 * @since 1.7.6
+	 * @access public
+	 */
+	public function create_shipment_automatically( $order_id ) {
+
+		$order = wc_get_order( $order_id );
+
+		if ( ! $order || is_wp_error( $order ) ) {
+			return;
+		}
+
+		if ( 'yes' !== get_option( 'easypack_create_shipment_automatically' ) ) {
+			return;
+		}
+
+		if ( empty( $order->get_date_paid() ) ) {
+			return;
+		}
+
+		$shipment = EasyPack_Helper()->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
+		if ( $shipment instanceof ShipX_Shipment_Model ) {
+			return;
+		}
+
+		// $this->send_shipment_automatically( $order_id );
+		wp_schedule_single_event(
+			time() + 60,
+			'send_shipment_automatically',
+			array( $order_id )
+		);
+	}
+
+
+	/**
+	 * Creates a shipment automatically when an order is paid.
+	 *
+	 * @param int      $order_id The order ID.
+	 * @param string   $status_from The previous order status.
+	 * @param string   $status_to The new order status.
+	 * @param WC_Order $order The order object.
+	 * @return void
+	 *
+	 * @since 1.7.6
+	 * @access public
+	 */
+	public function create_shipment_automatically_on_paid( $order_id, $status_from, $status_to, $order ) {
+
+		if ( ! $order || is_wp_error( $order ) ) {
+			return;
+		}
+
+		if ( 'yes' !== get_option( 'easypack_create_shipment_automatically' ) ) {
+			return;
+		}
+
+		if ( empty( $order->get_date_paid() ) ) {
+			return;
+		}
+
+		$shipment = EasyPack_Helper()->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
+		if ( $shipment instanceof ShipX_Shipment_Model ) {
+			return;
+		}
+
+		$paid_statuses = array( 'processing', 'completed' );
+
+		if ( in_array( $status_to, $paid_statuses ) && ! in_array( $status_from, $paid_statuses ) ) {
+			// $this->send_shipment_automatically( $order_id );
+
+			wp_schedule_single_event(
+				time() + 40,
+				'send_shipment_automatically',
+				array( $order_id )
+			);
+		}
+	}
+
+
+	/**
+	 * Sends a shipment automatically for an order.
+	 *
+	 * @param int $order_id The order ID.
+	 * @return void
+	 *
+	 * @since 1.7.6
+	 * @access public
+	 */
+	public function send_shipment_automatically_callback( $order_id ) {
+
+		static $order_processed = false;
+
+		// detect InPost shipping class we need for each order.
+		$service                 = '';
+		$ship_method_name        = '';
+		$ship_method_instance_id = '';
+		$sms_service             = false;
+		$email_service           = false;
+
+		$order = wc_get_order( $order_id );
+		foreach ( $order->get_items( 'shipping' ) as $item_id => $item ) {
+			$item_data               = $item->get_data();
+			$service                 = $item_data['method_id'];
+			$ship_method_name        = $item->get_method_id();
+			$ship_method_instance_id = $item->get_instance_id();
+		}
+
+		$shipping_method_settings = get_option( 'woocommerce_' . $ship_method_name . '_' . $ship_method_instance_id . '_settings' );
+		if ( isset( $shipping_method_settings['sms'] ) ) {
+			if ( 'yes' === $shipping_method_settings['sms'] ) {
+				$sms_service = true;
+			}
+		}
+		if ( isset( $shipping_method_settings['email'] ) ) {
+			if ( 'yes' === $shipping_method_settings['email'] ) {
+				$email_service = true;
+			}
+		}
+
+		$fs_method_name = EasyPack_Helper()->get_woo_order_meta( $order_id, '_fs_easypack_method_name' );
+
+		$is_any_inpost_method                          = ! empty( $service ) && 0 === strpos( $service, 'easypack_' );
+		$is_inpost_method_linked_via_flexible_shipping = ! empty( $service ) && 0 === strpos( $fs_method_name, 'easypack_' );
+		if ( $is_inpost_method_linked_via_flexible_shipping ) {
+			// use InPost method name linked to FS from metadata.
+			$service = $fs_method_name;
+		}
+
+		if ( ! $is_any_inpost_method && ! $is_inpost_method_linked_via_flexible_shipping ) {
+			return;
+		}
+
+		$cod_amount = null;
+
+		$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $service );
+
+		if ( '_COD' === substr( $shipping_method_class_name, -4 ) ) {
+			$cod_amount = $order->get_total();
+		}
+
+		$class_with_namespace = 'InspireLabs\WoocommerceInpost\shipping\\' . $shipping_method_class_name;
+
+		if ( ! class_exists( $class_with_namespace ) ) {
+			return;
+		}
+
+		$class_instance = new $class_with_namespace();
+
+		$commercial_product_identifier = null;
+		if ( 'EasyPack_Shipping_Parcel_Machines_Economy' === $shipping_method_class_name || 'EasyPack_Shipping_Parcel_Machines_Economy_COD' === $shipping_method_class_name ) {
+			$cpi = $class_instance::$instance->get_option( 'commercial_product_identifier' );
+			if ( ! empty( $cpi ) ) {
+				$commercial_product_identifier = $cpi;
+			}
+		}
+
+		if ( ! $order_processed ) {
+
+			$order_processed = true;
+
+			try {
+
+				$shipment_service        = self::EasyPack()->get_shipment_service();
+				$parcels                 = array( Easypack_Helper()->get_parcel_size_from_settings( $order_id ) );
+				$send_method             = EasyPack_Helper()->get_default_send_method( $order_id );
+				$locker                  = Easypack_Helper()->get_woo_order_meta( $order_id, '_parcel_machine_id' );
+				$parcel_machine_id       = ! empty( $locker ) ? $locker : null;
+				$insurance_amount        = EasyPack_Helper()->get_insurance_amount( $order_id );
+				$reference_number        = EasyPack_Helper()->get_maybe_custom_reference_number( $order_id );
+				$courier_parcel_data     = array();
+				$is_service_courier_type = $shipment_service->is_service_id_courier_type( $class_instance::SERVICE_ID );
+				if ( $is_service_courier_type ) {
+					$courier_parcel_source = EasyPack_Helper()->get_source_of_courier_dimensions( $order_id );
+					$courier_parcel_data   = EasyPack_Helper()->get_courier_parcel_dimensions( $order_id, $courier_parcel_source );
+				}
+
+				$shipment_model = $shipment_service->create_shipment_object_by_shiping_data(
+					$parcels,
+					$order_id,
+					$send_method,
+					$class_instance::SERVICE_ID,
+					$courier_parcel_data,
+					$parcel_machine_id,
+					$cod_amount,
+					$insurance_amount,
+					$reference_number,
+					$commercial_product_identifier
+				);
+
+				$additional_services = array();
+
+				$shipment_model->getInternalData()->setOrderId( $order_id );
+
+				$status_service = self::EasyPack()->get_shipment_status_service();
+
+				$shipment_array = $shipment_service->shipment_to_array( $shipment_model );
+
+				if ( $is_service_courier_type ) {
+					if ( ! isset( $shipment_array['custom_attributes'] ) || ! is_array( $shipment_array['custom_attributes'] ) ) {
+						$shipment_array['custom_attributes'] = array();
+					}
+
+					$shipment_array['custom_attributes']['sending_method'] = 'dispatch_order';
+
+					if ( ! isset( $shipment_array['additional_services'] ) || ! is_array( $shipment_array['additional_services'] ) ) {
+						$shipment_array['additional_services'] = array();
+					}
+					if ( $sms_service ) {
+						$shipment_array['additional_services'][] = 'sms';
+						$additional_services[]                   = $shipment_model::ADDITIONAL_SERVICES_SMS;
+					}
+					if ( $email_service ) {
+						$additional_services[]                   = $shipment_model::ADDITIONAL_SERVICES_EMAIL;
+						$shipment_array['additional_services'][] = 'email';
+					}
+				} else {
+					$shipment_array = EasyPack_Helper()->maybe_set_pww_param( $order_id, $shipment_array );
+				}
+
+				if ( null !== $cod_amount && floatval( $cod_amount ) > 0 ) {
+					$cod = new ShipX_Shipment_Cod_Model();
+					$cod->setCurrency( ShipX_Shipment_Contstants::CURRENCY_PLN );
+					$cod->setAmount( (float) $cod_amount );
+					$shipment_model->setCod( $cod );
+				}
+
+				if ( ! empty( $additional_services ) ) {
+					$shipment_model->setAdditionalServices( $additional_services );
+				}
+
+				$response = EasyPack_API()->customer_parcel_create( $shipment_array );
+
+				$shipment_data = $class_instance::save_to_order_meta(
+					$order_id,
+					$shipment_model,
+					$shipment_service,
+					$status_service,
+					$shipment_array,
+					$response
+				);
+
+				\wc_get_logger()->debug( 'INPOST create_package automatically: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+				\wc_get_logger()->debug( 'DATA to API: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+				\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+				\wc_get_logger()->debug( 'RESPONSE from API: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+				\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+
+			} catch ( Exception $e ) {
+				\wc_get_logger()->debug( 'INPOST create_package automatically Exception: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+				\wc_get_logger()->debug( print_r( $order_id, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+				\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+				\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+			}
+		}
+	}
+
+
+
+
+	/**
+	 * Customizes the display of InPost shipping method logos in order details.
+	 *
+	 * This function modifies the formatted meta data for shipping line items to display
+	 * InPost logos properly. The function replaces
+	 * the text representation with an appropriate image.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array                   $formatted_meta          The array of formatted meta data for the order item.
+	 * @param \WC_Order_Item_Shipping $wc_order_item_shipping_obj The shipping line item object.
+	 *
+	 * @return array The modified array of formatted meta data with proper logo display.
+	 */
+	public function wc_order_shipping_method_logo( $formatted_meta, $wc_order_item_shipping_obj ) {
+
+		$display_value          = '';
+		$custom_logo            = false;
+		$shipping_method_id     = null;
+		$shipping_instance_id   = null;
+		$logo_meta_id           = null;
+		$delivery_terms_meta_id = null;
+		$fs_method_name         = '';
+
+		$courier_methods = array(
+			'easypack_shipping_courier',
+			'easypack_shipping_courier_local_express',
+			'easypack_shipping_courier_c2c',
+			'easypack_shipping_courier_c2c_cod',
+			'easypack_cod_shipping_courier',
+			'easypack_shipping_courier_le_cod',
+			'easypack_shipping_courier_local_standard',
+			'easypack_shipping_courier_local_standard_cod',
+			'easypack_shipping_courier_lse',
+			'easypack_shipping_courier_lse_cod',
+			'easypack_shipping_courier_palette',
+			'easypack_shipping_courier_palette_cod',
+			'easypack_shipping_esmartmix',
+		);
+
+		if ( $wc_order_item_shipping_obj instanceof WC_Order_Item_Shipping ) {
+
+			$shipping_method_id   = $wc_order_item_shipping_obj->get_method_id();
+			$shipping_instance_id = $wc_order_item_shipping_obj->get_instance_id();
+			$meta                 = $wc_order_item_shipping_obj->get_meta_data();
+
+			if ( is_array( $meta ) ) {
+				foreach ( $meta as $key => $obj ) {
+					if ( 'logo' === $obj->key ) {
+						$logo_meta_id = $obj->id;
+					}
+					if ( 'delivery_terms' === $obj->key ) {
+						$delivery_terms_meta_id = $obj->id;
+					}
+				}
+			}
+
+			if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
+				$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $shipping_instance_id );
+			}
+
+			if ( $shipping_method_id ) {
+
+				$shipping_method_settings_name = 'woocommerce_' . $shipping_method_id . '_' . $shipping_instance_id . '_settings';
+				$shipping_method_settings      = get_option( $shipping_method_settings_name );
+
+				if ( ! empty( $shipping_method_settings['logo_upload'] ) ) {
+					$custom_logo = $shipping_method_settings['logo_upload'];
+				}
+
+				if ( $custom_logo ) {
+					$logo_src      = $custom_logo;
+					$display_value = '<p><img style="width: 40px;height:auto;" src="' . esc_url( $logo_src ) . '"></p>';
+				} elseif ( 0 === strpos( $shipping_method_id, 'easypack_parcel_machines_weekend' )
+					|| 0 === strpos( $fs_method_name, 'easypack_parcel_machines_weekend' ) ) {
+
+					$logo_src      = $this->getPluginImages() . 'logo/inpost-paczka-w-weekend.png';
+					$display_value = '<p><img style="width: 40px;height:auto;" src="' . esc_url( $logo_src ) . '"></p>';
+				} elseif ( 0 === strpos( $shipping_method_id, 'easypack_parcel_machines' )
+					|| 0 === strpos( $fs_method_name, 'easypack_parcel_machines' ) ) {
+
+					$logo_src      = $this->getPluginImages() . 'logo/inpost-paczkomat-logo.png';
+					$display_value = '<p><img style="width: 40px;height:auto;" src="' . esc_url( $logo_src ) . '"></p>';
+				} elseif ( in_array( $shipping_method_id, $courier_methods, true )
+						|| in_array( $fs_method_name, $courier_methods, true ) ) {
+
+					$logo_src      = $this->getPluginImages() . 'logo/inpost-kurier-logo.png';
+					$display_value = '<p><img style="width: 40px;height:auto;" src="' . esc_url( $logo_src ) . '"></p>';
+				}
+			}
+		}
+
+		if ( $logo_meta_id ) {
+			// Create new meta object.
+			$new_meta                = new stdClass();
+			$new_meta->key           = 'logo';
+			$new_meta->value         = $logo_src;
+			$new_meta->display_key   = 'By';
+			$new_meta->display_value = $display_value;
+
+			$formatted_meta[ $logo_meta_id ] = $new_meta;
+		}
+
+		if ( $delivery_terms_meta_id ) {
+			unset( $formatted_meta[ $delivery_terms_meta_id ] );
+		}
+
+		return $formatted_meta;
 	}
 }

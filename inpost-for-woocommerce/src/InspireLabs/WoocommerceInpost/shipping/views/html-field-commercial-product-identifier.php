@@ -1,16 +1,20 @@
 <?php /** @var ShipX_Shipment_Model $shipment */
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model; ?>
 <p>
 <?php if ( $shipment instanceof ShipX_Shipment_Model ): ?>
     <label disabled style="display: block" for="commercial_product_identifier"
            class="graytext">
-		<?php _e( 'Commercial product identifier: ', 'woocommerce-inpost' ); ?>
+		<?php esc_html_e( 'Commercial product identifier: ', 'woocommerce-inpost' ); ?>
     </label>
 <?php else: ?>
     <label disabled style="display: block" for="commercial_product_identifier" class="">
-		<?php _e( 'Commercial product identifier: ', 'woocommerce-inpost' ); ?>
+		<?php esc_html_e( 'Commercial product identifier: ', 'woocommerce-inpost' ); ?>
     </label>
 <?php endif ?>
 
@@ -21,7 +25,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model; ?>
            type="text"
            style=""
            value="
-<?php echo $shipment->getCommercialProductIdentifier(); ?>"
+<?php echo esc_attr( $shipment->getCommercialProductIdentifier() ); ?>"
            id="commercial_product_identifier"
            name="commercial_product_identifier">
 <?php else: ?>

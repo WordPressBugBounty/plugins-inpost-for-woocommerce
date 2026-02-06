@@ -59,6 +59,53 @@ jQuery( document ).ready(
 				}
 			}
 		);
+
+
+		//let activeTooltip = null;
+
+		jQuery(".inpost-pl-status-container").hover(
+			function() {
+				// Only create tooltip if none exists
+				if (true) {
+					const $container = jQuery(this);
+					const $statusDiv = $container.find(".inpost-pl-status-tooltip");
+					const statusText = $statusDiv.text();
+
+					// Create tooltip
+					let activeTooltip = jQuery('<div class="inpost-pl-status-value-tooltip">' + statusText + '</div>');
+
+					// Position tooltip relative to the container
+					const containerPos = $container.offset();
+					activeTooltip.css({
+						position: 'absolute',
+						background: '#333',
+						color: '#fff',
+						padding: '5px 10px',
+						borderRadius: '3px',
+						fontSize: '12px',
+						zIndex: 1000,
+						top: containerPos.top - 40, // Position above the status bar
+						left: containerPos.left,
+						boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+						maxWidth: '300px'
+					});
+
+					// Add arrow
+					activeTooltip.append('<div class="tooltip-arrow"></div>');
+
+					// Add to body
+					jQuery('body').append(activeTooltip);
+
+					// Set timeout to remove tooltip
+					setTimeout(function() {
+						activeTooltip.fadeOut(300, function() {
+							jQuery(this).remove();
+							activeTooltip = null;
+						});
+					}, 3000);
+				}
+			}
+		);
 	}
 );
 
@@ -266,7 +313,7 @@ function inpost_process_selected_item(orders, index, total, form, failed, need_l
 							cleared_message_text = 'Sprawdź czy wymiary paczki są prawidłowe';
 							jQuery( inpost_custom_column_cell ).addClass( 'easypack-alert-status' );
 						}
-						jQuery( inpost_custom_column_cell ).text( cleared_message_text );
+						jQuery( inpost_custom_column_cell ).html( '<span style="color:#f00;">' + cleared_message_text + '</span>' );
 
 					}
 

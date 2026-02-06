@@ -63,7 +63,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 
 		public function __construct() {
-			$this->token = get_option( 'easypack_token' );
+			$this->token = trim( get_option( 'easypack_token' ) );
 			$this->setupEnvironment();
 		}
 
@@ -74,12 +74,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				$this->environment = self::ENVIRONMENT_PRODUCTION;
 			}
 
-			if ( self::COUNTRY_PL === $this->normalize_country_code_for_inpost(
-				get_option( 'easypack_api_country' )
-			)
-			) {
-				$this->country = self::COUNTRY_PL;
-			}
+			$this->country = self::COUNTRY_PL;
 
 			$this->api_url = $this->make_api_url();
 		}
@@ -182,8 +177,9 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 			return $url;
 		}
 
+
 		public function clear_cache() {
-			$this->token   = get_option( 'easypack_token' );
+			$this->token   = trim( get_option( 'easypack_token' ) );
 			$this->api_url = $this->make_api_url();
 
 			// delete old plugin data.
@@ -193,10 +189,12 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 			delete_option( 'easypack_cache_machines_time' );
 		}
 
-		function translate_error( $error ) {
+
+		public function translate_error( $error ) {
 			$errors = array(
+				'end of week collection invalid end of week collection' => __( 'You are creating a Weekend Package service, which is available from Thursday 20:00 to Friday 18:00 - currently this is not a dedicated time slot', 'woocommerce-inpost' ),
 				'receiver_email'                       => __( 'Recipient e-mail', 'woocommerce-inpost' ),
-				'forbidden'                            => __( 'forbidden' ),
+				'forbidden'                            => __( 'forbidden', 'woocommerce-inpost' ),
 				'receiver_phone'                       => __( 'Recipient phone', 'woocommerce-inpost' ),
 				'address'                              => __( 'Address', 'woocommerce-inpost' ),
 				'phone'                                => __( 'Phone', 'woocommerce-inpost' ),
@@ -243,6 +241,10 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				return $errors[ $error ];
 			}
 
+			if ( strpos( $error, 'invalid end of week collection' ) !== false ) {
+				return __( 'You are creating a Weekend Package service, which is available from Thursday 20:00 to Friday 18:00 - currently this is not a dedicated time slot', 'woocommerce-inpost' );
+			}
+
 			return $error;
 		}
 
@@ -280,9 +282,9 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 					);
 				} elseif ( ! is_numeric( $key ) ) {
 						$value   = str_replace( '_', ' ', $value );
-						$output .= $key . ': ' . $value . '<br>';
+						$output .= $key . ': ' . $value . PHP_EOL;
 				} elseif ( ! is_array( $value ) ) {
-						$output .= $value . '<br>';
+						$output .= $value . PHP_EOL;
 				}
 			}
 
@@ -333,7 +335,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 			if ( is_wp_error( $response ) ) {
 
-				throw new Exception( $response->get_error_message() );
+				throw new Exception( esc_html( $response->get_error_message() ) );
 
 			} else {
 
@@ -347,10 +349,10 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				$ret = json_decode( $response['body'], true );
 
 				if ( ! is_array( $ret ) ) {
-					throw new Exception( __( 'Bad API response. Check API URL', 'woocommerce-inpost' ), 503 );
+					throw new Exception( esc_html__( 'Bad API response. Check API URL', 'woocommerce-inpost' ), 503 );
 
 				} elseif ( isset( $ret['status'] ) ) {
-                    $errors = '';
+					$errors = '';
 					if ( isset( $ret['error'] ) && ! empty( $ret['error'] ) ) {
 						if ( is_array( $ret['details'] ) ) {
 							if ( count( $ret['details'] ) ) {
@@ -381,7 +383,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 							}
 
 							if ( ! empty( $errors ) ) {
-								throw new Exception( str_replace( '_', ' ', $errors ), 0 );
+								throw new Exception( esc_html( str_replace( '_', ' ', $errors ) ), 0 );
 							}
 						}
 					}
@@ -390,7 +392,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 						if ( empty( $errors ) ) {
 							$errors = $ret['message'];
 						}
-						throw new Exception( str_replace( '_', ' ', $errors ), $ret['status'] );
+						throw new Exception( esc_html( str_replace( '_', ' ', $errors ) ), esc_html( $ret['status'] ) );
 					}
 				}
 
@@ -419,12 +421,11 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				'Content-Type'  => 'application/json',
 			);
 
-			$request_args['body'] = $args;
 			$request_args['body'] = json_encode( $args );
 
 			$response = wp_remote_post( $url, $request_args );
 			if ( is_wp_error( $response ) ) {
-				throw new Exception( $response->get_error_message() );
+				throw new Exception( esc_html( $response->get_error_message() ) );
 			} else {
 
 				if ( $this->is_binary_response( $response ) ) {
@@ -436,14 +437,14 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 				$ret = json_decode( $response['body'], true );
 				if ( ! is_array( $ret ) ) {
-					throw new Exception( __( 'Bad API response. Check API URL', 'woocommerce-inpost' ), 503 );
+					throw new Exception( esc_html__( 'Bad API response. Check API URL', 'woocommerce-inpost' ), 503 );
 				} elseif ( isset( $ret['status'] ) ) {
 						$errors = '';
 
 					if ( isset( $ret['error'] ) && is_array( $ret['error'] ) && count( $ret['error'] ) ) {
 						if ( ! empty( $ret['message'] ) ) {
 							$errors = $this->translate_error( $ret['message'] );
-							throw new Exception( $errors, $ret['status'] );
+							throw new Exception( esc_html( $errors ), esc_html( $ret['status'] ) );
 						}
 						if ( is_array( $ret['details'] ) ) {
 							if ( count( $ret['details'] ) ) {
@@ -459,7 +460,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 						if ( empty( $errors ) ) {
 							$errors = $ret['message'];
 						}
-						throw new Exception( $errors, $ret['status'] );
+						throw new Exception( esc_html( $errors ), esc_html( $ret['status'] ) );
 					}
 				}
 
@@ -594,24 +595,51 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 
 		/**
-		 * @param null $id
+		 * Retrieves organization details from the InPost API.
 		 *
-		 * @return array|mixed|object
-		 * @throws Exception
+		 * Uses the stored authentication token to fetch organization information.
+		 * If an organization ID is not provided, uses the one stored in WordPress options.
+		 * Handles authorization errors and logs them when WooCommerce logging is available.
+		 *
+		 * @param int|null $id Optional organization ID to retrieve. If null, uses stored ID.
+		 * @return array|null Organization data on success, null on failure.
 		 */
 		public function get_organization( $id = null ) {
-			$res = null;
-			if ( ! empty( $this->token ) ) {
-				$organizationId = ( null !== $id ) ? $id : get_option( 'easypack_organization_id' );
-				$res            = $this->get( sprintf( '/organizations/%d', $organizationId ) );
 
-				if ( isset( $res['error'] ) ) {
+			$res = null;
+            static $request_is_running = false;
+
+			if ( ! empty( $this->token ) && ! $request_is_running ) {
+
+                $request_is_running = true;
+
+				try {
+
+					$organization_id = ( null !== $id ) ? $id : get_option( 'easypack_organization_id' );
+					$res             = $this->get( sprintf( '/organizations/%d', $organization_id ) );
+
+				} catch ( Exception $e ) {
+
+                    $request_is_running = false;
+					$res['error'] = $e->getMessage();
+				}
+
+				if ( ! empty( $res['error'] ) ) {
 					$status = isset( $res['status'] ) ? (int) $res['status'] : 401;
 					$this->authorizationError( $res['error'], $status );
 
-					return null;
+					if ( function_exists( 'wc_get_logger' ) ) {
+						\wc_get_logger()->debug( 'Error:', array( 'source' => 'inpost-pl-services-error' ) );
+						\wc_get_logger()->debug( print_r( $res, true ), array( 'source' => 'inpost-pl-services-error' ) );
+					}
+
+					$res = null;
 				}
+
+
 			}
+
+            $request_is_running = false;
 
 			return $res;
 		}
@@ -908,7 +936,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 					date( 'Y-m-d H:i:s', time() ),
 					$url,
 					preg_replace( '/[\x00-\x1F\x7F]/u', '', serialize( $request ) ),
-					// remove non printable characters
+					// remove non printable characters.
 					preg_replace( '/[\x00-\x1F\x7F]/u', '', serialize( $response ) )
 				);
 

@@ -1,7 +1,10 @@
 <?php
 
-
 namespace InspireLabs\WoocommerceInpost;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
 
 use Automattic\WooCommerce\Utilities\OrderUtil;
 use WC_Order;
@@ -130,154 +133,239 @@ class EasyPackBulkOrders {
 
 		$order = wc_get_order( $post_id );
 
-		if ( $order ) {
+		if ( ! $order || is_wp_error( $order ) ) {
+            return;
+        }
 
-			foreach ( $order->get_shipping_methods() as $shipping_method ) {
-				// if order was made via Flexible Shipping.
-				$fs_method_name = '';
+        foreach ( $order->get_shipping_methods() as $shipping_method ) {
+            // if order was made via Flexible Shipping.
+            $fs_method_name = '';
 
-				$shipping_instance_id = $shipping_method->get_instance_id();
-				$fs_method_name       = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $shipping_instance_id );
+            $shipping_instance_id = $shipping_method->get_instance_id();
+            $fs_method_name       = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $shipping_instance_id );
 
-				if ( 0 === strpos( $shipping_method->get_method_id(), 'easypack_' )
-					|| 0 === strpos( $fs_method_name, 'easypack_' )
-				) {
+            if ( 0 === strpos( $shipping_method->get_method_id(), 'easypack_' )
+                || 0 === strpos( $fs_method_name, 'easypack_' )
+            ) {
 
-					$status = get_post_meta( $post_id, '_easypack_status', true );
+                $status = get_post_meta( $post_id, '_easypack_status', true );
 
-					if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
-						// HPOS usage is enabled.
-						if ( is_a( $post_id, 'WC_Order' ) ) {
-							$post_id = $post_id->get_id();
-							$status  = isset( get_post_meta( $post_id )['_easypack_status'][0] )
-								? get_post_meta( $post_id )['_easypack_status'][0]
-								: null;
-						}
-					}
+                if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
+                    // HPOS usage is enabled.
+                    if ( is_a( $post_id, 'WC_Order' ) ) {
+                        $post_id = $post_id->get_id();
+                        $status  = isset( get_post_meta( $post_id )['_easypack_status'][0] )
+                            ? get_post_meta( $post_id )['_easypack_status'][0]
+                            : null;
+                    }
+                }
 
-					if ( ! empty( $status ) ) {
+                if ( ! empty( $status ) ) {
 
-						$tracking_url    = EasyPack_Helper()->get_tracking_url();
-						$tracking_number = get_post_meta( $post_id, '_easypack_parcel_tracking', true );
+                    $tracking_url    = EasyPack_Helper()->get_tracking_url();
+                    $tracking_number = get_post_meta( $post_id, '_easypack_parcel_tracking', true );
 
-						if ( empty( $tracking_number ) ) {
-							$shipment = $order->get_meta( '_shipx_shipment_object' );
+                    if ( empty( $tracking_number ) ) {
+                        $shipment = $order->get_meta( '_shipx_shipment_object' );
 
-							if ( ! $shipment && 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
-								$from_order_meta_raw = isset( get_post_meta( $post_id )['_shipx_shipment_object'][0] )
-									? get_post_meta( $post_id )['_shipx_shipment_object'][0]
-									: '';
+                        if ( ! $shipment && 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
+                            $from_order_meta_raw = isset( get_post_meta( $post_id )['_shipx_shipment_object'][0] )
+                                ? get_post_meta( $post_id )['_shipx_shipment_object'][0]
+                                : '';
 
-								if ( ! empty( $from_order_meta_raw ) ) {
-									$shipment = unserialize( $from_order_meta_raw );
-								}
-							}
+                            if ( ! empty( $from_order_meta_raw ) ) {
+                                $shipment = unserialize( $from_order_meta_raw );
+                            }
+                        }
 
-							if ( is_object( $shipment ) && $shipment instanceof ShipX_Shipment_Model ) {
-								$tracking_number = $shipment->getInternalData()->getTrackingNumber();
-								if ( ! empty( $tracking_number ) ) {
-									update_post_meta( $post_id, '_easypack_parcel_tracking', sanitize_text_field( $tracking_number ) );
-									$order->update_meta_data( '_easypack_parcel_tracking', sanitize_text_field( $tracking_number ) );
-									$order->save();
-								}
-							}
-						}
-						if ( ! empty( $tracking_number ) ) {
-							$print_label_icon = sprintf(
-								'<a href="#" target="_blank" data-id="%s" class="get_sticker_action_orders">
-                                                <span 
-                                                title="%s" 
-                                                data-id="%s"
-                                                class="dashicons dashicons-media-spreadsheet%s"></span>
-                                                </a>',
-								$post_id,
-								esc_html__( 'Print sticker', 'woocommerce-inpost' ),
-								$post_id,
-								''
-							);
+                        if ( is_object( $shipment ) && $shipment instanceof ShipX_Shipment_Model ) {
+                            $tracking_number = $shipment->getInternalData()->getTrackingNumber();
+                            if ( ! empty( $tracking_number ) ) {
+                                update_post_meta( $post_id, '_easypack_parcel_tracking', sanitize_text_field( $tracking_number ) );
+                                $order->update_meta_data( '_easypack_parcel_tracking', sanitize_text_field( $tracking_number ) );
+                                $order->save();
+                            }
+                        }
+                    }
 
-							$link_to_tracking = sprintf(
-								'<a target="_blank" href="%s">%s</a>',
-								$tracking_url . $tracking_number,
-								$tracking_number
-							);
+                    if ( ! empty( $tracking_number ) ) {
+                        $print_label_icon = sprintf(
+                            '<a href="#" target="_blank" data-id="%s" class="get_sticker_action_orders">
+                                            <span 
+                                            title="%s" 
+                                            data-id="%s"
+                                            class="dashicons dashicons-media-spreadsheet%s"></span>
+                                            </a>',
+                            $post_id,
+                            esc_html__( 'Print sticker', 'woocommerce-inpost' ),
+                            $post_id,
+                            ''
+                        );
 
-							$additional_packages_notice = '';
+                        $link_to_tracking = sprintf(
+                            '<a target="_blank" href="%s">%s</a>',
+                            $tracking_url . $tracking_number,
+                            $tracking_number
+                        );
 
-							$existed_additional_packages = EasyPack_Helper()->get_saved_additional_packages( $post_id );
-							if ( is_array( $existed_additional_packages ) && ! empty( $existed_additional_packages ) ) {
-								$additional_packages_notice .= esc_html__( 'An additional packages exists', 'woocommerce-inpost' );
-								$additional_packages_notice .= ' (' . esc_attr( count( $existed_additional_packages ) ) . ')';
-							}
+                        $additional_packages_notice = '';
 
-							$inpost_status = '<div class="inpost-status-inside-td">'
-											. $print_label_icon . ' ' . $shipping_method->get_method_title() . ' ' . $link_to_tracking
-											. '<br>'
-											. $additional_packages_notice
-											. '</div>';
+                        $existed_additional_packages = EasyPack_Helper()->get_saved_additional_packages( $post_id );
+                        if ( is_array( $existed_additional_packages ) && ! empty( $existed_additional_packages ) ) {
+                            $additional_packages_notice .= esc_html__( 'An additional packages exists', 'woocommerce-inpost' );
+                            $additional_packages_notice .= ' (' . esc_attr( count( $existed_additional_packages ) ) . ')';
+                        }
 
-						} else {
+                        $inpost_status = '<div class="inpost-status-inside-td">'
+                                        . $print_label_icon . ' ' . $shipping_method->get_method_title() . ' ' . $link_to_tracking
+                                        . '<br>'
+                                        . $additional_packages_notice
+                                        . '</div>';
 
-							$shipment_service = EasyPack::EasyPack()->get_shipment_service();
-							if ( is_object( $shipment_service ) ) {
-								$shipment = $shipment_service->get_shipment_by_order_id( $post_id );
-								if ( is_object( $shipment ) && is_object( $shipment->getInternalData() ) ) {
+                    } else {
 
-									if ( 'offer_selected' === $shipment->getInternalData()->getStatus() ) {
+                        $shipment_service = EasyPack::EasyPack()->get_shipment_service();
+                        if ( is_object( $shipment_service ) ) {
+                            $shipment = $shipment_service->get_shipment_by_order_id( $post_id );
+                            if ( is_object( $shipment ) && is_object( $shipment->getInternalData() ) ) {
 
-										$inpost_status = '<div class="inpost-status-inside-td">'
-											. esc_html_e( 'The package has not been created! You do not have funds in your Parcel Manager account or a contract for InPost services.', 'woocommerce-inpost' )
-											. ' ('
-											. $shipping_method->get_method_title()
-											. ')'
-											. '</div>';
+                                if ( 'offer_selected' === $shipment->getInternalData()->getStatus() ) {
 
-									} else {
-										$status_desc = $shipment->getInternalData()->getStatusDescription();
+                                    $inpost_status = '<div class="inpost-status-inside-td">'
+                                        . esc_html_e( 'The package has not been created! You do not have funds in your Parcel Manager account or a contract for InPost services.', 'woocommerce-inpost' )
+                                        . ' ('
+                                        . $shipping_method->get_method_title()
+                                        . ')'
+                                        . '</div>';
 
-										$inpost_status = '<div class="inpost-status-inside-td">'
-											. $status_desc
-											. ' ('
-											. $shipping_method->get_method_title()
-											. ')'
-											. '</div>';
-									}
-								}
-							}
-						}
-					} elseif ( EasyPack_Helper()->is_courier_service_by_id( $shipping_method->get_method_id() ) ) {
+                                } else {
+                                    $status_desc = $shipment->getInternalData()->getStatusDescription();
 
-							$dimensions = EasyPack_Helper()->get_dimensions_for_courier_shipments( $post_id );
+                                    $inpost_status = '<div class="inpost-status-inside-td">'
+                                        . $status_desc
+                                        . ' ('
+                                        . $shipping_method->get_method_title()
+                                        . ')'
+                                        . '</div>';
+                                }
+                            }
+                        }
+                    }
+                } elseif ( EasyPack_Helper()->is_courier_service_by_id( $shipping_method->get_method_id() ) ) {
 
-						if ( empty( $dimensions['weight'] ) ) {
-							$inpost_status = '<div class="inpost-status-inside-td easypack-alert-status">'
-								. esc_html__( 'Adding of dimensions is required', 'woocommerce-inpost' )
-								. ' ('
-								. $shipping_method->get_method_title()
-								. ')'
-								. '</div>';
-						} else {
+                    $courier_parcel_source = EasyPack_Helper()->get_source_of_courier_dimensions( $post_id );
+                    $dimensions = EasyPack_Helper()->get_courier_parcel_dimensions( $post_id, $courier_parcel_source );
 
-							$inpost_status = '<div class="inpost-status-inside-td">'
-							. esc_html__( 'Not created yet', 'woocommerce-inpost' )
-							. ' ('
-							. $shipping_method->get_method_title()
-							. ')'
-							. '</div>';
-						}
-					} else {
-							$inpost_status = '<div class="inpost-status-inside-td">'
-								. esc_html__( 'Not created yet', 'woocommerce-inpost' )
-								. ' ('
-								. $shipping_method->get_method_title()
-								. ')'
-								. '</div>';
-					}
-				}
+                    if ( empty( $dimensions['weight'] ) ) {
+                        $inpost_status = '<div class="inpost-status-inside-td easypack-alert-status">'
+                            . esc_html__( 'Adding of dimensions is required', 'woocommerce-inpost' )
+                            . ' ('
+                            . $shipping_method->get_method_title()
+                            . ')'
+                            . '</div>';
+                    } else {
+
+                        $inpost_status = '<div class="inpost-status-inside-td">'
+                        . esc_html__( 'Not created yet', 'woocommerce-inpost' )
+                        . ' ('
+                        . $shipping_method->get_method_title()
+                        . ')'
+                        . '</div>';
+                    }
+                } else {
+                        $inpost_status = '<div class="inpost-status-inside-td">'
+                            . esc_html__( 'Not created yet', 'woocommerce-inpost' )
+                            . ' ('
+                            . $shipping_method->get_method_title()
+                            . ')'
+                            . '</div>';
+                }
+            }
+        }
+
+
+		$status_line = '';
+
+		if ( ! empty( $tracking_number ) && 'yes' === get_option( 'easypack_enable_webhooks' ) ) {
+
+			// Default status (blue, 25%).
+			$status_color      = 'blue';
+			$status_percentage = 25;
+			$status_text       = 'Paczka utworzona';
+
+			$last_status = $order->get_meta( 'easypack_webhook_status' );
+
+			// Group 1: Red status (100%) - Failed delivery or canceled.
+			$red_statuses = array(
+				'undelivered_wrong_address',
+				'undelivered_cod_cash_receiver',
+				'undelivered',
+				'rejected_by_receiver',
+				'pickup_time_expired',
+				'stack_parcel_pickup_time_expired',
+				'stack_parcel_in_box_machine_pickup_time_expired',
+				'canceled',
+				'returned_to_sender',
+			);
+
+			// Group 2: Green status (100%) - Successfully delivered.
+			$green_statuses = array(
+				'delivered',
+			);
+
+			// Group 3: Yellow status (50%) - In transit.
+			$yellow_statuses = array(
+				'taken_by_courier',
+				'sent_from_source_branch',
+				'collected_from_sender',
+				'adopted_at_source_branch',
+				'adopted_at_sorting_center',
+				'out_for_delivery',
+				'out_for_delivery_to_address',
+				'readdressed',
+				'taken_by_courier_from_pok',
+				'unstack_from_box_machine',
+				'unstack_from_customer_service_point',
+				'redirect_to_box',
+                'ready_to_pickup'
+			);
+
+			// Set color and percentage based on status.
+			if ( in_array( $last_status, $red_statuses, true ) ) {
+				$status_color      = 'red';
+				$status_percentage = 100;
+				$status_text       = 'Przesyłka niedostarczona';
+			} elseif ( in_array( $last_status, $green_statuses, true ) ) {
+				$status_color      = 'green';
+				$status_percentage = 100;
+				$status_text       = 'Przesyłka dostarczona';
+			} elseif ( in_array( $last_status, $yellow_statuses, true ) ) {
+				$status_color      = 'yellow';
+				$status_percentage = 50;
+				$status_text       = 'Przesyłka w drodze';
 			}
+
+			$shipment = $order->get_meta( '_shipx_shipment_object' );
+			if ( $shipment instanceof ShipX_Shipment_Model ) {
+				$status_text = $shipment->getInternalData()->getStatusTitle();
+			}
+
+			$api_status = '';
+			if ( in_array( $last_status, $red_statuses, true ) ) {
+				$api_status = $last_status . ': ';
+			}
+
+			// Generate the HTML for the status line with tooltip.
+			$status_line = '
+                <div class="inpost-pl-status-container">
+                    <div class="inpost-pl-status-bar">
+                        <div class="inpost-pl-status-progress inpost-pl-status-' . $status_color . '" style="width: ' . $status_percentage . '%;"></div>
+                    </div>
+                    <div class="inpost-pl-status-tooltip" style="display:none;">API status: ' . $api_status . $status_text . '</div>
+                </div>';
 		}
 
-		echo wp_kses_post( $inpost_status );
+		echo wp_kses_post( $inpost_status . $status_line );
 	}
 
 

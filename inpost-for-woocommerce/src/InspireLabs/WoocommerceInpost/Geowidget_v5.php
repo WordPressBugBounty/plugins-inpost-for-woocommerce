@@ -2,6 +2,10 @@
 
 namespace InspireLabs\WoocommerceInpost;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 /**
  * Geowidget_v5
  */

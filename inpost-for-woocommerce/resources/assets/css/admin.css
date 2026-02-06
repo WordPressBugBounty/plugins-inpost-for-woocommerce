@@ -345,3 +345,45 @@ label[for="easypack_sms_enabled"] {
 input[name="easypack_insurance_amount_mode"] {
     min-width: unset !important;
 }
+
+.inpost_pl_package_dimensions select {
+    width: 100% !important;
+}
+
+.inpost-pl-max-value-tooltip {
+    animation: fadeIn 0.3s;
+}
+
+
+
+/* Copy icon styling */
+.inpost-copy-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: #b6bdc0;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    font-size: 18px;
+}
+
+.inpost-copy-icon:hover {
+    background: #47b869;
+    transform: translateY(-1px);
+}
+
+.inpost-copy-icon:active {
+    transform: translateY(0);
+}
+
+/* Success state */
+.inpost-copy-icon.copied {
+    background: #46b450;
+}
+
+

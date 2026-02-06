@@ -1,5 +1,9 @@
 <?php /** @var ShipX_Shipment_Model $shipment */
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 

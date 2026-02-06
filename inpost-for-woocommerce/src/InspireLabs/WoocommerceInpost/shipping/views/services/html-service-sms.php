@@ -1,5 +1,9 @@
 <?php /** @var ShipX_Shipment_Model $shipment */
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Model; ?>
@@ -32,7 +36,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
                value="<?php echo esc_attr( $easypack_sms ); ?>"
                id="easypack_sms_enabled"
                name="easypack_sms_enabled" <?php echo esc_attr( $easypack_sms_checked );?>>
-            <?php _e('SMS notifications', 'woocommerce-inpost'); ?>
+            <?php esc_html_e('SMS notifications', 'woocommerce-inpost'); ?>
         </label>
         <label disabled style="display: block" for="easypack_email_enabled" class="graytext">
             <input <?php echo esc_attr( $inputDisabled ); ?>
@@ -42,7 +46,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
                     value="<?php echo esc_attr( $easypack_email ); ?>"
                     id="easypack_email_enabled"
                     name="easypack_email_enabled" <?php echo esc_attr( $easypack_email_checked );?>>
-            <?php _e('Email notifications', 'woocommerce-inpost'); ?>
+            <?php esc_html_e('Email notifications', 'woocommerce-inpost'); ?>
         </label>
     <?php else:
 
@@ -76,7 +80,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
                 value="<?php echo esc_attr( $easypack_sms ); ?>"
                 id="easypack_sms_enabled"
                 name="easypack_sms_enabled" <?php echo esc_attr( $easypack_sms_checked ); ?>>
-            <?php _e('SMS notifications', 'woocommerce-inpost'); ?>
+            <?php esc_html_e('SMS notifications', 'woocommerce-inpost'); ?>
         </label>
         <label disabled style="display: block" for="easypack_email_enabled">
             <input <?php echo esc_attr( $inputDisabled ); ?>
@@ -86,7 +90,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
                     value="<?php echo esc_attr( $easypack_email ); ?>"
                     id="easypack_email_enabled"
                     name="easypack_email_enabled" <?php echo esc_attr( $easypack_email_checked );?>>
-            <?php _e('Email notifications', 'woocommerce-inpost'); ?>
+            <?php esc_html_e('Email notifications', 'woocommerce-inpost'); ?>
         </label>
 <?php endif; ?>
 

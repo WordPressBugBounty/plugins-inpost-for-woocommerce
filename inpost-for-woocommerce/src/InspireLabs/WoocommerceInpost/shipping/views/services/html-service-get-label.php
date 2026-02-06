@@ -2,6 +2,10 @@
 
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 ?>
 
 <?php if ($shipment instanceof ShipX_Shipment_Model

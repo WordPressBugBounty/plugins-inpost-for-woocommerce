@@ -6,9 +6,13 @@
  * @package 	EasyPack/Templates
  * @version
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly.
+}
 ?>
 <br/>
-<h2><?php _e( 'Returns', 'woocommerce-inpost' ); ?></h2>
+<h2><?php esc_html_e( 'Returns', 'woocommerce-inpost' ); ?></h2>
 <div style="text-align: center; width: 240px; float:left;">
 <a href="<?php echo esc_url( $returns_page ); ?>"><img style="border: none;" src="<?php echo esc_url( $img_src ); ?>"></a><br/>
 <a href="<?php echo esc_url( $returns_page ); ?>"><?php echo esc_html( $returns_page_title ); ?></a>

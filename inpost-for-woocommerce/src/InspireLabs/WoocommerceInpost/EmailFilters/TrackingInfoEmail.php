@@ -1,7 +1,10 @@
 <?php
 
-
 namespace InspireLabs\WoocommerceInpost\EmailFilters;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
 
 use Exception;
 use InspireLabs\WoocommerceInpost\EasyPack;

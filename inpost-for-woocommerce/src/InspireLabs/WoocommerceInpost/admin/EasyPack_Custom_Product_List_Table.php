@@ -2,6 +2,10 @@
 
 namespace InspireLabs\WoocommerceInpost\admin;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 use InspireLabs\WoocommerceInpost\EasyPack;
 use WP_List_Table;
 use WP_Query;

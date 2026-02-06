@@ -1,6 +1,10 @@
 <?php
 namespace InspireLabs\WoocommerceInpost\shipping;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 use WC_Checkout;
 use WP_Error;
 

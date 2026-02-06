@@ -1,9 +1,34 @@
-<?php /** @var ShipX_Shipment_Model $shipment */
+<?php
+
+/**
+ * @var WP_Post|WC_Order $post - The post or order object
+ * @var int $order_id - The ID of the order
+ * @var WC_Order $order - The order object
+ * @var ShipX_Shipment_Service $shipment_service - The shipment service instance
+ * @var ShipX_Shipment_Model|null $shipment - The shipment model instance or null
+ * @var bool $wrong_api_env - Flag indicating if there's a wrong API environment
+ * @var array $parcels - Array of parcel objects
+ * @var string|bool $tracking_url - The tracking URL or false if not available
+ * @var string|null $stickers_url - The stickers URL or null if not available
+ * @var array $api_status_update_response - Response from status update API call
+ * @var string $parcel_machine_id - The ID of the selected parcel machine
+ * @var string $send_method - The selected sending method
+ * @var bool $disabled - Flag indicating if form fields should be disabled
+ * @var array $package_sizes - Available package sizes
+ * @var bool $send_method_disabled - Flag indicating if send method selection is disabled
+ * @var array $send_methods - Available send methods with labels
+ * @var string $selected_service - The name of the selected customer service
+ * @var array $package_sizes_display - Display information for package sizes (only if shipment is null)
+ * @var string $status - Status of the shipment (only if shipment is null)
+ * @var array $geowidget_config - Configuration for the geowidget
+ * @var bool $additional_package - Flag indicating if this is an additional package
+ */
 
 use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\EasyPack_Helper;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Model;
+use InspireLabs\WoocommerceInpost\shipx\services\shipment\ShipX_Shipment_Service;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -63,7 +88,7 @@ if ( $disabled ) {
 	<input value="<?php echo esc_attr( $parcel_machine_id ); ?>" type="text"
 			class="settings-geowidget" id="parcel_machine_id"
 			name="parcel_machine_id"
-			data-geowidget_config="<?php echo sanitize_text_field( $geowidget_config ); ?>"
+			data-geowidget_config="<?php echo esc_attr( $geowidget_config ); ?>"
 		<?php echo $disabled ? ' disabled ' : ''; ?>
 	>
 </p>
@@ -86,14 +111,7 @@ if ( $disabled ) {
 	if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ) {
 		$status       = $shipment->getInternalData()->getStatus();
 		$status_title = $shipment->getInternalData()->getStatusTitle();
-		$status_desc  = $shipment->getInternalData()->getStatusDescription();
-		if ( $shipment->isCourier() ) {
-			$send_method = 'courier';
-		}
-
-		if ( $shipment->isParcelMachine() ) {
-			$send_method = 'parcel_machine';
-		}
+		$status_desc  = $shipment->getInternalData()->getStatusDescription();		
 		?>
 		<span title="<?php echo esc_attr( $status_desc ); ?>">
 			<?php echo esc_html( $status_title ); ?> (<?php echo esc_html( $status ); ?>)
@@ -174,27 +192,7 @@ if ( $disabled ) {
 
 <?php require 'services/html-service-insurance.php'; ?>
 <?php require 'html-field-reference.php'; ?>
-
-
-<?php
-$custom_attributes = array( 'style' => 'width:100%;' );
-if ( $disabled || $send_method_disabled ) {
-	$custom_attributes['disabled'] = 'disabled';
-}
-$params = array(
-	'type'              => 'select',
-	'options'           => $send_methods,
-	'class'             => array( 'wc-enhanced-select' ),
-	'custom_attributes' => $custom_attributes,
-	'label'             => __( 'Send method', 'woocommerce-inpost' ),
-);
-
-$send_method = get_post_meta( $order_id, '_easypack_send_method', true )
-	? get_post_meta( $order_id, '_easypack_send_method', true )
-	: $send_method;
-
-woocommerce_form_field( 'easypack_send_method', $params, $send_method );
-?>
+<?php include( 'html-send-method.php' ); ?>
 
 <p>
 	<?php if ( 'new' === $status ) : ?>

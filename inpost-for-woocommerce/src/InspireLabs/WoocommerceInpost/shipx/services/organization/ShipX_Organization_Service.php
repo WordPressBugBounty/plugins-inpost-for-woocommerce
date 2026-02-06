@@ -2,6 +2,10 @@
 
 namespace InspireLabs\WoocommerceInpost\shipx\services\organization;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 use Exception;
 use InspireLabs\WoocommerceInpost\shipx\models\organization\services\ShipX_Additional_Service_Model;
 use InspireLabs\WoocommerceInpost\shipx\models\organization\services\ShipX_Service_Model;
@@ -36,14 +40,26 @@ class ShipX_Organization_Service {
         for ( $x = 0; $x <= 3; $x ++ ) {
 
             $organization = EasyPack_API()->get_organization( $id );
-            if ( ! empty( $organization ) ) {
-                update_option( 'woo_inpost_organisation', $organization );
+
+            if ( ! empty( $organization['services'] ) ) {
+                update_option( 'inpost_pl_organisation_services', $organization );
+                update_option( 'inpost_pl_last_time_update_services', time() );
+
                 break;
             }
             sleep(1);
         }
 
-        if ( ! $organization ) {
+        if ( ! $organization || empty( $organization['services'] ) ) {
+
+            if ( function_exists( 'wc_get_logger' ) ) {
+                if( ! empty( $organization ) ) {
+                    \wc_get_logger()->debug('Error:', array('source' => 'inpost-pl-services-error'));
+                    \wc_get_logger()->debug(print_r($organization, true),
+                        array('source' => 'inpost-pl-services-error'));
+                }
+            }
+
             return null;
         }
 
@@ -55,7 +71,7 @@ class ShipX_Organization_Service {
             $allServices = EasyPack_API()->getServicesGlobal();
 
             if ( ! empty( $allServices ) ) {
-                update_option( 'woo_inpost_services_global', $allServices );
+                update_option( 'inpost_pl_organisation_services_global', $allServices );
                 break;
             }
             sleep(1);

@@ -783,7 +783,7 @@ msgstr ""
 #: classes/shipping/method-courier.php:102
 #: classes/shipping/method-parcel-machines-cod.php:96
 #: classes/shipping/method-parcel-machines.php:184
-msgid "Cost per order"
+msgid "Cost of delivery"
 msgstr ""
 
 #: classes/shipping/method-courier-cod.php:121

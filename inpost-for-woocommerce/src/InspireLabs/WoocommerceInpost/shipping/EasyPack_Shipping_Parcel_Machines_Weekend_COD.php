@@ -88,6 +88,12 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 					'default'  => esc_html__( 'InPost Locker Weekend COD', 'woocommerce-inpost' ),
 					'desc_tip' => false,
 				),
+				'delivery_terms'                         => array(
+					'title'    => __( 'Terms of delivery', 'woocommerce-inpost' ),
+					'type'     => 'text',
+					'default'  => '',
+					'desc_tip' => false,
+				),
 				'insurance_inpost_pl'                    => array(
 					'title'       => esc_html__( 'Insurance', 'woocommerce-inpost' ),
 					'label'       => esc_html__( 'Set from order amount', 'woocommerce-inpost' ),
@@ -206,7 +212,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 					'default' => 'yes',
 				),
 				'cost_per_order'                         => array(
-					'title'             => esc_html__( 'Cost per order', 'woocommerce-inpost' ),
+					'title'             => esc_html__( 'Cost of delivery', 'woocommerce-inpost' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -230,7 +236,17 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 						'taxable' => esc_html__( 'Taxable', 'woocommerce-inpost' ),
 					),
 				),
-
+				'default_send_method'                    => array(
+					'title'   => __( 'Default send method', 'woocommerce-inpost' ),
+					'type'    => 'select',
+					'class'   => 'wc-enhanced-select',
+					'default' => 'parcel_machine',
+					'options' => array(
+						'parcel_machine' => __( 'Parcel Locker', 'woocommerce-inpost' ),
+						'pop'            => __( 'POP', 'woocommerce-inpost' ),
+						'courier'        => __( 'Courier', 'woocommerce-inpost' ),
+					),
+				),
 				array(
 					'title'       => esc_html__( 'Rates table', 'woocommerce-inpost' ),
 					'type'        => 'title',
@@ -251,10 +267,10 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 					),
 					'class'       => 'wc-enhanced-select easypack_based_on',
 					'options'     => array(
-						'price'  => esc_html__( 'Price', 'woocommerce-inpost' ),
-						'weight' => esc_html__( 'Weight', 'woocommerce-inpost' ),
-                        'product_qty' => esc_html__( 'Products qty', 'woocommerce-inpost' ),
-						'size'   => esc_html__( 'Size (A, B, C)', 'woocommerce-inpost' ),
+						'price'       => esc_html__( 'Price', 'woocommerce-inpost' ),
+						'weight'      => esc_html__( 'Weight', 'woocommerce-inpost' ),
+						'product_qty' => esc_html__( 'Products qty', 'woocommerce-inpost' ),
+						'size'        => esc_html__( 'Size (A, B, C)', 'woocommerce-inpost' ),
 					),
 				),
 				'rates'                                  => array(
@@ -313,21 +329,26 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 
 
 		/**
-		 *  Ajax create shipment model
+		 * Creates a shipment model from AJAX request data.
 		 *
-		 * @return ShipX_Shipment_Model
+		 * @return ShipX_Shipment_Model|null The created shipment object or null on failure.
+		 * @throws Exception When validation fails.
+		 *
+		 * @since 1.0.0
+		 * @access public static
 		 */
 		public static function ajax_create_shipment_model() {
 
+			$order_id = (int) sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
+
+			$order = wc_get_order( $order_id );
+			if ( ! $order || is_wp_error( $order ) || ! is_object( $order ) ) {
+				return null;
+			}
+
 			$shipmentService = EasyPack::EasyPack()->get_shipment_service();
 
-			$order_id = sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
-
-			$order        = wc_get_order( $order_id );
-			$order_amount = '';
-			if ( is_object( $order ) ) {
-				$order_amount = $order->get_total();
-			}
+			$order_amount = $order->get_total();
 
 			$insurance_amount = '';
 			$reference_number = '';
@@ -346,12 +367,12 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 				} elseif ( 'easypack_bulk_create_shipments_C' === $_POST['locker_size'] ) {
 					$parcels = array( 'large' );
 				} else {
-					$parcels = get_post_meta( $order_id, '_easypack_parcels', true )
-						? get_post_meta( $order_id, '_easypack_parcels', true )
-						: array( Easypack_Helper()->get_parcel_size_from_settings( $order_id ) );
+
+					$parcels = Easypack_Helper()->get_woo_order_meta( $order_id, '_easypack_parcels' );
+					$parcels = ! empty( $parcels ) ? $parcels : array( Easypack_Helper()->get_parcel_size_from_settings( $order_id ) );
 				}
 
-				$parcel_machine_id = get_post_meta( $order_id, '_parcel_machine_id', true );
+				$parcel_machine_id = Easypack_Helper()->get_woo_order_meta( $order_id, '_parcel_machine_id' );
 
 				$cod_amount = $parcels[0]['cod_amount'] ?? $order_amount;
 
@@ -360,17 +381,11 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 				$reference_number = EasyPack_Helper()->get_maybe_custom_reference_number( $order_id );
 
 				if ( 'yes' === get_option( 'easypack_add_order_note' ) ) {
-					$order_note = '';
-					$order      = wc_get_order( $order_id );
-					if ( $order && ! is_wp_error( $order ) && is_object( $order ) ) {
-						$order_note = $order->get_customer_note();
-					}
+					$order_note       = $order->get_customer_note();
 					$reference_number = $reference_number . ' ' . $order_note;
 				}
 
-				$send_method = get_post_meta( $order_id, '_easypack_send_method', true )
-					? get_post_meta( $order_id, '_easypack_send_method', true )
-					: get_option( 'easypack_default_send_method' );
+				$send_method = EasyPack_Helper()->get_default_send_method( $order_id );
 
 			} else {
 
@@ -405,7 +420,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 
 			$shipment = $shipmentService->create_shipment_object_by_shiping_data(
 				$parcels,
-				(int) $order_id,
+				$order_id,
 				$send_method,
 				self::SERVICE_ID,
 				array(),
@@ -415,7 +430,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 				$reference_number,
 				null
 			);
-			$shipment->getInternalData()->setOrderId( (int) $order_id );
+
+			$shipment->getInternalData()->setOrderId( $order_id );
 
 			return $shipment;
 		}
@@ -450,6 +466,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 			} else {
 				$order_id = $post->ID;
 			}
+			$send_method = '';
 
 			$geowidget_config = ( new Geowidget_v5() )->get_pickup_delivery_configuration( 'easypack_parcel_machines_weekend_cod' );
 			if ( false === $shipment instanceof ShipX_Shipment_Model ) {
@@ -482,8 +499,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 				$api_status_update_response = array();
 
 				if ( true === $output ) {
-					$status_srv                 = EasyPack()->get_shipment_status_service();
-					$api_status_update_response = $status_srv->refreshStatus( $shipment );
+					$api_status_update_response = EasyPack_Helper()->refresh_shipment_status( $order_id );
 				}
 
 				$status            = $shipment->getInternalData()->getStatus();
@@ -504,7 +520,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 
 				$tracking_url = false;
 				$status       = 'new';
-				$send_method  = get_option( 'easypack_default_send_method', 'parcel_machine' );
+				$send_method  = EasyPack_Helper()->get_default_send_method( $order_id );
 				$disabled     = false;
 			}
 			$package_sizes = EasyPack()->get_package_sizes();
@@ -529,48 +545,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 			return $out;
 		}
 
-		/**
-		 * Add order metabox
-		 *
-		 * @param string               $post_type Post type.
-		 * @param \WC_Order | \WP_Post $post $post.
-		 *
-		 * @return void
-		 */
-		public function add_meta_boxes( $post_type, $post ) {
 
-			$order_id = null;
-
-			if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
-				// HPOS usage is enabled.
-				if ( is_a( $post, 'WC_Order' ) ) {
-					$order_id = $post->get_id();
-				}
-			} else {
-				// Traditional orders are in use.
-				if ( is_object( $post ) && $post->post_type == 'shop_order' ) {
-					$order_id = $post->ID;
-				}
-			}
-
-			if ( $order_id ) {
-				$order = wc_get_order( $order_id );
-				// show metabox only for matched shipping method (plus Flexible shipping integration).
-				$fs_method_name = get_post_meta( $order_id, '_fs_easypack_method_name', true );
-
-				if ( $order->has_shipping_method( $this->id ) || $fs_method_name === $this->id ) {
-					add_meta_box(
-						'easypack_parcel_machines',
-						__( 'InPost', 'woocommerce-inpost' )
-						. $this->get_logo(),
-						array( $this, 'order_metabox' ),
-						null,
-						'side',
-						'default'
-					);
-				}
-			}
-		}
 
 		/**
 		 * Order metabox
@@ -624,16 +599,16 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 
 			$shipment_data = array();
 
-            \wc_get_logger()->debug( 'PWW COD TO API: ', array( 'source' => 'pww-cod-log' ) );
-            \wc_get_logger()->debug( print_r( $shipment_array, true), array( 'source' => 'pww-cod-log' ) );
-            //die();
+			\wc_get_logger()->debug( 'PWW COD TO API: ', array( 'source' => 'pww-cod-log' ) );
+			\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'pww-cod-log' ) );
+			// die();
 
 			try {
 
 				$response = EasyPack_API()->customer_parcel_create( $shipment_array );
 
-                \wc_get_logger()->debug( 'PWW COD API RESP: ', array( 'source' => 'pww-cod-log' ) );
-                \wc_get_logger()->debug( print_r( $response, true), array( 'source' => 'pww-cod-log' ) );
+				\wc_get_logger()->debug( 'PWW COD API RESP: ', array( 'source' => 'pww-cod-log' ) );
+				\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'pww-cod-log' ) );
 
 				$shipment_data = self::save_to_order_meta(
 					$order_id,
@@ -677,13 +652,13 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 					$ret['service']    = $shipment_data['service'];
 				}
 
-                if ( 'yes' === get_option( 'easypack_delivery_notice' ) ) {
-                    wp_schedule_single_event(
-                        time() + 60,
-                        'send_tracking_numbers_email',
-                        array( $order_id )
-                    );
-                }
+				if ( 'yes' === get_option( 'easypack_delivery_notice' ) ) {
+					wp_schedule_single_event(
+						time() + 60,
+						'send_tracking_numbers_email',
+						array( $order_id )
+					);
+				}
 			}
 			echo wp_json_encode( $ret );
 			wp_die();

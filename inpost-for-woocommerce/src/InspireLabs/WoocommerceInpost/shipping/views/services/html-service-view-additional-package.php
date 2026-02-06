@@ -1,5 +1,9 @@
 <?php /** @var ShipX_Shipment_Model $shipment */
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\EasyPack_Helper;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
@@ -37,15 +41,15 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
                                 <?php esc_html_e('Tracking number:', 'woocommerce-inpost'); ?>
                             </span>
                                 <span class="easypack_additional_package_data_item">
-                                <?php echo sprintf( __( '<a target="_blank" href="%s">%s</a>' ),
+                                <?php echo sprintf( '<a target="_blank" href="%s">%s</a>',
                                     esc_url( $tracking_url . $package_data['tracking'] ),
                                     esc_attr( $package_data['tracking'] ) ); ?>
                             </span>
                                 <span class="easypack_additional_package_data_title">
-                                <?php echo sprintf( __( '<span class="get_additional_sticker_wrapper"></span>
+                                <?php echo sprintf( '<span class="get_additional_sticker_wrapper"></span>
                                                         <button id="get_sticker_additional" 
                                                         class="get_sticker_additional secondary" 
-                                                        data-id="%s" data-order-id="%s" href="#">%s</button><span>' ),
+                                                        data-id="%s" data-order-id="%s" href="#">%s</button><span>',
                                     esc_attr( $package_data['inpost_id'] ),
                                     esc_attr( $order_id ),
                                     esc_html__('Get sticker for additional package', 'woocommerce-inpost') ); ?>

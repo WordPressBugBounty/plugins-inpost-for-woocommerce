@@ -2,6 +2,10 @@
 
 namespace InspireLabs\WoocommerceInpost\admin;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 use Automattic\WooCommerce\Utilities\OrderUtil;
 use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\EasyPack_Helper;

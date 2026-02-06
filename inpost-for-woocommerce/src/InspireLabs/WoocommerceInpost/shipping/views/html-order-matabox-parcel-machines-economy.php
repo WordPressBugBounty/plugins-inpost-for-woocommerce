@@ -1,9 +1,33 @@
-<?php /** @var ShipX_Shipment_Model $shipment */
+<?php
+/**
+ * @var WP_Post|WC_Order $post - The post or order object
+ * @var int $order_id - The ID of the order
+ * @var WC_Order $order - The order object
+ * @var ShipX_Shipment_Service $shipment_service - The shipment service instance
+ * @var ShipX_Shipment_Model|null $shipment - The shipment model instance or null
+ * @var bool $wrong_api_env - Flag indicating if there's a wrong API environment
+ * @var array $parcels - Array of parcel objects
+ * @var string|bool $tracking_url - The tracking URL or false if not available
+ * @var string|null $stickers_url - The stickers URL or null if not available
+ * @var array $api_status_update_response - Response from status update API call
+ * @var string $parcel_machine_id - The ID of the selected parcel machine
+ * @var string $send_method - The selected sending method
+ * @var bool $disabled - Flag indicating if form fields should be disabled
+ * @var array $package_sizes - Available package sizes
+ * @var bool $send_method_disabled - Flag indicating if send method selection is disabled
+ * @var array $send_methods - Available send methods with labels
+ * @var string $selected_service - The name of the selected customer service
+ * @var array $package_sizes_display - Display information for package sizes (only if shipment is null)
+ * @var string $status - Status of the shipment (only if shipment is null)
+ * @var array $geowidget_config - Configuration for the geowidget
+ * @var bool $additional_package - Flag indicating if this is an additional package
+ */
 
 use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\EasyPack_Helper;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
-use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Model; ?>
+use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Model;
+use InspireLabs\WoocommerceInpost\shipx\services\shipment\ShipX_Shipment_Service; ?>
 <?php
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -27,7 +51,7 @@ $status_service = EasyPack()->get_shipment_status_service();
 	           === $internal_data::API_VERSION_PRODUCTION
 	): ?>
         <span style="font-weight: bold; color: #a00">
-            <?php _e( 'This shipment was created in production API. Change API environment to production to process this shipment',
+            <?php esc_html_e( 'This shipment was created in production API. Change API environment to production to process this shipment',
                 'woocommerce-inpost' ) ?>
         </span>
 
@@ -37,7 +61,7 @@ $status_service = EasyPack()->get_shipment_status_service();
 	           === $internal_data::API_VERSION_SANDBOX
 	): ?>
         <span style="font-weight: bold; color: #a00">
-            <?php _e( 'This shipment was created in sandbox API. Change API environment to sandbox to process this shipment',
+            <?php esc_html_e( 'This shipment was created in sandbox API. Change API environment to sandbox to process this shipment',
                 'woocommerce-inpost' ) ?>
         </span>
 	<?php endif; ?>
@@ -59,18 +83,18 @@ if ( $disabled ) {
 ?>
 
 <p>
-    <label for="parcel_machine_id"><?php _e( 'Selected parcel locker', 'woocommerce-inpost' ) ?></label>
+    <label for="parcel_machine_id"><?php esc_html_e( 'Selected parcel locker', 'woocommerce-inpost' ) ?></label>
     <input value="<?php echo esc_attr( $parcel_machine_id ); ?>" type="text"
            class="settings-geowidget" id="parcel_machine_id"
            name="parcel_machine_id"
-           data-geowidget_config="<?php echo sanitize_text_field( $geowidget_config ); ?>"
+           data-geowidget_config="<?php echo esc_attr( $geowidget_config ); ?>"
            <?php echo $disabled ? ' disabled ' : ''; ?>
     >
 </p>
 
 
 <p>
-    <span style="font-weight: bold"><?php _e( 'Service:', 'woocommerce-inpost' ) ?>
+    <span style="font-weight: bold"><?php esc_html_e( 'Service:', 'woocommerce-inpost' ) ?>
     </span>
     <span>
         <?php echo esc_html( $selected_service );
@@ -78,30 +102,25 @@ if ( $disabled ) {
     </span>
 </p>
 
-<p><span style="font-weight: bold"><?php _e( 'Status:', 'woocommerce-inpost' ) ?> </span>
+<p><span style="font-weight: bold"><?php esc_html_e( 'Status:', 'woocommerce-inpost' ) ?> </span>
 	<?php if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ): ?>
 	<?php $status = $shipment->getInternalData()->getStatus() ?>
 	<?php $status_title = $shipment->getInternalData()->getStatusTitle() ?>
 	<?php $status_desc = $shipment->getInternalData()->getStatusDescription() ?>
     <span title="<?php echo esc_attr( $status_desc ); ?>"><?php echo esc_html( $status_title ); ?>
-        (<?php echo esc_html( $status ); ?>)</span></p>
-<?php if ( $shipment->isCourier() ) {
-	$send_method = 'courier';
-}
+        (<?php echo esc_html( $status ); ?>)
+	</span>
+</p>
 
-if ( $shipment->isParcelMachine() ) {
-	$send_method = 'parcel_machine';
-}
-?>
 <?php else: ?>
-	<?php _e( 'Not created yet (new)', 'woocommerce-inpost' ) ?>
+	<?php esc_html_e( 'Not created yet (new)', 'woocommerce-inpost' ) ?>
 <?php endif ?>
 
 <?php if ( ! empty( $shipment instanceof ShipX_Shipment_Model
                     && $shipment->getInternalData()->getTrackingNumber() ) && ! $additional_package
 ): ?>
     <span style="font-weight: bold">
-            <?php _e( 'Tracking number:', 'woocommerce-inpost' ) ?>
+            <?php esc_html_e( 'Tracking number:', 'woocommerce-inpost' ) ?>
     </span>
 
     <a target="_blank"
@@ -114,7 +133,7 @@ if ( $shipment->isParcelMachine() ) {
 <?php include( 'costs/html-order-metabox-costs.php' ); ?>
 
 
-<p><?php _e( 'Attributes:', 'woocommerce-inpost' ); ?>
+<p><?php esc_html_e( 'Attributes:', 'woocommerce-inpost' ); ?>
 
 <?php include( 'html-field-commercial-product-identifier.php' ); ?>
 
@@ -145,10 +164,10 @@ if ( $shipment->isParcelMachine() ) {
 
 				?>
 				<?php if ( $status == 'new' && ! $first_parcel ) : ?>
-                    <button class="button easypack_remove_parcel"><?php _e( 'Remove', 'woocommerce-inpost' ); ?></button>
+                    <button class="button easypack_remove_parcel"><?php esc_html_e( 'Remove', 'woocommerce-inpost' ); ?></button>
 				<?php endif; ?>
 			<?php else : ?>
-                <?php _e( 'Size', 'woocommerce-inpost' ); ?>:
+                <?php esc_html_e( 'Size', 'woocommerce-inpost' ); ?>:
                 <?php echo '<span style="font-size: 16px">'; ?>
                 <?php echo esc_html( EasyPack_Helper()->convert_size_to_symbol( $parcel->getTemplate() ) ); ?>
                 <?php echo '</span>'; ?>
@@ -163,32 +182,12 @@ if ( $shipment->isParcelMachine() ) {
 
 <?php include( 'services/html-service-insurance.php' ); ?>
 <?php include( 'html-field-reference.php' ); ?>
-
-
-<?php
-$custom_attributes = [ 'style' => 'width:100%;' ];
-if ( $disabled || $send_method_disabled ) {
-	$custom_attributes['disabled'] = 'disabled';
-}
-$params = [
-	'type'              => 'select',
-	'options'           => $send_methods,
-	'class'             => [ 'wc-enhanced-select' ],
-	'custom_attributes' => $custom_attributes,
-	'label'             => __( 'Send method', 'woocommerce-inpost' ),
-];
-
-$send_method = get_post_meta( $order_id, '_easypack_send_method', true )
-    ? get_post_meta( $order_id, '_easypack_send_method', true )
-    : $send_method;
-
-woocommerce_form_field( 'easypack_send_method', $params, $send_method );
-?>
+<?php include( 'html-send-method.php' ); ?>
 
 <p>
 	<?php if ( $status == 'new' ) : ?>
         <button id="easypack_send_parcels"
-                class="button button-primary"><?php _e( 'Send parcel', 'woocommerce-inpost' ); ?></button>
+                class="button button-primary"><?php esc_html_e( 'Send parcel', 'woocommerce-inpost' ); ?></button>
 	<?php endif; ?>
 
     <?php include( 'html-no-funds-alert.php' ); ?>
@@ -198,7 +197,7 @@ woocommerce_form_field( 'easypack_send_method', $params, $send_method );
 	           && ! empty( $shipment->getInternalData()
 	                                ->getTrackingNumber() ) && ! $additional_package ) : ?>
         <input id="get_stickers" type="submit" class="button button-primary"
-               value="<?php _e( 'Get sticker', 'woocommerce-inpost' ); ?>">
+               value="<?php esc_html_e( 'Get sticker', 'woocommerce-inpost' ); ?>">
         <input type="hidden" name="easypack_get_stickers_request"
                id="easypack_get_stickers_request">
         <input type="hidden" name="easypack_parcel"

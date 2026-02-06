@@ -42,6 +42,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 			);
 			$this->id           = 'easypack_cod_shipping_courier';
 			$this->method_title = __( 'InPost Courier COD', 'woocommerce-inpost' );
+            $this->method_description = esc_html__('InPost Courier COD', 'woocommerce-inpost' );
 			$this->init();
 		}
 
@@ -63,7 +64,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 					'id'          => 'section_general_settings',
 				),
 				'logo_upload'                            => array(
-					'name'  => __( 'Change logo', '' ),
+					'name'  => __( 'Change logo', 'woocommerce-inpost' ),
 					'title' => __( 'Upload custom logo', 'woocommerce-inpost' ),
 					'type'  => 'logo_upload',
 					'id'    => 'logo_upload',
@@ -74,6 +75,12 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 					'default'           => __( 'InPost Courier COD', 'woocommerce-inpost' ),
 					'custom_attributes' => array( 'required' => 'required' ),
 					'desc_tip'          => false,
+				),
+				'delivery_terms'                         => array(
+					'title'    => __( 'Terms of delivery', 'woocommerce-inpost' ),
+					'type'     => 'text',
+					'default'  => '',
+					'desc_tip' => false,
 				),
 				'sms'                                    => array(
 					'title'       => __( 'SMS notifications', 'woocommerce-inpost' ),
@@ -87,7 +94,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 					'title'       => __( 'Email notifications', 'woocommerce-inpost' ),
 					'label'       => '',
 					'type'        => 'checkbox',
-					'description' => __( '', 'woocommerce-inpost' ),
+					'description' => '',
 					'default'     => 'no',
 					'desc_tip'    => true,
 				),
@@ -95,7 +102,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 					'title'       => __( 'Insurance', 'woocommerce-inpost' ),
 					'label'       => __( 'Set from order amount', 'woocommerce-inpost' ),
 					'type'        => 'checkbox',
-					'description' => __( '', 'woocommerce-inpost' ),
+					'description' => '',
 					'default'     => 'no',
 					'desc_tip'    => true,
 				),
@@ -125,10 +132,10 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 					'placeholder'       => '0.00',
 				),
 				'show_free_shipping_label'               => array(
-					'title'       => __( '', 'woocommerce-inpost' ),
+					'title'       => '',
 					'label'       => __( 'Add label (free) to the end of title of shipping method', 'woocommerce-inpost' ),
 					'type'        => 'checkbox',
-					'description' => __( '', 'woocommerce-inpost' ),
+					'description' => '',
 					'default'     => 'yes',
 					'desc_tip'    => true,
 				),
@@ -148,7 +155,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 					'default' => 'yes',
 				),
 				'cost_per_order'                         => array(
-					'title'             => __( 'Cost per order', 'woocommerce-inpost' ),
+					'title'             => __( 'Cost of delivery', 'woocommerce-inpost' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -171,6 +178,33 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 						'none'    => _x( 'None', 'Tax status', 'woocommerce-inpost' ),
 						'taxable' => __( 'Taxable', 'woocommerce-inpost' ),
 					),
+				),
+				'source_of_parcel_dimensions'            => array(
+					'title'   => __( 'Where to get the dimensions of parcels', 'woocommerce-inpost' ),
+					'type'    => 'select',
+					'class'   => 'wc-enhanced-select',
+					'default' => 'courier',
+					'options' => array(
+						'courier_template'                => __( 'Template', 'woocommerce-inpost' ),
+						'courier_default_dimensions'      => __( 'Default value', 'woocommerce-inpost' ),
+						'courier_dimensions_from_product' => __( 'Product configuration', 'woocommerce-inpost' ),
+					),
+				),
+				'default_send_method'                    => array(
+					'title'   => __( 'Default send method', 'woocommerce-inpost' ),
+					'type'    => 'select',
+					'class'   => 'wc-enhanced-select',
+					'default' => 'courier',
+					'options' => array(
+						'pop'     => __( 'POP', 'woocommerce-inpost' ),
+						'courier' => __( 'Courier', 'woocommerce-inpost' ),
+					),
+				),
+				array(
+					'title'       => __( 'Rates table', 'woocommerce-inpost' ),
+					'type'        => 'title',
+					'description' => '',
+					'id'          => 'section_general_settings',
 				),
 				'based_on'                               => array(
 					'title'    => __( 'Based on', 'woocommerce-inpost' ),
@@ -207,30 +241,6 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 			EasyPack_API()->clear_cache();
 		}
 
-		public function save_post( $post_id ) {
-			// Check if our nonce is set.
-			if ( ! isset( $_POST['wp_nonce'] ) ) {
-				return;
-			}
-			// Verify that the nonce is valid.
-			if ( ! wp_verify_nonce( $_POST['wp_nonce'], self::NONCE_ACTION ) ) {
-				return;
-			}
-			// If this is an autosave, our form has not been submitted, so we don't want to do anything.
-			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-				return;
-			}
-
-			$status = get_post_meta( $post_id, '_easypack_status', true );
-			if ( $status == '' ) {
-				$status = 'new';
-			}
-
-			if ( $status == 'new' ) {
-
-				EasyPack_Helper()->set_data_to_order_meta( $_POST, $post_id );
-			}
-		}
 
 
 		public function order_metabox( $post ) {
@@ -244,17 +254,26 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 
 
 		/**
-		 * @return ShipX_Shipment_Model
+		 * Creates a shipment model from AJAX request data.
+		 *
+		 * @return ShipX_Shipment_Model|null The created shipment object or null on failure.
+		 * @throws Exception When validation fails.
+		 *
+		 * @since 1.0.0
+		 * @access public static
 		 */
 		public static function ajax_create_shipment_model() {
+
+			$order_id = (int) sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
+
+			$order = wc_get_order( $order_id );
+			if ( ! $order || is_wp_error( $order ) || ! is_object( $order ) ) {
+				return null;
+			}
+
 			$shipmentService = EasyPack::EasyPack()->get_shipment_service();
 
-			$order_id     = sanitize_text_field( $_POST['order_id'] );
-			$order        = wc_get_order( $order_id );
-			$order_amount = '';
-			if ( is_object( $order ) ) {
-				$order_amount = $order->get_total();
-			}
+			$order_amount = $order->get_total();
 
 			$cod_amount       = '';
 			$insurance_amount = '';
@@ -263,14 +282,14 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 			$parcels          = array();
 
 			$courier_parcel_data = array();
-			// if Bulk create shipments
+			// if Bulk create shipments.
 			if ( isset( $_POST['action'] ) && $_POST['action'] === 'easypack_bulk_create_shipments' ) {
 
-				$courier_parcel_data = EasyPack_Helper()->get_dimensions_for_courier_shipments( $order_id );
+				$courier_parcel_source = EasyPack_Helper()->get_source_of_courier_dimensions( $order_id );
+				$courier_parcel_data   = EasyPack_Helper()->get_courier_parcel_dimensions( $order_id, $courier_parcel_source );
 
-				$parcels = get_post_meta( $order_id, '_easypack_parcels', true )
-					? get_post_meta( $order_id, '_easypack_parcels', true )
-					: array( get_option( 'easypack_default_package_size' ) );
+				$parcels = Easypack_Helper()->get_woo_order_meta( $order_id, '_easypack_parcels' );
+				$parcels = ! empty( $parcels ) ? $parcels : array( get_option( 'easypack_default_package_size' ) );
 
 				$cod_amount = isset( $parcels[0]['cod_amount'] )
 					? $parcels[0]['cod_amount']
@@ -281,17 +300,11 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 				$reference_number = EasyPack_Helper()->get_maybe_custom_reference_number( $order_id );
 
 				if ( 'yes' === get_option( 'easypack_add_order_note' ) ) {
-					$order_note = '';
-					$order      = wc_get_order( $order_id );
-					if ( $order && ! is_wp_error( $order ) && is_object( $order ) ) {
-						$order_note = $order->get_customer_note();
-					}
+					$order_note       = $order->get_customer_note();
 					$reference_number = $reference_number . ' ' . $order_note;
 				}
 
-				$send_method = get_post_meta( $order_id, '_easypack_send_method', true )
-					? get_post_meta( $order_id, '_easypack_send_method', true )
-					: 'courier';
+				$send_method = EasyPack_Helper()->get_default_send_method( $order_id );
 
 			} else {
 				$courier_parcel_data = array(
@@ -340,7 +353,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 
 			$shipment = $shipmentService->create_shipment_object_by_shiping_data(
 				$parcels,
-				(int) $order_id,
+				$order_id,
 				$send_method,
 				self::SERVICE_ID,
 				$courier_parcel_data,
@@ -350,7 +363,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 				$reference_number,
 				null
 			);
-			$shipment->getInternalData()->setOrderId( (int) $order_id );
+
+			$shipment->getInternalData()->setOrderId( $order_id );
 
 			return $shipment;
 		}
@@ -450,13 +464,13 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 					$ret['service']    = $shipment_data['service'];
 				}
 
-                if ( 'yes' === get_option( 'easypack_delivery_notice' ) ) {
-                    wp_schedule_single_event(
-                        time() + 60,
-                        'send_tracking_numbers_email',
-                        array( $order_id )
-                    );
-                }
+				if ( 'yes' === get_option( 'easypack_delivery_notice' ) ) {
+					wp_schedule_single_event(
+						time() + 60,
+						'send_tracking_numbers_email',
+						array( $order_id )
+					);
+				}
 			}
 			echo json_encode( $ret );
 			wp_die();
@@ -488,6 +502,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 			} else {
 				$order_id = $post->ID;
 			}
+			$send_method = '';
 
 			if ( false === $shipment instanceof ShipX_Shipment_Model ) {
 				$shipment = $shipment_service->get_shipment_by_order_id( $order_id );
@@ -519,8 +534,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 				$api_status_update_response = array();
 
 				if ( true === $output ) {
-					$status_srv                 = EasyPack()->get_shipment_status_service();
-					$api_status_update_response = $status_srv->refreshStatus( $shipment );
+					$api_status_update_response = EasyPack_Helper()->refresh_shipment_status( $order_id );
 				}
 
 				$parcel_machine_id = $shipment->getCustomAttributes()->getTargetPoint();
@@ -544,7 +558,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 
 				$tracking_url = false;
 				$status       = 'new';
-				$send_method  = get_option( 'easypack_default_send_method', 'parcel_machine' );
+				$send_method  = EasyPack_Helper()->get_default_send_method( $order_id );
 				$disabled     = false;
 			}
 			$package_sizes = EasyPack()->get_package_sizes();

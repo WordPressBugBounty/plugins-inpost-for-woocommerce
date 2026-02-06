@@ -2,6 +2,10 @@
 
 namespace InspireLabs\WoocommerceInpost\shipx\services\courier_pickup;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 use Exception;
 use InspireLabs\WoocommerceInpost\admin\Alerts;
 use InspireLabs\WoocommerceInpost\EasyPack;

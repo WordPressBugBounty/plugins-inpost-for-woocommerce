@@ -1,7 +1,10 @@
 <?php
 
-
 namespace InspireLabs\WoocommerceInpost\admin;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
 
 
 class Alerts {
@@ -106,6 +109,7 @@ class Alerts {
 						"div" => [ "class" => [] ],
 						"p"   => [],
 						"b"   => [],
+						"br"   => [],
 					]
 				);
 			}
@@ -122,6 +126,7 @@ class Alerts {
 						"div" => [ "class" => [] ],
 						"p"   => [],
 						"b"   => [],
+                        "br"   => [],
 					]
 				);
 			}
@@ -138,6 +143,7 @@ class Alerts {
 						"div" => [ "class" => [] ],
 						"p"   => [],
 						"b"   => [],
+                        "br"   => [],
                         "a"     => array(
                             "href" => array(),
                             "target" => array()

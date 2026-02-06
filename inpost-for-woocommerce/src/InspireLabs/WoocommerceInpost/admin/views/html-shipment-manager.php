@@ -13,6 +13,10 @@ use InspireLabs\WoocommerceInpost\admin\EasyPack_Shipment_Manager_List_Table;
 use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\shipx\models\courier_pickup\ShipX_Dispatch_Order_Point_Model;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 ?>
 
 <?php $is_courier_context = EasyPack_Shipment_Manager::is_courier_context(); ?>

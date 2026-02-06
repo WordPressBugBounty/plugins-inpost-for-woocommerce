@@ -1,6 +1,10 @@
 <?php
 namespace InspireLabs\WoocommerceInpost\shipx\models\courier_pickup;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 class ShipX_Dispatch_Order_Internal_Data
 {
     /**

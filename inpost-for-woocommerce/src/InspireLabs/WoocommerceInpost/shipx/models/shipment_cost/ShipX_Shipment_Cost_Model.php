@@ -1,6 +1,10 @@
 <?php
 namespace InspireLabs\WoocommerceInpost\shipx\models\shipment_cost;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 class ShipX_Shipment_Cost_Model
 {
     /**

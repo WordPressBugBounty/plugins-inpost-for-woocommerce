@@ -5,14 +5,14 @@ msgstr ""
 "Project-Id-Version: InPost for WooCommerce 1.5.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-inpost\n"
 "POT-Creation-Date: 2018-08-24 13:01:34+00:00\n"
-"PO-Revision-Date: 2025-09-19 13:10+0200\n"
+"PO-Revision-Date: 2026-01-20 11:56+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 
 #: classes/admin/class-dispatch-orders.php:171
 #: classes/admin/class-post-types.php:29
@@ -220,7 +220,7 @@ msgstr "Opcje wysyłki"
 
 #: classes/admin/class-settings-general.php:585
 msgid "Default package size"
-msgstr "Domyślne wymiary paczki"
+msgstr "Domyślne wymiary przesyłek Paczkomat"
 
 #: classes/admin/class-settings-general.php:597
 msgid "Default send method"
@@ -783,8 +783,8 @@ msgstr "Ustaw jednolitą stawkę za wysyłkę dla całego zamówienia."
 #: classes/shipping/method-courier.php:102
 #: classes/shipping/method-parcel-machines-cod.php:96
 #: classes/shipping/method-parcel-machines.php:184
-msgid "Cost per order"
-msgstr "Koszt za zamówienie"
+msgid "Cost of delivery"
+msgstr "Cena za dostawę"
 
 #: classes/shipping/method-courier-cod.php:121
 #: classes/shipping/method-courier-local-express-cod.php:121
@@ -2052,3 +2052,105 @@ msgstr "Wystąpił błąd"
 
 msgid "Pick up point has been successfuly written"
 msgstr "Punkt odbioru został pomyślnie zapisany"
+
+msgid "Template name"
+msgstr "Nazwa szablonu"
+
+msgid "Length (mm)"
+msgstr "Długość (mm)"
+
+msgid "Width (mm)"
+msgstr "Szerokość (mm)"
+
+msgid "Height (mm)"
+msgstr "Wysokość (mm)"
+
+msgid "Weight (kg)"
+msgstr "Waga (kg)"
+
+msgid "Add template"
+msgstr "Dodaj szablon"
+
+msgid "Templates:"
+msgstr "Szablony:"
+
+msgid "Courier options"
+msgstr "Opcje kurierskie"
+
+msgid "Manage courier templates"
+msgstr "Zarządzaj szablonami kurierskimi"
+
+msgid "Not standard?"
+msgstr "Niestandardowa?"
+
+msgid "If there is no general InPost shipping method for the products, then always choose the most expensive one."
+msgstr "Jeśli nie ma ogólnej metody wysyłki InPost dla produktów, zawsze wybieraj najdroższą opcję."
+
+msgid "Enable webhooks"
+msgstr "Włącz webhooki"
+
+msgid "Copied!"
+msgstr "Skopiowano!"
+
+msgid "After enabling this setting, when there is a product"
+msgstr "Po włączeniu tego ustawienia gdy w koszyku jest produkt"
+
+msgid " with the Paczkomat service only and another product with the Courier service only "
+msgstr " z usługą tylko Paczkomat i drugi produkt z usługą tylko Kurier - "
+
+msgid "in the cart, the most expensive one will be selected and the delivery method will be displayed"
+msgstr "wybierze tą najdroższą i wyświetli metodę dostawy"
+
+msgid "Enabling webhooks allows you to update the status of shipments in your order"
+msgstr "Włączenie webhook pozwala na aktualizację statusów przesyłek w zamówieniu"
+
+msgid "Change order status to Completed if webhook status is received like:"
+msgstr "Zmień status zamówienia na Zrealizowano, jeśli otrzymany status webhooka taki jak:"
+
+msgid "Check your default settings before enable this option (parcel dimensions, etc.)"
+msgstr "Przed włączeniem tej opcji proszę dokładnie sprawdzić ustawienia domyślne (rozmiary paczki, i t.d.)"
+
+msgid "Creating a shipment automatically after paying for the order"
+msgstr "Automatyczne tworzenie przesyłki po opłaceniu zamówienia"
+
+msgid "Other options"
+msgstr "Dodatkowe opcje"
+
+msgid "Where to get the dimensions of parcels"
+msgstr "Skąd pobrać wymiary przesyłek"
+
+msgid "Template"
+msgstr "Szablon"
+
+msgid "Choose template"
+msgstr "Wybierz szablon"
+
+msgid "Default value"
+msgstr "Domyślna wartość"
+
+msgid "Product configuration"
+msgstr "Konfiguracja produktu"
+
+msgid "Enabling this option allows you to create Parcel on Weekend shipments (despite the customer choosing the InPost Paczkomat 24/7 service) in the time intervals from Thursday (20:00) to Friday (18:00)"
+msgstr "Włączenie umożliwia tworzenie przesyłek Paczka W Weekend (pomimo wybranego serwisu przez klienta InPost Paczkomat 24/7) w przedziałach czasowych od czwartku (godzina 20:00) do piątku (godzina 18:00)"
+
+msgid "PWW mode"
+msgstr "Tryb PWW"
+
+msgid "You are creating a Weekend Package service, which is available from Thursday 20:00 to Friday 18:00 - currently this is not a dedicated time slot"
+msgstr "Tworzysz usługę Paczka w Weekend, która jest dostępna od czwartku 20:00 do piątku godzina 18:00 - aktualnie nie jest to dedykowany przedział"
+
+msgid "forbidden"
+msgstr "niedozwolony"
+
+msgid "Some error occured whe we try to get list of services:"
+msgstr "Wystąpił błąd podczas próby pobrania listy usług:"
+
+msgid "API key or Organization ID is empty"
+msgstr "Klucz API lub ID organizacji jest pusty"
+
+msgid "Error when trying to get API services. Check wc-logs, file 'inpost-pl-services-error'"
+msgstr "Błąd podczas próby uzyskania dostępu do usług API. Sprawdź wc-logs, plik „inpost-pl-services-error”."
+
+msgid "Multi-parcel"
+msgstr "Wielopak"

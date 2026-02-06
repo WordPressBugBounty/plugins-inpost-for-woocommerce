@@ -2,6 +2,10 @@
 
 namespace InspireLabs\WoocommerceInpost\shipx\services\shipment;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 use InspireLabs\WoocommerceInpost\EasyPack;
 use Exception;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Internal_Data;
@@ -118,9 +122,11 @@ class ShipX_Shipment_Status_Service {
 	 * @return string|null
 	 */
 	public function getStatusTitle( $search ) {
-		foreach ( $this->statuses as $status ) {
-			if ( $search === $status['name'] ) {
-				return $status['title'];
+		if ( is_array( $this->statuses ) ) {
+			foreach ( $this->statuses as $status ) {
+				if ( $search === $status['name'] ) {
+					return $status['title'];
+				}
 			}
 		}
 

@@ -1,4 +1,9 @@
-<?php if ( 'offer_selected' === $status ) : ?>
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
+if ( 'offer_selected' === $status ) : ?>
 	<p class="easypack_error" style="color:red; font-weight:bold;">
 		<?php
 		printf(

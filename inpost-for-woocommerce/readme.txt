@@ -2,9 +2,9 @@
 Contributors: inspirelabs
 Tags: inpost, paczkomaty, etykiety, przesyłki
 Requires at least: 5.3
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.2
-Stable tag: 1.7.1
+Stable tag: 1.8.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -42,6 +42,48 @@ Po zainstalowaniu wtyczki skonfiguruj sposób dostawy InPost oraz ceny poszczeg�
 
 
 == Changelog ==
+
+= 1.8.3 =
+* Fix: get weight for courier shipments
+
+= 1.8.2 =
+* Fix: default send method in metabox
+* Fix: enable/disable InPost methods for products
+
+= 1.8.1 =
+* Fix: webhook statuses updates
+* Fix: integration with Flexible Shipping
+
+= 1.8.0 =
+* Fix: Smart Courier
+
+= 1.7.9 =
+* Fix: weight value for Courier shipments
+
+= 1.7.8 =
+* Fix: weight value from template for Courier shipments
+
+= 1.7.7 =
+* Feat: new setting for InPost Paczkomaty 24/7
+
+= 1.7.6 =
+* Feat: new setting for auto shipment creating
+* Feat: new setting for webhooks update order status
+
+= 1.7.5 =
+* Feat: new settings for shipping methods
+* Feat: webhooks updates
+
+= 1.7.4 =
+* Fix: Courier templates
+
+= 1.7.3 =
+* Fix: bulk order creating
+
+= 1.7.2 =
+* Feat: templates for courier shipments
+* Feat: new settings - terms of delivery
+* Fix: validation if parcel locker selected
 
 = 1.7.1 =
 * Feat: additional possibility to choose Locker ID on Thank You Page for some cases

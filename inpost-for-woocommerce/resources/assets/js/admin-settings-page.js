@@ -1,297 +1,294 @@
-var geowidgetModal;
+var inpost_pl_geowidget_default_config;
 
-function selectPointCallbackDefault(point) {
-	
-	let point_name = '';
-	if( 'name' in point ) {
-		point_name = point.name;
-		if (point_name.startsWith("PL_")) {
-			// Remove first 3 characters "PL_".
-			point_name = point_name.slice(3);
-		}
-	}
-	
-    jQuery('#easypack_default_machine_id').val(point_name);
-    geowidgetModal.close()
+function inpost_pl_select_default_point_callback(point) {
+
+    console.log('InPost PL plugin configuartion map callback');
+
+    let point_name = '';
+    if ('name' in point) {
+        point_name = point.name;
+        if (point_name.startsWith("PL_")) {
+            // Remove first 3 characters "PL_".
+            point_name = point_name.slice(3);
+        }
+    }
+
+    console.log('InPost PL default point: ' + point_name);
+
+    let point_input = document.getElementById('easypack_default_machine_id');
+    if (typeof point_input != 'undefined' && point_input !== null) {
+        point_input.value = point_name;
+    }
+
+    if (typeof inpost_pl_geowidget_default_config != 'undefined' && inpost_pl_geowidget_default_config !== null) {
+        inpost_pl_geowidget_default_config.close();
+    }
 }
 
-jQuery(document).ready(function () {
-	
-	let insurance_mode = jQuery('input[name="easypack_insurance_amount_mode"]:checked').val();
-    let insurance_input = jQuery('input[name="easypack_insurance_amount_default"]');
-    let insurance_input_parent = jQuery(insurance_input).closest('tr');
+(function ($) {
 
-    if( '2' === insurance_mode) {
-        jQuery(insurance_input_parent).show();
-        jQuery(insurance_input).attr("required", true);
-    } else {
-        jQuery(insurance_input_parent).hide();
-        jQuery(insurance_input).attr("required", false);
-    }
-	
-	jQuery('input[name="easypack_insurance_amount_mode"]').on("change", function (){
-        if( '2' === jQuery(this).val()) {
-            jQuery(insurance_input_parent).show();
-            jQuery(insurance_input).attr("required", true);
+    $(document).ready(function () {
+
+        let insurance_mode = $('input[name="easypack_insurance_amount_mode"]:checked').val();
+        let insurance_input = $('input[name="easypack_insurance_amount_default"]');
+        let insurance_input_parent = $(insurance_input).closest('tr');
+
+        if ('2' === insurance_mode) {
+            $(insurance_input_parent).show();
+            $(insurance_input).attr("required", true);
         } else {
-            jQuery(insurance_input_parent).hide();
-            jQuery(insurance_input).attr("required", false);
+            $(insurance_input_parent).hide();
+            $(insurance_input).attr("required", false);
         }
-    })
 
-    let debug_text = '';
-	if(typeof easypack_settings.debug_notice != 'undefined' && easypack_settings.debug_notice !== null) {
-		debug_text = '<p class="easypack_debug_notice">' + easypack_settings.debug_notice + '</p>';
-	}
+        $('input[name="easypack_insurance_amount_mode"]').on("change", function () {
+            if ('2' === $(this).val()) {
+                $(insurance_input_parent).show();
+                $(insurance_input).attr("required", true);
+            } else {
+                $(insurance_input_parent).hide();
+                $(insurance_input).attr("required", false);
+            }
+        })
 
-    if ( jQuery('#easypack_js_map_button').is(':checked') ) {
-        jQuery('#easypack_button_output').prop('disabled', true);
-        jQuery('#easypack_button_output').closest('.forminp-select').append(debug_text);
-    } else {
-        jQuery('#easypack_button_output').prop('disabled', false);
-        jQuery('.easypack_debug_notice').each(function(ind, elem) {
-            jQuery(elem).remove();
-        });
-    }
-
-    jQuery('#easypack_js_map_button').on('change', function () {
-        if (jQuery(this).is(':checked')) {
-            jQuery('#easypack_button_output').prop('disabled', true);
-            jQuery('#easypack_button_output').closest('.forminp-select').append(debug_text);
-            
-        } else {
-            jQuery('#easypack_button_output').prop('disabled', false);
-            jQuery('.easypack_debug_notice').each(function(ind, elem) {
-                jQuery(elem).remove();
-            });            
+        let debug_text = '';
+        if (typeof easypack_settings.debug_notice != 'undefined' && easypack_settings.debug_notice !== null) {
+            debug_text = '<p class="easypack_debug_notice">' + easypack_settings.debug_notice + '</p>';
         }
-    });
 
-    if ( ! jQuery('#easypack_set_default_courier_dimensions').is(':checked') ) {
-        jQuery('.easypack_hidden_setting').each(function (i, elem) {
-            let parent = jQuery(elem).closest('tr');
-            jQuery(parent).css('display', 'none');
-        });
-    }
-
-    jQuery('#easypack_set_default_courier_dimensions').on('change', function () {
-        if (jQuery(this).is(':checked')) {
-            jQuery('.easypack_hidden_setting').each(function (i, elem) {
-                let parent = jQuery(elem).closest('tr');
-                jQuery(parent).fadeIn(300);
-            });
+        if ($('#easypack_js_map_button').is(':checked')) {
+            $('#easypack_button_output').prop('disabled', true);
+            $('#easypack_button_output').closest('.forminp-select').append(debug_text);
         } else {
-            jQuery('.easypack_hidden_setting').each(function (i, elem) {
-                let parent = jQuery(elem).closest('tr');
-                jQuery(parent).fadeOut(100);
+            $('#easypack_button_output').prop('disabled', false);
+            $('.easypack_debug_notice').each(function (ind, elem) {
+                $(elem).remove();
             });
         }
-    });
 
-    jQuery('#easypack_api_url').closest('tr').css('display', 'none');
-    jQuery('#easypack_geowidget_url').closest('tr').css('display', 'none');
+        $('#easypack_js_map_button').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('#easypack_button_output').prop('disabled', true);
+                $('#easypack_button_output').closest('.forminp-select').append(debug_text);
 
-    jQuery('#easypack_api_url_button').click(function () {
-        if (jQuery('#easypack_api_url').closest('tr').css('display') === 'none') {
-            jQuery('#easypack_api_url').closest('tr').css('display', 'table-row');
-            if (jQuery('#easypack_api_country').val() === 'gb' || jQuery('#easypack_api_country').val() === 'test-gb') {
-                jQuery('#easypack_geowidget_url').closest('tr').css('display', 'table-row');
+            } else {
+                $('#easypack_button_output').prop('disabled', false);
+                $('.easypack_debug_notice').each(function (ind, elem) {
+                    $(elem).remove();
+                });
+            }
+        });
+
+        if (!$('#easypack_set_default_courier_dimensions').is(':checked')) {
+            $('.easypack_hidden_setting').each(function (i, elem) {
+                let parent = $(elem).closest('tr');
+                $(parent).css('display', 'none');
+            });
+        }
+
+        $('#easypack_set_default_courier_dimensions').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('.easypack_hidden_setting').each(function (i, elem) {
+                    let parent = $(elem).closest('tr');
+                    $(parent).fadeIn(300);
+                });
+            } else {
+                $('.easypack_hidden_setting').each(function (i, elem) {
+                    let parent = $(elem).closest('tr');
+                    $(parent).fadeOut(100);
+                });
+            }
+        });
+
+        $('#easypack_api_url').closest('tr').css('display', 'none');
+        $('#easypack_geowidget_url').closest('tr').css('display', 'none');
+
+
+        let webhook_setting = $('input[name="easypack_enable_webhooks"]');
+        if (typeof webhook_setting != 'undefined' && webhook_setting !== null) {
+            if ($(webhook_setting).is(':checked')) {
+                $('.easypack_hidden_setting_webhook').each(function (i, elem) {
+                    let parent = $(elem).closest('tr');
+                    $(parent).show();
+                });
+            } else {
+                $('.easypack_hidden_setting_webhook').each(function (i, elem) {
+                    let parent = $(elem).closest('tr');
+                    $(parent).hide();
+                });
             }
 
-        } else {
-            jQuery('#easypack_api_url').closest('tr').css('display', 'none');
-            jQuery('#easypack_geowidget_url').closest('tr').css('display', 'none');
+            $('input[name="easypack_enable_webhooks"]').on("change", function () {
+                if ($(this).is(':checked')) {
+                    $('.easypack_hidden_setting_webhook').each(function (i, elem) {
+                        let parent = $(elem).closest('tr');
+                        $(parent).fadeIn(300);
+                    });
+                } else {
+                    $('.easypack_hidden_setting_webhook').each(function (i, elem) {
+                        let parent = $(elem).closest('tr');
+                        $(parent).fadeOut(100);
+                    });
+                }
+            })
         }
-        return false;
-    });
 
 
-    function easypack_address_fields() {
+        function easypack_show_tooltip(input, maxValue) {
+            const $input = $(input);
+            const $tooltip = $('<div class="inpost-pl-max-value-tooltip">Maximum value is ' + maxValue + '</div>');
+            $tooltip.css({
+                position: 'absolute',
+                background: '#333',
+                color: '#fff',
+                padding: '5px 10px',
+                borderRadius: '3px',
+                fontSize: '12px',
+                zIndex: 1000
+            });
 
-        if (jQuery('#easypack_api_country').val() === 'gb' || jQuery('#easypack_api_country').val() === 'test-gb') {
+            const inputPos = $input.offset();
+            $tooltip.css({
+                top: inputPos.top - 30,
+                left: inputPos.left
+            });
 
-            jQuery('#easypack_sender_flat_no').attr('required', false);
+            $('body').append($tooltip);
 
-            jQuery('#easypack_sender_flat_no').closest('tr').css('display', 'none');
-
-            jQuery('#easypack_sender_flat_no').closest('tr').css('display', 'table-row');
-            jQuery('#easypack_sender_address2').closest('tr').css('display', 'table-row');
-
-        } else {
-            jQuery('#easypack_sender_street').attr('required', true);
-            jQuery('#easypack_sender_building_no').attr('required', true);
-            jQuery('#easypack_sender_flat_no').attr('required', false);
-            jQuery('#easypack_sender_post_code').attr('required', true);
-
-            jQuery('#easypack_sender_street').closest('tr').css('display', 'table-row');
-            jQuery('#easypack_sender_building_no').closest('tr').css('display', 'table-row');
-            jQuery('#easypack_sender_flat_no').closest('tr').css('display', 'table-row');
-            jQuery('#easypack_sender_post_code').closest('tr').css('display', 'table-row');
-
-            jQuery('#easypack_sender_flat_no').attr('required', false);
-
-            jQuery('#easypack_sender_flat_no').closest('tr').css('display', 'none');
-            jQuery('#easypack_sender_address2').closest('tr').css('display', 'none');
-
+            setTimeout(function() {
+                $tooltip.fadeOut(300, function() {
+                    $(this).remove();
+                });
+            }, 3000);
         }
-    }
 
-    function easypack_returns() {
-        if (jQuery('#easypack_api_country').val() === 'gb' || jQuery('#easypack_api_country').val() === 'test-gb') {
-            jQuery('#easypack_returns_page').closest('table').prev().css('display', 'none');
-            jQuery('#easypack_returns_page').closest('table').css('display', 'none');
-        } else {
-            jQuery('#easypack_returns_page').closest('table').prev().css('display', 'block');
-            jQuery('#easypack_returns_page').closest('table').css('display', 'table');
-        }
-    }
+        $('#easypack_organization_id').change(function () {
+            $('#easypack_api_change').val('1');
+        });
+        $('#easypack_api_environment').change(function () {
+            $('#easypack_api_change').val('1');
+        });
+        $('#easypack_token').change(function () {
+            $('#easypack_api_change').val('1');
+        });
 
-    function easypack_send_options() {
-        if (jQuery('#easypack_api_country').val() === 'pl' || jQuery('#easypack_api_country').val() === 'test-pl'
-        ) {
-            jQuery('#easypack_default_send_method').closest('table').prev().css('display', 'block');
-            jQuery('#easypack_default_send_method').closest('table').css('display', 'table');
-
-        } else {
-            jQuery('#easypack_default_send_method').closest('table').prev().css('display', 'none');
-            jQuery('#easypack_default_send_method').closest('table').css('display', 'none');
-            jQuery('#easypack_default_machine_id').attr('required', false);
-        }
-    }
-
-    function easypack_country_change() {
-        if (jQuery('#easypack_api_country').val() === '--') {
-
-            jQuery('#easypack_tax_status').closest('table').prev().css('display', 'none');
-            jQuery('#easypack_tax_status').closest('table').css('display', 'none');
-            jQuery('#easypack_returns_page').closest('table').prev().css('display', 'none');
-            jQuery('#easypack_returns_page').closest('table').css('display', 'none');
-            jQuery('#easypack_default_send_method').closest('table').prev().css('display', 'none');
-            jQuery('#easypack_default_send_method').closest('table').css('display', 'none');
-            jQuery('#easypack_sender_first_name').closest('table').prev().css('display', 'none');
-            jQuery('#easypack_sender_first_name').closest('table').css('display', 'none');
-            jQuery('.button-primary').attr('disabled', true);
-        } else {
-
-            jQuery('#easypack_tax_status').closest('table').prev().css('display', 'block');
-            jQuery('#easypack_tax_status').closest('table').css('display', 'table');
-            jQuery('#easypack_returns_page').closest('table').prev().css('display', 'block');
-            jQuery('#easypack_returns_page').closest('table').css('display', 'table');
-            jQuery('#easypack_default_send_method').closest('table').prev().css('display', 'block');
-            jQuery('#easypack_default_send_method').closest('table').css('display', 'table');
-            jQuery('#easypack_sender_first_name').closest('table').prev().css('display', 'block');
-            jQuery('#easypack_sender_first_name').closest('table').css('display', 'table');
-            jQuery('.button-primary').attr('disabled', false);
-            easypack_address_fields();
-            easypack_returns();
-            easypack_send_options();
-        }
-        if (jQuery('#easypack_api_country').val() === 'pl' || jQuery('#easypack_api_country').val() === 'test-pl') {
-            jQuery('#easypack_dispatch_point_name').attr('required', true);
-            jQuery('#easypack_dispatch_point_email').attr('required', true);
-            jQuery('#easypack_dispatch_point_phone').attr('required', true);
-            jQuery('#easypack_dispatch_point_office_hours').attr('required', false);
-            jQuery('#easypack_dispatch_point_street').attr('required', true);
-            jQuery('#easypack_dispatch_point_building_no').attr('required', true);
-            jQuery('#easypack_dispatch_point_flat_no').attr('required', false);
-            jQuery('#easypack_dispatch_point_post_code').attr('required', true);
-            jQuery('#easypack_dispatch_point_city').attr('required', true);
-        } else {
-            jQuery('#easypack_dispatch_point_name').attr('required', false);
-            jQuery('#easypack_dispatch_point_email').attr('required', false);
-            jQuery('#easypack_dispatch_point_phone').attr('required', false);
-            jQuery('#easypack_dispatch_point_office_hours').attr('required', false);
-            jQuery('#easypack_dispatch_point_street').attr('required', false);
-            jQuery('#easypack_dispatch_point_building_no').attr('required', false);
-            jQuery('#easypack_dispatch_point_flat_no').attr('required', false);
-            jQuery('#easypack_dispatch_point_post_code').attr('required', false);
-            jQuery('#easypack_dispatch_point_city').attr('required', false);
-            jQuery('#easypack_default_machine_id').attr('required', false);
-        }
-    }
-
-    var api_country = jQuery('#easypack_api_country').val();
-    jQuery('#easypack_api_country').change(function () {
-        if (api_country !== jQuery('#easypack_api_country').val()) {
-            if (api_country !== '--' && !confirm( easypack_settings.change_country_alert )) {
-                jQuery('#easypack_api_country').val(api_country);
+        $('#easypack_token').keyup(function () {
+            if (easypack_token !== $('#easypack_token').val()) {
+                $('#easypack_api_change').val('1');
             }
-            jQuery('#easypack_api_change').val('1');
-            api_country = jQuery('#easypack_api_country').val();
-            easypack_country_change();
-        }
-    });
+        });
+        var easypack_token = $('#easypack_token').val();
 
-    jQuery('#easypack_organization_id').change(function () {
-        jQuery('#easypack_api_change').val('1');
-    });
-    jQuery('#easypack_api_environment').change(function () {
-        jQuery('#easypack_api_change').val('1');
-    });
-    jQuery('#easypack_token').change(function () {
-        jQuery('#easypack_api_change').val('1');
-    });
+        config = $('#easypack_default_machine_id').data('geowidget_config');
 
-    jQuery('#easypack_token').keyup(function () {
-        if (easypack_token !== jQuery('#easypack_token').val()) {
-            jQuery('#easypack_api_change').val('1');
-        }
-    });
-    var easypack_token = jQuery('#easypack_token').val();
-
-    easypack_country_change();
-    jQuery(document).ready(function () {
-        easypack_country_change();
-    });
+        inpost_pl_geowidget_default_config = new jBox('Modal', {
+            width: easypackAdminGeowidgetSettings.width,
+            height: easypackAdminGeowidgetSettings.height,
+            attach: '#easypack_default_machine_id',
+            title: easypackAdminGeowidgetSettings.title,
+            content: '<inpost-geowidget onpoint="inpost_pl_select_default_point_callback" token="' + easypackAdminGeowidgetSettings.token + '" language="pl" config="' + config + '"></inpost-geowidget>'
+        });
 
 
-    config = jQuery('#easypack_default_machine_id').data('geowidget_config');
-
-    geowidgetModal = new jBox('Modal', {
-        width: easypackAdminGeowidgetSettings.width,
-        height: easypackAdminGeowidgetSettings.height,
-        attach: '#easypack_default_machine_id',
-        title: easypackAdminGeowidgetSettings.title,
-        content: '<inpost-geowidget onpoint="selectPointCallbackDefault" token="' + easypackAdminGeowidgetSettings.token + '" language="pl" config="' + config + '"></inpost-geowidget>'
-    });
-
-
-    jQuery('#easypack_default_machine_id').click(function (e) {
-        e.preventDefault();
-        if( typeof geowidgetModal != 'undefined' && geowidgetModal !== null ) {
-            if( ! geowidgetModal.isOpen ) {
-                geowidgetModal.open();
+        $('#easypack_default_machine_id').click(function (e) {
+            e.preventDefault();
+            if (typeof inpost_pl_geowidget_default_config != 'undefined' && inpost_pl_geowidget_default_config !== null) {
+                if (!inpost_pl_geowidget_default_config.isOpen) {
+                    inpost_pl_geowidget_default_config.open();
+                }
             }
+        });
+
+        $('.easypack_courier_tmplts_dmtemplate').on('input change', function() {
+            const $input = $(this);
+            const maxValue = parseFloat($input.attr('max'));
+            const value = parseFloat($input.val());
+
+            if (value > maxValue) {
+                $input.val(maxValue);
+                easypack_show_tooltip(this, maxValue);
+            }
+        });
+
+
+        const copyBtn = document.getElementById( 'inpost-copy-webhook-url-btn' );
+        const input   = document.getElementById( 'easypack_enable_webhooks_url' );
+        const tooltip = document.getElementById( 'copy-tooltip' );
+
+        if (copyBtn && input && tooltip) {
+            copyBtn.addEventListener(
+                'click',
+                function () {
+                    // Create a temporary input to copy the value.
+                    const tempInput = document.createElement( 'input' );
+                    tempInput.value = input.value;
+                    document.body.appendChild( tempInput );
+                    tempInput.select();
+                    tempInput.setSelectionRange( 0, 99999 );
+
+                    try {
+                        document.execCommand( 'copy' );
+                        copyBtn.classList.add( 'copied' );
+                        tooltip.textContent = easypack_settings.webhook_notice;
+
+                        // Reset after 2 seconds.
+                        setTimeout(
+                            function () {
+                                copyBtn.classList.remove( 'copied' );
+                                tooltip.textContent = '';
+                            },
+                            2000
+                        );
+
+                    } catch (err) {
+                        console.error( 'Failed to copy: ', err );
+                        tooltip.textContent = 'Failed to copy';
+
+                        setTimeout(
+                            function () {
+                                tooltip.textContent = 'Copy';
+                            },
+                            2000
+                        );
+                    }
+
+                    // Remove temporary input.
+                    document.body.removeChild( tempInput );
+                }
+            );
         }
 
-
-    });
-
-});
-
-
-
-/*
-
-jQuery(document).ready(function () {
-
-    config = jQuery('#parcel_machine_id').data('geowidget_config');
-    if (config === undefined) {
-        config = jQuery('#easypack_default_machine_id').data('geowidget_config')
-    }
-    //console.log(config);
-
-    geowidgetModal = new jBox('Modal', {
-        width: easypackAdminGeowidgetSettings.width,
-        height: easypackAdminGeowidgetSettings.height,
-        attach: '.settings-geowidget',
-        title: easypackAdminGeowidgetSettings.title,
-        content: '<inpost-geowidget onpoint="selectPointCallback" token="' + easypackAdminGeowidgetSettings.token + '" language="pl" config="' + config + '"></inpost-geowidget>'
     });
 
 
-    jQuery('.settings-geowidget').click(function (e) {
-        e.preventDefault();
-    });
+})(jQuery);
 
-});*/
+
+function inpost_pl_config_wait_for_element(selector) {
+    return new Promise(
+        function (resolve) {
+            if (document.querySelector( selector )) {
+                return resolve( document.querySelector( selector ) );
+            }
+
+            const observer = new MutationObserver(
+                function (mutations) {
+                    if (document.querySelector( selector )) {
+                        resolve( document.querySelector( selector ) );
+                        observer.disconnect();
+                    }
+                }
+            );
+
+            observer.observe(
+                document.body,
+                {
+                    childList: true,
+                    subtree: true
+                }
+            );
+        }
+    );
+}
+
+

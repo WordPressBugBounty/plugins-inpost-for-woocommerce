@@ -2,7 +2,12 @@
 
 namespace InspireLabs\WoocommerceInpost\admin;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 use InspireLabs\WoocommerceInpost\EasyPack;
+use InspireLabs\WoocommerceInpost\shipping\EasyPack_Shippng_Parcel_Machines;
 use WC_Shipping;
 use WC_Shipping_Method;
 
@@ -270,10 +275,20 @@ class EasyPack_Product_Shipping_Method_Selector {
 					return $config_by_product;
 				}
 
+                $config_by_product_raw = $config_by_product;
+
 				if ( is_array( $config_by_product ) && count( $config_by_product ) > 1 ) {
 					$config_by_product = call_user_func_array( 'array_intersect', $config_by_product );
 					$config_by_product = $this->block_overweight( $total_weight, $config_by_product );
 				}
+
+                if( 'yes' === get_option('easypack_set_major_method')) {
+                    if (empty($config_by_product)) {
+                        $cart_data['contents'] = $contents_of_the_cart;
+                        $config_by_product     = $this->set_most_expensive($config_by_product_raw, $cart_data);
+                    }
+                }
+
 			}
 		}
 
@@ -308,7 +323,7 @@ class EasyPack_Product_Shipping_Method_Selector {
 	 */
 	private function block_overweight( $total_weight, $config_by_product ) {
 
-		if ( get_option( 'easypack_over_weight' ) === 'yes' ) {
+		if ( 'yes' === get_option( 'easypack_over_weight' ) ) {
 			if ( $total_weight >= 25 ) {
 
 				if ( ! empty( $config_by_product ) && is_array( $config_by_product ) ) {
@@ -385,4 +400,132 @@ class EasyPack_Product_Shipping_Method_Selector {
 
 		return false;
 	}
+
+
+    /**
+     * Determines the most expensive shipping method from a configuration.
+     *
+     * @param array $config The configuration mapping products to allowed methods.
+     * @param array $cart_data The cart data.
+     * @return array The shipping method with the highest cost.
+     *
+     * @since 1.7.5
+     * @access private
+     */
+    private function set_most_expensive($config, $cart_data)
+    {
+
+        $cost = array();
+
+        foreach( $config as $product_id => $allowed_methods ) {
+            foreach ($allowed_methods as $method ) {
+
+                $cost[$method] = $this->get_shipping_method_cost($method, $cart_data);
+            }
+        }
+
+        return EasyPack_Helper()->find_key_with_biggest_value( $cost );
+    }
+
+
+
+    /**
+     * Gets the shipping cost for a specific shipping method.
+     *
+     * @param string $method_id_with_instance The shipping method ID with instance ID.
+     * @param array $cart_data The cart data.
+     * @return float The shipping cost.
+     *
+     * @since 1.7.5
+     * @access private
+     */
+    private function get_shipping_method_cost( $method_id_with_instance, $cart_data ) {
+        $cost = 0;
+        // Parse the method string to get instance_id
+        $parts = explode(':', $method_id_with_instance);
+        $method_id = $parts[0];
+        $instance_id = isset($parts[1]) ? $parts[1] : 0;
+
+        if( ! $instance_id || ! is_numeric($instance_id)) {
+            return 0;
+        }
+
+        $settings_name = 'woocommerce_' . $method_id . '_' . $instance_id . '_settings';
+
+        $instance_settings = get_option($settings_name);
+        if( ! empty($instance_settings) ) {
+
+            if (isset($instance_settings['flat_rate']) && 'yes' === $instance_settings['flat_rate']) {
+                return ! empty($instance_settings['cost_per_order']) ? $instance_settings['cost_per_order'] : 0;
+            } else {
+                if( ! empty($instance_settings['based_on']) ) {
+                    $cost = $this->get_cost_of_inpost_method($cart_data, $instance_settings['based_on'], $method_id, $instance_id );
+                }
+            }
+
+        }
+
+        return $cost;
+    }
+
+
+    /**
+     * Calculates the cost of an InPost shipping method based on various criteria.
+     *
+     * @param array $cart_data The cart data.
+     * @param string $based_on The basis for calculation ('size', 'price', 'product_qty', or 'weight').
+     * @param string $method_id The shipping method ID.
+     * @param int $instance_id The shipping method instance ID.
+     * @return float The calculated shipping cost.
+     *
+     * @since 1.7.5
+     * @access private
+     */
+    private function get_cost_of_inpost_method( array $cart_data, $based_on, $method_id, $instance_id ) {
+
+        $cost = 0;
+
+        $settings_name = 'woocommerce_' . $method_id . '_' . $instance_id . '_settings';
+        $instance_settings = get_option($settings_name);
+
+        // based on gabaryt.
+        if ( 'size' === $based_on ) {
+            $max_gabaryt = EasyPack_Helper()->get_max_gabaryt( $cart_data );
+            $cost        = $instance_settings[ 'gabaryt_' . $max_gabaryt ];
+            $cost = ! empty($cost) ? $cost : 0;
+            return $cost;
+        }
+
+        $rates = EasyPack_Helper()->get_saved_method_rates( $method_id, $instance_id );
+
+        if ( ! empty( $rates ) ) {
+            foreach ( $rates as $key => $rate ) {
+                if ( empty( $rates[ $key ]['min'] ) || '' === trim( $rates[ $key ]['min'] ) ) {
+                    $rates[ $key ]['min'] = 0;
+                }
+                if ( empty( $rates[ $key ]['max'] ) || '' === trim( $rates[ $key ]['max'] ) ) {
+                    $rates[ $key ]['max'] = PHP_INT_MAX;
+                }
+            }
+        }
+
+        $value = 0;
+        if ( 'price' === $based_on ) {
+            $value = EasyPack_Helper()->package_subtotal( $cart_data['contents'] );
+        }
+        if ( 'product_qty' === $based_on ) {
+            $value = EasyPack_Helper()->package_product_qty( $cart_data['contents'] );
+        }
+        if ( 'weight' === $based_on ) {
+            $value = EasyPack_Helper()->package_weight( $cart_data['contents'] );
+        }
+
+        foreach ( $rates as $rate ) {
+            if ( floatval( $rate['min'] ) <= $value && floatval( $rate['max'] ) >= $value ) {
+                $cost = ! empty( $rate['cost'] ) ? $rate['cost'] : 0;
+            }
+        }
+
+        return $cost;
+    }
 }

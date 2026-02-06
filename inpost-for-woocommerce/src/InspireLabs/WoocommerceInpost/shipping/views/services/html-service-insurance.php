@@ -7,6 +7,10 @@
 
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ) {
 	$input_disabled = ' disabled ';
 	?>

@@ -3,12 +3,12 @@
 	Plugin Name: InPost PL
 	Plugin URI: https://wordpress.org/plugins/inpost-for-woocommerce/
 	Description: InPost for WooCommerce is a dedicated integration plugin, designed for small and medium-sized businesses that want to quickly and conveniently integrate with InPost services.
-	Version: 1.7.1
+	Version: 1.8.3
 	Author: iLabs.dev
 	Author URI: https://ilabs.dev/
 	Text Domain: woocommerce-inpost
 	Domain Path: /languages/
-	Tested up to: 6.8
+	Tested up to: 6.9
 
 	Copyright 2022 Inspire Labs sp. z o.o.
 
@@ -39,7 +39,7 @@ use InspireLabs\WoocommerceInpost\EasyPack_Helper;
 
 define( 'WOOCOMMERCE_INPOST_PLUGIN_FILE', __FILE__ );
 define( 'WOOCOMMERCE_INPOST_PLUGIN_DIR', __DIR__ );
-define( 'WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION', '1.7.1' );
+define( 'WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION', '1.8.3' );
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -69,19 +69,22 @@ add_action(
 	'plugins_loaded',
 	function () {
 		if ( easypack_is_woocommerce_activated() ) {
-			EasyPack_Shipment_Manager::init();
-			EasyPack_Helper();
-			EasyPack_AJAX::init();
-			$_GLOBALS['EasyPack'] = EasyPack();
+            if ( easypack_integrity_verified() ) {
+                EasyPack_Shipment_Manager::init();
+                EasyPack_Helper();
+                EasyPack_AJAX::init();
+                $_GLOBALS['EasyPack'] = EasyPack();
 
-			add_action(
-				'before_woocommerce_init',
-				function () {
-					if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-						\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
-					}
-				}
-			);
+                add_action(
+                    'before_woocommerce_init',
+                    function () {
+                        if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
+                            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables',
+                                __FILE__, true);
+                        }
+                    }
+                );
+            }
 		}
 	}
 );
@@ -96,6 +99,7 @@ function easypack_clear_wc_shipping_cache() {
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'easypack_inpost_links_filter' );
 function easypack_inpost_links_filter( $links ) {
 	$plugin_links = array(
+		'<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=easypack_general' ) ) . '">' . esc_html__( 'Settings', 'woocommerce-inpost' ) . '</a>',
 		'<a href="https://inpost.pl/formularz-wsparcie" target="_blank">' . __( 'Support InPost', 'woocommerce-inpost' ) . '</a>',
 	);
 
@@ -127,4 +131,17 @@ if ( ! function_exists( 'easypack_is_woocommerce_activated' ) ) {
 
 		return false;
 	}
+}
+
+if ( ! function_exists( 'easypack_integrity_verified' ) ) {
+    function easypack_integrity_verified() {
+        if (class_exists('InspireLabs\WoocommerceInpost\admin\EasyPack_Shipment_Manager')
+        && class_exists('InspireLabs\WoocommerceInpost\EasyPack_Helper')
+        && class_exists('InspireLabs\WoocommerceInpost\EasyPack_AJAX')
+        && class_exists('InspireLabs\WoocommerceInpost\EasyPack')
+        ) {
+            return true;
+        }
+        return false;
+    }
 }

@@ -2,6 +2,10 @@
 
 namespace InspireLabs\WoocommerceInpost;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 use Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface;
 use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\EasyPack_Helper;

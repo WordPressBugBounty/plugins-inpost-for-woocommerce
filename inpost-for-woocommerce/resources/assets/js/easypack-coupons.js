@@ -1,5 +1,7 @@
 jQuery( function( $ ) {
 
+    console.log('easypack coupons');
+
     if($('#discount_type').val() === 'easypack_inpost_discount') {
         $('#easypack_list_configured_inpost_methods').show();
     }

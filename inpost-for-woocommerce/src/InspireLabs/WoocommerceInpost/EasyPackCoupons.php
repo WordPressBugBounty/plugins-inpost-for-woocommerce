@@ -1,7 +1,10 @@
 <?php
 
-
 namespace InspireLabs\WoocommerceInpost;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
 
 use WC_Order;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
@@ -54,7 +57,7 @@ class EasyPackCoupons
     }
 
     function easypack_custom_discount_type( $discount_types ) {
-        $discount_types['easypack_inpost_discount'] = __( 'Inpost', 'woocommerce' );
+        $discount_types['easypack_inpost_discount'] = esc_html__( 'Inpost', 'woocommerce-inpost' );
         return $discount_types;
     }
 
@@ -105,11 +108,13 @@ class EasyPackCoupons
 
         $current_screen = get_current_screen();
 
-        // only on edit coupon page
+        // only on edit coupon page.
         if ( is_a( $current_screen, 'WP_Screen' ) && 'shop_coupon' === $current_screen->id ) {
             $plugin_data = new EasyPack();
 
-            wp_enqueue_script('easypack-coupons', $plugin_data->getPluginJs() . 'easypack-coupons.js', ['jquery']);
+            $coupons_js_path     =WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/easypack-coupons.js';
+            $coupons_js_path_ver = file_exists( $coupons_js_path ) ? filemtime( $coupons_js_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;
+            wp_enqueue_script('easypack-coupons', $plugin_data->getPluginJs() . 'easypack-coupons.js', array( 'jquery' ), $coupons_js_path_ver, array( 'in_footer' => true ) );
             /*wp_localize_script(
                 'easypack-coupons',
                 'easypack_coupons',

@@ -154,9 +154,9 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 						= EasyPack_API()->customer_shipments_return_labels( $selected_shipments_ids );
 				} elseif ( is_array( $selected_shipments_ids ) && count( $selected_shipments_ids ) > 1 ) {
 
-						$results = EasyPack_API()->customer_shipments_labels( $selected_shipments_ids );
+					$results = EasyPack_API()->customer_shipments_labels( $selected_shipments_ids );
 				} elseif ( isset( $selected_shipments_ids[0] ) && ! empty( $selected_shipments_ids[0] ) ) {
-						$results = EasyPack_API()->customer_parcel_sticker( $selected_shipments_ids[0] );
+					$results = EasyPack_API()->customer_parcel_sticker( $selected_shipments_ids[0] );
 				}
 
 				if ( ! isset( $results['headers'] ) ) {
@@ -230,11 +230,11 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 					if ( isset( $results['error'] ) ) {
 						$error_message = '';
 						if ( isset( $results['message'] ) ) {
-							$error_message = esc_html( $results['message'] );
+							$error_message = $results['message'];
 						} else {
-							$error_message = esc_html( $results['error'] );
+							$error_message = $results['error'];
 						}
-						wp_die( $error_message );
+						wp_die( esc_html( $error_message ) );
 					}
 				}
 			} catch ( Exception $e ) {
@@ -280,17 +280,6 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			return 'https://tracking.inpost.co.uk/';
 		}
 
-		public function get_weight_option( $weight, $options ) {
-			$ret     = - 1;
-			$options = array_reverse( $options, true );
-			foreach ( $options as $val => $option ) {
-				if ( floatval( $weight ) <= floatval( $val ) ) {
-					$ret = $val;
-				}
-			}
-
-			return $ret;
-		}
 
 
 		function woocommerce_before_my_account() {
@@ -311,7 +300,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 						$args,
 						'',
 						plugin_dir_path( EasyPack()->getPluginFilePath() )
-							. 'templates/'
+						. 'templates/'
 					);
 				}
 			}
@@ -397,6 +386,16 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		}
 
 
+		/**
+		 * Gets the saved shipping rates for a specific shipping method.
+		 *
+		 * @param string $id The shipping method ID.
+		 * @param int    $instance_id The shipping method instance ID.
+		 * @return array The saved shipping rates.
+		 *
+		 * @since 1.0.0
+		 * @access public
+		 */
 		public function get_saved_method_rates( $id, $instance_id ) {
 
 			$rates = get_option( 'woocommerce_' . $id . '_' . $instance_id . '_rates' );
@@ -470,6 +469,16 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		}
 
 
+
+		/**
+		 * Gets the class name for a shipping method by its ID.
+		 *
+		 * @param string|int $shipping_id The shipping method ID or instance ID.
+		 * @return string The class name for the shipping method.
+		 *
+		 * @since 1.0.0
+		 * @access public
+		 */
 		public function get_class_name_by_shipping_id( $shipping_id ) {
 
 			$class_name = '';
@@ -578,189 +587,31 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			);
 		}
 
-		/**
-		 * Save data to order meta from action on Edit order page
-		 *
-		 * @return void
-		 */
-		public function set_data_to_order_meta( $_post, $id ) {
-
-			/*
-			$order = wc_get_order( $id );
-
-			if ( ! $order || is_wp_error( $order ) ) {
-				return;
-			}
-
-			$parcel_machine_id   = isset( $_post['parcel_machine_id'] ) ? sanitize_text_field( $_post['parcel_machine_id'] ) : '';
-			$parcel_machine_desc = isset( $_post['parcel_machine_desc'] ) ? sanitize_text_field( $_post['parcel_machine_desc'] ) : '';
-
-			if ( ! empty( $parcel_machine_id ) ) {
-				$order->update_meta_data( '_parcel_machine_id', $parcel_machine_id );
-			}
-			if ( ! empty( $parcel_machine_desc ) ) {
-				$order->update_meta_data( '_parcel_machine_desc', $parcel_machine_desc );
-			}
-
-			$parcel_length       = isset( $_post['parcel_length'] ) ? sanitize_text_field( $_post['parcel_length'] ) : '';
-			$parcel_width        = isset( $_post['parcel_width'] ) ? sanitize_text_field( $_post['parcel_width'] ) : '';
-			$parcel_height       = isset( $_post['parcel_height'] ) ? sanitize_text_field( $_post['parcel_height'] ) : '';
-			$parcel_weight       = isset( $_post['parcel_weight'] ) ? sanitize_text_field( $_post['parcel_weight'] ) : '';
-			$parcel_non_standard = isset( $_post['parcel_non_standard'] ) ? sanitize_text_field( $_post['parcel_non_standard'] ) : '';
-			$insurance           = isset( $_post['insurance_amounts'][0] ) ? sanitize_text_field( $_post['insurance_amounts'][0] ) : '';
-
-			if ( ! empty( $parcel_length ) ) {
-				$order->update_meta_data( '_easypack_parcel_length', $parcel_length );
-			}
-
-			if ( ! empty( $parcel_width ) ) {
-				$order->update_meta_data( '_easypack_parcel_width', $parcel_width );
-			}
-
-			if ( ! empty( $parcel_height ) ) {
-				$order->update_meta_data( '_easypack_parcel_height', $parcel_height );
-			}
-
-			if ( ! empty( $parcel_weight ) ) {
-				$order->update_meta_data( '_easypack_parcel_weight', $parcel_weight );
-			}
-
-			if ( ! empty( $insurance ) ) {
-				$order->update_meta_data( '_easypack_parcel_insurance', $insurance );
-			} else {
-				$insurance_default = get_option( 'easypack_insurance_amount_default', '0.00' );
-				$order->update_meta_data( '_easypack_parcel_insurance', $insurance_default );
-			}
-
-			if ( ! empty( $parcel_non_standard ) ) {
-				$order->update_meta_data( '_easypack_parcel_non_standard', $parcel_non_standard );
-			}
-
-			$parcels = isset( $_post['parcel'] ) ? (array) $_post['parcel'] : array();
-			$parcels = array_map( 'sanitize_text_field', $parcels );
-
-			$cod_amounts = isset( $_post['cod_amount'] ) ? (array) $_post['cod_amount'] : array();
-			$cod_amounts = array_map( 'sanitize_text_field', $cod_amounts );
-
-			$easypack_pacels = array();
-			if ( ! empty( $parcels ) ) {
-
-				foreach ( $parcels as $key => $parcel ) {
-					if ( isset( $cod_amounts[ $key ] ) ) {
-						$easypack_pacels[] = array(
-							'package_size' => $parcel,
-							'cod_amount'   => $cod_amounts[ $key ],
-						);
-					} else {
-						$easypack_pacels[] = array(
-							'package_size' => $parcel,
-						);
-					}
-				}
-			}
-			$order->update_meta_data( '_easypack_parcels', $easypack_pacels );
-
-			$easypack_ref_number = isset( $_post['reference_number'] ) ? sanitize_text_field( $_POST['reference_number'] ) : $id;
-			if ( ! empty( $easypack_ref_number ) ) {
-				$order->update_meta_data( '_reference_number', $easypack_ref_number );
-			}
-
-			$easypack_send_method = isset( $_post['easypack_send_method'] ) ? sanitize_text_field( $_POST['easypack_send_method'] ) : '';
-			if ( ! empty( $easypack_send_method ) ) {
-				$order->update_meta_data( '_easypack_send_method', $easypack_send_method );
-			}
-
-			$commercial_product_identifier = isset( $_post['commercial_product_identifier'] ) ? sanitize_text_field( $_POST['commercial_product_identifier'] ) : '';
-			if ( ! empty( $commercial_product_identifier ) ) {
-				$order->update_meta_data( '_commercial_product_identifier', $commercial_product_identifier );
-			}
-
-			$order->save();
-			*/
-		}
 
 
 		/**
-		 * Get save data from order meta if user used "Update order" button
+		 * Retrieves parcel dimensions from the selected courier template.
 		 *
-		 * @return array
+		 * @return array Dimensions array with length, width, height, and weight.
+		 *
+		 * @since 1.7.3
+		 * @access public
 		 */
-		public function get_courier_parcel_data_from_order_meta( $id ) {
-			$data['length']       = '';
-			$data['width']        = '';
-			$data['height']       = '';
-			$data['weight']       = '';
-			$data['non_standard'] = '';
+		public function get_courier_parcel_data_from_template() {
+			$dimensions['length']       = '';
+			$dimensions['width']        = '';
+			$dimensions['height']       = '';
+			$dimensions['weight']       = '';
+			$dimensions['non_standard'] = 'no';
 
-			$data['length'] = get_post_meta( $id, '_easypack_parcel_length', true )
-				? get_post_meta( $id, '_easypack_parcel_length', true )
-				: '';
+			$all_templates = get_option( 'easypack_courier_tmplts_dmtemplates', array() );
+			if ( ! empty( $all_templates ) && is_array( $all_templates ) ) {
+				$selected_template = get_option( 'easypack_courier_tmplts_dmtemplate_selected', 0 );
 
-			$data['width'] = get_post_meta( $id, '_easypack_parcel_width', true )
-				? get_post_meta( $id, '_easypack_parcel_width', true )
-				: '';
-
-			$data['height'] = get_post_meta( $id, '_easypack_parcel_height', true )
-				? get_post_meta( $id, '_easypack_parcel_height', true )
-				: '';
-
-			$data['weight'] = get_post_meta( $id, '_easypack_parcel_weight', true )
-				? get_post_meta( $id, '_easypack_parcel_weight', true )
-				: '';
-
-			$data['non_standard'] = get_post_meta( $id, '_easypack_parcel_non_standard', true )
-				? get_post_meta( $id, '_easypack_parcel_non_standard', true )
-				: 'no';
-
-			return $data;
-		}
-
-
-		public function get_dimensions_for_courier_shipments( $post_id ) {
-
-			if ( 'yes' === get_option( 'easypack_set_default_courier_dimensions' ) ) {
-				$dimensions = get_option( 'easypack_default_courier_dimensions' );
-			} else {
-				$dimensions = $this->get_courier_parcel_data_from_order_meta( $post_id );
-			}
-
-			if ( ! empty( $dimensions['length'] )
-				&& ! empty( $dimensions['width'] )
-				&& ! empty( $dimensions['height'] )
-				&& ! empty( $dimensions['weight'] )
-			) {
-				// if all data was saved in meta.
-				return $dimensions;
-			}
-
-			// otherwise try to get dimension for single product from product settings.
-			$order = wc_get_order( $post_id );
-			$items = $order->get_items();
-
-			if ( count( $items ) > 1 ) {
-				return;
-			}
-
-			foreach ( $order->get_items() as $item_id => $item ) {
-				$product_id = $item->get_product_id();
-
-				if ( $item->get_quantity() > 1 ) {
-					return;
-				}
-
-				$product = wc_get_product( $product_id );
-				if ( is_object( $product ) && ! is_wp_error( $product ) ) {
-
-					$dimensions['height'] = ! empty( $dimensions['height'] ) ? $dimensions['height'] : (float) $product->get_height() * 10;
-					$dimensions['width']  = ! empty( $dimensions['width'] ) ? $dimensions['width'] : (float) $product->get_width() * 10;
-					$dimensions['length'] = ! empty( $dimensions['length'] ) ? $dimensions['length'] : (float) $product->get_length() * 10;
-
-					if ( ! empty( $dimensions['height'] )
-						&& ! empty( $dimensions['width'] )
-						&& ! empty( $dimensions['length'] ) ) {
-						$dimensions['weight'] = ! empty( $dimensions['weight'] )
-							? $dimensions['weight']
-							: EasyPack_Helper()->get_order_weight( $order );
+				if ( ! empty( $all_templates[ $selected_template ] ) && is_array( $all_templates[ $selected_template ] ) ) {
+					$dimensions = $all_templates[ $selected_template ];
+					if ( isset( $dimensions['not_standard'] ) && '1' === $dimensions['not_standard'] ) {
+						$dimensions['non_standard'] = 'yes';
 					}
 				}
 			}
@@ -769,7 +620,15 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		}
 
 
-
+		/**
+		 * Checks if a shipping method ID belongs to a courier service.
+		 *
+		 * @param string $shipment_id The shipping method ID to check.
+		 * @return bool True if it's a courier service, false otherwise.
+		 *
+		 * @since 1.0.0
+		 * @access public
+		 */
 		public function is_courier_service_by_id( $shipment_id ) {
 
 			if ( in_array(
@@ -796,8 +655,25 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		}
 
 
-		public function get_order_weight( $order ) {
+		/**
+		 * Calculates the total weight of an order.
+		 *
+		 * @param int $order_id The order id.
+		 * @return float The total weight of the order in kg.
+		 *
+		 * @since 1.0.0
+		 * @access public
+		 */
+		public function get_order_weight( $order_id ) {
+
 			$weight = 0;
+
+            $order = wc_get_order( $order_id );
+
+			if ( ! $order || is_wp_error( $order ) ) {
+				return $weight;
+			}
+
 			if ( count( $order->get_items() ) > 0 ) {
 				foreach ( $order->get_items() as $item ) {
 					if ( isset( $item['product_id'] ) && $item['product_id'] > 0 ) {
@@ -815,6 +691,14 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		}
 
 
+		/**
+		 * Determines if the current page requires the modal scripts.
+		 *
+		 * @return bool True if the current page requires modal scripts, false otherwise.
+		 *
+		 * @since 1.0.0
+		 * @access public
+		 */
 		public function is_required_pages_for_modal() {
 			global $pagenow, $post_type;
 			$current_screen = get_current_screen();
@@ -860,8 +744,6 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 			$configured_shipping_methods = array();
 
-			// $delivery_zones = \WC_Shipping_Zones::get_zones();
-
 			$delivery_zones = $this->get_cached_zones();
 
 			foreach ( (array) $delivery_zones as $key => $the_zone ) {
@@ -872,6 +754,10 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 							$configured_shipping_methods[ $configured_method->instance_id ]['method_title']         = $configured_method->id;
 							$configured_shipping_methods[ $configured_method->instance_id ]['method_title_with_id'] = $configured_method->id . ':' . $configured_method->instance_id;
 							$configured_shipping_methods[ $configured_method->instance_id ]['inpost_title']         = $configured_method->id;
+
+							$logo_src = $this->get_shipping_method_logo_src( $configured_method->id, $configured_method->instance_id );
+							$configured_shipping_methods[ $configured_method->instance_id ]['inpost_icon']    = ! empty( $logo_src ) ? $logo_src : false;
+							$configured_shipping_methods[ $configured_method->instance_id ]['delivery_terms'] = $this->get_shipping_method_delivery_terms( $configured_method->id, $configured_method->instance_id );
 
 							if ( 0 === strpos( $configured_method->id, 'easypack_parcel_machines' ) ) {
 								$configured_shipping_methods[ $configured_method->instance_id ]['need_map'] = 1;
@@ -884,6 +770,8 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 								$configured_shipping_methods[ $configured_method->instance_id ]['method_title']         = $configured_method->id;
 								$configured_shipping_methods[ $configured_method->instance_id ]['method_title_with_id'] = $configured_method->id . ':' . $configured_method->instance_id;
 								$configured_shipping_methods[ $configured_method->instance_id ]['inpost_title']         = $linked_method;
+
+								$configured_shipping_methods[ $configured_method->instance_id ]['inpost_icon'] = EasyPack()->getPluginImages() . 'logo/small/white.png';
 
 								if ( 0 === strpos( $linked_method, 'easypack_parcel_machines' ) ) {
 									$configured_shipping_methods[ $configured_method->instance_id ]['need_map'] = 1;
@@ -918,6 +806,15 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		}
 
 
+		/**
+		 * Determines the appropriate parcel size for an order.
+		 *
+		 * @param int $order_id The order ID.
+		 * @return string The parcel size ('small', 'medium', or 'large').
+		 *
+		 * @since 1.0.0
+		 * @access public
+		 */
 		public function get_parcel_size_from_settings( $order_id ) {
 
 			$size = 'small';
@@ -973,9 +870,9 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			} elseif ( ! empty( $shipping_method ) ) {
 
 				if ( 'easypack_shipping_courier_c2c' === $shipping_method
-						|| 'easypack_shipping_courier_c2c_cod' === $shipping_method
-					) {
-					$size = get_option( 'easypack_default_package_size_c2c' );
+					|| 'easypack_shipping_courier_c2c_cod' === $shipping_method
+				) {
+					$size = $this->get_default_size_c2c( $order_id );
 				} else {
 					$size = get_option( 'easypack_default_package_size' );
 				}
@@ -987,21 +884,29 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		}
 
 
+		/**
+		 * Gets all active InPost shipping methods from WooCommerce zones.
+		 *
+		 * @return array Array of active shipping methods with instance IDs as keys and titles as values.
+		 *
+		 * @since 1.0.0
+		 * @access public
+		 */
 		public function get_active_shipping_methods(): array {
 
 			$configured_shipping_methods = array();
 			$delivery_zones              = \WC_Shipping_Zones::get_zones();
 			foreach ( (array) $delivery_zones as $key => $the_zone ) {
-				// only for zone "PL"
+				// only for zone "PL".
 				if ( is_array( $the_zone['shipping_methods'] ) ) {
 					foreach ( $the_zone['shipping_methods'] as $configured_method ) {
-						// only active methods
+						// only active methods.
 						if ( isset( $configured_method->enabled ) && 'yes' === $configured_method->enabled ) {
 							if ( 0 === strpos( $configured_method->id, 'easypack_' ) ) {
 								$configured_shipping_methods[ $configured_method->instance_id ] = $configured_method->title;
 
 							} elseif ( 0 === strpos( $configured_method->id, 'flexible_shipping' ) ) {
-								// Integration with Flexible Shipping
+								// Integration with Flexible Shipping.
 								$linked_method = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $configured_method->instance_id );
 								if ( 0 === strpos( $linked_method, 'easypack_' ) ) {
 									$configured_shipping_methods[ $configured_method->instance_id ] = $configured_method->title;
@@ -1016,6 +921,15 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		}
 
 
+		/**
+		 * Retrieves saved additional packages for an order.
+		 *
+		 * @param int $order_id The order ID.
+		 * @return array Array of additional packages or empty array if none found.
+		 *
+		 * @since 1.0.0
+		 * @access public
+		 */
 		public function get_saved_additional_packages( $order_id ) {
 
 			$additional_packages = isset( get_post_meta( $order_id )['_easypack_additional_packages'][0] )
@@ -1034,6 +948,14 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		}
 
 
+		/**
+		 * Generates and outputs a posting confirmation PDF for selected orders.
+		 *
+		 * @return void
+		 *
+		 * @since 1.0.0
+		 * @access public
+		 */
 		public function print_posting_confirmation() {
 			$orders = isset( $_POST['easypack_parcel'] ) ? (array) $_POST['easypack_parcel'] : array();
 			$orders = array_map( 'sanitize_text_field', $orders );
@@ -1104,8 +1026,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 					$validated_ids[] = $order_id;
 				} else {
 
-					// $shipment = $order->get_meta( '_shipx_shipment_object' );
-					$shipment = get_post_meta( $order_id, '_shipx_shipment_object', true );
+					$shipment = $this->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
 
 					if ( ! $shipment instanceof ShipX_Shipment_Model ) {
 						if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
@@ -1203,7 +1124,14 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		}
 
 
-
+		/**
+		 * Determines if the current page is related to admin orders or plugin settings.
+		 *
+		 * @return bool True if on an admin orders or plugin settings page, false otherwise.
+		 *
+		 * @since 1.0.0
+		 * @access public
+		 */
 		public function is_admin_orders_or_plugin_settings_related_page() {
 
 			if ( ! is_admin() ) {
@@ -1233,9 +1161,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 				$order = wc_get_order( $order_id );
 				if ( $order && is_a( $order, 'WC_Order' ) ) {
 
-					if ( ! empty( $order->get_meta( '_parcel_machine_id' ) ) ) {
-						return true;
-					} elseif ( ! empty( get_post_meta( $order_id, '_parcel_machine_id', true ) ) ) {
+					if ( ! empty( $this->get_woo_order_meta( $order_id, '_parcel_machine_id' ) ) ) {
 						return true;
 					}
 				}
@@ -1321,7 +1247,8 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			}
 
 			if ( ! $inpost_id ) {
-				$shipment = get_post_meta( $order_id, '_shipx_shipment_object', true );
+				
+				$shipment = $this->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
 
 				if ( ! $shipment instanceof ShipX_Shipment_Model ) {
 					if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
@@ -1341,6 +1268,779 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			}
 
 			return $inpost_id;
+		}
+
+		/**
+		 * Gets courier templates formatted for a select dropdown.
+		 *
+		 * @return array Array of template options with keys as IDs and values as template names.
+		 *
+		 * @since 1.7.2
+		 * @access public
+		 */
+		public function get_templates_for_select() {
+			$select_options = array();
+
+			$all_templates = get_option( 'easypack_courier_tmplts_dmtemplates', array() );
+			foreach ( $all_templates as $key => $template ) {
+				if ( ! empty( $template['name'] ) ) {
+					$select_options[ $key ] = $template['name'];
+				}
+			}
+
+			return $select_options;
+		}
+
+
+		/**
+		 * Retrieves the logo source URL for a specific shipping method.
+		 *
+		 * @param string $shipping_method_id The shipping method ID.
+		 * @param int    $shipping_method_instance_id The shipping method instance ID.
+		 * @return string The URL to the shipping method logo.
+		 *
+		 * @since 1.7.2
+		 * @access public
+		 */
+		public function get_shipping_method_logo_src( $shipping_method_id, $shipping_method_instance_id ) {
+			$shipping_method_settings_name = 'woocommerce_' . $shipping_method_id . '_' . $shipping_method_instance_id . '_settings';
+			$shipping_method_settings      = get_option( $shipping_method_settings_name );
+
+			$logo_src = EasyPack()->getPluginImages() . 'logo/small/white.png';
+			if ( ! empty( $shipping_method_settings['logo_upload'] ) ) {
+				$custom_logo = $shipping_method_settings['logo_upload'];
+				return esc_url( $custom_logo );
+			}
+
+			if ( 'easypack_parcel_machines_weekend' === $shipping_method_id
+				|| 'easypack_parcel_machines_weekend_cod' === $shipping_method_id
+			) {
+				$logo_src = EasyPack()->getPluginImages() . 'logo/inpost-paczka-w-weekend.png';
+			}
+
+			return esc_url( $logo_src );
+		}
+
+
+		/**
+		 * Retrieves the delivery terms for a specific shipping method.
+		 *
+		 * @param string $shipping_method_id The shipping method ID.
+		 * @param int    $shipping_method_instance_id The shipping method instance ID.
+		 * @return string|bool The delivery terms text or false if not set.
+		 *
+		 * @since 1.7.2
+		 * @access public
+		 */
+		public function get_shipping_method_delivery_terms( $shipping_method_id, $shipping_method_instance_id ) {
+			$shipping_method_settings_name = 'woocommerce_' . $shipping_method_id . '_' . $shipping_method_instance_id . '_settings';
+			$shipping_method_settings      = get_option( $shipping_method_settings_name );
+
+			$delivery_terms = false;
+			if ( ! empty( $shipping_method_settings['delivery_terms'] ) ) {
+				$delivery_terms = trim( $shipping_method_settings['delivery_terms'] );
+
+			}
+
+			return $delivery_terms;
+		}
+
+
+		/**
+		 * Retrieves order meta data with fallback to post meta.
+		 *
+		 * @param int    $order_id The order ID.
+		 * @param string $meta_key The meta key to retrieve.
+		 * @return mixed|null The meta value or null if not found.
+		 *
+		 * @since 1.7.3
+		 * @access public
+		 */
+		public function get_woo_order_meta( $order_id, $meta_key ) {
+
+			$res = null;
+
+			if ( empty( $order_id ) || empty( $meta_key ) ) {
+				return null;
+			}
+
+			$order = wc_get_order( $order_id );
+			if ( ! $order || is_wp_error( $order ) ) {
+				return null;
+			}
+
+			$res = $order->get_meta( $meta_key );
+
+			if ( empty( $res ) ) {
+				$res = get_post_meta( $order_id, $meta_key, true );
+			}
+
+			return $res;
+		}
+
+
+
+		/**
+		 * Get max parcel size among the products in cart
+		 */
+		public function get_max_gabaryt( $package ) {
+
+			if ( isset( $package['contents'] ) && ! empty( $package['contents'] ) ) {
+
+				$possible_gabaryts = array();
+
+				foreach ( $package['contents'] as $cart_item_key => $cart_item ) {
+					$product_id          = $cart_item['product_id'];
+					$possible_gabaryts[] = get_post_meta( $product_id, EasyPack::ATTRIBUTE_PREFIX . '_parcel_dimensions', true );
+
+				}
+
+				if ( ! empty( $possible_gabaryts ) ) {
+					if ( in_array( 'large', $possible_gabaryts ) ) {
+						return 'c';
+					}
+					if ( in_array( 'medium', $possible_gabaryts ) ) {
+						return 'b';
+					}
+				}
+			}
+			// by default.
+			return 'a';
+		}
+
+
+		/**
+		 * Calculates the total subtotal of items in a package.
+		 *
+		 * @param array $items The items in the package.
+		 * @return float The total subtotal including tax.
+		 *
+		 * @since 1.7.5
+		 * @access public
+		 */
+		public function package_subtotal( $items ) {
+			$subtotal = 0;
+			foreach ( $items as $item ) {
+				$subtotal += $item['line_subtotal'] + $item['line_subtotal_tax'];
+			}
+
+			return $subtotal;
+		}
+
+
+		/**
+		 * Calculates the total quantity of products in a package.
+		 *
+		 * @param array $items The items in the package.
+		 * @return int The total product quantity.
+		 *
+		 * @since 1.7.5
+		 * @access public
+		 */
+		public function package_product_qty( $items ) {
+			$package_product_qty = 0;
+			foreach ( $items as $item ) {
+				$package_product_qty += intval( $item['quantity'] );
+			}
+
+			return $package_product_qty;
+		}
+
+
+		/**
+		 * Calculates the total weight of a package.
+		 *
+		 * @param array $items The items in the package.
+		 * @return float The total weight.
+		 *
+		 * @since 1.7.5
+		 * @access public
+		 */
+		public function package_weight( $items ) {
+			$weight = 0;
+			foreach ( $items as $item ) {
+				if ( ! empty( $item['data']->get_weight() ) ) {
+					$weight += floatval( $item['data']->get_weight() ) * $item['quantity'];
+				}
+			}
+
+			return $weight;
+		}
+
+		/**
+		 * Finds the key with the largest value in an array.
+		 *
+		 * @param array $array The input array.
+		 * @return array An array containing the key with the largest value.
+		 *
+		 * @since 1.7.5
+		 * @access public
+		 */
+		public function find_key_with_biggest_value( $array ) {
+			if ( empty( $array ) ) {
+				return array();
+			}
+
+			$max_value = max( $array );
+			$max_key   = array_search( $max_value, $array );
+
+			/*
+			return [
+				'key' => $max_key,
+				'value' => $max_value
+			];*/
+
+			return array( $max_key );
+		}
+
+
+		/**
+		 * Gets the webhook URL for InPost order updates.
+		 *
+		 * @return string The webhook URL.
+		 *
+		 * @since 1.7.5
+		 * @access public
+		 */
+		public function get_webhook_url() {
+			$url = home_url() . '/wp-json/inpost_pl/v1/order/update/';
+
+			return $url;
+		}
+
+		/**
+		 * Refreshes the shipment status for an order.
+		 *
+		 * @param int $order_id The order ID.
+		 * @return array The response from the status refresh operation.
+		 *
+		 * @since 1.7.5
+		 * @access public
+		 */
+		public function refresh_shipment_status( $order_id ) {
+
+			$response = array();
+
+			$shipment = $this->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
+
+			if ( empty( $shipment ) || false === $shipment instanceof ShipX_Shipment_Model ) {
+				return array();
+			}
+
+			// do not update if webhook is enabled and webhook status exists.
+			if ( 'yes' === get_option( 'easypack_enable_webhooks' ) ) {
+				$webhook_status = $this->get_woo_order_meta( $order_id, 'easypack_webhook_status' );
+				if ( ! empty( $webhook_status ) ) {
+					return array();
+				}
+			}
+
+			$status_srv = EasyPack()->get_shipment_status_service();
+			$response   = $status_srv->refreshStatus( $shipment );
+
+			return $response;
+		}
+
+
+		/**
+		 * Gets the default send method for an order.
+		 *
+		 * @param int $order_id The order ID.
+		 * @return string The default send method.
+		 *
+		 * @since 1.7.6
+		 * @access public
+		 */
+		public function get_default_send_method( $order_id ) {
+
+			$send_method = 'courier';
+
+			$order = wc_get_order( $order_id );
+
+			if ( ! $order || is_wp_error( $order ) ) {
+				return $send_method;
+			}
+
+			$shipping_method_name = '';
+			$method_instance_id   = '';
+
+			foreach ( $order->get_shipping_methods() as $shipping_method ) {
+				$method_instance_id   = $shipping_method->get_instance_id();
+				$shipping_method_name = $shipping_method->get_method_id();
+			}
+
+			$shipping_method_settings_name = 'woocommerce_' . $shipping_method_name . '_' . $method_instance_id . '_settings';
+
+			$shipping_method_settings = get_option( $shipping_method_settings_name );
+
+			if ( ! empty( $shipping_method_settings['default_send_method'] ) ) {
+				$send_method = $shipping_method_settings['default_send_method'];
+			} elseif ( ! empty( get_option( 'easypack_default_send_method' ) ) ) {
+				$send_method = get_option( 'easypack_default_send_method' );
+
+				if ( false !== strpos( $shipping_method_name, 'courier' ) ) {
+                    if( 'easypack_shipping_courier_c2c' !== $shipping_method_name && 'easypack_shipping_courier_c2c_cod' !== $shipping_method_name ) {
+                        if ( ! in_array($send_method, array('pop', 'courier'), true)) {
+                            $send_method = 'courier';
+                        }
+                    }
+				}
+			}
+
+			return $send_method;
+		}
+
+
+		/**
+		 * Gets the default package size for C2C shipments.
+		 *
+		 * @param int $order_id The order ID.
+		 * @return string The default package size.
+		 *
+		 * @since 1.7.6
+		 * @access public
+		 */
+		public function get_default_size_c2c( $order_id ) {
+
+			$default_size = 'small';
+
+			$order = wc_get_order( $order_id );
+
+			if ( ! $order || is_wp_error( $order ) ) {
+				return $default_size;
+			}
+
+			$shipping_method_name = '';
+			$method_instance_id   = '';
+
+			foreach ( $order->get_shipping_methods() as $shipping_method ) {
+				$method_instance_id   = $shipping_method->get_instance_id();
+				$shipping_method_name = $shipping_method->get_method_id();
+			}
+
+			$shipping_method_settings_name = 'woocommerce_' . $shipping_method_name . '_' . $method_instance_id . '_settings';
+
+			$shipping_method_settings = get_option( $shipping_method_settings_name );
+
+			if ( ! empty( $shipping_method_settings['default_package_size_c2c'] ) ) {
+				$default_size = $shipping_method_settings['default_package_size_c2c'];
+			} elseif ( ! empty( get_option( 'easypack_default_package_size_c2c' ) ) ) {
+				$default_size = get_option( 'easypack_default_package_size_c2c' );
+			}
+
+			return $default_size;
+		}
+
+
+		/**
+		 * Gets the source of courier dimensions for an order.
+		 *
+		 * @param int $order_id The order ID.
+		 * @return string The source of courier dimensions.
+		 *
+		 * @since 1.7.6
+		 * @access public
+		 */
+		public function get_source_of_courier_dimensions( $order_id ) {
+
+			$default_source = '';
+
+			$order = wc_get_order( $order_id );
+
+			if ( ! $order || is_wp_error( $order ) ) {
+				return $default_source;
+			}
+
+			$shipping_method_name = '';
+			$method_instance_id   = '';
+
+			foreach ( $order->get_shipping_methods() as $shipping_method ) {
+				$method_instance_id   = $shipping_method->get_instance_id();
+				$shipping_method_name = $shipping_method->get_method_id();
+			}
+
+			$shipping_method_settings_name = 'woocommerce_' . $shipping_method_name . '_' . $method_instance_id . '_settings';
+
+			$shipping_method_settings = get_option( $shipping_method_settings_name );
+
+			if ( ! empty( $shipping_method_settings['source_of_parcel_dimensions'] ) ) {
+				$default_source = $shipping_method_settings['source_of_parcel_dimensions'];
+			}
+
+			return $default_source;
+		}
+
+
+
+		/**
+		 * Gets courier parcel dimensions for an order.
+		 *
+		 * @param int         $order_id The order ID.
+		 * @param string|null $source The source of dimensions.
+		 * @return array The dimensions array with length, width, height, weight, and non_standard properties.
+		 *
+		 * @since 1.7.6
+		 * @access public
+		 */
+		public function get_courier_parcel_dimensions( $order_id, $source = null ) {
+
+			$dimensions['length']       = '';
+			$dimensions['width']        = '';
+			$dimensions['height']       = '';
+			$dimensions['weight']       = '';
+			$dimensions['non_standard'] = 'no';
+
+			$order = wc_get_order( $order_id );
+
+			if ( ! $order || is_wp_error( $order ) ) {
+				return $dimensions;
+			}
+
+			if ( empty( $source ) ) {
+				// compatibility with old settings.
+				if ( 'yes' === get_option( 'easypack_set_default_courier_dimensions' ) ) {
+					$dimensions = get_option( 'easypack_default_courier_dimensions' );
+				} else {
+					$dimensions = $this->get_courier_parcel_data_from_template();
+				}
+			}
+
+			if ( 'courier_default_dimensions' === $source ) {
+				if ( ! empty( get_option( 'easypack_default_courier_dimensions' ) ) ) {
+					$dimensions = get_option( 'easypack_default_courier_dimensions' );
+				}
+			}
+
+			if ( 'courier_template' === $source ) {
+
+				$dimensions = $this->get_courier_parcel_data_from_template();
+			}
+
+			if ( 'courier_dimensions_from_product' === $source ) {
+
+				$items = $order->get_items();
+
+				if ( ! $items || ! is_array( $items ) || 0 === count( $items ) ) {
+					return $dimensions;
+				}
+
+				if ( 1 === count( $items ) ) {
+					$dimensions                 = $this->calculate_dimensions_for_single_product( $items );
+					$dimensions['non_standard'] = 'no';
+
+				} else {
+					$dimensions                 = $this->calculate_dimensions_for_multiple_product( $items );
+					$dimensions['non_standard'] = 'no';
+				}
+			}
+
+			return $dimensions;
+		}
+
+
+		/**
+		 * Calculate dimensions for a single product.
+		 *
+		 * @since 1.7.6
+		 *
+		 * @param array $items Order items.
+		 * @return array Array with length, width, height (in mm) and weight (in kg).
+		 */
+		public function calculate_dimensions_for_single_product( $items ) {
+			$item = reset( $items ); // Get first item.
+
+			$calculated_length = 0;
+			$calculated_width  = 0;
+			$calculated_height = 0;
+			$total_weight      = 0;
+
+			$product = $item->get_product();
+
+			if ( is_object( $product ) ) {
+				$quantity = (int) $item->get_quantity();
+
+				// Get weight in kg.
+				$weight       = $product->get_weight();
+				$total_weight = ( $weight && is_numeric( $weight ) ) ? floatval( $weight ) * $quantity : 0;
+
+				// Get dimensions in cm (WooCommerce default) and validate.
+				$length = $product->get_length();
+				$width  = $product->get_width();
+				$height = $product->get_height();
+
+				$length = ( $length && is_numeric( $length ) ) ? floatval( $length ) : 0;
+				$width  = ( $width && is_numeric( $width ) ) ? floatval( $width ) : 0;
+				$height = ( $height && is_numeric( $height ) ) ? floatval( $height ) : 0;
+
+				// Convert cm to mm.
+				$length_mm = $length * 10;
+				$width_mm  = $width * 10;
+				$height_mm = $height * 10;
+
+				// For multiple quantities, arrange in most compact way.
+				if ( $quantity > 1 && $length_mm > 0 && $width_mm > 0 && $height_mm > 0 ) {
+					// Stack items along the smallest dimension for compact packaging.
+					$dimensions_array = array( $length_mm, $width_mm, $height_mm );
+					sort( $dimensions_array ); // Sort to find smallest dimension.
+
+					// Multiply the smallest dimension by quantity (stacking).
+					$dimensions_array[0] = $dimensions_array[0] * $quantity;
+
+					// Sort again to get final dimensions in ascending order.
+					sort( $dimensions_array );
+
+					$calculated_length = $dimensions_array[2]; // Largest.
+					$calculated_width  = $dimensions_array[1]; // Middle.
+					$calculated_height = $dimensions_array[0]; // Smallest.
+				} else {
+					// Single item or no dimensions - just convert to mm.
+					$calculated_length = $length_mm;
+					$calculated_width  = $width_mm;
+					$calculated_height = $height_mm;
+				}
+			}
+
+			return array(
+				'length' => round( $calculated_length, 1 ),
+				'width'  => round( $calculated_width, 1 ),
+				'height' => round( $calculated_height, 1 ),
+				'weight' => round( $total_weight, 2 ),
+			);
+		}
+
+
+		/**
+		 * Calculate dimensions for multiple products.
+		 *
+		 * @param array $items Order items.
+		 * @return array Array with length, width, height (in mm) and weight (in kg).
+		 */
+		public function calculate_dimensions_for_multiple_product( $items ) {
+			$calculated_length = 0;
+			$calculated_width  = 0;
+			$calculated_height = 0;
+
+			$total_weight = 0;
+			$total_volume = 0;
+			$max_length   = 0;
+			$max_width    = 0;
+
+			foreach ( $items as $item ) {
+				$product = $item->get_product();
+
+				if ( is_object( $product ) ) {
+					$quantity = (int) $item->get_quantity();
+
+					// Get weight.
+					$weight        = $product->get_weight();
+					$weight        = ( $weight && is_numeric( $weight ) ) ? floatval( $weight ) : 0;
+					$total_weight += $weight * $quantity;
+
+					// Get dimensions and validate.
+					$length = $product->get_length();
+					$width  = $product->get_width();
+					$height = $product->get_height();
+
+					$length = ( $length && is_numeric( $length ) ) ? floatval( $length ) : 0;
+					$width  = ( $width && is_numeric( $width ) ) ? floatval( $width ) : 0;
+					$height = ( $height && is_numeric( $height ) ) ? floatval( $height ) : 0;
+
+					// Calculate volume only if all dimensions are present.
+					if ( $length > 0 && $width > 0 && $height > 0 ) {
+						$item_volume   = $length * $width * $height * $quantity;
+						$total_volume += $item_volume;
+
+						$max_length = max( $max_length, $length );
+						$max_width  = max( $max_width, $width );
+					}
+				}
+			}
+
+			// Calculate combined dimensions based on total volume.
+			if ( $total_volume > 0 && $max_length > 0 && $max_width > 0 ) {
+				$calculated_length = $max_length;
+				$calculated_width  = $max_width;
+				$calculated_height = $total_volume / ( $calculated_length * $calculated_width );
+
+				// Ensure height is not smaller than width for practical packaging.
+				if ( $calculated_height > $calculated_width ) {
+					$temp              = $calculated_width;
+					$calculated_width  = $calculated_height;
+					$calculated_height = $temp;
+				}
+			}
+
+			// Convert from cm to mm.
+			$calculated_length = $calculated_length * 10;
+			$calculated_width  = $calculated_width * 10;
+			$calculated_height = $calculated_height * 10;
+
+			return array(
+				'length' => round( $calculated_length, 1 ),
+				'width'  => round( $calculated_width, 1 ),
+				'height' => round( $calculated_height, 1 ),
+				'weight' => round( $total_weight, 2 ),
+			);
+		}
+
+
+		/**
+		 * Conditionally sets the PWW parameter for shipments.
+		 *
+		 * Checks if PWW mode is enabled for the shipping method and if the
+		 * selected point is a 24/7 point. If both conditions are met and
+		 * current time is within PWW window, sets end_of_week_collection flag.
+		 *
+		 * @param int   $order_id The WooCommerce order ID.
+		 * @param array $shipment_array The shipment data array.
+		 * @return array Modified shipment array with PWW parameter if applicable.
+		 */
+		public function maybe_set_pww_param( $order_id, $shipment_array ) {
+
+			$pww_enabled  = false;
+			$is_pww_point = false;
+
+			$order = wc_get_order( $order_id );
+
+			if ( ! $order || is_wp_error( $order ) ) {
+				return $shipment_array;
+			}
+
+			$shipping_method_name = '';
+			$method_instance_id   = '';
+
+			foreach ( $order->get_shipping_methods() as $shipping_method ) {
+				$method_instance_id   = $shipping_method->get_instance_id();
+				$shipping_method_name = $shipping_method->get_method_id();
+			}
+
+			$shipping_method_settings_name = 'woocommerce_' . $shipping_method_name . '_' . $method_instance_id . '_settings';
+			$shipping_method_settings      = get_option( $shipping_method_settings_name );
+
+			if ( ! empty( $shipping_method_settings['pww_mode'] ) ) {
+				if ( 'yes' === $shipping_method_settings['pww_mode'] ) {
+					$pww_enabled = true;
+				}
+			}
+
+			if ( ! $pww_enabled ) {
+				return $shipment_array;
+			}
+
+			$point = $shipment_array['custom_attributes']['target_point'];
+			// $point = 'POP-RYP8'; example - not 24/7 point.
+
+			if ( ! empty( $point ) ) {
+				$point_data = $this->get_point_data( $point );
+				if ( ! empty( $point_data['items'][0]['opening_hours'] ) ) {
+					$opening_hours = $point_data['items'][0]['opening_hours'];
+					if ( strpos( $opening_hours, '24/7' ) !== false ) {
+						$is_pww_point = true;
+					}
+				}
+			}
+
+			if ( ! $is_pww_point ) {
+				return $shipment_array;
+			}
+
+			if ( $this->is_pww_time() ) {
+				$shipment_array['end_of_week_collection'] = true;
+			}
+
+			return $shipment_array;
+		}
+
+
+		/**
+		 * Retrieves data for a specific InPost point by name.
+		 *
+		 * @param string $point_name The name of the point to retrieve.
+		 * @return array The point data or empty array if not found.
+		 *
+		 * @since 1.7.7
+		 * @access public
+		 */
+		public function get_point_data( $point_name ) {
+
+			$point_data = array();
+
+			$api = new EasyPack_API();
+			if ( 'production' === get_option( 'easypack_api_environment' ) ) {
+				$api_url = 'https://api.inpost.pl/v1/points?name=' . $point_name;
+			} else {
+				$api_url = 'https://sandbox-api-gateway-pl.easypack24.net/v1/points?name=' . $point_name;
+			}
+
+			$args = array(
+				'method'  => 'GET',
+				'headers' => array(
+					'Authorization' => 'Bearer ' . get_option( 'easypack_token' ),
+					'Content-Type'  => 'application/json',
+				),
+			);
+
+			$response = wp_remote_get( $api_url, $args );
+			$code     = wp_remote_retrieve_response_code( $response );
+
+			if ( 200 === $code ) {
+
+				$response_body = wp_remote_retrieve_body( $response );
+
+				try {
+
+					$point_data = json_decode( $response_body, true );
+
+				} catch ( Exception $e ) {
+					if ( function_exists( 'wc_get_logger' ) ) {
+						\wc_get_logger()->debug( 'Error when get point data:', array( 'source' => 'inpost-pl-get-point' ) );
+						\wc_get_logger()->debug( 'Point :' . $point_name, array( 'source' => 'inpost-pl-get-point' ) );
+						\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-get-point' ) );
+					}
+				}
+			} elseif ( function_exists( 'wc_get_logger' ) ) {
+					\wc_get_logger()->debug( 'Error when get point data:', array( 'source' => 'inpost-pl-get-point' ) );
+					\wc_get_logger()->debug( 'Response code :' . $code, array( 'source' => 'inpost-pl-get-point' ) );
+					\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-pl-get-point' ) );
+			}
+
+			return $point_data;
+		}
+
+
+		/**
+		 * Checks if the current time is within the PWW time window.
+		 *
+		 * PWW time is defined as:
+		 * - Thursday after 20:00 (inclusive)
+		 * - Friday before 18:00 (exclusive)
+		 *
+		 * @return bool True if current time is within PWW time window, false otherwise.
+		 */
+		public function is_pww_time() {
+
+			// Get current time in Warsaw timezone.
+			date_default_timezone_set( 'Europe/Warsaw' );
+			$current_time = new \DateTime();
+
+			// Get current day of week (1 = Monday, 2 = Tuesday, etc.)
+			$current_day = (int) $current_time->format( 'N' );
+
+			// Get current hour and minute
+			$current_hour   = (int) $current_time->format( 'G' );
+			$current_minute = (int) $current_time->format( 'i' );
+
+			// Check if it's Thursday after 20:00
+			if ( $current_day === 4 && ( $current_hour > 20 || ( $current_hour === 20 && $current_minute >= 0 ) ) ) {
+				return true;
+			}
+
+			// Check if it's Friday before 18:00
+			if ( $current_day === 5 && ( $current_hour < 18 ) ) {
+				return true;
+			}
+
+			return false;
 		}
 	}
 

@@ -136,7 +136,7 @@
     background-color: #FCC905;
     border-radius: 3px;
     line-height: 1em;
-    padding: 7px 10px 12px 10px;
+    padding: 17px 15px 17px 15px;
 	max-width: 200px;
 }
 
@@ -235,4 +235,54 @@ div.inpost_pl_locker_changed {
     text-align: center;
     margin-top: 20px;
     font-size: 1.5em;
+}
+
+.inpost_pl-shipping-method-meta-wrap {
+    display: flex;
+    align-items: center;
+}
+
+.inpost_pl_shipping_meta {
+    display: inline-block;
+}
+
+span#inpost_pl_delivery_terms, span#inpost_pl_block_delivery_terms {
+    font-size: 0.7em;
+    border: 3px dotted #3c3b35;
+    border-radius: 5px;
+    padding: 0px 10px;
+    margin-left: 5px;
+    line-height: normal;
+}
+
+
+.inpost_pl-block-shipping-method-meta-wrap {
+    display: flex;
+    align-items: center;
+}
+
+.inpost_pl_block_shipping_meta {
+    display: inline-block;
+}
+
+@media (max-width: 767px) {
+    .inpost_pl-block-shipping-method-meta-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .inpost_pl_block_shipping_meta {
+        margin-top: 8px;
+    }
+}
+
+@media (max-width: 767px) {
+    .inpost_pl-shipping-method-meta-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .inpost_pl_shipping_meta {
+        margin-top: 8px;
+    }
 }

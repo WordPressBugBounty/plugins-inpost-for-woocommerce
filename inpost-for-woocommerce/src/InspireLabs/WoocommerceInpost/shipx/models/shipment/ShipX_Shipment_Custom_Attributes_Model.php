@@ -1,6 +1,10 @@
 <?php
 namespace InspireLabs\WoocommerceInpost\shipx\models\shipment;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 class ShipX_Shipment_Custom_Attributes_Model
 {
     const SENDING_METHOD_PARCEL_LOCKER = 'parcel_locker';

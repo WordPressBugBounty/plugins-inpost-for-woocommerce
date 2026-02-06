@@ -1,7 +1,10 @@
 <?php
 
-
 namespace InspireLabs\WoocommerceInpost\EmailFilters;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
 
 use WC_Order;
 use InspireLabs\WoocommerceInpost\EasyPack;
@@ -26,10 +29,9 @@ class NewOrderEmail {
         $plain_text
     ): void {
 
-        $parcelMachine = get_post_meta( $wc_order->get_id(),
-            '_parcel_machine_id', true );
-
-        if ( empty( $parcelMachine ) ) {
+        $parcel_machine = Easypack_Helper()->get_woo_order_meta( $wc_order->get_id(), '_parcel_machine_id' );
+        
+        if ( empty( $parcel_machine ) ) {
             return;
         }
 
@@ -48,14 +50,18 @@ class NewOrderEmail {
         $shipping_method_id = '';
         
         foreach( $wc_order->get_items( 'shipping' ) as $item_id => $item ){
-            $shipping_method_id = $item->get_method_id(); // The method ID			
+            $shipping_method_id = $item->get_method_id(); // The method ID.
         }
 
         if ( in_array( $shipping_method_id, $parcel_locker_methods )
-            || ( isset( $fs_method_name ) && in_array( $fs_method_name, $parcel_locker_methods ) ) ) {            
+            || ( isset( $fs_method_name ) && in_array( $fs_method_name, $parcel_locker_methods ) ) ) {
 
-            $notice =  __( sprintf( __( 'Selected parcel machine', 'woocommerce-inpost' ) . ': %s',
-                $parcelMachine ) );
+            $notice = sprintf(
+            /* translators: %1$s: Label text, %2$s: Parcel machine name */
+                '%1$s: %2$s',
+                __( 'Selected parcel machine', 'woocommerce-inpost' ),
+                $parcel_machine
+            );
 
             echo "<div style='margin-bottom: 40px'>";
             echo wp_kses_post( $notice );

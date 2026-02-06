@@ -1,6 +1,10 @@
 <?php
 namespace InspireLabs\WoocommerceInpost\shipx\services\shipment;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+} // Exit if accessed directly.
+
 use Automattic\WooCommerce\Utilities\OrderUtil;
 use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\EasyPack_API;
@@ -30,6 +34,7 @@ class ShipX_Shipment_Service {
 	 * @param ShipX_Shipment_Model $shipment
 	 */
 	public function update_shipment_to_db( ShipX_Shipment_Model $shipment ) {
+
 		if ( null === $shipment->getInternalData()->getLastStatusFromHistory()
 				|| $shipment->getInternalData()->getStatus()
 				!== $shipment->getInternalData()->getLastStatusFromHistory()->get_name()
@@ -388,10 +393,10 @@ class ShipX_Shipment_Service {
 				$weight->setUnit( 'kg' );
 				$weight->setAmount( $sizes['weight'] );
 				$parcel->setWeight( $weight );
-				if ( $sizes['non_standard'] === 'yes' ) {
+
+                $non_standard = false;
+				if ( ! empty( $sizes['non_standard'] ) && 'yes' === $sizes['non_standard'] ) {
 					$non_standard = true;
-				} else {
-					$non_standard = false;
 				}
 				$parcel->setIsNonstandard( $non_standard );
 				$parcelsCollection[] = $parcel;
