@@ -4,7 +4,7 @@ Tags: inpost, paczkomaty, etykiety, przesyłki
 Requires at least: 5.3
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable tag: 1.8.3
+Stable tag: 1.8.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -42,6 +42,9 @@ Po zainstalowaniu wtyczki skonfiguruj sposób dostawy InPost oraz ceny poszczeg�
 
 
 == Changelog ==
+
+= 1.8.4 =
+* Fix: getting Shipping zones
 
 = 1.8.3 =
 * Fix: get weight for courier shipments

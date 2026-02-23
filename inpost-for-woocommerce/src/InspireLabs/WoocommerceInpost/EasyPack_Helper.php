@@ -668,7 +668,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 			$weight = 0;
 
-            $order = wc_get_order( $order_id );
+			$order = wc_get_order( $order_id );
 
 			if ( ! $order || is_wp_error( $order ) ) {
 				return $weight;
@@ -1190,6 +1190,25 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 					$this->cached_zones = \WC_Shipping_Zones::get_zones();
 				}
 			}
+
+			if ( empty( $this->cached_zones ) ) {
+				if ( class_exists( 'WC_Shipping_Zones' ) ) {
+					$worldwide_zone = \WC_Shipping_Zones::get_zone( 0 );
+					if ( ! empty( $worldwide_zone ) ) {
+						// Add the worldwide zone to our cached zones.
+						$this->cached_zones[0] = array(
+							'zone_id'                 => 0,
+							'zone_name'               => $worldwide_zone->get_zone_name(),
+							'zone_order'              => 0,
+							'zone_locations'          => $worldwide_zone->get_zone_locations(),
+							'zone_location_code'      => array(),
+							'formatted_zone_location' => $worldwide_zone->get_formatted_location(),
+							'shipping_methods'        => $worldwide_zone->get_shipping_methods(),
+						);
+					}
+				}
+			}
+
 			return $this->cached_zones;
 		}
 
@@ -1247,7 +1266,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			}
 
 			if ( ! $inpost_id ) {
-				
+
 				$shipment = $this->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
 
 				if ( ! $shipment instanceof ShipX_Shipment_Model ) {
@@ -1579,11 +1598,11 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 				$send_method = get_option( 'easypack_default_send_method' );
 
 				if ( false !== strpos( $shipping_method_name, 'courier' ) ) {
-                    if( 'easypack_shipping_courier_c2c' !== $shipping_method_name && 'easypack_shipping_courier_c2c_cod' !== $shipping_method_name ) {
-                        if ( ! in_array($send_method, array('pop', 'courier'), true)) {
-                            $send_method = 'courier';
-                        }
-                    }
+					if ( 'easypack_shipping_courier_c2c' !== $shipping_method_name && 'easypack_shipping_courier_c2c_cod' !== $shipping_method_name ) {
+						if ( ! in_array( $send_method, array( 'pop', 'courier' ), true ) ) {
+							$send_method = 'courier';
+						}
+					}
 				}
 			}
 
