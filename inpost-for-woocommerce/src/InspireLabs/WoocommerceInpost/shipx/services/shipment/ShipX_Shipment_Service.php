@@ -191,7 +191,13 @@ class ShipX_Shipment_Service {
 			$order_phone = trim( $order->get_billing_phone() );
 		}
 
-		$receiver_phone = preg_replace( '/^\+48|\D/', '', $order_phone );
+		$receiver_phone = trim( $order_phone );
+		// remove all except digits and "+"
+		$receiver_phone = preg_replace( '/[^\d+]/', '', $receiver_phone );
+		// if number begin with +48, remove this prefix
+		if ( 0 === strpos( $receiver_phone, '+48' ) ) {
+			$receiver_phone = substr( $receiver_phone, 3 );
+		}
 		$receiver->setPhone( $receiver_phone );
 
 		$receiverAddress = new ShipX_Shipment_Receiver_Address_Model();
