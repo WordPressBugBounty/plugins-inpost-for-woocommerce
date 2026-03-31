@@ -37,7 +37,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 		protected $found_data     = array();
 		public $custom_pagination = null;
 
-		function __construct( $send_method ) {
+		public function __construct( $send_method ) {
 			parent::__construct();
 
 			if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
@@ -181,21 +181,22 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 		 */
 		private function translateSendingMethod( $method ) {
 			switch ( $method ) {
-				case ShipX_Shipment_Model::SENDING_METHOD_PARCEL_LOCKER
-					=== $method;
-					return __( 'Parcel Locker', 'woocommerce-inpost' );
+                case ShipX_Shipment_Model::SENDING_METHOD_PARCEL_LOCKER	=== $method:
+					return esc_html__( 'Parcel Locker', 'woocommerce-inpost' );
 
-				case ShipX_Shipment_Model::SENDING_METHOD_DISPATCH_ORDER
-					=== $method;
-					return __( 'Courier', 'woocommerce-inpost' );
+				case ShipX_Shipment_Model::SENDING_METHOD_DISPATCH_ORDER === $method:
+					return esc_html__( 'Courier', 'woocommerce-inpost' );
 
-				case ShipX_Shipment_Model::SENDING_METHOD_POP
-					=== $method;
-					return __( 'POP', 'woocommerce-inpost' );
+				case ShipX_Shipment_Model::SENDING_METHOD_POP === $method:
+					return esc_html__( 'POP', 'woocommerce-inpost' );
+				default:
+					return '';
 			}
+
+
 		}
 
-		function column_cb( $item ) {
+		public function column_cb( $item ) {
 			/**
 			 * @var ShipX_Shipment_Model $shipment
 			 */
@@ -221,7 +222,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 			}
 		}
 
-		function column_order( $item ) {
+		public function column_order( $item ) {
 			$link  = '<a href="' . admin_url( 'post.php?post=' . $item['order'] . '&action=edit' ) . '" >';
 			$link .= '#' . $item['order'];
 			$link .= '</a>';
@@ -246,7 +247,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 		 *
 		 * @return mixed|void
 		 */
-		function column_default( $item, $column_name ) {
+		public function column_default( $item, $column_name ) {
 			switch ( $column_name ) {
 				case 'package_number':
 				case 'send_method':
@@ -269,14 +270,14 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 					print_r(
 						$item,
 						true
-					); // Show the whole array for troubleshooting purposes
+					); // Show the whole array for troubleshooting purposes.
 			}
 		}
 
 		/**
 		 * @return array
 		 */
-		function get_columns() {
+		public function get_columns() {
 			$columns = array(
 				'cb'                  => '<input type="checkbox" />',
 				'package_number'      => __( 'Tracking number', 'woocommerce-inpost' ),
@@ -330,11 +331,11 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 			return '';
 		}
 
-		function get_hidden_columns() {
+		public function get_hidden_columns() {
 			return array();
 		}
 
-		function prepare_items() {
+		public function prepare_items() {
 
 			$columns               = $this->get_columns();
 			$hidden                = $this->get_hidden_columns();
@@ -392,7 +393,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 			$query = new WP_Query( $args );
 			while ( $query->have_posts() ) {
 				$query->the_post();
-				if ( $post->post_status == 'wc-cancelled' ) {
+				if ( 'wc-cancelled' === $post->post_status ) {
 					/* skip cancelled orders */
 					continue;
 				}

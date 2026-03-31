@@ -26,8 +26,8 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 	 */
 	class EasyPack_Settings_General extends WC_Settings_Page {
 
-		static $prevent_duplicate = [];
-		
+		static $prevent_duplicate = array();
+
 		private $status_service;
 
 		/**
@@ -37,13 +37,12 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 
 			$this->id    = 'easypack_general';
 			$this->label = __( 'InPost', 'woocommerce-inpost' );
-            parent::__construct();
-			add_filter( 'woocommerce_settings_tabs_array', [ $this, 'add_settings_page' ], 20 );
-			add_action( 'woocommerce_settings_' . $this->id, [ $this, 'output' ] );
-			add_action( 'woocommerce_settings_save_' . $this->id, [ $this, 'save' ] );
-			
-			$this->status_service = EasyPack::EasyPack()->get_shipment_status_service();
+			parent::__construct();
+			add_filter( 'woocommerce_settings_tabs_array', array( $this, 'add_settings_page' ), 20 );
+			add_action( 'woocommerce_settings_' . $this->id, array( $this, 'output' ) );
+			add_action( 'woocommerce_settings_save_' . $this->id, array( $this, 'save' ) );
 
+			$this->status_service = EasyPack::EasyPack()->get_shipment_status_service();
 		}
 
 
@@ -53,14 +52,14 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 		public function output() {
 			$easypack_api_change = get_option( 'easypack_api_error_login', 0 );
 			?>
-            <input id="easypack_api_change" type="hidden"
-                   name="easypack_api_change"
-                   value="<?php echo esc_attr( $easypack_api_change ); ?>">
-            <style>
-                .form-table {
-                    border-bottom: 1px solid #ccc;
-                }
-            </style>
+			<input id="easypack_api_change" type="hidden"
+					name="easypack_api_change"
+					value="<?php echo esc_attr( $easypack_api_change ); ?>">
+			<style>
+				.form-table {
+					border-bottom: 1px solid #ccc;
+				}
+			</style>
 			<?php
 			$settings = $this->get_settings();
 			WC_Admin_Settings::output_fields( $settings );
@@ -73,7 +72,7 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 		 * @return array
 		 */
 		public function getDispathPointsOptions( $points ) {
-			$return = [];
+			$return = array();
 
 			foreach ( $points as $point ) {
 				$return[ $point->getId() ] = $point->getName();
@@ -90,48 +89,49 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 		 */
 		public function get_settings() {
 
-			$default_locker_attributes = [];
-            $default_locker_placeholder = '';
-			if( ! empty( get_option('easypack_geowidget_production_token') )
-                || ! empty( get_option('easypack_geowidget_sandbox_token') ) )
-			{
-                $default_locker_attributes = [
-                    'data-geowidget_config' => 'parcelSend'
-                ];
-                $default_locker_placeholder = __( 'Click to choose the default locker point on the map', 'woocommerce-inpost' );
+			$default_locker_attributes  = array();
+			$default_locker_placeholder = '';
+			if ( ! empty( get_option( 'easypack_geowidget_production_token' ) )
+				|| ! empty( get_option( 'easypack_geowidget_sandbox_token' ) ) ) {
+				$default_locker_attributes  = array(
+					'data-geowidget_config' => 'parcelSend',
+				);
+				$default_locker_placeholder = __( 'Click to choose the default locker point on the map', 'woocommerce-inpost' );
 
-            } else {
+			} else {
 
-                $default_locker_attributes = [
-                    'disabled' => ''
-                ];
-                $default_locker_placeholder = __( 'This field must be filled in after the Geowiget token has been saved', 'woocommerce-inpost' );
-            }
+				$default_locker_attributes  = array(
+					'disabled' => '',
+				);
+				$default_locker_placeholder = __( 'This field must be filled in after the Geowiget token has been saved', 'woocommerce-inpost' );
+			}
 
+			$settings = array(
+				array(
+					'title' => __( 'Help', 'woocommerce-inpost' ),
+					'type'  => 'title',
+					'desc'  => '<b>' . __( 'Documentation InPost:  ', 'woocommerce-inpost' ) . '</b>'
+						. '<a href="https://dokumentacja-inpost.atlassian.net/wiki/spaces/PL/pages/61833233/WooCommerce" target="_blank">'
+						. __( 'How to set up plugin', 'woocommerce-inpost' ) . '</a><br></br>'
+						. '<b>' . __( 'In case of questions/problems related to the plugin, please contact us via the ', 'woocommerce-inpost' ) . '</b>'
+						. '<a href="https://inpost.pl/formularz-wsparcie" target="_blank">'
+						. __( 'InPost form', 'woocommerce-inpost' ) . '</a>',
+					'id'    => 'help_options',
+				),
 
-			$settings = [
-                [
-                    'title' => __( 'Help', 'woocommerce-inpost' ),
-                    'type'  => 'title',
-                    'desc'  => '<b>' . __( 'Documentation InPost:  ', 'woocommerce-inpost' ) . '</b>'
-                        . '<a href="https://dokumentacja-inpost.atlassian.net/wiki/spaces/PL/pages/61833233/WooCommerce" target="_blank">'
-                        . __( 'How to set up plugin', 'woocommerce-inpost' ) . '</a><br></br>'
-                        . '<b>' . __( 'In case of questions/problems related to the plugin, please contact us via the ', 'woocommerce-inpost' ) . '</b>'
-                        . '<a href="https://inpost.pl/formularz-wsparcie" target="_blank">'
-                        . __( 'InPost form', 'woocommerce-inpost' ) . '</a>',
-                    'id'    => 'help_options',
-                ],
+				array(
+					'type' => 'sectionend',
+					'id'   => 'country_options',
+				),
 
-				[ 'type' => 'sectionend', 'id' => 'country_options' ],
-
-				[
+				array(
 					'title' => __( 'Logging in', 'woocommerce-inpost' ),
 					'type'  => 'title',
 					'desc'  => '',
 					'id'    => 'general_options',
-				],
+				),
 
-				[
+				array(
 					'title'             => __( 'API URL', 'woocommerce-inpost' ),
 					'id'                => 'easypack_api_url',
 					'css'               => 'min-width:300px;',
@@ -139,58 +139,58 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 					'type'              => 'text',
 					'desc_tip'          => false,
 					'class'             => 'easypack-api-url',
-					'custom_attributes' => [ 'required' => 'required' ],
-				],
-				[
+					'custom_attributes' => array( 'required' => 'required' ),
+				),
+				array(
 					'title'             => __( 'Organization ID', 'woocommerce-inpost' ),
 					'id'                => 'easypack_organization_id',
 					'css'               => 'min-width:300px;',
 					'default'           => '',
 					'type'              => 'text',
 					'desc_tip'          => false,
-					'custom_attributes' => [ 'required' => 'required' ],
-				],
+					'custom_attributes' => array( 'required' => 'required' ),
+				),
 
-				[
+				array(
 					'title'             => __( 'Token', 'woocommerce-inpost' ),
 					'id'                => 'easypack_token',
 					'css'               => 'min-width:300px;',
 					'default'           => '',
 					'type'              => 'text',
 					'desc_tip'          => false,
-					'custom_attributes' => [ 'required' => 'required' ],
-				],
+					'custom_attributes' => array( 'required' => 'required' ),
+				),
 
-				[
+				array(
 					'title'    => __( 'Geowidget production token', 'woocommerce-inpost' ),
 					'id'       => 'easypack_geowidget_production_token',
 					'css'      => 'min-width:300px;',
 					'default'  => '',
 					'type'     => 'text',
 					'desc_tip' => false,
-				],
-				[
+				),
+				array(
 					'title'    => __( 'Geowidget sandbox token', 'woocommerce-inpost' ),
 					'id'       => 'easypack_geowidget_sandbox_token',
 					'css'      => 'min-width:300px;',
 					'default'  => '',
 					'type'     => 'text',
 					'desc_tip' => false,
-				],
+				),
 
-				[
+				array(
 					'title'   => __( 'API type', 'woocommerce-inpost' ),
 					'id'      => 'easypack_api_environment',
 					'default' => 'production',
 					'type'    => 'select',
 					'css'     => 'min-width: 300px;',
-					'options' => [
+					'options' => array(
 						'production' => __( 'Production', 'woocommerce-inpost' ),
 						'sandbox'    => __( 'Sandbox', 'woocommerce-inpost' ),
-					],
-				],
+					),
+				),
 
-				[
+				array(
 					'title'    => __( 'Szybkie zwroty - link', 'woocommerce-inpost' ),
 					'id'       => 'easypack_fast_return',
 					'css'      => 'min-width:300px;',
@@ -198,20 +198,21 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 					'type'     => 'text',
 					'desc_tip' => false,
 					'class'    => 'easypack-api-url',
-				],
+				),
 
-				[ 'type' => 'sectionend', 'id' => 'general_options' ],
+				array(
+					'type' => 'sectionend',
+					'id'   => 'general_options',
+				),
 
-
-
-				[
+				array(
 					'title' => __( 'Send options', 'woocommerce-inpost' ),
 					'type'  => 'title',
 					'desc'  => '',
 					'id'    => 'send_options',
-				],
+				),
 
-				[
+				array(
 					'title'    => __( 'Default package size', 'woocommerce-inpost' ),
 					'id'       => 'easypack_default_package_size',
 					'type'     => 'select',
@@ -220,508 +221,533 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 					'desc_tip' => false,
 					'default'  => 'small',
 					'options'  => EasyPack()->get_package_sizes(),
-				],
+				),
 
-                [
-                    'title'    => __( 'Parcel locker label format', 'woocommerce-inpost' ),
-                    'id'       => 'easypack_label_format',
-                    'type'     => 'select',
-                    'class'    => 'wc-enhanced-select',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => false,
-                    'default'  => 'A6',
-                    'options'  => [
-                        'A6' => 'A6',
-                        'A4' => 'A4',
-                    ],
-                ],
+				array(
+					'title'    => __( 'Parcel locker label format', 'woocommerce-inpost' ),
+					'id'       => 'easypack_label_format',
+					'type'     => 'select',
+					'class'    => 'wc-enhanced-select',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => false,
+					'default'  => 'A6',
+					'options'  => array(
+						'A6' => 'A6',
+						'A4' => 'A4',
+					),
+				),
 
-                [
-                    'title'    => __( 'Default send parcel locker', 'woocommerce-inpost' ),
-                    'id'       => 'easypack_default_machine_id',
-                    'type'     => 'text',
-                    'class'    => 'settings-geowidget-default',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => false,
-                    'default'  => '',
-                    'options'  => [],
-                    'placeholder' => $default_locker_placeholder,
-                    'custom_attributes' => $default_locker_attributes
-                ],
+				array(
+					'title'             => __( 'Default send parcel locker', 'woocommerce-inpost' ),
+					'id'                => 'easypack_default_machine_id',
+					'type'              => 'text',
+					'class'             => 'settings-geowidget-default',
+					'css'               => 'min-width: 300px;',
+					'desc_tip'          => false,
+					'default'           => '',
+					'options'           => array(),
+					'placeholder'       => $default_locker_placeholder,
+					'custom_attributes' => $default_locker_attributes,
+				),
 
-                [ 'type' => 'sectionend', 'id' => 'send_options' ],
+				array(
+					'type' => 'sectionend',
+					'id'   => 'send_options',
+				),
 
+				array(
+					'title' => __( 'Courier options', 'woocommerce-inpost' ),
+					'type'  => 'title',
+					'desc'  => '',
+					'id'    => 'courier_options',
+				),
 
-                [
-                    'title' => __( 'Courier options', 'woocommerce-inpost' ),
-                    'type'  => 'title',
-                    'desc'  => '',
-                    'id'    => 'courier_options',
-                ],
+				array(
+					'title'    => __(
+						'Set default dimensions for courier shipments',
+						'woocommerce-inpost'
+					),
+					'id'       => 'easypack_set_default_courier_dimensions',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => '',
+					'default'  => '',
+					'options'  => array(),
+				),
 
-                [
-                    'title'    => __( 'Set default dimensions for courier shipments',
-                        'woocommerce-inpost' ),
-                    'id'       => 'easypack_set_default_courier_dimensions',
-                    'type'     => 'checkbox',
-                    'class'    => '',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => '',
-                    'default'  => '',
-                    'options'  => []
-                ],
+				array(
+					'title'    => __( 'Box length (mm)', 'woocommerce-inpost' ),
+					'id'       => 'easypack_default_courier_dimensions[length]',
+					'css'      => 'min-width:300px;',
+					'default'  => '',
+					'type'     => 'text',
+					'desc_tip' => false,
+					/*'custom_attributes' => [ 'required' => false ],*/
+					'class'    => 'easypack_hidden_setting',
+				),
 
-                [
-                    'title'             => __( 'Box length (mm)', 'woocommerce-inpost' ),
-                    'id'                => 'easypack_default_courier_dimensions[length]',
-                    'css'               => 'min-width:300px;',
-                    'default'           => '',
-                    'type'              => 'text',
-                    'desc_tip'          => false,
-                    /*'custom_attributes' => [ 'required' => false ],*/
-                    'class'             => 'easypack_hidden_setting'
-                ],
+				array(
+					'title'    => __( 'Box width (mm)', 'woocommerce-inpost' ),
+					'id'       => 'easypack_default_courier_dimensions[width]',
+					'css'      => 'min-width:300px;',
+					'default'  => '',
+					'type'     => 'text',
+					'desc_tip' => false,
+					/*'custom_attributes' => [ 'required' => false ],*/
+					'class'    => 'easypack_hidden_setting',
+				),
 
-                [
-                    'title'             => __( 'Box width (mm)', 'woocommerce-inpost' ),
-                    'id'                => 'easypack_default_courier_dimensions[width]',
-                    'css'               => 'min-width:300px;',
-                    'default'           => '',
-                    'type'              => 'text',
-                    'desc_tip'          => false,
-                    /*'custom_attributes' => [ 'required' => false ],*/
-                    'class'             => 'easypack_hidden_setting'
-                ],
+				array(
+					'title'    => __( 'Box height (mm)', 'woocommerce-inpost' ),
+					'id'       => 'easypack_default_courier_dimensions[height]',
+					'css'      => 'min-width:300px;',
+					'default'  => '',
+					'type'     => 'text',
+					'desc_tip' => false,
+					/*'custom_attributes' => [ 'required' => false ],*/
+					'class'    => 'easypack_hidden_setting',
+				),
 
-                [
-                    'title'             => __( 'Box height (mm)', 'woocommerce-inpost' ),
-                    'id'                => 'easypack_default_courier_dimensions[height]',
-                    'css'               => 'min-width:300px;',
-                    'default'           => '',
-                    'type'              => 'text',
-                    'desc_tip'          => false,
-                    /*'custom_attributes' => [ 'required' => false ],*/
-                    'class'             => 'easypack_hidden_setting'
-                ],
+				array(
+					'title'    => __( 'Box weight (kg)', 'woocommerce-inpost' ),
+					'id'       => 'easypack_default_courier_dimensions[weight]',
+					'css'      => 'min-width:300px;',
+					'default'  => '',
+					'type'     => 'text',
+					'desc_tip' => false,
+					/*'custom_attributes' => [ 'required' => false ],*/
+					'class'    => 'easypack_hidden_setting',
+				),
 
-                [
-                    'title'             => __( 'Box weight (kg)', 'woocommerce-inpost' ),
-                    'id'                => 'easypack_default_courier_dimensions[weight]',
-                    'css'               => 'min-width:300px;',
-                    'default'           => '',
-                    'type'              => 'text',
-                    'desc_tip'          => false,
-                    /*'custom_attributes' => [ 'required' => false ],*/
-                    'class'             => 'easypack_hidden_setting'
-                ],
+				array(
+					'title'    => __( 'Box is non standard?', 'woocommerce-inpost' ),
+					'id'       => 'easypack_default_courier_dimensions[non_standard]',
+					'type'     => 'select',
+					'class'    => 'wc-enhanced-select',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => false,
+					'default'  => 'no',
+					'options'  => array(
+						'yes' => __( 'Yes', 'woocommerce-inpost' ),
+						'no'  => __( 'No', 'woocommerce-inpost' ),
+					),
+					'class'    => 'easypack_hidden_setting',
+				),
 
-                [
-                    'title'    => __( 'Box is non standard?', 'woocommerce-inpost' ),
-                    'id'       => 'easypack_default_courier_dimensions[non_standard]',
-                    'type'     => 'select',
-                    'class'    => 'wc-enhanced-select',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => false,
-                    'default'  => 'no',
-                    'options'  => [
-                        'yes'  => __( 'Yes', 'woocommerce-inpost' ),
-                        'no'   => __( 'No', 'woocommerce-inpost' ),
-                    ],
-                    'class'             => 'easypack_hidden_setting'
-                ],
+				$this->output_courier_templates_module(),
 
+				array(
+					'type' => 'hidden',
+					'id'   => EasyPack::ATTRIBUTE_TEMPLATES_PREFIX . '_dmtemplate_selected',
+				),
 
+				array(
+					'type' => 'sectionend',
+					'id'   => 'courier_options',
+				),
 
-                $this->output_courier_templates_module(),
+				array(
+					'title' => __( 'Dispatch point', 'woocommerce-inpost' ),
+					'type'  => 'title',
+					'desc'  => '',
+					'id'    => 'dispatch_point_options',
+				),
 
-                [
-                    'type' => 'hidden',
-                    'id'   => EasyPack::ATTRIBUTE_TEMPLATES_PREFIX . '_dmtemplate_selected',
-                ],
+				$this->output_dispath_point_module(),
+				array(
+					'type' => 'hidden',
+					'id'   => EasyPack::ATTRIBUTE_PREFIX . '_dpoint_selected',
+				),
 
-                [ 'type' => 'sectionend', 'id' => 'courier_options' ],
+				array(
+					'type' => 'sectionend',
+					'id'   => 'dispatch_point_options',
+				),
 
+				array(
+					'title' => __( 'Other options', 'woocommerce-inpost' ),
+					'type'  => 'title',
+					'desc'  => '',
+					'id'    => 'other_options',
+				),
 
+				array(
+					'title'    => __(
+						'Enable InPost methods for all products in your shop',
+						'woocommerce-inpost'
+					),
+					'id'       => 'easypack_enable_for_all_products',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => __(
+						'Enable this setting if you want to enable all configured Inpost shipping methods for each product in your store.',
+						'woocommerce-inpost'
+					)
+						. ' ' . __( 'This setting ignores the individual settings in the product settings in the Inpost tab.', 'woocommerce-inpost' ),
+					'default'  => '',
+					'options'  => array(),
 
-                [
-                    'title' => __( 'Dispatch point', 'woocommerce-inpost' ),
-                    'type'  => 'title',
-                    'desc'  => '',
-                    'id'    => 'dispatch_point_options',
-                ],
+				),
 
+				array(
+					'title'    => __(
+						'Enable SmartCourier method for all products in your shop',
+						'woocommerce-inpost'
+					),
+					'id'       => 'easypack_enable_for_all_esmartmix',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => __(
+						'Enable this setting if you want to enable SmartCourier shipping method for each product in your store.',
+						'woocommerce-inpost'
+					)
+						. ' ' . __( 'This setting ignores the individual settings in the product settings in the Inpost tab.', 'woocommerce-inpost' ),
+					'default'  => '',
+					'options'  => array(),
 
-                $this->output_dispath_point_module(),
-                [
-                    'type' => 'hidden',
-                    'id'   => EasyPack::ATTRIBUTE_PREFIX . '_dpoint_selected',
-                ],
+				),
 
-                [ 'type' => 'sectionend', 'id' => 'dispatch_point_options' ],
+				array(
+					'title'    => __( 'If there is no general InPost shipping method for the products, then always choose the most expensive one.', 'woocommerce-inpost' ),
+					'id'       => 'easypack_set_major_method',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => __( 'After enabling this setting, when there is a product', 'woocommerce-inpost' )
+									. __( ' with the Paczkomat service only and another product with the Courier service only ', 'woocommerce-inpost' )
+									. __( 'in the cart, the most expensive one will be selected and the delivery method will be displayed', 'woocommerce-inpost' ),
+					'default'  => '',
+					'options'  => array(),
 
+				),
 
-                [
-                    'title' => __( 'Other options', 'woocommerce-inpost' ),
-                    'type'  => 'title',
-                    'desc'  => '',
-                    'id'    => 'other_options',
-                ],
+				array(
+					'title'    => __( 'Enable webhooks', 'woocommerce-inpost' ),
+					'id'       => 'easypack_enable_webhooks',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => __( 'Enabling webhooks allows you to update the status of shipments in your order', 'woocommerce-inpost' ),
+					'default'  => '',
+					'options'  => array(),
 
-                [
-                    'title'    => __( 'Enable InPost methods for all products in your shop',
-                        'woocommerce-inpost' ),
-                    'id'       => 'easypack_enable_for_all_products',
-                    'type'     => 'checkbox',
-                    'class'    => '',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => __( 'Enable this setting if you want to enable all configured Inpost shipping methods for each product in your store.',
-                        'woocommerce-inpost' )
-                        . ' ' . __( 'This setting ignores the individual settings in the product settings in the Inpost tab.', 'woocommerce-inpost' ),
-                    'default'  => '',
-                    'options'  => []
+				),
 
-                ],
-
-                [
-                    'title'    => __( 'Enable SmartCourier method for all products in your shop',
-                        'woocommerce-inpost' ),
-                    'id'       => 'easypack_enable_for_all_esmartmix',
-                    'type'     => 'checkbox',
-                    'class'    => '',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => __( 'Enable this setting if you want to enable SmartCourier shipping method for each product in your store.',
-                            'woocommerce-inpost' )
-                        . ' ' . __( 'This setting ignores the individual settings in the product settings in the Inpost tab.', 'woocommerce-inpost' ),
-                    'default'  => '',
-                    'options'  => []
-
-                ],
-
-
-                [
-                    'title'    => __( 'If there is no general InPost shipping method for the products, then always choose the most expensive one.', 'woocommerce-inpost' ),
-                    'id'       => 'easypack_set_major_method',
-                    'type'     => 'checkbox',
-                    'class'    => '',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => __( 'After enabling this setting, when there is a product', 'woocommerce-inpost' )
-                                  . __( ' with the Paczkomat service only and another product with the Courier service only ', 'woocommerce-inpost' )
-                                  . __( 'in the cart, the most expensive one will be selected and the delivery method will be displayed', 'woocommerce-inpost' ),
-                    'default'  => '',
-                    'options'  => []
-
-                ],
-
-
-                [
-                    'title'    => __( 'Enable webhooks', 'woocommerce-inpost' ),
-                    'id'       => 'easypack_enable_webhooks',
-                    'type'     => 'checkbox',
-                    'class'    => '',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => __( 'Enabling webhooks allows you to update the status of shipments in your order', 'woocommerce-inpost' ),
-                    'default'  => '',
-                    'options'  => []
-
-                ],
-
-                [
-                    'title'    => __( 'Webhook URL', 'woocommerce-inpost' ),
-                    'id'       => 'easypack_enable_webhooks_url',
-                    'type'     => 'text',
-                    'class'    => 'easypack_hidden_setting_webhook',
-                    'css'      => 'min-width: 300px;',
-                    'desc' => '<span class="dashicons dashicons-admin-page inpost-copy-icon" id="inpost-copy-webhook-url-btn">
+				array(
+					'title'             => __( 'Webhook URL', 'woocommerce-inpost' ),
+					'id'                => 'easypack_enable_webhooks_url',
+					'type'              => 'text',
+					'class'             => 'easypack_hidden_setting_webhook',
+					'css'               => 'min-width: 300px;',
+					'desc'              => '<span class="dashicons dashicons-admin-page inpost-copy-icon" id="inpost-copy-webhook-url-btn">
 									<div class="inpost-copy-tooltip" id="copy-tooltip"></div>
 								</span>',
-                    'default'  => esc_url( EasyPack_Helper()->get_webhook_url() ),
-                    'custom_attributes' => [ 'disabled' => 'disabled' ],
+					'default'           => esc_url( EasyPack_Helper()->get_webhook_url() ),
+					'custom_attributes' => array( 'disabled' => 'disabled' ),
 
-                ],
-				
-				[
-                    'title'    => __( 'Change order status to Completed if webhook status is received like:', 'woocommerce-inpost' ),
-                    'id'       => 'easypack_change_order_status_by_webhook',
-                    'type'     => 'select',
-                    'class'    => 'easypack_hidden_setting_webhook',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => false,
-                    'default'  => __( 'No', 'woocommerce-inpost' ),
-                    'options'  => array(
-                        'no' => __( 'No', 'woocommerce-inpost' ),
-                        'delivered' => $this->status_service->getStatusTitle( 'delivered' ),
-                        'taken_by_courier' => $this->status_service->getStatusTitle( 'taken_by_courier' ),
-                        'sent_from_source_branch' => $this->status_service->getStatusTitle( 'sent_from_source_branch' ),
-                        'collected_from_sender' => $this->status_service->getStatusTitle( 'collected_from_sender' ),
-                        'adopted_at_source_branch' => $this->status_service->getStatusTitle( 'adopted_at_source_branch' ),
-                        'adopted_at_sorting_center' => $this->status_service->getStatusTitle( 'adopted_at_sorting_center' ),
-                        'taken_by_courier_from_pok' => $this->status_service->getStatusTitle( 'taken_by_courier_from_pok' ),
-                        'unstack_from_box_machine' => $this->status_service->getStatusTitle( 'unstack_from_box_machine' ),
-                        'unstack_from_customer_service_point' => $this->status_service->getStatusTitle( 'unstack_from_customer_service_point' ),
-                    ),
-                ],
-				
-				[
-                    'title'    => __( 'Creating a shipment automatically after paying for the order', 'woocommerce-inpost' ),
-                    'id'       => 'easypack_create_shipment_automatically',
-                    'type'     => 'checkbox',
-                    'class'    => '',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => __( 'Check your default settings before enable this option (parcel dimensions, etc.)', 'woocommerce-inpost' ),
-                    'default'  => '',
-                    'options'  => []
-                ],
+				),
 
-                [
-                    'title'    => __( 'Do not provide InPost parcel locker service if the weight of goods exceeds 25 kg', 'woocommerce-inpost' ),
-                    'id'       => 'easypack_over_weight',
-                    'type'     => 'checkbox',
-                    'class'    => '',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => false,
-                    'default'  => '',
-                    'options'  => []
-                ],
+				array(
+					'title'    => __( 'Change order status to Completed if webhook status is received like:', 'woocommerce-inpost' ),
+					'id'       => 'easypack_change_order_status_by_webhook',
+					'type'     => 'select',
+					'class'    => 'easypack_hidden_setting_webhook',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => false,
+					'default'  => __( 'No', 'woocommerce-inpost' ),
+					'options'  => array(
+						'no'                        => __( 'No', 'woocommerce-inpost' ),
+						'delivered'                 => $this->status_service->getStatusTitle( 'delivered' ),
+						'taken_by_courier'          => $this->status_service->getStatusTitle( 'taken_by_courier' ),
+						'sent_from_source_branch'   => $this->status_service->getStatusTitle( 'sent_from_source_branch' ),
+						'collected_from_sender'     => $this->status_service->getStatusTitle( 'collected_from_sender' ),
+						'adopted_at_source_branch'  => $this->status_service->getStatusTitle( 'adopted_at_source_branch' ),
+						'adopted_at_sorting_center' => $this->status_service->getStatusTitle( 'adopted_at_sorting_center' ),
+						'taken_by_courier_from_pok' => $this->status_service->getStatusTitle( 'taken_by_courier_from_pok' ),
+						'unstack_from_box_machine'  => $this->status_service->getStatusTitle( 'unstack_from_box_machine' ),
+						'unstack_from_customer_service_point' => $this->status_service->getStatusTitle( 'unstack_from_customer_service_point' ),
+					),
+				),
 
-                [
-                    'title'    => __( 'Send an email to the buyer about the start of the delivery process just after parcel created?',
-                        'woocommerce-inpost' ),
-                    'id'       => 'easypack_delivery_notice',
-                    'type'     => 'checkbox',
-                    'class'    => '',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => false,
-                    'default'  => '',
-                    'options'  => []
+				array(
+					'title'    => __( 'Creating a shipment automatically after paying for the order', 'woocommerce-inpost' ),
+					'id'       => 'easypack_create_shipment_automatically',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => __( 'Check your default settings before enable this option (parcel dimensions, etc.)', 'woocommerce-inpost' ),
+					'default'  => '',
+					'options'  => array(),
+				),
 
-                ],
+				array(
+					'title'    => __( 'Do not provide InPost parcel locker service if the weight of goods exceeds 25 kg', 'woocommerce-inpost' ),
+					'id'       => 'easypack_over_weight',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => false,
+					'default'  => '',
+					'options'  => array(),
+				),
 
-                [
-                    'title'    => __( 'Change order status to Completed after shipment created?',
-                        'woocommerce-inpost' ),
-                    'id'       => 'easypack_set_order_completed',
-                    'type'     => 'checkbox',
-                    'class'    => '',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => false,
-                    'default'  => '',
-                    'options'  => []
+				array(
+					'title'    => __(
+						'Send an email to the buyer about the start of the delivery process just after parcel created?',
+						'woocommerce-inpost'
+					),
+					'id'       => 'easypack_delivery_notice',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => false,
+					'default'  => '',
+					'options'  => array(),
 
-                ],
+				),
 
+				array(
+					'title'    => __(
+						'Change order status to Completed after shipment created?',
+						'woocommerce-inpost'
+					),
+					'id'       => 'easypack_set_order_completed',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => false,
+					'default'  => '',
+					'options'  => array(),
 
-                [
-                    'title'    => __( "Automatically add buyer order comment to field 'Refernece'",
-                        'woocommerce-inpost' ),
-                    'id'       => 'easypack_add_order_note',
-                    'type'     => 'checkbox',
-                    'class'    => '',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => false,
-                    'default'  => '',
-                    'options'  => []
+				),
 
-                ],
+				array(
+					'title'    => __(
+						"Automatically add buyer order comment to field 'Refernece'",
+						'woocommerce-inpost'
+					),
+					'id'       => 'easypack_add_order_note',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => false,
+					'default'  => '',
+					'options'  => array(),
 
-                // Custom CSS form map button start
-                [
-                    'name'    => __( 'Color of map button', 'woocommerce-inpost' ),
-                    'type'    => 'text',
-                    'desc'    => '',
-                    'default' => '#FCC905',
-                    'id'      => 'easypack_custom_button_css'
-                ],
-                // Custom CSS form map button end.
-                [ 'type' => 'sectionend', 'id' => 'other_options' ],
+				),
 
+				// Custom CSS form map button start
+				array(
+					'name'    => __( 'Color of map button', 'woocommerce-inpost' ),
+					'type'    => 'text',
+					'desc'    => '',
+					'default' => '#FCC905',
+					'id'      => 'easypack_custom_button_css',
+				),
+				// Custom CSS form map button end.
+				array(
+					'type' => 'sectionend',
+					'id'   => 'other_options',
+				),
 
-
-
-				[
+				array(
 					'title' => __( 'Sender', 'woocommerce-inpost' ),
 					'type'  => 'title',
 					'desc'  => '',
 					'id'    => 'sender_options',
-				],
+				),
 
-				[
+				array(
 					'title'             => __( 'First Name', 'woocommerce-inpost' ),
 					'id'                => 'easypack_sender_first_name',
 					'css'               => 'min-width:300px;',
 					'default'           => '',
 					'type'              => 'text',
 					'desc_tip'          => false,
-					'custom_attributes' => [ 'required' => 'required' ],
-				],
+					'custom_attributes' => array( 'required' => 'required' ),
+				),
 
-				[
+				array(
 					'title'             => __( 'Last Name', 'woocommerce-inpost' ),
 					'id'                => 'easypack_sender_last_name',
 					'css'               => 'min-width:300px;',
 					'default'           => '',
 					'type'              => 'text',
 					'desc_tip'          => false,
-					'custom_attributes' => [ 'required' => 'required' ],
-				],
+					'custom_attributes' => array( 'required' => 'required' ),
+				),
 
-				[
+				array(
 					'title'    => __( 'Company Name', 'woocommerce-inpost' ),
 					'id'       => 'easypack_sender_company_name',
 					'css'      => 'min-width:300px;',
 					'default'  => '',
 					'type'     => 'text',
 					'desc_tip' => false,
-				],
+				),
 
-				[
+				array(
 					'title'    => __( 'Street', 'woocommerce-inpost' ),
 					'id'       => 'easypack_sender_street',
 					'css'      => 'min-width:300px;',
 					'default'  => '',
 					'type'     => 'text',
 					'desc_tip' => false,
-				],
+				),
 
-				[
+				array(
 					'title'    => __( 'Building no', 'woocommerce-inpost' ),
 					'id'       => 'easypack_sender_building_no',
 					'css'      => 'min-width:300px;',
 					'default'  => '',
 					'type'     => 'text',
 					'desc_tip' => false,
-				],
+				),
 
-				[
+				array(
 					'title'   => __( 'Post code', 'woocommerce-inpost' ),
 					'id'      => 'easypack_sender_post_code',
 					'css'     => 'min-width:300px;',
 					'default' => '',
 					'type'    => 'text',
-				],
+				),
 
-				[
+				array(
 					'title'             => __( 'City', 'woocommerce-inpost' ),
 					'id'                => 'easypack_sender_city',
 					'css'               => 'min-width:300px;',
 					'default'           => '',
 					'type'              => 'text',
 					'desc_tip'          => false,
-					'custom_attributes' => [ 'required' => 'required' ],
-				],
+					'custom_attributes' => array( 'required' => 'required' ),
+				),
 
-				[
+				array(
 					'title'             => __( 'Email', 'woocommerce-inpost' ),
 					'id'                => 'easypack_sender_email',
 					'css'               => 'min-width:300px;',
 					'default'           => '',
 					'type'              => 'email',
 					'desc_tip'          => false,
-					'custom_attributes' => [ 'required' => 'required' ],
-				],
+					'custom_attributes' => array( 'required' => 'required' ),
+				),
 
-				[
+				array(
 					'title'             => __( 'Phone', 'woocommerce-inpost' ),
 					'id'                => 'easypack_sender_phone',
 					'css'               => 'min-width:300px;',
 					'default'           => '',
 					'type'              => 'text',
 					'desc_tip'          => false,
-					'custom_attributes' => [ 'required' => 'required' ],
-				],
+					'custom_attributes' => array( 'required' => 'required' ),
+				),
 
-				[ 'type' => 'sectionend', 'id' => 'sender_options' ],
+				array(
+					'type' => 'sectionend',
+					'id'   => 'sender_options',
+				),
 
-                [
-                    'title' => __( 'Debug mode', 'woocommerce-inpost' ),
-                    'type'  => 'title',
-                    'desc'  => '',
-                    'id'    => 'debug_options',
-                ],
-								
+				array(
+					'title' => __( 'Debug mode', 'woocommerce-inpost' ),
+					'type'  => 'title',
+					'desc'  => '',
+					'id'    => 'debug_options',
+				),
 
-                [
-                    'title'    => __( 'Inpost shipping methods are only visible to administrators',
-                        'woocommerce-inpost' ),
-                    'id'       => 'easypack_debug_mode',
-                    'type'     => 'checkbox',
-                    'class'    => '',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => false,
-                    'default'  => '',
-                    'options'  => []
-
-                ],
-
-                [
-                    'title'    => __( 'Disable condition to enable geowidget scripts only on Checkout page',
-                        'woocommerce-inpost' ),
-                    'id'       => 'easypack_debug_mode_enqueue_scripts',
-                    'type'     => 'checkbox',
-                    'class'    => '',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => false,
-                    'default'  => '',
-                    'options'  => []
-
-                ],
-				
-				[
-					'title'    => __( 'Map button output', 'woocommerce-inpost' ),
-					'id'       => 'easypack_button_output',
-					'type'     => 'select',
-					'class'    => 'wc-enhanced-select',
+				array(
+					'title'    => __(
+						'Inpost shipping methods are only visible to administrators',
+						'woocommerce-inpost'
+					),
+					'id'       => 'easypack_debug_mode',
+					'type'     => 'checkbox',
+					'class'    => '',
 					'css'      => 'min-width: 300px;',
-					'default'  => 'woocommerce_review_order_after_shipping',
-					'options'  => [
-						'woocommerce_review_order_before_submit'     => __('Before the \'Place order\' button', 'woocommerce-inpost' ),
-						'woocommerce_after_order_notes'              => __('After the \'Add note\' field', 'woocommerce-inpost' ),
-						'woocommerce_before_order_notes'             => __('Before the \'Add note\' field', 'woocommerce-inpost' ),
-						'woocommerce_review_order_before_payment'    => __('Before information about payment methods', 'woocommerce-inpost' ),
-						'woocommerce_review_order_before_order_total' => __('Before information about the total amount of the order', 'woocommerce-inpost' ),
-						'woocommerce_review_order_after_order_total'  => __('After information about the total amount of the order', 'woocommerce-inpost' ),
-						'woocommerce_review_order_after_shipping'     => __('After describing the delivery methods', 'woocommerce-inpost' ),
-						'woocommerce_review_order_before_shipping'    => __('Before describing the delivery methods', 'woocommerce-inpost' ),
-						'woocommerce_after_checkout_shipping_form'    => __('After form with shipping address', 'woocommerce-inpost' ),
-						'woocommerce_checkout_after_customer_details' => __('After customer details', 'woocommerce-inpost' ),
-						'woocommerce_checkout_before_order_review'    => __('Before order details review', 'woocommerce-inpost' ),
-						'woocommerce_review_order_after_submit'       => __('After the \'Place order\' button', 'woocommerce-inpost' ),
-						'woocommerce_before_checkout_form'            => __('Before form with checkout details', 'woocommerce-inpost' )
-					],
-				],
-				
-				[
-                    'title'    => __( 'Enable JS mode of the map button - if the \'Select Parcel Locker\' button does not appear in your checkout',
-                        'woocommerce-inpost' ),
-                    'id'       => 'easypack_js_map_button',
-                    'type'     => 'checkbox',
-                    'class'    => '',
-                    'css'      => 'min-width: 300px;',
-                    'desc_tip' => false,
-                    'default'  => '',
-                    'options'  => []
+					'desc_tip' => false,
+					'default'  => '',
+					'options'  => array(),
 
-                ],
-				
-				[
-                    'title' => __( '', 'woocommerce-inpost' ),
-                    'type'  => 'title',
-                    'desc'  => '<b>' . __( 'The settings associated with the map button do not work if you are using Checkout based on Blocks.', 'woocommerce-inpost' ) . '</b>'
-                        . '<br></br>'
-                        .  __( 'Please keep in mind that different templates may have a non-standard appearance ', 'woocommerce-inpost' )
-                        .  __( 'design, and do not always contain in the code the entire list of standard hooks ', 'woocommerce-inpost' )
-                        .  __( 'that are used to operate plugins - in particular, to display the map button.', 'woocommerce-inpost' )
-                        . '<br></br>'
-                        . __( 'By default, the button should be visible immediately after the block with a choice of delivery methods.', 'woocommerce-inpost' )
-                        . '<br>'
-                        . __( 'You can try changing where you want the map button to appear using a setting.', 'woocommerce-inpost' )
-                        . '<br>'
-                        . __( 'If the button is not visible after activating the plugin, it is recommended to start with option \'Before the Place order\' button.', 'woocommerce-inpost' ),
-                    'id'    => 'easypack_button_output_help_desc',
-                ],
+				),
 
-                [ 'type' => 'sectionend', 'id' => 'debug_options' ],
-			];
+				array(
+					'title'    => __(
+						'Disable condition to enable geowidget scripts only on Checkout page',
+						'woocommerce-inpost'
+					),
+					'id'       => 'easypack_debug_mode_enqueue_scripts',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => false,
+					'default'  => '',
+					'options'  => array(),
 
+				),
+
+				array(
+					'title'   => __( 'Map button output', 'woocommerce-inpost' ),
+					'id'      => 'easypack_button_output',
+					'type'    => 'select',
+					'class'   => 'wc-enhanced-select',
+					'css'     => 'min-width: 300px;',
+					'default' => 'woocommerce_review_order_after_shipping',
+					'options' => array(
+						'woocommerce_review_order_before_submit' => __( 'Before the \'Place order\' button', 'woocommerce-inpost' ),
+						'woocommerce_after_order_notes'    => __( 'After the \'Add note\' field', 'woocommerce-inpost' ),
+						'woocommerce_before_order_notes'   => __( 'Before the \'Add note\' field', 'woocommerce-inpost' ),
+						'woocommerce_review_order_before_payment' => __( 'Before information about payment methods', 'woocommerce-inpost' ),
+						'woocommerce_review_order_before_order_total' => __( 'Before information about the total amount of the order', 'woocommerce-inpost' ),
+						'woocommerce_review_order_after_order_total' => __( 'After information about the total amount of the order', 'woocommerce-inpost' ),
+						'woocommerce_review_order_after_shipping' => __( 'After describing the delivery methods', 'woocommerce-inpost' ),
+						'woocommerce_review_order_before_shipping' => __( 'Before describing the delivery methods', 'woocommerce-inpost' ),
+						'woocommerce_after_checkout_shipping_form' => __( 'After form with shipping address', 'woocommerce-inpost' ),
+						'woocommerce_checkout_after_customer_details' => __( 'After customer details', 'woocommerce-inpost' ),
+						'woocommerce_checkout_before_order_review' => __( 'Before order details review', 'woocommerce-inpost' ),
+						'woocommerce_review_order_after_submit' => __( 'After the \'Place order\' button', 'woocommerce-inpost' ),
+						'woocommerce_before_checkout_form' => __( 'Before form with checkout details', 'woocommerce-inpost' ),
+					),
+				),
+
+				array(
+					'title'    => __(
+						'Enable JS mode of the map button - if the \'Select Parcel Locker\' button does not appear in your checkout',
+						'woocommerce-inpost'
+					),
+					'id'       => 'easypack_js_map_button',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => false,
+					'default'  => '',
+					'options'  => array(),
+
+				),
+
+				array(
+					'title' => __( '', 'woocommerce-inpost' ),
+					'type'  => 'title',
+					'desc'  => '<b>' . __( 'The settings associated with the map button do not work if you are using Checkout based on Blocks.', 'woocommerce-inpost' ) . '</b>'
+						. '<br></br>'
+						. __( 'Please keep in mind that different templates may have a non-standard appearance ', 'woocommerce-inpost' )
+						. __( 'design, and do not always contain in the code the entire list of standard hooks ', 'woocommerce-inpost' )
+						. __( 'that are used to operate plugins - in particular, to display the map button.', 'woocommerce-inpost' )
+						. '<br></br>'
+						. __( 'By default, the button should be visible immediately after the block with a choice of delivery methods.', 'woocommerce-inpost' )
+						. '<br>'
+						. __( 'You can try changing where you want the map button to appear using a setting.', 'woocommerce-inpost' )
+						. '<br>'
+						. __( 'If the button is not visible after activating the plugin, it is recommended to start with option \'Before the Place order\' button.', 'woocommerce-inpost' ),
+					'id'    => 'easypack_button_output_help_desc',
+				),
+
+				array(
+					'type' => 'sectionend',
+					'id'   => 'debug_options',
+				),
+			);
 
 			return $settings;
 		}
@@ -747,31 +773,29 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 			WC_Admin_Settings::save_fields( $settings );
 			EasyPack_API()->clear_cache();
 
-            if( ! empty( $_REQUEST['easypack_organization_id'] ) && ! empty( $_REQUEST['easypack_token'] ) ) {
-                $ping = EasyPack_API()->ping();
-                EasyPack()->get_merchant_services( true );
-            }
+			if ( ! empty( $_REQUEST['easypack_organization_id'] ) && ! empty( $_REQUEST['easypack_token'] ) ) {
+				$ping = EasyPack_API()->ping();
+				EasyPack()->get_merchant_services( true );
+			}
 
 			$easypack_api_change = sanitize_text_field( $_REQUEST['easypack_api_change'] );
 
 			if ( $easypack_api_change == '0' ) {
-				$args = [];
-				$args['first_name'] = get_option( 'easypack_sender_first_name' );
-				$args['last_name'] = get_option( 'easypack_sender_last_name' );
-				$args['company_name'] = get_option( 'easypack_sender_company_name' );
-				$args['phone'] = get_option( 'easypack_sender_phone' );
-				$args['email'] = get_option( 'easypack_sender_email' );
+				$args                       = array();
+				$args['first_name']         = get_option( 'easypack_sender_first_name' );
+				$args['last_name']          = get_option( 'easypack_sender_last_name' );
+				$args['company_name']       = get_option( 'easypack_sender_company_name' );
+				$args['phone']              = get_option( 'easypack_sender_phone' );
+				$args['email']              = get_option( 'easypack_sender_email' );
 				$args['default_machine_id'] = get_option( 'easypack_default_machine_id' );
-				$args['address'] = [];
-
+				$args['address']            = array();
 
 				if ( EasyPack_API()->api_country() !== EasyPack_API::COUNTRY_PL ) {
 					unset( $args['default_machine_id'] );
 				}
-				if ( isset ( $args['default_machine_id'] ) && $args['default_machine_id'] == '' ) {
+				if ( isset( $args['default_machine_id'] ) && $args['default_machine_id'] == '' ) {
 					unset( $args['default_machine_id'] );
 				}
-
 			}
 		}
 
@@ -782,10 +806,11 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 		 * @throws Exception
 		 */
 		private function output_dispath_point_module(): array {
-			add_action( 'woocommerce_admin_field_manage_dispath_points_module',
+			add_action(
+				'woocommerce_admin_field_manage_dispath_points_module',
 				function ( array $data ) {
 					if ( isset( self::$prevent_duplicate['manage_dispath_points_module'] )
-					     && self::$prevent_duplicate['manage_dispath_points_module']
+						&& self::$prevent_duplicate['manage_dispath_points_module']
 					) {
 						return;
 					}
@@ -793,453 +818,467 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 					$saved_points = get_option( EasyPack::ATTRIBUTE_PREFIX . '_dpoint' );
 
 					?>
-                    <tr valign="top">
+					<tr valign="top">
 
-                        <th scope="row" class="titledesc">
-                            <label for="woo_inpost_dpoint_0">
+						<th scope="row" class="titledesc">
+							<label for="woo_inpost_dpoint_0">
 								<?php echo esc_attr( $data['name'] ); ?></label>
-                        </th>
-                        <td class="forminp forminp-text">
+						</th>
+						<td class="forminp forminp-text">
 
-                            <table id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint-cell">
-                                <thead>
-                                <th><?php esc_html_e( 'Selected', 'woocommerce-inpost' ) ?></th>
-                                <th><?php esc_html_e( 'Street', 'woocommerce-inpost' ) ?></th>
-                                <th><?php esc_html_e( 'Building number', 'woocommerce-inpost' ) ?></th>
-                                <th><?php esc_html_e( 'Postal code', 'woocommerce-inpost' ) ?></th>
-                                <th><?php esc_html_e( 'City', 'woocommerce-inpost' ) ?></th>
-                                </thead>
+							<table id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint-cell">
+								<thead>
+								<th><?php esc_html_e( 'Selected', 'woocommerce-inpost' ); ?></th>
+								<th><?php esc_html_e( 'Point name', 'woocommerce-inpost' ); ?></th>
+								<th><?php esc_html_e( 'Street', 'woocommerce-inpost' ); ?></th>
+								<th><?php esc_html_e( 'Building number', 'woocommerce-inpost' ); ?></th>
+								<th><?php esc_html_e( 'Postal code', 'woocommerce-inpost' ); ?></th>
+								<th><?php esc_html_e( 'City', 'woocommerce-inpost' ); ?></th>
+								</thead>
 
 								<?php
 								if ( is_array( $saved_points )
-								     && ! empty( $saved_points && isset( $saved_points['street'] ) )
+									&& ! empty( $saved_points && isset( $saved_points['street'] ) )
 								) {
 
 									$dpoints = is_array( $saved_points['street'] )
 										? $saved_points['street']
-										: [ 0 => $saved_points];
+										: array( 0 => $saved_points );
 
 									// we have only single dpoint
-									if( ! is_array( $saved_points['street'] ) ) {
+									if ( ! is_array( $saved_points['street'] ) ) {
 
-                                        $saved_points_fix = [];
-									    foreach($saved_points as $v) {
-                                            $saved_points_fix['street'] = array($saved_points['street']);
-                                            $saved_points_fix['building_number'] = array($saved_points['building_number']);
-                                            $saved_points_fix['postal_code'] = array($saved_points['postal_code']);
-                                            $saved_points_fix['city'] = array($saved_points['city']);
-                                        }
+										$saved_points_fix = array();
+										foreach ( $saved_points as $v ) {
+											$saved_points_fix['point_name']      = array( isset( $saved_points['point_name'] ) ? $saved_points['point_name'] : '' );
+											$saved_points_fix['street']          = array( $saved_points['street'] );
+											$saved_points_fix['building_number'] = array( $saved_points['building_number'] );
+											$saved_points_fix['postal_code']     = array( $saved_points['postal_code'] );
+											$saved_points_fix['city']            = array( $saved_points['city'] );
+										}
 
-                                        $saved_points = $saved_points_fix;
-                                    }
-
+										$saved_points = $saved_points_fix;
+									}
 
 									foreach ( $dpoints as $i => $v ) {
 
 										$id = $i;
 										?>
 
-                                        <tr id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_<?php echo esc_attr( $i ); ?>"
-                                            class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint-cell-wraper">
-                                            <td>
-                                                <input type="radio"
-                                                       value="<?php echo esc_attr( $i ); ?>"
-													<?php echo $i === (int) get_option( EasyPack::ATTRIBUTE_PREFIX . '_dpoint_selected' )
-														? 'checked' : '' ?>
-                                                       class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_selected"
-                                                       name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_selected">
-                                                <input type="button"
-                                                       value="X"
-                                                       class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint-remove"
-                                                       data-remove="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_<?php echo esc_attr( $i ); ?>">
+										<tr id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_<?php echo esc_attr( $i ); ?>"
+											class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint-cell-wraper">
+											<td>
+												<input type="radio"
+														value="<?php echo esc_attr( $i ); ?>"
+													<?php
+													echo $i === (int) get_option( EasyPack::ATTRIBUTE_PREFIX . '_dpoint_selected' )
+														? 'checked' : ''
+													?>
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_selected"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_selected">
+												<input type="button"
+														value="X"
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint-remove"
+														data-remove="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_<?php echo esc_attr( $i ); ?>">
 
-                                            </td>
-                                            <td>
-                                                <input
-                                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
-                                                        value="<?php echo ! empty( $saved_points['street'] ) ? esc_attr( $saved_points['street'][ $i ] ) : '' ?>"
-                                                        name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[street][]"
-                                                        id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_street">
-                                            </td>
-                                            <td>
-                                                <input
-                                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
-                                                        value="<?php echo ! empty( $saved_points['building_number'] ) ? esc_attr( $saved_points['building_number'][ $i ] ) : '' ?>"
-                                                        name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[building_number][]"
-                                                        id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_building_number">
-                                            </td>
-                                            <td>
-                                                <input
-                                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
-                                                        value="<?php echo ! empty( $saved_points['postal_code'] ) ? esc_attr( $saved_points['postal_code'][ $i ] ) : '' ?>"
-                                                        name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[postal_code][]"
-                                                        id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_postal_code">
-                                            </td>
-                                            <td>
-                                                <input
-                                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
-                                                        value="<?php echo ! empty( $saved_points['city'] ) ? esc_attr( $saved_points['city'][ $i ] ) : '' ?>"
-                                                        name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[city][]"
-                                                        id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_city">
-                                            </td>
-                                        </tr>
+											</td>
+											<td>
+												<input
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
+														value="<?php echo ! empty( $saved_points['point_name'] ) && isset( $saved_points['point_name'][ $i ] ) ? esc_attr( $saved_points['point_name'][ $i ] ) : ''; ?>"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[point_name][]"
+														id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_point_name">
+											</td>
+											<td>
+												<input
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
+														value="<?php echo ! empty( $saved_points['street'] ) ? esc_attr( $saved_points['street'][ $i ] ) : ''; ?>"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[street][]"
+														id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_street">
+											</td>
+											<td>
+												<input
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
+														value="<?php echo ! empty( $saved_points['building_number'] ) ? esc_attr( $saved_points['building_number'][ $i ] ) : ''; ?>"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[building_number][]"
+														id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_building_number">
+											</td>
+											<td>
+												<input
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
+														value="<?php echo ! empty( $saved_points['postal_code'] ) ? esc_attr( $saved_points['postal_code'][ $i ] ) : ''; ?>"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[postal_code][]"
+														id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_postal_code">
+											</td>
+											<td>
+												<input
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
+														value="<?php echo ! empty( $saved_points['city'] ) ? esc_attr( $saved_points['city'][ $i ] ) : ''; ?>"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[city][]"
+														id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_city">
+											</td>
+										</tr>
 										<?php
 									}
-
-
 								} else {
 									$k = 0;
 									?>
-                                    <tr id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_<?php echo esc_attr( $k ); ?>"
-                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX); ?>_dpoint-cell-wraper">
-                                        <td>
-                                            <input type="radio"
-                                                   value="<?php echo esc_attr( $k ); ?>"
-												<?php echo $k === (int) get_option( EasyPack::ATTRIBUTE_PREFIX . '_dpoint_selected' )
-													? 'checked' : '' ?>
-                                                   class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_selected"
-                                                   name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_selected">
-                                            <input type="button"
-                                                   value="X"
-                                                   class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint-remove"
-                                                   data-remove="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_<?php echo esc_attr( $k ); ?>">
+									<tr id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_<?php echo esc_attr( $k ); ?>"
+										class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint-cell-wraper">
+										<td>
+											<input type="radio"
+													value="<?php echo esc_attr( $k ); ?>"
+												<?php
+												echo $k === (int) get_option( EasyPack::ATTRIBUTE_PREFIX . '_dpoint_selected' )
+													? 'checked' : ''
+												?>
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_selected"
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_selected">
+											<input type="button"
+													value="X"
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint-remove"
+													data-remove="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_<?php echo esc_attr( $k ); ?>">
 
-                                        </td>
-                                        <td>
-                                            <input
-                                                    class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
-                                                    value=""
-                                                    name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[street]"
-                                                    id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_street">
-                                        </td>
-                                        <td>
-                                            <input
-                                                    class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
-                                                    value=""
-                                                    name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[building_number]"
-                                                    id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_building_number">
-                                        </td>
-                                        <td>
-                                            <input
-                                                    class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
-                                                    value=""
-                                                    name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[postal_code]"
-                                                    id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_postal_code">
-                                        </td>
-                                        <td>
-                                            <input
-                                                    class="<?php echo esc_attr(EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
-                                                    value=""
-                                                    name="<?php echo esc_attr(EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[city]"
-                                                    id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_city">
-                                        </td>
-                                    </tr>
-									<?php
-								} ?>
+										</td>
+										<td>
+											<input
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
+													value=""
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[point_name]"
+													id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_point_name">
+										</td>
+										<td>
+											<input
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
+													value=""
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[street]"
+													id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_street">
+										</td>
+										<td>
+											<input
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
+													value=""
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[building_number]"
+													id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_building_number">
+										</td>
+										<td>
+											<input
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
+													value=""
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[postal_code]"
+													id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_postal_code">
+										</td>
+										<td>
+											<input
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint"
+													value=""
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint[city]"
+													id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_city">
+										</td>
+									</tr>
+																	<?php
+								}
+								?>
 
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <button id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_add"
-                                    value="Add dispath point"><?php esc_html_e( 'Add dispath point', 'woocommerce-inpost' ) ?>
-                            </button>
-                        </td>
-                    </tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<button id="<?php echo esc_attr( EasyPack::ATTRIBUTE_PREFIX ); ?>_dpoint_add"
+									value="Add dispath point"><?php esc_html_e( 'Add dispath point', 'woocommerce-inpost' ); ?>
+							</button>
+						</td>
+					</tr>
 					<?php
 
 					self::$prevent_duplicate['manage_dispath_points_module'] = true;
 				},
-				10 );
+				10
+			);
 
+			return array(
+				'name'  => __( 'Manage dispath points', 'woocommerce-inpost' ),
+				'title' => __( 'Manage dispath points', 'woocommerce-inpost' ),
+				'type'  => 'manage_dispath_points_module',
+				'id'    => EasyPack::ATTRIBUTE_PREFIX . '_dpoint',
 
-			return
-                [
-                    'name'  => __( 'Manage dispath points', 'woocommerce-inpost' ),
-                    'title' => __( 'Manage dispath points', 'woocommerce-inpost' ),
-                    'type'  => 'manage_dispath_points_module',
-                    'id'    => EasyPack::ATTRIBUTE_PREFIX . '_dpoint',
-
-                ];
+			);
 		}
 
 
 
 
 
-        /**
-         * Outputs the courier templates management module HTML.
-         *
-         * @return array Configuration array for the templates module field.
-         *
-         * @since 1.0.0
-         * @access private
-         */
-        private function output_courier_templates_module() {
-            add_action( 'woocommerce_admin_field_manage_inpost_pl_courier_templates_module',
-                function ( $data ) {
-                    if ( isset( self::$prevent_duplicate['manage_inpost_pl_courier_templates_module'] )
-                         && self::$prevent_duplicate['manage_inpost_pl_courier_templates_module']
-                    ) {
-                        return;
-                    }
+		/**
+		 * Outputs the courier templates management module HTML.
+		 *
+		 * @return array Configuration array for the templates module field.
+		 *
+		 * @since 1.0.0
+		 * @access private
+		 */
+		private function output_courier_templates_module() {
+			add_action(
+				'woocommerce_admin_field_manage_inpost_pl_courier_templates_module',
+				function ( $data ) {
+					if ( isset( self::$prevent_duplicate['manage_inpost_pl_courier_templates_module'] )
+						&& self::$prevent_duplicate['manage_inpost_pl_courier_templates_module']
+					) {
+						return;
+					}
 
-                    $saved_templates = get_option( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX . '_dmtemplates' );
-                    ?>
-                    <tr id="inpost-pl-courier-templates">
-                        <th scope="row" class="titledesc">
-                            <label for="inpost_pl_ctemplate_0">
-                                <?php echo esc_attr( $data['name'] ); ?></label>
-                        </th>
-                        <td class="forminp forminp-text">
+					$saved_templates = get_option( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX . '_dmtemplates' );
+					?>
+					<tr id="inpost-pl-courier-templates">
+						<th scope="row" class="titledesc">
+							<label for="inpost_pl_ctemplate_0">
+								<?php echo esc_attr( $data['name'] ); ?></label>
+						</th>
+						<td class="forminp forminp-text">
 
-                            <table id="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_ctemplate-cell">
-                                <thead>
-                                <th><?php esc_html_e( 'Selected', 'woocommerce-inpost' ) ?></th>
-                                <th><?php esc_html_e( 'Template name', 'woocommerce-inpost' ) ?></th>
-                                <th><?php esc_html_e( 'Length (mm)', 'woocommerce-inpost' ) ?></th>
-                                <th><?php esc_html_e( 'Width (mm)', 'woocommerce-inpost' ) ?></th>
-                                <th><?php esc_html_e( 'Height (mm)', 'woocommerce-inpost' ) ?></th>
-                                <th><?php esc_html_e( 'Weight (kg)', 'woocommerce-inpost' ) ?></th>
-                                <th><?php esc_html_e( 'Not standard?', 'woocommerce-inpost' ) ?></th>
-                                </thead>
+							<table id="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_ctemplate-cell">
+								<thead>
+								<th><?php esc_html_e( 'Selected', 'woocommerce-inpost' ); ?></th>
+								<th><?php esc_html_e( 'Template name', 'woocommerce-inpost' ); ?></th>
+								<th><?php esc_html_e( 'Length (mm)', 'woocommerce-inpost' ); ?></th>
+								<th><?php esc_html_e( 'Width (mm)', 'woocommerce-inpost' ); ?></th>
+								<th><?php esc_html_e( 'Height (mm)', 'woocommerce-inpost' ); ?></th>
+								<th><?php esc_html_e( 'Weight (kg)', 'woocommerce-inpost' ); ?></th>
+								<th><?php esc_html_e( 'Not standard?', 'woocommerce-inpost' ); ?></th>
+								</thead>
 
-                                <?php
+								<?php
 
-                                if ( is_array( $saved_templates ) && ! empty( $saved_templates ) && ! empty( $saved_templates[0]['name'] ) ) {
-                                    $k = 0;
-                                    foreach ( $saved_templates as $i => $dim_template ) {
-                                        if ( ! is_numeric( $i ) || empty( $dim_template['name'] ) ) {
-                                            continue;
-                                        }
+								if ( is_array( $saved_templates ) && ! empty( $saved_templates ) && ! empty( $saved_templates[0]['name'] ) ) {
+									$k = 0;
+									foreach ( $saved_templates as $i => $dim_template ) {
+										if ( ! is_numeric( $i ) || empty( $dim_template['name'] ) ) {
+											continue;
+										}
 
-                                        $dim_template_slug = ! empty( $dim_template['slug'] ) ? $dim_template['slug'] : '';
-                                        $is_not_standard = ! empty( $dim_template['not_standard'] ) ? $dim_template['not_standard'] : '';
+										$dim_template_slug = ! empty( $dim_template['slug'] ) ? $dim_template['slug'] : '';
+										$is_not_standard   = ! empty( $dim_template['not_standard'] ) ? $dim_template['not_standard'] : '';
 
-                                        ?>
-                                        <tr id="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_<?php echo esc_attr( $k ); ?>"
-                                            class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate-cell-wraper" data-index="<?php echo esc_attr( $k ); ?>">
-                                            <td class="inpost_pl_manage_template_td">
-                                                <input  type="radio"
-                                                        data-id="selected"
-                                                        <?php echo $i === (int) get_option( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX . '_dmtemplate_selected' )  ? 'checked' : '' ?>
-                                                        value="<?php echo esc_attr( $k ); ?>"
-                                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_selected"
-                                                        name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_selected"
-                                                >
-                                                <input
-                                                        type="button"
-                                                        value="X"
-                                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate-remove"
-                                                        data-remove="<?php echo esc_attr( $k ); ?>"
-                                                >
-                                            </td>
-                                            <td>
-                                                <input
-                                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate"
-                                                        value="<?php echo esc_html( $dim_template['name'] ); ?>"
-                                                        data-id="name"
-                                                        type="text"
-                                                        name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][name]"
-                                                >
-                                                <input
-                                                        class="inpost_intl_template_slug"
-                                                        value="<?php echo esc_attr( $dim_template_slug ); ?>"
-                                                        data-id="slug"
-                                                        type="hidden"
-                                                        name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][slug]"
-                                                >
-                                            </td>
-                                            <td>
-                                                <input
-                                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
-                                                        value="<?php echo esc_html( $dim_template['length'] ); ?>"
-                                                        data-id="length"
-                                                        type="number"
-                                                        step="0.1"
-                                                        min="0"
-                                                        max="3500"
-                                                        name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][length]"
-                                                >
-                                            </td>
-                                            <td>
-                                                <input
-                                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
-                                                        value="<?php echo esc_html( $dim_template['width'] ); ?>"
-                                                        data-id="width"
-                                                        type="number"
-                                                        step="0.1"
-                                                        min="0"
-                                                        max="2400"
-                                                        name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][width]"
-                                                >
-                                            </td>
-                                            <td>
-                                                <input
-                                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
-                                                        value="<?php echo esc_html( $dim_template['height'] ); ?>"
-                                                        data-id="height"
-                                                        type="number"
-                                                        step="0.1"
-                                                        min="0"
-                                                        max="2400"
-                                                        name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][height]"
-                                                >
-                                            </td>
-                                            <td>
-                                                <input
-                                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
-                                                        value="<?php echo esc_html( $dim_template['weight'] ); ?>"
-                                                        data-id="weight"
-                                                        type="number"
-                                                        step="0.1"
-                                                        min="0"
-                                                        max="50"
-                                                        name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][weight]"
-                                                >
-                                            </td>
-                                            <td>
-                                                <select
-                                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate"
-                                                        data-id="not_standard"
-                                                        name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][not_standard]"
-                                                >
-                                                    <option value="0" <?php selected($is_not_standard, '0'); ?>><?php esc_html_e( 'No', 'woocommerce-inpost' ) ?></option>
-                                                    <option value="1" <?php selected($is_not_standard, '1'); ?>><?php esc_html_e( 'Yes', 'woocommerce-inpost' ) ?></option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <?php
-                                        ++$k;
-                                    }
+										?>
+										<tr id="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_<?php echo esc_attr( $k ); ?>"
+											class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate-cell-wraper" data-index="<?php echo esc_attr( $k ); ?>">
+											<td class="inpost_pl_manage_template_td">
+												<input  type="radio"
+														data-id="selected"
+														<?php echo $i === (int) get_option( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX . '_dmtemplate_selected' ) ? 'checked' : ''; ?>
+														value="<?php echo esc_attr( $k ); ?>"
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_selected"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_selected"
+												>
+												<input
+														type="button"
+														value="X"
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate-remove"
+														data-remove="<?php echo esc_attr( $k ); ?>"
+												>
+											</td>
+											<td>
+												<input
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate"
+														value="<?php echo esc_html( $dim_template['name'] ); ?>"
+														data-id="name"
+														type="text"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][name]"
+												>
+												<input
+														class="inpost_intl_template_slug"
+														value="<?php echo esc_attr( $dim_template_slug ); ?>"
+														data-id="slug"
+														type="hidden"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][slug]"
+												>
+											</td>
+											<td>
+												<input
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
+														value="<?php echo esc_html( $dim_template['length'] ); ?>"
+														data-id="length"
+														type="number"
+														step="0.1"
+														min="0"
+														max="3500"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][length]"
+												>
+											</td>
+											<td>
+												<input
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
+														value="<?php echo esc_html( $dim_template['width'] ); ?>"
+														data-id="width"
+														type="number"
+														step="0.1"
+														min="0"
+														max="2400"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][width]"
+												>
+											</td>
+											<td>
+												<input
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
+														value="<?php echo esc_html( $dim_template['height'] ); ?>"
+														data-id="height"
+														type="number"
+														step="0.1"
+														min="0"
+														max="2400"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][height]"
+												>
+											</td>
+											<td>
+												<input
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
+														value="<?php echo esc_html( $dim_template['weight'] ); ?>"
+														data-id="weight"
+														type="number"
+														step="0.1"
+														min="0"
+														max="50"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][weight]"
+												>
+											</td>
+											<td>
+												<select
+														class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate"
+														data-id="not_standard"
+														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][not_standard]"
+												>
+													<option value="0" <?php selected( $is_not_standard, '0' ); ?>><?php esc_html_e( 'No', 'woocommerce-inpost' ); ?></option>
+													<option value="1" <?php selected( $is_not_standard, '1' ); ?>><?php esc_html_e( 'Yes', 'woocommerce-inpost' ); ?></option>
+												</select>
+											</td>
+										</tr>
+										<?php
+										++$k;
+									}
+								} else {
 
-                                } else {
+									$k = 0;
+									?>
+									<tr id="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_<?php echo esc_attr( $k ); ?>"
+										class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate-cell-wraper">
+										<td class="inpost_pl_manage_template_td">
+											<input  type="radio"
+													data-id="selected"
+													value="<?php echo esc_attr( $k ); ?>"
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_selected"
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_selected"
+											>
+											<input
+													type="button"
+													value="X"
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate-remove"
+													data-remove="<?php echo esc_attr( $k ); ?>"
+											>
+										</td>
+										<td>
+											<input
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate"
+													value=""
+													data-id="name"
+													type="text"
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][name]"
+											>
+											<input
+													class="inpost_intl_template_slug"
+													value=""
+													data-id="slug"
+													type="hidden"
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][slug]"
+											>
+										</td>
+										<td>
+											<input
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
+													value=""
+													data-id="length"
+													type="number"
+													step="0.1"
+													min="0"
+													max="3500"
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][length]"
+											>
+										</td>
+										<td>
+											<input
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
+													value=""
+													data-id="width"
+													type="number"
+													step="0.1"
+													min="0"
+													max="2400"
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][width]"
+											>
+										</td>
+										<td>
+											<input
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
+													value=""
+													data-id="height"
+													type="number"
+													step="0.1"
+													min="0"
+													max="2400"
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][height]"
+											>
+										</td>
+										<td>
+											<input
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
+													value=""
+													data-id="weight"
+													type="number"
+													step="0.1"
+													min="0"
+													max="50"
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][weight]"
+											>
+										</td>
+										<td>
+											<select
+													class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate"
+													data-id="not_standard"
+													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][not_standard]"
+											>
+												<option value="0"><?php esc_html_e( 'No', 'woocommerce-inpost' ); ?></option>
+												<option value="1"><?php esc_html_e( 'Yes', 'woocommerce-inpost' ); ?></option>
+											</select>
+										</td>
+									</tr>
+									<?php
+								}
+								?>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<button id="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_add"
+									value="Add courier template"><?php echo esc_html__( 'Add template', 'woocommerce-inpost' ); ?>
+							</button>
+						</td>
+					</tr>
+					<?php
 
-                                    $k = 0;
-                                    ?>
-                                    <tr id="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_<?php echo esc_attr( $k ); ?>"
-                                        class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate-cell-wraper">
-                                        <td class="inpost_pl_manage_template_td">
-                                            <input  type="radio"
-                                                    data-id="selected"
-                                                    value="<?php echo esc_attr( $k ); ?>"
-                                                    class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_selected"
-                                                    name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_selected"
-                                            >
-                                            <input
-                                                    type="button"
-                                                    value="X"
-                                                    class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate-remove"
-                                                    data-remove="<?php echo esc_attr( $k ); ?>"
-                                            >
-                                        </td>
-                                        <td>
-                                            <input
-                                                    class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate"
-                                                    value=""
-                                                    data-id="name"
-                                                    type="text"
-                                                    name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][name]"
-                                            >
-                                            <input
-                                                    class="inpost_intl_template_slug"
-                                                    value=""
-                                                    data-id="slug"
-                                                    type="hidden"
-                                                    name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][slug]"
-                                            >
-                                        </td>
-                                        <td>
-                                            <input
-                                                    class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
-                                                    value=""
-                                                    data-id="length"
-                                                    type="number"
-                                                    step="0.1"
-                                                    min="0"
-                                                    max="3500"
-                                                    name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][length]"
-                                            >
-                                        </td>
-                                        <td>
-                                            <input
-                                                    class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
-                                                    value=""
-                                                    data-id="width"
-                                                    type="number"
-                                                    step="0.1"
-                                                    min="0"
-                                                    max="2400"
-                                                    name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][width]"
-                                            >
-                                        </td>
-                                        <td>
-                                            <input
-                                                    class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
-                                                    value=""
-                                                    data-id="height"
-                                                    type="number"
-                                                    step="0.1"
-                                                    min="0"
-                                                    max="2400"
-                                                    name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][height]"
-                                            >
-                                        </td>
-                                        <td>
-                                            <input
-                                                    class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate inpost_intl_validated_input"
-                                                    value=""
-                                                    data-id="weight"
-                                                    type="number"
-                                                    step="0.1"
-                                                    min="0"
-                                                    max="50"
-                                                    name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][weight]"
-                                            >
-                                        </td>
-                                        <td>
-                                            <select
-                                                    class="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate"
-                                                    data-id="not_standard"
-                                                    name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][not_standard]"
-                                            >
-                                                <option value="0"><?php esc_html_e( 'No', 'woocommerce-inpost' ) ?></option>
-                                                <option value="1"><?php esc_html_e( 'Yes', 'woocommerce-inpost' ) ?></option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <?php
-                                }
-                                ?>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <button id="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplate_add"
-                                    value="Add courier template"><?php echo esc_html__( 'Add template', 'woocommerce-inpost' ) ?>
-                            </button>
-                        </td>
-                    </tr>
-                    <?php
+					self::$prevent_duplicate['manage_inpost_pl_courier_templates_module'] = true;
+				},
+				10
+			);
 
-                    self::$prevent_duplicate['manage_inpost_pl_courier_templates_module'] = true;
-                },
-                10 );
+			return array(
+				'name'  => esc_html__( 'Manage courier templates', 'woocommerce-inpost' ),
+				'title' => esc_html__( 'Manage courier templates', 'woocommerce-inpost' ),
+				'type'  => 'manage_inpost_pl_courier_templates_module',
+				'id'    => EasyPack::ATTRIBUTE_TEMPLATES_PREFIX . '_dmtemplates',
 
-
-            return
-                [
-                    'name'  => esc_html__( 'Manage courier templates', 'woocommerce-inpost' ),
-                    'title' => esc_html__( 'Manage courier templates', 'woocommerce-inpost' ),
-                    'type'  => 'manage_inpost_pl_courier_templates_module',
-                    'id'    => EasyPack::ATTRIBUTE_TEMPLATES_PREFIX . '_dmtemplates',
-
-                ];
-        }
-
-
+			);
+		}
 	}
 
 endif;

@@ -14,7 +14,7 @@ use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\shipx\models\courier_pickup\ShipX_Dispatch_Order_Point_Model;
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 } // Exit if accessed directly.
 
 ?>
@@ -36,13 +36,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 				}
 
 				$params = array(
-					'type'     => 'select',
-					'selected' => $dispatch_point,
-					'options'  => $point_select_items,
-					'class'    => array( 'wc-enhanced-select' ),
-					'label'    => __( 'Dispatch point ', 'woocommerce-inpost' ),
+					'type'    => 'select',
+					'options' => $point_select_items,
+					'class'   => array( 'wc-enhanced-select' ),
+					'label'   => esc_html__( 'Dispatch point ', 'woocommerce-inpost' ),
 				);
-				woocommerce_form_field( 'dispatch_point', $params );
+				woocommerce_form_field( 'dispatch_point', $params, $dispatch_point );
 				?>
 
 			</div>
