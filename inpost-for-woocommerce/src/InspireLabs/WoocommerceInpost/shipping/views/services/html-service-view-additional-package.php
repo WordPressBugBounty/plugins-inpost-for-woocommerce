@@ -16,12 +16,12 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
             <?php foreach ($existed_additional_packages as $package) : ?>
                 <?php if ( is_array($package) && ! empty($package) ) : ?>
                     <div class="easypack_additional_package_data_heading">
-                        <?php esc_html_e('Additional package:', 'woocommerce-inpost'); ?>
+                        <?php esc_html_e('Additional package:', 'inpost-for-woocommerce'); ?>
                     </div>
                     <?php foreach ($package as $service => $package_data) : ?>
                         <div class="easypack_additional_package_data">
                         <span class="easypack_additional_package_data_title">
-                            <?php esc_html_e('Service:', 'woocommerce-inpost'); ?>
+                            <?php esc_html_e('Service:', 'inpost-for-woocommerce'); ?>
                         </span>
                             <span class="easypack_additional_package_data_item">
                             <?php $shipment_service = EasyPack::EasyPack()->get_shipment_service();
@@ -29,7 +29,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
                         </span>
                             <?php if ( isset($package_data['ref_number']) ) : ?>
                                 <span class="easypack_additional_package_data_title">
-                                <?php esc_html_e('Reference number:', 'woocommerce-inpost'); ?>
+                                <?php esc_html_e('Reference number:', 'inpost-for-woocommerce'); ?>
                             </span>
                                 <span class="easypack_additional_package_data_item">
                                 <?php echo esc_html( $package_data['ref_number'] ); ?>
@@ -38,7 +38,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
                             <?php if ( isset($package_data['tracking']) ) :
                                 $tracking_url = EasyPack_Helper()->get_tracking_url(); ?>
                                 <span class="easypack_additional_package_data_title">
-                                <?php esc_html_e('Tracking number:', 'woocommerce-inpost'); ?>
+                                <?php esc_html_e('Tracking number:', 'inpost-for-woocommerce'); ?>
                             </span>
                                 <span class="easypack_additional_package_data_item">
                                 <?php echo sprintf( '<a target="_blank" href="%s">%s</a>',
@@ -52,7 +52,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
                                                         data-id="%s" data-order-id="%s" href="#">%s</button><span>',
                                     esc_attr( $package_data['inpost_id'] ),
                                     esc_attr( $order_id ),
-                                    esc_html__('Get sticker for additional package', 'woocommerce-inpost') ); ?>
+                                    esc_html__('Get sticker for additional package', 'inpost-for-woocommerce') ); ?>
                             </span>
                             <?php endif; ?>
                         </div>

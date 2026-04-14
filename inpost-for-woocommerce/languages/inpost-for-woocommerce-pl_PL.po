@@ -1,0 +1,3046 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: InPost for WooCommerce 1.5.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/inpost-for-woocommerce\n"
+"POT-Creation-Date: 2018-08-24 13:01:34+00:00\n"
+"PO-Revision-Date: 2026-04-09 17:53+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: pl_PL\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:76
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-cod.php:26
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier-local-super-express.php:26
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier.php:25
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-weekend.php:25
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates.php:25
+msgid "Action"
+msgstr "Akcje"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Product_Shipping_Method_Selector.php:123
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:39
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:69
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:70
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:910
+msgid "InPost"
+msgstr "InPost"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:135
+msgid "API URL"
+msgstr "API URL"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:765
+msgid "Are you sure to change the country?"
+msgstr "Czy na pewno zmienić kraj?"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:217
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:225
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:185
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:181
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:181
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:184
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:184
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:234
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:245
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:304
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:191
+msgid "Parcel Locker"
+msgstr "Paczkomat"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:218
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:188
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:199
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:528
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:183
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:544
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:183
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:552
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:200
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:569
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:182
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:508
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:184
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:548
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:183
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:511
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:190
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:550
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:182
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:511
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:184
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:547
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:197
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:199
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:185
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:575
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:186
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:560
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:186
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:571
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:236
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:601
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:247
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:532
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:306
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1115
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:193
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:640
+msgid "Courier"
+msgstr "Kurier"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:128
+msgid "Logging in"
+msgstr "Dane logowania"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:145
+msgid "Organization ID"
+msgstr "ID organizacji"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:155
+msgid "Token"
+msgstr "Token"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:182
+msgid "API type"
+msgstr "Typ API"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:188
+msgid "Production"
+msgstr "Produkcyjne"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:189
+msgid "Sandbox"
+msgstr "Sandbox"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1358
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:101
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:88
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:88
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:102
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:84
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:86
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:84
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:86
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:84
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:86
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:99
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:101
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:87
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:91
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:91
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:87
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:98
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:218
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:105
+msgid "Insurance"
+msgstr "Ubezpieczenie"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1368
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:109
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:96
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:96
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:110
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:92
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:94
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:92
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:94
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:92
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:94
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:107
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:109
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:95
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:99
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:99
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:95
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:106
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:226
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:113
+msgid "Default insurance amount"
+msgstr "Domyślna wartość ubezpieczenia"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:209
+msgid "Send options"
+msgstr "Opcje wysyłki"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:216
+msgid "Default package size"
+msgstr "Domyślne wymiary przesyłek Paczkomat"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:193
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:176
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:176
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:194
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:176
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:178
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:177
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:184
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:176
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:178
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:191
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:193
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:179
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:179
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:179
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:229
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:240
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:299
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:186
+msgid "Default send method"
+msgstr "Domyślna metoda wysyłki"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:241
+msgid "Default send parcel locker"
+msgstr "Domyślny paczkomat nadawczy"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:351
+msgid "Dispatch point"
+msgstr "Punkt odbioru"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:557
+msgid "Sender"
+msgstr "Nadawca"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:564
+msgid "First Name"
+msgstr "Imię"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:574
+msgid "Last Name"
+msgstr "Nazwisko"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:584
+msgid "Company Name"
+msgstr "Nazwa firmy"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:593
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:833
+msgid "Street"
+msgstr "Ulica"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:602
+msgid "Building no"
+msgstr "Numer budynku"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:611
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:202
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:203
+msgid "Post code"
+msgstr "Kod pocztowy"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:619
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:836
+msgid "City"
+msgstr "Miasto"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/courier_pickup/ShipX_Courier_Pickup_Service.php:71
+msgid "city"
+msgstr "miasto"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:629
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:201
+msgid "Email"
+msgstr "Adres e-mail"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:639
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:200
+msgid "Phone"
+msgstr "Numer telefonu"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:333
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:460
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:462
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1151
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1249
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:457
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:656
+msgid "No"
+msgstr "Nie"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:332
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1152
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1250
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:458
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:657
+msgid "Yes"
+msgstr "Tak"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:523
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:710
+msgid "Parcel Locker "
+msgstr "Paczkomat "
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:65
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:202
+msgid "Print sticker"
+msgstr "Drukuj etykietę"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:80
+msgid "Print return sticker"
+msgstr "Drukuj etykietę zwrotną"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:219
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:191
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1521
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:198
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:529
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:182
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:542
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:182
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:550
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:199
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:570
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:181
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:509
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:183
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:549
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:182
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:512
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:189
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:551
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:181
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:512
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:183
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:548
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:196
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:198
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:184
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:185
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:561
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:185
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:572
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:235
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:246
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:305
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1116
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:192
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:641
+msgid "POP"
+msgstr "POP"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:283
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:121
+msgid "Tracking number"
+msgstr "Numer przesyłki"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:284
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:133
+msgid "Order ID"
+msgstr "Numer zamówienia"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:285
+msgid "Inpost ID"
+msgstr "Numer zamówienia InPost"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:287
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:145
+msgid "Reference number"
+msgstr "Numer referencyjny"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:288
+msgid "Status"
+msgstr "Status"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:291
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:109
+msgid "Service"
+msgstr "Usługa"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:292
+msgid "Dimensions"
+msgstr "Wymiary"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:293
+msgid "COD"
+msgstr "Pobranie"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:294
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-send-method.php:33
+msgid "Send method"
+msgstr "Sposób nadania"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:295
+msgid "Shipping address"
+msgstr "Adres wysyłki"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:300
+msgid "Dispatch order status"
+msgstr "Status zlecenia odbioru"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:301
+msgid "Dispatch point name"
+msgstr "Nazwa punktu odbioru"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:304
+msgid "Actions"
+msgstr "Akcje"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:310
+msgid "Refresh statuses now"
+msgstr "Odśwież status"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:86
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:87
+msgid "Shipments"
+msgstr "Przesyłki"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:162
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:203
+msgid "Error while creating manifest: "
+msgstr "Błąd podczas tworzenia:  "
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:216
+msgid "All"
+msgstr "Wszystkie"
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:25
+msgid "InPost Shipments"
+msgstr "Przesyłki InPost"
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:42
+msgid "Dispatch point "
+msgstr "Punkt odbioru "
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:52
+msgid "From the list, select the packages that you want to be sent by courier."
+msgstr "Wybierz z listy przesyłki, która chcesz wysłać za pomocą kuriera."
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:54
+msgid "Get courier"
+msgstr "Zamów kuriera"
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:74
+msgid "Filters"
+msgstr "Filtry"
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:81
+msgid "Send method "
+msgstr "Sposób nadania "
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:96
+msgid "Shipment status"
+msgstr "Status przesyłki"
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:157
+msgid "Receiver email"
+msgstr "E-mail odbiorcy"
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:169
+msgid "Receiver phone"
+msgstr "Numer telefonu odbiorcy"
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:179
+msgid "Filter parcels"
+msgstr "Szukaj przesyłek"
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:185
+msgid "Actions for selected items"
+msgstr "Akcje dla wybranych przedmiotów"
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:195
+msgid "Get stickers"
+msgstr "Pobierz etykiety"
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:209
+msgid "Get return stickers"
+msgstr "Pobierz etykiety zwrotne"
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:242
+msgid "From the list, select the packages that you want to be collected to be sent. If Courier has been chosen, the collection of your packages by a courier will be arranged."
+msgstr "Wybierz z listy przesyłki, które chcesz wysłaćJeśli wybrano kuriera, odbiór paczek zostanie zlecony przez kuriera."
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:358
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:390
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:442
+msgid "No parcels selected."
+msgstr "Brak wybranych przesyłek."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:196
+msgid "Recipient e-mail"
+msgstr "E-mail odbiorcy"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:198
+msgid "Recipient phone"
+msgstr "Numer telefonu odbiorcy"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:199
+msgid "Address"
+msgstr "Adres"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:204
+msgid "Default parcel locker"
+msgstr "Domyślny paczkomat"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:206
+msgid "not valid"
+msgstr "nieprawidłowy"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:207
+msgid "invalid"
+msgstr "nieprawidłowy"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:208
+msgid "not found"
+msgstr "nie znaleziono"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:209
+msgid "invalid format"
+msgstr "nieprawidłowy format"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:210
+msgid "required"
+msgstr "wymagany"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:211
+msgid "too many characters"
+msgstr "zbyt dużo znaków"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:213
+msgid "Action (cancel) can not be taken on shipment with status (confirmed)."
+msgstr "Akcja (anulowanie) nie może być wykonana, jeżeli przesyłka jest w statusie (potwierdzona)"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_AJAX.php:179
+#: src/InspireLabs/WoocommerceInpost/EasyPack_AJAX.php:197
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:215
+msgid "There are some validation errors."
+msgstr "Występują błędy walidacji."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:226
+msgid "Can not create sticker. You have not enough funds to pay for this parcel"
+msgstr "Nie można pobrać etykiety. Nie posiadasz wystarczających środków, aby opłacić przesyłkę"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:217
+msgid "Invalid login or token"
+msgstr "Nieprawidłowy login lub token"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:218
+msgid "Invalid login"
+msgstr "Nieprawidłowy login"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:220
+msgid "Parcel Locker is empty. Please fill in this field."
+msgstr "Paczomat jest pusty. Proszę wypełnij pole."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:221
+msgid "Default send parcel locker: "
+msgstr "Domyślny paczkomat nadawczy: "
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:222
+msgid "The transaction can not be completed due to the balance of your account"
+msgstr "Transakcja nie może być dokończona z powodu stanu Twojego konta"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:352
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:440
+msgid "Bad API response. Check API URL"
+msgstr "Nieprawidłowa odpowiedź API. Sprawdź API URL"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:882
+msgid "Invalid phone number. Valid phone number must contains 10 digits."
+msgstr "Nieprawidłowy numer telefonu. Poprawny numer telefonu zawiera 10 cyfr."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:889
+msgid "Invalid phone number. Valid phone number must contains 9 digits and must not begins with 0."
+msgstr "Nieprawidłowy numer telefonu. Poprawny numer telefonu zawiera 9 cyfr i nie może zaczyna się od 0."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:896
+msgid "Invalid phone number."
+msgstr "Nieprawidłowy numer telefonu."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Helper.php:83
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Helper.php:200
+msgid "Error while creating manifest:  "
+msgstr "Błąd w trakcie tworzenia manifestu:  "
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:79
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:80
+#: woocommerce-inpost.php:102
+msgid "Settings"
+msgstr "Ustawienia"
+
+#. translators: %s: field name
+#: src/InspireLabs/WoocommerceInpost/shipping/Easypack_checkout_validator.php:78
+msgid "Shipping %s"
+msgstr "Wysyłka %s"
+
+#. translators: %s: field name
+#: src/InspireLabs/WoocommerceInpost/shipping/Easypack_checkout_validator.php:82
+msgid "Billing %s"
+msgstr "Faktura %s"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/Easypack_checkout_validator.php:89
+msgid "Please enter a valid UK phone number."
+msgstr "Proszę wprowadź prawiłowy numer telefonu dla UK."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1297
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:44
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:45
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:75
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:75
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:75
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:75
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:74
+msgid "InPost Courier COD"
+msgstr "InPost Kurier Standard Pobranie"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:60
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:63
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:63
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:61
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:59
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:61
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:59
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:61
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:59
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:61
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:58
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:60
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:62
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:66
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:66
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:63
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:74
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:186
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:72
+msgid "General settings"
+msgstr "Podstawowe ustawienia"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:72
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:75
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:75
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:73
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:71
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:73
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:71
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:73
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:71
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:73
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:70
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:72
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:74
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:78
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:78
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:75
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:86
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:198
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:84
+msgid "Method title"
+msgstr "Nazwa metody"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:120
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:107
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:107
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:121
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:103
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:105
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:103
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:105
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:103
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:105
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:118
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:120
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:106
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:117
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:117
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:167
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:178
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:237
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:124
+msgid "Free shipping"
+msgstr "Darmowa wysyłka"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:127
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:114
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:114
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:128
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:110
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:112
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:110
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:112
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:110
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:112
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:125
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:127
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:113
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:124
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:124
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:131
+msgid "Enter the amount of the contract, from which shipping will be free (does not include virtual products)."
+msgstr "Wprowadź kwotę zamówienia, od której koszt wysyłki będzie darmowy (nie obejmuje produktów wirtualnych)."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:150
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:137
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:137
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:151
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:133
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:135
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:133
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:135
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:133
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:135
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:148
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:150
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:136
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:147
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:147
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:197
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:208
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:267
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:154
+msgid "Flat rate"
+msgstr "Jednolita stawka"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:152
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:139
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:139
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:153
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:135
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:137
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:135
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:137
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:135
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:137
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:150
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:152
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:138
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:149
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:149
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:199
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:210
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:269
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:156
+msgid "Set a flat-rate shipping fee for the entire order."
+msgstr "Ustaw jednolitą stawkę za wysyłkę dla całego zamówienia."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:157
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:144
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:144
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:158
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:140
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:142
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:140
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:145
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:140
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:142
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:155
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:157
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:143
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:154
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:154
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:204
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:215
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:274
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:161
+msgid "Cost of delivery"
+msgstr "Cena za dostawę"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:209
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:193
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:193
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:210
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:192
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:194
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:193
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:200
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:192
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:194
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:207
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:209
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:195
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:196
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:196
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:247
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:257
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:316
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:204
+msgid "Based on"
+msgstr "Na podstawie"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:211
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:195
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:195
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:212
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:194
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:196
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:195
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:202
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:194
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:196
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:209
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:211
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:197
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:198
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:198
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:249
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:259
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:318
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:206
+msgid "Select the method of calculating shipping cost. If the cost of shipping is to be calculated based on the weight of the cart and the products do not have a defined weight, the cost will be calculated incorrectly."
+msgstr "Wybierz metodę obliczenia kosztu przesyłki. Jeśli koszt przesyłki jest obliczony na podstawie wagi, a nie posiada określonej wagi,koszt zostanie obliczony niepoprawnie."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:217
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:206
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:206
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:218
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:200
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:202
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:201
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:208
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:200
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:202
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:215
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:217
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:203
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:209
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:209
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:260
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:270
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:329
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:212
+msgid "Price"
+msgstr "Cena"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:218
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:207
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:207
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:219
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:201
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:203
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:202
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:209
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:201
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:203
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:216
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:218
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:204
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:210
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:210
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:261
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:271
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:330
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:213
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:219
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:165
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:206
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:807
+msgid "Weight"
+msgstr "Waga"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:391
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:407
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:416
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:436
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:375
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:415
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:377
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:417
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:377
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:412
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:387
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:418
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:384
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:395
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:406
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:417
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:439
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:425
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:436
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:459
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:624
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:508
+msgid "There are some errors. Please fix it: <br>"
+msgstr "Występują błędy. Popraw je: <br>"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:399
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:415
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:424
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:444
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:383
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:423
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:385
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:425
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:385
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:420
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:395
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:426
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:447
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:433
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:444
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:467
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:632
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:985
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:516
+msgid "Shipment created"
+msgstr "Przesyłka utworzona"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:533
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:543
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:551
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:574
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:513
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:553
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:516
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:555
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:516
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:552
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:559
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:570
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:600
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:605
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:531
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1114
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1120
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:639
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:645
+msgid "Parcel locker"
+msgstr "Paczkomat"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1300
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:45
+msgid "InPost Courier Local Express COD"
+msgstr "InPost Kurier Lokalny Express Pobranie"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1299
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:43
+msgid "InPost Courier Local Express"
+msgstr "InPost Kurier Lokalny Express"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1296
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:43
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:44
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:74
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:73
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:73
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:73
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:72
+msgid "InPost Courier"
+msgstr "InPost Kurier Standard"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1302
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:45
+msgid "InPost Courier Local Standard COD"
+msgstr "InPost Kurier lokalny Standard Pobranie"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1301
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:43
+msgid "InPost Courier Local Standard"
+msgstr "InPost Kurier Lokalny Standard"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1304
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:45
+msgid "InPost Courier Local Super Express COD"
+msgstr "InPost Kurier Lokalny Super Express Pobranie"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1303
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:42
+msgid "InPost Courier Local Super Express"
+msgstr "InPost Kurier Lokalny Super Express"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1306
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:44
+msgid "InPost Courier Palette COD"
+msgstr "InPost Kurier Paleta Pobranie"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1305
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:42
+msgid "InPost Courier Palette"
+msgstr "InPost Kurier Paleta"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1291
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:50
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:86
+msgid "InPost Locker 24/7 COD"
+msgstr "InPost Paczkomat 24/7 Pobranie"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:203
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:187
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:187
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:204
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:186
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:188
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:187
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:194
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:186
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:188
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:201
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:203
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:189
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:190
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:190
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:241
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:251
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:310
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:197
+msgid "Rates table"
+msgstr "Tabela cen"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1290
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:81
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:200
+msgid "InPost Locker 24/7"
+msgstr "InPost Paczkomat 24/7"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:174
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:185
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:244
+msgid "Enter the amount of the order from which the shipping will be free (does not include virtual products). "
+msgstr "Wprowadź kwotę zamówienia, od której koszt wysyłki będzie darmowy (nie obejmuje produktów wirtualnych). "
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1259
+msgid "Shipment canceled"
+msgstr "Przesyłka anulowana"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1396
+msgid "Track shipment"
+msgstr "Śledź przesyłkę"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/costs/html-order-metabox-costs.php:43
+msgid "Shipment costs:"
+msgstr "Koszty przesyłki:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/costs/html-order-metabox-costs.php:47
+msgid "Calculated charge amount:"
+msgstr "Obliczona kwota:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/costs/html-order-metabox-costs.php:52
+msgid "Calculated charge amount (non commission):"
+msgstr "Obliczona kwota (bez prowizji):"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/costs/html-order-metabox-costs.php:57
+msgid "COD charge amount:"
+msgstr "Koszt pobrania:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/costs/html-order-metabox-costs.php:62
+msgid "Fuel charge amount:"
+msgstr "Koszt paliwa:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/costs/html-order-metabox-costs.php:67
+msgid "Insurance charge amount:"
+msgstr "Koszt ubezpieczenia:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/costs/html-order-metabox-costs.php:72
+msgid "Notification charge amount:"
+msgstr "Koszt powiadomienia:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-field-reference.php:15
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-field-reference.php:19
+msgid "Reference number: "
+msgstr "Numer referencyjny: "
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:54
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:54
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:47
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:55
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:55
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:56
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:52
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:51
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:51
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:54
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:55
+msgid "This shipment was created in production API. Change API environment to production to process this shipment"
+msgstr "Przesyłka stworzona w produkcyjnym API. Zmień API na środowisko prodykcyjne, aby móc przetwarzać przesyłkę"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:64
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:64
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:60
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:65
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:65
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:65
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:60
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:59
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:59
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:63
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:64
+msgid "This shipment was created in sandbox API. Change API environment to sandbox to process this shipment"
+msgstr "Przesyłka stworzona w sandbox API. Zmień API na środowisko sandbox"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:86
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:86
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:86
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:87
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:88
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:87
+msgid "Selected parcel locker"
+msgstr "Wybrany punkt odbioru"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:97
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:97
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:97
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:98
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:99
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:100
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:83
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:79
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:82
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:83
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:84
+#: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-view-additional-package.php:24
+msgid "Service:"
+msgstr "Usługa:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:105
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:105
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:108
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:106
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:107
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:108
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:88
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:84
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:87
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:90
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:91
+msgid "Status:"
+msgstr "Status:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:116
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:116
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:123
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:117
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:118
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:120
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:97
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:93
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:96
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:99
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:102
+msgid "Not created yet (new)"
+msgstr "Nie utworzono jeszcze (nowy)"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:123
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:123
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:130
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:124
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:125
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:127
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:106
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:102
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:105
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:106
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:109
+#: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-view-additional-package.php:41
+msgid "Tracking number:"
+msgstr "Numer przesyłki:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:136
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:136
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:143
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:136
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:137
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:138
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:120
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:116
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:119
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:118
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:121
+msgid "Attributes:"
+msgstr "Atrybuty:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:176
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:167
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:175
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:163
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:164
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:174
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:202
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:154
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:189
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:145
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:162
+msgid "Remove"
+msgstr "Usuń"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:153
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:179
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:153
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:170
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:179
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:166
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:167
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:177
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:148
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:165
+msgid "Size"
+msgstr "Rozmiar"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:201
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:190
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:200
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:186
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:187
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:198
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:240
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:185
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:225
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:168
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:192
+msgid "Send parcel"
+msgstr "Utwórz przesyłkę"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:211
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:200
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:214
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:196
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:198
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:207
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:248
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:193
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:233
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:176
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:200
+msgid "Get sticker"
+msgstr "Pobierz etykietę"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:169
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:166
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:168
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:190
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:152
+msgid "COD amount: "
+msgstr "Wartość pobrania: "
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:184
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:184
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:182
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:221
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:175
+msgid "COD amount"
+msgstr "Wartość pobrania"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:167
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:131
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:166
+msgid "Length:"
+msgstr "Długość:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:174
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:138
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:173
+msgid "Width:"
+msgstr "Szerokość:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:181
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:145
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:180
+msgid "Height:"
+msgstr "Wysokość:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-courier-parcel-dimensions.php:107
+msgid "Weight:"
+msgstr "Waga:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:213
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:161
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:200
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:795
+msgid "Width"
+msgstr "Szerokość"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:215
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:163
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:202
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:801
+msgid "Height"
+msgstr "Wysokość"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-courier-parcel-dimensions.php:122
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:217
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:204
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:813
+msgid "Non standard"
+msgstr "Niestandardowa"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-courier-parcel-dimensions.php:117
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:217
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:204
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:815
+msgid "yes"
+msgstr "tak"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-courier-parcel-dimensions.php:116
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:217
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:204
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:816
+msgid "no"
+msgstr "nie"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-cod.php:22
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier-local-super-express.php:22
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier.php:22
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-weekend.php:22
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates.php:22
+msgid "Min"
+msgstr "Min"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-cod.php:23
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier-local-super-express.php:23
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier.php:23
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-weekend.php:23
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates.php:23
+msgid "Max"
+msgstr "Max"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-cod.php:24
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier-local-super-express.php:24
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier.php:24
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-weekend.php:24
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates.php:24
+msgid "Cost"
+msgstr "Koszt"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-cod.php:25
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier-local-super-express.php:25
+msgid "%"
+msgstr "%"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-cod.php:25
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier-local-super-express.php:25
+msgid "The commission is added to the shipping cost according to the formula: [value of the cart] * [%] + [shipping cost]."
+msgstr "Prowizja jest doliczana do kosztów przesyłki zgodnie ze wzorem: [wartość koszyka] * [%] + [kosz przesyłki]"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-cod.php:49
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-cod.php:81
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier-local-super-express.php:49
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier-local-super-express.php:81
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier.php:45
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier.php:74
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-weekend.php:45
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-weekend.php:74
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates.php:45
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates.php:74
+msgid "Delete row"
+msgstr "Usuń wiersz"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-cod.php:59
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier-local-super-express.php:59
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier.php:55
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-weekend.php:55
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates.php:55
+msgid "Insert row"
+msgstr "Wstaw wiersz"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-cod.php:102
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier-local-super-express.php:102
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier.php:95
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-weekend.php:126
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates.php:95
+msgid "Are you sure?"
+msgstr "Czy jesteś pewny?"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-insurance.php:18
+#: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-insurance.php:25
+msgid "Insurance amount: "
+msgstr "Wartość ubezpieczenia: "
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:700
+msgid "Parcel e-commerce InPost"
+msgstr "Parcel e-commerce InPost"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:702
+msgid "Standard parcel locker shipment"
+msgstr "Paczkomatowa Standard"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:704
+msgid "PassThru parcel (no logistics)"
+msgstr "Podaj Dalej"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:706
+msgid "Allegro InPost Parcel Lockers shipment"
+msgstr "Allegro Paczkomaty24/7 InPost"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:708
+msgid "Allegro InPost Registered Mail shipment"
+msgstr "Allegro InPost Registered Mail shipment"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:710
+msgid "Allegro InPost Courier shipment"
+msgstr "Allegro Kurier24 InPost"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:712
+msgid "Standard Pallet courier shipment"
+msgstr "Kurier Standard Paleta"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:714
+msgid "Standard courier shipment"
+msgstr "Kurier Standard"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:716
+msgid "Courier shipment with delivery to 10 a.m. on the following day"
+msgstr "Kurier doręczenie 10:00"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:718
+msgid "Courier shipment with delivery to 12 p.m. on the following day"
+msgstr "Kurier doręczenie 12:00"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:720
+msgid "Courier shipment with delivery to 5 p.m. on the following day"
+msgstr "Kurier doręczenie 17:00"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:722
+msgid "Standard local courier service"
+msgstr "Kurier lokalny Standard"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:724
+msgid "Express local courier service"
+msgstr "Kurier lokalny Express"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:726
+msgid "Super Express local courier service"
+msgstr "Kurier lokalny Super Express"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:737
+msgid "Unknown service"
+msgstr "Nieznana usługa"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:761
+msgid "Any service"
+msgstr "Wszystkie usługi"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:211
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:159
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:198
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:789
+msgid "Length"
+msgstr "Długosć"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Status_Service.php:82
+msgid "Any status"
+msgstr "Wszystkie statusy"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:271
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:279
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Status_Service.php:189
+msgid "Not created yet"
+msgstr "Nie utworzona jeszcze"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:671
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:969
+#: src/InspireLabs/WoocommerceInpost/EasyPackWooBlocks.php:94
+#: src/InspireLabs/WoocommerceInpost/Geowidget_v5.php:83
+msgid "Select Parcel Locker"
+msgstr "Wybierz punkt odbioru"
+
+#: resources/templates/checkout/easypack-review-order-after-shipping.php:52
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1571
+#: src/InspireLabs/WoocommerceInpost/Geowidget_v5.php:123
+msgid "Select parcel locker"
+msgstr "Wybierz punkt odbioru"
+
+#: resources/templates/myaccount/after-my-account.php:16
+#: resources/templates/myaccount/before-my-account.php:15
+msgid "Returns"
+msgstr "Zwroty"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:321
+#: src/InspireLabs/WoocommerceInpost/EmailFilters/NewOrderEmail.php:62
+msgid "Selected parcel machine"
+msgstr "Wybrany paczkomat"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:592
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:600
+msgid "A 8 x 38 x 64 cm"
+msgstr "A 8 x 38 x 64 cm"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:593
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:601
+msgid "B 19 x 38 x 64 cm"
+msgstr "B 19 x 38 x 64 cm"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:594
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:602
+msgid "C 41 x 38 x 64 cm"
+msgstr "C 41 x 38 x 64 cm"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:609
+msgid "A"
+msgstr "A"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:610
+msgid "B"
+msgstr "B"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:611
+msgid "C"
+msgstr "C"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:617
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:628
+msgid "1 kg"
+msgstr "1 kg"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:618
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:629
+msgid "2 kg"
+msgstr "2 kg"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:619
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:630
+msgid "5 kg"
+msgstr "5 kg"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:620
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:631
+msgid "10 kg"
+msgstr "10 kg"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:621
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:632
+msgid "15 kg"
+msgstr "15 kg"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:622
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:633
+msgid "20 kg"
+msgstr "20 kg"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:634
+msgid "25 kg"
+msgstr "25 kg"
+
+#. Plugin URI of the plugin
+msgid "https://wordpress.org/plugins/inpost-for-woocommerce/"
+msgstr "https://wordpress.org/plugins/inpost-for-woocommerce/"
+
+#. Description of the plugin
+msgid "InPost for WooCommerce is a dedicated integration plugin, designed for small and medium-sized businesses that want to quickly and conveniently integrate with InPost services."
+msgstr "InPost dla WooCommerce to dedykowana wtyczka do integracji, stworzona z myślą o małych i średnich firmach, które chcą w szybki i wygodny sposób zintegrować się z usługami InPost."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:165
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:152
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:152
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:166
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:148
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:150
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:148
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:156
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:148
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:150
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:163
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:165
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:151
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:162
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:162
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:212
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:223
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:282
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:169
+msgid "Set a flat-rate shipping for all orders"
+msgstr "Ustaw płaską stawkę dla wszystkich zamówień"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:286
+msgid "Date created"
+msgstr "Data utworzenia"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:290
+msgid "Status change date"
+msgstr "Data zmiany statusu"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:67
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:70
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:70
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:68
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:66
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:68
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:66
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:68
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:66
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:68
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:65
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:67
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:69
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:73
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:73
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:70
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:81
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:193
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:79
+msgid "Upload custom logo"
+msgstr "Załaduj własne logo dla usługi"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1292
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:46
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:47
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:77
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:728
+msgid "InPost Courier C2C"
+msgstr "InPost Kurier C2C"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:835
+msgid "Postal code"
+msgstr "Kod pocztowy"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/courier_pickup/ShipX_Courier_Pickup_Service.php:55
+msgid "postal code"
+msgstr "kod pocztowy"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:834
+msgid "Building number"
+msgstr "Numer budynku / mieszkania"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/courier_pickup/ShipX_Courier_Pickup_Service.php:64
+msgid "building number"
+msgstr "numer budynku / mieszkania"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:989
+msgid "Add dispath point"
+msgstr "Dodaj punkt odbioru"
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:68
+msgid "Filter shipments by courier to show pickup options"
+msgstr "Filtruj przesyłki według metody nadania 'Kurier', aby zobaczyć opcje odbioru"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/courier_pickup/ShipX_Courier_Pickup_Service.php:33
+msgid "No dispatch points or wrong configuration. Add dispatch points on the InPost options page."
+msgstr "Brak dodanych punktów odbioru w konfiguracji modułu. Dodaj punkt odbioru w ustawieniach wtyczki."
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:227
+msgid "Parcel locker label format"
+msgstr "Format etykiety paczkomatowej, który będzie dostępny do pobrania"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:172
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:159
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:159
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:173
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:155
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:157
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:156
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:163
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:155
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:157
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:170
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:172
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:158
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:169
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:169
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:219
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:230
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:289
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:176
+msgid "Tax status"
+msgstr "Status podatku"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:178
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:165
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:165
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:179
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:161
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:163
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:162
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:169
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:161
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:163
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:176
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:178
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:164
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:175
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:175
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:225
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:236
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:295
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:182
+msgid "Taxable"
+msgstr "Opodatkowany"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1289
+msgid "None"
+msgstr "Brak"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:165
+msgid "Geowidget production token"
+msgstr "Token produkcyjny Geowidgetu"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:173
+msgid "Geowidget sandbox token"
+msgstr "Token sandboxowy Geowidgetu"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:111
+msgid "Help"
+msgstr "Wsparcie"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:113
+msgid "Documentation InPost:  "
+msgstr "Dokumentacja InPost:  "
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:115
+msgid "How to set up plugin"
+msgstr "Jak skonfigurować wtyczkę"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:443
+msgid "Upload"
+msgstr "Prześlij"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:438
+msgid "Delete"
+msgstr "Usuń"
+
+#: resources/templates/emails/plain/send-tracking-to-buyer.php:31
+#: resources/templates/emails/send-tracking-to-buyer.php:43
+msgid "Tracking link:"
+msgstr "Link do śledzenia:"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:487
+msgid "Do not provide InPost parcel locker service if the weight of goods exceeds 25 kg"
+msgstr "Nie udostępniaj usług InPost Paczkomaty gdy waga produktu wynosi więcej niż 25kg"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:903
+msgid "Size A (8 x 38 x 64 cm)"
+msgstr "Gabaryt A (8 x 38 x 64 cm)"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:904
+msgid "Size B (19 x 38 x 64 cm)"
+msgstr "Gabaryt B (19 x 38 x 64 cm)"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:905
+msgid "Size C (41 x 38 x 64 cm)"
+msgstr "Gabaryt C (41 x 38 x 64 cm)"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:353
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:429
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:220
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:220
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:223
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:223
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:275
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:285
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:344
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:226
+msgid "Size A"
+msgstr "Gabaryt A"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:354
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:430
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:233
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:233
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:236
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:236
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:288
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:298
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:357
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:239
+msgid "Size B"
+msgstr "Gabaryt B"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:355
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:431
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:246
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:246
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:249
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:249
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:301
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:311
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:370
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:252
+msgid "Size C"
+msgstr "Gabaryt C"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:209
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:209
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:212
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:212
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:263
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:273
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:332
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:215
+msgid "Size (A, B, C)"
+msgstr "Gabaryt (A, B, C)"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:228
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:228
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:231
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:231
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:283
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:293
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:352
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:234
+msgid "Set a flat-rate shipping for size A"
+msgstr "Ustaw stawkę wysyłki dla rozmiaru A"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:241
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:241
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:244
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:244
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:296
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:306
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:365
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:247
+msgid "Set a flat-rate shipping for size B"
+msgstr "Ustaw stawkę wysyłki dla rozmiaru B"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:254
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:254
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:257
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:257
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:309
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:319
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:378
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:260
+msgid "Set a flat-rate shipping for size C"
+msgstr "Ustaw stawkę wysyłki dla rozmiaru C"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:201
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:201
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:204
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:204
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:255
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:265
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:324
+msgid "Attention!"
+msgstr "Uwaga!"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:202
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:202
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:205
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:205
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:256
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:266
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:325
+msgid "Set the dimension in the settings of each product. The default value is size 'A'"
+msgstr "W każdym z produktów należy ustawić gabaryt. Domyślnie wszędzie jest to gab. 'A'"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Product_Shipping_Method_Selector.php:310
+msgid "InPost parcel dimensions"
+msgstr "InPost gabaryty"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:99
+msgid "Click to choose the default locker point on the map"
+msgstr "Kliknij, aby wybrać domyślny punkt na mapie"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:106
+msgid "This field must be filled in after the Geowiget token has been saved"
+msgstr "To pole musi być wypełnione po zapisaniu tokena Geowiget"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:521
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:555
+msgid " (free)"
+msgstr " (darmowa wysyłka)"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:451
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:650
+msgid "Parcel locker Weekend"
+msgstr "Paczka w Weekend"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:69
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:69
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:67
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:65
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:67
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:65
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:67
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:65
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:67
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:64
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:66
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:68
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:72
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:72
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:69
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:80
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:192
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:78
+msgid "Change logo"
+msgstr "Zmień logo"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:219
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:208
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:208
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:220
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:202
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:204
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:203
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:210
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:202
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:204
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:217
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:219
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:205
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:211
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:211
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:262
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:272
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:331
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:214
+msgid "Products qty"
+msgstr "Ilość produktów"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:44
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:76
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:734
+msgid "InPost SmartCourier"
+msgstr "InPost SmartKurier"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1298
+msgid "InPost Smart Courier"
+msgstr "InPost Smart Kurier"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:76
+msgid "Inpost Parcel Locker. Allow customers to pick up orders themselves."
+msgstr "Paczkomat InPost. Metoda pozwala klientom na samodzielny odbiór przesyłek."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1294
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:46
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:77
+msgid "InPost Locker Weekend"
+msgstr "InPost Paczka w Weekend"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1295
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:60
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:88
+msgid "InPost Locker Weekend COD"
+msgstr "InPost Paczka w Weekend Pobranie"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:45
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:59
+msgid "Allow customers to pick up orders in weekend."
+msgstr "Ta metoda umożliwia klientom odbiór przesyłek w weekend."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:107
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:118
+msgid "Time settings"
+msgstr "Ustawienia czasu"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1312
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:114
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:125
+msgid "Available from day of week"
+msgstr "Dostępna od dnia tygodnia"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1327
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:130
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:141
+msgid "Available from hour"
+msgstr "Dostępna od godziny"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1335
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:137
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:148
+msgid "Available to day of week"
+msgstr "Dostępna do dnia tygodnia"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1350
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:153
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:164
+msgid "Available to hour"
+msgstr "Dostępna do godziny"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:160
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:171
+msgid "Price settings"
+msgstr "Ustawienia cen"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1317
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1340
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:119
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:142
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:130
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:153
+msgid "Monday"
+msgstr "Poniedziałek"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1318
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1341
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:120
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:143
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:131
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:154
+msgid "Tuesday"
+msgstr "Wtorek"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1319
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1342
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:121
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:144
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:132
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:155
+msgid "Wednesday"
+msgstr "Środa"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1320
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1343
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:122
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:145
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:133
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:156
+msgid "Thursday"
+msgstr "Czwartek"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1321
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1344
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:123
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:146
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:134
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:157
+msgid "Friday"
+msgstr "Piątek"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1322
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1345
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:124
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:147
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:135
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:158
+msgid "Saturday"
+msgstr "Sobota"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:125
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:148
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:136
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:159
+msgid "Sunday"
+msgstr "Niedziela"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:585
+msgid "New API settings connection test passed."
+msgstr "Połączenie z API - udane."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1285
+msgid "Integration with 'InPost PL' plugin"
+msgstr "Integracja z wtyczką „InPost PL”"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:116
+msgid "In case of questions/problems related to the plugin, please contact us via the "
+msgstr "W przypadku pytań/problemów związanych z wtyczką, prosimy o kontakt przez "
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:118
+msgid "InPost form"
+msgstr "formularz InPost"
+
+#: woocommerce-inpost.php:103
+msgid "Support InPost"
+msgstr "Wsparcie InPost"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:544
+msgid "Color of map button"
+msgstr "Kolor przycisku mapy"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:388
+msgid "Bad nonce"
+msgstr "Wystąpił błąd (nonce)"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:398
+msgid "No orders selected"
+msgstr "Nie wybrano żadnych zamówień"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:412
+msgid "Shipment already created"
+msgstr "Przesyłka już utworzona"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:461
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:469
+msgid "Order was placed with not InPost shipping method"
+msgstr "Zamówienie zostało złożone z pominięciem metody wysyłki InPost"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:75
+msgid "InPost PL create shipments"
+msgstr "InPost PL tworzenie przesyłek"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:80
+msgid "InPost PL get labels"
+msgstr "InPost PL pobierz etykiety"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:81
+msgid "InPost PL create shipments & labels"
+msgstr "InPost PL tworzenie przesyłek i etykiet"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_AJAX.php:172
+#: src/InspireLabs/WoocommerceInpost/EasyPack_AJAX.php:192
+msgid "Check your selection."
+msgstr "Sprawdź swój wybór."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:263
+msgid "Adding of dimensions is required"
+msgstr "Wymagane jest dodanie wymiarów"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1001
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1002
+msgid "Manage dispath points"
+msgstr "Zarządzaj punktami odbioru"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:831
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1042
+msgid "Selected"
+msgstr "Wybrany"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:832
+msgid "Point name"
+msgstr "Nazwa punktu"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:498
+msgid "Send an email to the buyer about the start of the delivery process just after parcel created?"
+msgstr "Wysłać mail do kupującego o rozpoczęciu procesu dostawy zaraz po utworzeniu przesyłki?"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1741
+msgid "contact to support"
+msgstr "skontaktuj się z wsparcie"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:678
+msgid "Error is occured during connection to API"
+msgstr "Wystąpił błąd podczas łączenia z API"
+
+#: src/InspireLabs/WoocommerceInpost/EmailFilters/TrackingInfoEmail.php:65
+msgid "Your order has been given a tracking number"
+msgstr "Twoje zamówienie uzyskało numer przesyłki"
+
+#: resources/templates/emails/plain/send-tracking-to-buyer.php:30
+#: resources/templates/emails/send-tracking-to-buyer.php:42
+msgid "A tracking number has been given for your order. It will soon move on its journey"
+msgstr "Do twojego zamówienia został wygenerowany numer przesyłki. Niedługo ruszy w dalszą podróż"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:219
+msgid "Token is missing or invalid. Or service works on server, try later."
+msgstr "Brakujący lub nieprawidłowy token. Lub prace serwisowe, spróbuj później."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:672
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:970
+#: src/InspireLabs/WoocommerceInpost/Geowidget_v5.php:84
+msgid "Change Parcel Locker"
+msgstr "Zmień Paczkomat"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:48
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:80
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:732
+msgid "InPost Locker Economy"
+msgstr "InPost Paczkomat Paczka Ekonomiczna"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:48
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:80
+msgid "InPost Locker Economy COD"
+msgstr "InPost Paczkomat Paczka Ekonomiczna Pobranie"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1293
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:46
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:47
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:77
+#: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:730
+msgid "InPost Courier C2C COD"
+msgstr "InPost Kurier C2C Pobranie"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-field-commercial-product-identifier.php:13
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-field-commercial-product-identifier.php:17
+msgid "Commercial product identifier: "
+msgstr "Identyfikator produktu handlowego: "
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:110
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:110
+msgid "Commercial product identifier"
+msgstr "Identyfikator produktu handlowego"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:715
+msgid "Enable JS mode of the map button - if the 'Select Parcel Locker' button does not appear in your checkout"
+msgstr "Włącz tryb JS przycisku mapy - jeśli w Twoim checkoucie nie pojawia się przycisk 'Wybierz Paczkomat'"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:376
+msgid "Enable InPost methods for all products in your shop"
+msgstr "Włącz metody InPost dla wszystkich produktów w swoim sklepie"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:384
+msgid "Enable this setting if you want to enable all configured Inpost shipping methods for each product in your store."
+msgstr "Włącz to ustawienie, jeśli chcesz włączyć wszystkie skonfigurowane metody wysyłki Inpost dla każdego produktu w swoim sklepie."
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:388
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:407
+msgid "This setting ignores the individual settings in the product settings in the Inpost tab."
+msgstr "To ustawienie ignoruje indywidualne ustawienia w ustawieniach produktu w zakładce Inpost."
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:313
+msgid "Box weight (kg)"
+msgstr "Waga paczki (kg)"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:302
+msgid "Box height (mm)"
+msgstr "Wysokość paczki (mm)"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:291
+msgid "Box width (mm)"
+msgstr "Szerokość paczki (mm)"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:280
+msgid "Box length (mm)"
+msgstr "Długość paczki (mm)"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:266
+msgid "Set default dimensions for courier shipments"
+msgstr "Ustaw domyślne wymiary dla przesyłek kurierskich"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:324
+msgid "Box is non standard?"
+msgstr "Paczka jest niestandardowa?"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:513
+msgid "Change order status to Completed after shipment created?"
+msgstr "Zmienić status zamówienia na ZREALIZOWANO po wygenerowaniu przesyłki?"
+
+#: resources/templates/checkout/easypack-review-order-after-shipping.php:57
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:673
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1576
+#: src/InspireLabs/WoocommerceInpost/Geowidget_v5.php:86
+msgid "Selected parcel locker:"
+msgstr "Wybrany punkt odbioru:"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:237
+msgid "The package has not been created! You do not have funds in your Parcel Manager account or a contract for InPost services."
+msgstr "Paczka nie została utworzona! Nie masz środków na koncie w Manager Paczek lub podpiętej umowy na usługi InPost."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-no-funds-alert.php:11
+msgid "The package has not been created! You do not have funds in"
+msgstr "Paczka nie została utworzona! Nie masz środków na koncie w"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-no-funds-alert.php:12
+msgid "your Parcel Manager account"
+msgstr "Manager Paczek"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-no-funds-alert.php:13
+msgid "or a contract for InPost services."
+msgstr "lub podpiętej umowy na usługi InPost."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-no-funds-alert.php:18
+msgid "Re-creating a package is possible in the Package Manager after topping up funds."
+msgstr "Ponowne utworzenie paczki jest możliwe w Manager Paczek po doładowaniu środków."
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:654
+msgid "Debug mode"
+msgstr "Tryb debugowania"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:661
+msgid "Inpost shipping methods are only visible to administrators"
+msgstr "Metody dostawy Inpost widoczne tylko dla administratorów"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:734
+msgid "Please keep in mind that different templates may have a non-standard appearance "
+msgstr "Należy pamiętać, że różne szablony mogą mieć niestandardowy wygląd "
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:735
+msgid "design, and do not always contain in the code the entire list of standard hooks "
+msgstr "konstrukcję i nie zawsze zawierać w kodzie całą listę standardowych hooków "
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:736
+msgid "that are used to operate plugins - in particular, to display the map button."
+msgstr "które służą do obsługi wtyczek - w szczególności do wyświetlania przycisku mapy."
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:691
+msgid "Map button output"
+msgstr "Miejsce, w którym powinien pojawić się przycisk mapy"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:738
+msgid "By default, the button should be visible immediately after the block with a choice of delivery methods."
+msgstr "Domyślnie przycisk powinien być widoczny zaraz po bloku z możliwością wyboru sposobu dostawy."
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:698
+msgid "Before the 'Place order' button"
+msgstr "Przed przyciskiem 'Złóż zamówienie'"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:699
+msgid "After the 'Add note' field"
+msgstr "Po polu 'Dodaj notatkę'"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:700
+msgid "Before the 'Add note' field"
+msgstr "Przed polem 'Dodaj notatkę'"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:701
+msgid "Before information about payment methods"
+msgstr "Przed informacją o sposobach płatności"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:703
+msgid "After information about the total amount of the order"
+msgstr "Po informacji o łącznej kwocie zamówienia"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:704
+msgid "After describing the delivery methods"
+msgstr "Po opisaniu metod dostawy"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:706
+msgid "After form with shipping address"
+msgstr "Po formularzu z adresem wysyłki"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:707
+msgid "After customer details"
+msgstr "Po danych klienta"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:708
+msgid "Before order details review"
+msgstr "Przed sprawdzeniem szczegółów zamówienia"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:705
+msgid "Before describing the delivery methods"
+msgstr "Przed opisem metod dostawy"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:702
+msgid "Before information about the total amount of the order"
+msgstr "Przed informacją o łącznej kwocie zamówienia"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:709
+msgid "After the 'Place order' button"
+msgstr "Po przycisku 'Złóż zamówienie'"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:710
+msgid "Before form with checkout details"
+msgstr "Przed formularzem ze szczegółami zamówienia"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:740
+msgid "You can try changing where you want the map button to appear using a setting."
+msgstr "Możesz spróbować zmienić miejsce, w którym ma się pojawiać przycisk mapy."
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:742
+msgid "If the button is not visible after activating the plugin, it is recommended to start with option 'Before the Place order' button."
+msgstr "Jeżeli po włączeniu wtyczki przycisk nie jest widoczny, zaleca się zacząć od opcji 'Przed przyciskiem Złóż zamówienie'."
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:732
+msgid "The settings associated with the map button do not work if you are using Checkout based on Blocks."
+msgstr "Ustawienia powiązane z przyciskiem mapy nie działają, jeśli korzystasz ze strony Checkout opartej na Woo Blokach."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:766
+msgid "Does not work simultaneously with the option 'JS mode of map button'"
+msgstr "Nie działa jednocześnie z opcją 'Tryb JS przycisku mapy'"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:252
+msgid "Add label '(free)' to the end of title of shipping method"
+msgstr "Dodaj etykietę '(darmowa wysyłka)' na końcu tytułu metody wysyłki"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:79
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:82
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:82
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:80
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:78
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:80
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:78
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:80
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:78
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:80
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:93
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:79
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:81
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:85
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:85
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:81
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:92
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:204
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:91
+msgid "Terms of delivery"
+msgstr "Czas dostawy"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:169
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:169
+msgid "Default package size Courier C2C"
+msgstr "Domyślne wymiary przesyłki Kurier C2C"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:975
+msgid "There are some errors. Please fix it:"
+msgstr "Występują błędy. Popraw je:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-view-additional-package.php:19
+msgid "Additional package:"
+msgstr "Dodatkowa paczka:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:293
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:276
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:301
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:272
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:273
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:287
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:440
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:269
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:420
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:274
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:305
+#: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-view-additional-package.php:55
+msgid "Get sticker for additional package"
+msgstr "Pobierz etykietę dla dodatk. paczki"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-additional-package.php:14
+msgid "Create another shipment"
+msgstr "Utwórz kolejną przesyłkę"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-additional-package.php:43
+msgid "Add another parcel"
+msgstr "Dodaj kolejną paczkę"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:234
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:217
+msgid "An additional packages exists"
+msgstr "Istnieje dodatk. paczki"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:971
+msgid "Phone number (required)"
+msgstr "Telefon (wymagany)"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:46
+msgid "Alcohol delivery"
+msgstr "Metoda dostawy dedykowaną dla Alkoholi"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:676
+msgid "Disable condition to enable geowidget scripts only on Checkout page"
+msgstr "Wyłącz sprawdzanie, aby skrypt dla geowidgetu był podłączony tylko na stronie Checkout"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:395
+msgid "Enable SmartCourier method for all products in your shop"
+msgstr "Włącz metodę SmartCourier dla wszystkich produktów w swoim sklepie"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:403
+msgid "Enable this setting if you want to enable SmartCourier shipping method for each product in your store."
+msgstr "Włącz to ustawienie, jeśli chcesz włączyć metodę wysyłki SmartCourier dla każdego produktu w swoim sklepie."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:385
+msgid "The organization does not have an available service on its account"
+msgstr "Organizacja nie ma dostępnej usługi na swoim koncie"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:396
+msgid "The organization does not have courier services available"
+msgstr "Organizacja nie ma dostępnych usług kurierskich"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:230
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:234
+msgid "The organization does not have agreement about service SmartCourier"
+msgstr "Organizacja nie ma podpisanej umowy na usługę SmartCourier"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:407
+msgid "Providing incorrect dimensions/exceeding the permissible dimensions"
+msgstr "Podanie nieprawidłowych wymiarów/przekroczenie dopuszczalnych wymiarów"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:418
+msgid "Exceeding the maximum weight"
+msgstr "Przekroczyłeś maksymalną wagę"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:428
+msgid "There are some transaction details: "
+msgstr "Kilka szczegółów transakcji: "
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:528
+msgid "Automatically add buyer order comment to field 'Refernece'"
+msgstr "Automatycznie skopiować komentarz kupującego do pola 'Numer referencyjny'"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:443
+msgid "Order has too long note, please check it and create shipment from order page."
+msgstr "Zamówienie ma zbyt długą notatkę. Sprawdź ją i utwórz przesyłkę na stronie zamówienia."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:157
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:156
+msgid "Send as several packages"
+msgstr "Przesyłka wielopaczkowa"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-courier-parcel-dimensions.php:76
+msgid "Parcel id"
+msgstr "ID wielo-paczki"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:93
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:94
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:85
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:93
+#: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-sms.php:49
+#: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-sms.php:93
+msgid "Email notifications"
+msgstr "Powiadomienie E-mail"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:85
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:86
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:77
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:85
+#: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-sms.php:39
+#: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-sms.php:83
+msgid "SMS notifications"
+msgstr "Powiadomienie SMS"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:102
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:89
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:89
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:103
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:85
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:87
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:85
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:87
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:85
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:87
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:100
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:102
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:88
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:92
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:92
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:88
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:99
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:219
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:106
+msgid "Set from order amount"
+msgstr "Ustaw z kwoty zamówienia"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1360
+msgid "set from order amount"
+msgstr "ustaw z kwoty zamówienia"
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:488
+msgid "No parcels selected to create manifest."
+msgstr "Nie wybrano żadnych przesyłek do utworzenia potwierdzenia nadania."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Helper.php:243
+msgid "Error while creating manifest PDF: "
+msgstr "Błąd podczas tworzenia PDF potwierdzenia nadania: "
+
+#: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:224
+msgid "Create posting confirmation"
+msgstr "Potwierdzenie nadania"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:375
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-no-funds-alert.php:46
+msgid "Wrong sender postal code"
+msgstr "Nieprawidłowy kod pocztowy nadawcy"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:377
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-no-funds-alert.php:48
+msgid "Wrong receiver postal code"
+msgstr "Nieprawidłowy kod pocztowy odbiorcy"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:551
+msgid "Per page"
+msgstr "Na stronę"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:71
+msgid "Img"
+msgstr "Obraz"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:74
+msgid "Allowed Shipping Methods"
+msgstr "Dozwolone metody wysyłki"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:75
+msgid "Locker size"
+msgstr "Gabaryt"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:481
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:575
+msgid "Re-load page"
+msgstr "Odśwież stronę"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:423
+msgid "By changing these settings you change the settings for all products on the page in a similar way."
+msgstr "Zmieniając te ustawienia, w podobny sposób zmieniasz ustawienia dla wszystkich produktów na stronie."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:201
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:202
+msgid "Products Settings"
+msgstr "Ustawienia produktów"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:480
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:574
+msgid "Update all products on page"
+msgstr "Zaktualizuj wszystkie produkty na stronie"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:393
+msgid "Update settings"
+msgstr "Zaktualizuj"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:76
+msgid "InPost PL create shipments A"
+msgstr "InPost PL tworzenie przesyłek gab. A"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:77
+msgid "InPost PL create shipments B"
+msgstr "InPost PL tworzenie przesyłek gab. B"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:78
+msgid "InPost PL create shipments C"
+msgstr "InPost PL tworzenie przesyłek gab. C"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:537
+msgid "Per shipping class"
+msgstr "Według klasy wysyłki"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:135
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:122
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:122
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:136
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:118
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:120
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:118
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:120
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:118
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:120
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:133
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:135
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:121
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:132
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:132
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:182
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:193
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:139
+msgid "Add label (free) to the end of title of shipping method"
+msgstr "Dodaj tekst '(darmowa wysyłka)' na końcu tytułu metody wysyłki"
+
+#: resources/templates/emails/plain/send-tracking-to-buyer.php:34
+#: resources/templates/emails/send-tracking-to-buyer.php:58
+msgid "For your order was created multi-package. It will soon move on its journey"
+msgstr "Do Twojego zamówienia została stworzona Przesyłka wielopaczkowa. Niedługo ruszy w dalszą podróż"
+
+#: resources/templates/emails/plain/send-tracking-to-buyer.php:35
+#: resources/templates/emails/send-tracking-to-buyer.php:59
+msgid "Tracking links:"
+msgstr "Linki do śledzenia:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:52
+msgid "Inpost Parcel Locker COD. Allow customers to pick up orders themselves."
+msgstr "Paczkomat InPost Pobranie. Metoda pozwala klientom na samodzielny odbiór przesyłek."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1500
+msgid "It seems you forgot to select the InPost pick up point."
+msgstr "Wygląda na to, że zapomniałeś wybrać punktu odbioru InPost."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1501
+msgid "If so, please select InPost pick up point from this list or on the map."
+msgstr "Jeśli tak, proszę wybrać punkt odbioru InPost z listy lub za pomocą przycisku na mapie."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:678
+#: src/InspireLabs/WoocommerceInpost/Geowidget_v5.php:85
+msgid "Some error is occured"
+msgstr "Wystąpił błąd"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:679
+#: src/InspireLabs/WoocommerceInpost/Geowidget_v5.php:87
+msgid "Pick up point has been successfuly written"
+msgstr "Punkt odbioru został pomyślnie zapisany"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1043
+msgid "Template name"
+msgstr "Nazwa szablonu"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1044
+msgid "Length (mm)"
+msgstr "Długość (mm)"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1045
+msgid "Width (mm)"
+msgstr "Szerokość (mm)"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1046
+msgid "Height (mm)"
+msgstr "Wysokość (mm)"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1047
+msgid "Weight (kg)"
+msgstr "Waga (kg)"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1263
+msgid "Add template"
+msgstr "Dodaj szablon"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-courier-parcel-dimensions.php:83
+msgid "Templates:"
+msgstr "Szablony:"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:259
+msgid "Courier options"
+msgstr "Opcje kurierskie"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1275
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1276
+msgid "Manage courier templates"
+msgstr "Zarządzaj szablonami kurierskimi"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1048
+msgid "Not standard?"
+msgstr "Niestandardowa?"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:414
+msgid "If there is no general InPost shipping method for the products, then always choose the most expensive one."
+msgstr "Jeśli nie ma ogólnej metody wysyłki InPost dla produktów, zawsze wybieraj najdroższą opcję."
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:428
+msgid "Enable webhooks"
+msgstr "Włącz webhooki"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:770
+msgid "Copied!"
+msgstr "Skopiowano!"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:419
+msgid "After enabling this setting, when there is a product"
+msgstr "Po włączeniu tego ustawienia gdy w koszyku jest produkt"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:420
+msgid " with the Paczkomat service only and another product with the Courier service only "
+msgstr " z usługą tylko Paczkomat i drugi produkt z usługą tylko Kurier - "
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:421
+msgid "in the cart, the most expensive one will be selected and the delivery method will be displayed"
+msgstr "wybierze tą najdroższą i wyświetli metodę dostawy"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:433
+msgid "Enabling webhooks allows you to update the status of shipments in your order"
+msgstr "Włączenie webhook pozwala na aktualizację statusów przesyłek w zamówieniu"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:454
+msgid "Change order status to Completed if webhook status is received like:"
+msgstr "Zmień status zamówienia na Zrealizowano, jeśli otrzymany status webhooka taki jak:"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:481
+msgid "Check your default settings before enable this option (parcel dimensions, etc.)"
+msgstr "Przed włączeniem tej opcji proszę dokładnie sprawdzić ustawienia domyślne (rozmiary paczki, i t.d.)"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:476
+msgid "Creating a shipment automatically after paying for the order"
+msgstr "Automatyczne tworzenie przesyłki po opłaceniu zamówienia"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:369
+msgid "Other options"
+msgstr "Dodatkowe opcje"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:182
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:183
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:165
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:167
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:166
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:173
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:165
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:167
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:180
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:182
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:168
+msgid "Where to get the dimensions of parcels"
+msgstr "Skąd pobrać wymiary przesyłek"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:187
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:188
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:170
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:172
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:171
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:178
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:170
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:172
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:185
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:187
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:173
+msgid "Template"
+msgstr "Szablon"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-courier-parcel-dimensions.php:43
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-courier-parcel-dimensions.php:47
+msgid "Choose template"
+msgstr "Wybierz szablon"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:188
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:189
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:171
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:173
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:172
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:179
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:171
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:173
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:186
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:188
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:174
+msgid "Default value"
+msgstr "Domyślna wartość"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:189
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:190
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:172
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:174
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:173
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:180
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:172
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:174
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:187
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:189
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:175
+msgid "Product configuration"
+msgstr "Konfiguracja produktu"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:211
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:98
+msgid "Enabling this option allows you to create Parcel on Weekend shipments (despite the customer choosing the InPost Paczkomat 24/7 service) in the time intervals from Thursday (20:00) to Friday (18:00)"
+msgstr "Włączenie umożliwia tworzenie przesyłek Paczka W Weekend (pomimo wybranego serwisu przez klienta InPost Paczkomat 24/7) w przedziałach czasowych od czwartku (godzina 20:00) do piątku (godzina 18:00)"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:210
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:97
+msgid "PWW mode"
+msgstr "Tryb PWW"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:195
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:245
+msgid "You are creating a Weekend Package service, which is available from Thursday 20:00 to Friday 18:00 - currently this is not a dedicated time slot"
+msgstr "Tworzysz usługę Paczka w Weekend, która jest dostępna od czwartku 20:00 do piątku godzina 18:00 - aktualnie nie jest to dedykowany przedział"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:197
+msgid "forbidden"
+msgstr "niedozwolony"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1739
+msgid "Some error occured whe we try to get list of services:"
+msgstr "Wystąpił błąd podczas próby pobrania listy usług:"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:927
+msgid "API key or Organization ID is empty"
+msgstr "Klucz API lub ID organizacji jest pusty"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:935
+msgid "Error when trying to get API services. Check wc-logs, file 'inpost-pl-services-error'"
+msgstr "Błąd podczas próby uzyskania dostępu do usług API. Sprawdź wc-logs, plik „inpost-pl-services-error”."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:133
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:132
+msgid "Multi-parcel"
+msgstr "Wielopak"
+
+#. Plugin Name of the plugin
+msgid "InPost PL"
+msgstr "InPost PL"
+
+#. Author of the plugin
+msgid "iLabs.dev"
+msgstr "iLabs.dev"
+
+#. Author URI of the plugin
+msgid "https://ilabs.dev/"
+msgstr "https://ilabs.dev/"
+
+#. translators: %s: Customer first name
+#: resources/templates/emails/plain/send-tracking-to-buyer.php:26
+#: resources/templates/emails/send-tracking-to-buyer.php:41
+#: resources/templates/emails/send-tracking-to-buyer.php:57
+msgid "Hi %s,"
+msgstr "Hi %s,"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:70
+msgid "Product"
+msgstr "Produkt"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:72
+msgid "SKU"
+msgstr "SKU"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:73
+msgid "Categories"
+msgstr "Kategorii"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:507
+msgid "Filter by product type"
+msgstr "Filtruj według typu produktu"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:194
+msgid "Szybkie zwroty - link"
+msgstr "Szybkie zwroty - link"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:440
+msgid "Webhook URL"
+msgstr "Webhook URL"
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:157
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager.php:198
+msgid "Shipments dispathed "
+msgstr "Przesyłki wysyłane"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:603
+msgid "D 50 x 50 x 80 cm"
+msgstr "D 50 x 50 x 80 cm"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1143
+msgid "Error in data"
+msgstr "Błąd w danych"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php:1519
+msgid "Paczkomat"
+msgstr "Paczkomat"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:105
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:112
+msgid "Inpost status"
+msgstr "Inpost status"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackCoupons.php:60
+msgid "Inpost"
+msgstr "Inpost"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackCoupons.php:166
+#: src/InspireLabs/WoocommerceInpost/EasyPackCoupons.php:189
+msgid "Free!"
+msgstr "Za darmo!"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackCoupons.php:224
+msgid "Free shipping coupon"
+msgstr "Kupon umożliwiający darmową wysyłkę"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_AJAX.php:436
+msgid "Shipping method not found"
+msgstr "Nie znaleziono metody wysyłki"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_AJAX.php:456
+msgid "Error occured"
+msgstr "Wystąpił błąd"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:536
+msgid "Bad API response"
+msgstr "Nieprawidłowa odpowiedź API"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:142
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:129
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:129
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:143
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:125
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:127
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:125
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:127
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:125
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:127
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:140
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:142
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:128
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:139
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:139
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:189
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:200
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:259
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:146
+msgid "Coupons discounts"
+msgstr "Rabat dla kuponów"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:143
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:130
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:130
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:144
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:126
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:128
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:126
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:128
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:126
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:128
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:141
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:143
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:129
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:140
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:140
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:190
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:201
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:260
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:147
+msgid "Apply minimum order rule before coupon discount"
+msgstr "Zastosuj regułę minimalnego zamówienia sprzed użycia kuponu zniżkowego"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:145
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:132
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:132
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:146
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:128
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:130
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:128
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:130
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:128
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:130
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:143
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:145
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:131
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:142
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:142
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:192
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:203
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:262
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:149
+msgid "If checked, free shipping would be available based on pre-discount order amount."
+msgstr "Jeśli zaznaczone, bezpłatna wysyłka będzie dostępna na podstawie kwoty zamówienia przed rabatem."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:177
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:164
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C_COD.php:164
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:178
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express.php:160
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:162
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard.php:161
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:168
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE.php:160
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:162
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette.php:175
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Palette_COD.php:177
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:163
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:174
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy_COD.php:174
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:224
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend_COD.php:235
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:294
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:181
+msgctxt "Tax status"
+msgid "None"
+msgstr "None"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Express_COD.php:378
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_Local_Standard_COD.php:379
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_LSE_COD.php:375
+msgid "Order total %1$s do not equals total COD amounts %2$s."
+msgstr "Łączna kwota zamówienia %1$s nie jest równa łącznej kwocie za pobraniem %2$s."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:830
+msgid "Paczkomat jest wymaganym polem"
+msgstr "Paczkomat jest wymaganym polem"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:832
+msgid "Parcel locker Inpost is required field"
+msgstr "Paczkomat Inpost jest polem wymaganym"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1403
+msgid "Szybkie zwroty"
+msgstr "Szybkie zwroty"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1605
+msgid "Enter a cost (excl. tax) or sum, e.g. <code>10.00 * [qty]</code>."
+msgstr "Wpisz koszt (bez podatku) lub sumę, np. <code>10.00 * [ilość]</code>."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1605
+msgid "Use <code>[qty]</code> for the number of items, <br/><code>[cost]</code> for the total cost of items, and <code>[fee percent=\"10\" min_fee=\"20\" max_fee=\"\"]</code> for percentage based fees."
+msgstr "Użyj <code>[qty]</code> dla liczby elementów, <br/><code>[cost]</code> dla całkowitego kosztu elementów i <code>[fee percent=\"10\" min_fee=\"20\" max_fee=\"\"]</code> dla opłat procentowych."
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1609
+msgid "Shipping class costs"
+msgstr "Koszty klasy wysyłkowej"
+
+#. translators: %s: URL for link.
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1613
+msgid "These costs can optionally be added based on the <a href=\"%s\">product shipping class</a>."
+msgstr "These costs can optionally be added based on the <a href=\"%s\">product shipping class</a>."
+
+#. translators: %s: shipping class name
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1621
+msgid "\"%s\" shipping class cost"
+msgstr "Koszt dla klasy wysyłkowej \"%s\""
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1623
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1634
+msgid "N/A"
+msgstr "N/A"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1632
+msgid "No shipping class cost"
+msgstr "Brak kosztów klasy wysyłki"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1642
+msgid "Calculation type"
+msgstr "Typ obliczenia"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1647
+msgid "Per class: Charge shipping for each shipping class individually"
+msgstr "Na klasę: stosuj koszt dla każdej klasy wysyłkowej oddzielnie"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1648
+msgid "Per order: Charge shipping for the most expensive shipping class"
+msgstr "Na zamówienie: stosuj koszt dla najdroższej klasy wysyłkowej"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-view-additional-package.php:32
+msgid "Reference number:"
+msgstr "Numer referencyjny:"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/courier_pickup/ShipX_Courier_Pickup_Service.php:45
+msgid "point name"
+msgstr "nazwa punktu"
+
+#: src/InspireLabs/WoocommerceInpost/shipx/services/courier_pickup/ShipX_Courier_Pickup_Service.php:92
+msgid "The configuration of the dispatch points is incomplete. The field %1$s is missing at pickup point #%2$s"
+msgstr "Konfiguracja punktów wysyłki jest niekompletna. Brakuje pola %1$s w punkcie odbioru #%2$s."
+
+#: resources/assets/js/build/inpostpl-block-frontend.js:1
+msgid "Parcel locker must be chosen."
+msgstr "Należy wybrać paczkomat."
+
+#: resources/assets/js/build/js/inpostpl-block/block.json
+msgctxt "block title"
+msgid "Inpost PL Shipping Options Block"
+msgstr "Opcji wysyłki Inpost PL"
+
+#: resources/assets/js/build/js/inpostpl-block/block.json
+msgctxt "block description"
+msgid "Adds map button and add input to save delivery point data."
+msgstr "Dodaje przycisk mapy i dodaje pole do zapisywania danych o punkcie dostawy."

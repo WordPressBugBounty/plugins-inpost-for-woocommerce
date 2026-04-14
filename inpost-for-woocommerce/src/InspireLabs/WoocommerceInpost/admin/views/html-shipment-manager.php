@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php $is_courier_context = EasyPack_Shipment_Manager::is_courier_context(); ?>
 <div class="wrap">
 	<div id="icon-users" class="icon32"></div>
-	<h2><?php esc_html_e( 'InPost Shipments', 'woocommerce-inpost' ); ?></h2>
+	<h2><?php esc_html_e( 'InPost Shipments', 'inpost-for-woocommerce' ); ?></h2>
 	<?php $view_var_shipment_manager_list_table->prepare_items(); ?>
 	<form method="get">
 		<input type="hidden" name="page" value="easypack_shipment">
@@ -39,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					'type'    => 'select',
 					'options' => $point_select_items,
 					'class'   => array( 'wc-enhanced-select' ),
-					'label'   => esc_html__( 'Dispatch point ', 'woocommerce-inpost' ),
+					'label'   => esc_html__( 'Dispatch point ', 'inpost-for-woocommerce' ),
 				);
 				woocommerce_form_field( 'dispatch_point', $params, $dispatch_point );
 				?>
@@ -49,9 +49,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div style="float:left;">
 				<p>&nbsp;
 					<span class="tips"
-							data-tip="<?php esc_html_e( 'From the list, select the packages that you want to be sent by courier.', 'woocommerce-inpost' ); ?>">
+							data-tip="<?php esc_html_e( 'From the list, select the packages that you want to be sent by courier.', 'inpost-for-woocommerce' ); ?>">
 						<button id="easypack_get_courier" class="button-primary">
-							<?php esc_html_e( 'Get courier', 'woocommerce-inpost' ); ?>
+							<?php esc_html_e( 'Get courier', 'inpost-for-woocommerce' ); ?>
 						</button>&nbsp;
 					</span>
 				</p>
@@ -65,20 +65,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<?php else : ?>
 
-			<p style="font-style: italic"><?php esc_html_e( 'Filter shipments by courier to show pickup options', 'woocommerce-inpost' ); ?></p>
+			<p style="font-style: italic"><?php esc_html_e( 'Filter shipments by courier to show pickup options', 'inpost-for-woocommerce' ); ?></p>
 
 		<?php endif; ?>
 
 
 		<div style="float:none;">
-			<h3><?php esc_html_e( 'Filters', 'woocommerce-inpost' ); ?></h3>
+			<h3><?php esc_html_e( 'Filters', 'inpost-for-woocommerce' ); ?></h3>
 
 			<?php
 			$params = array(
 				'type'        => 'select',
 				'options'     => $view_var_send_methods,
 				'class'       => array( 'wc-enhanced-select' ),
-				'label'       => __( 'Send method ', 'woocommerce-inpost' ),
+				'label'       => __( 'Send method ', 'inpost-for-woocommerce' ),
 				'label_class' => 'admin-label',
 				'input_class' => array( 'admin-input' ),
 			);
@@ -87,11 +87,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 		<div style="float:none;">
 			<?php
+            //error_log(print_r('view_var_statuses', true));
+            //error_log(print_r($view_var_statuses, true));
 			$params = array(
 				'type'        => 'select',
 				'options'     => $view_var_statuses,
 				'class'       => array( 'wc-enhanced-select' ),
-				'label'       => __( 'Shipment status', 'woocommerce-inpost' ),
+				'label'       => __( 'Shipment status', 'inpost-for-woocommerce' ),
 				'label_class' => 'admin-label',
 				'input_class' => array( 'admin-input', 'max-width-select' ),
 			);
@@ -104,7 +106,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				'type'        => 'select',
 				'options'     => $view_var_services,
 				'class'       => array( 'wc-enhanced-select' ),
-				'label'       => __( 'Service', 'woocommerce-inpost' ),
+				'label'       => __( 'Service', 'inpost-for-woocommerce' ),
 				'label_class' => 'admin-label',
 				'input_class' => array( 'admin-input' ),
 			);
@@ -116,7 +118,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			$params = array(
 				'type'        => 'text',
 				'class'       => array( '' ),
-				'label'       => __( 'Tracking number', 'woocommerce-inpost' ),
+				'label'       => __( 'Tracking number', 'inpost-for-woocommerce' ),
 				'label_class' => 'admin-label',
 				'input_class' => array( 'admin-input' ),
 			);
@@ -128,7 +130,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			$params = array(
 				'type'        => 'number',
 				'class'       => array( '' ),
-				'label'       => __( 'Order ID', 'woocommerce-inpost' ),
+				'label'       => __( 'Order ID', 'inpost-for-woocommerce' ),
 				'label_class' => 'admin-label',
 				'input_class' => array( 'admin-input' ),
 			);
@@ -140,7 +142,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			$params = array(
 				'type'        => 'text',
 				'class'       => array( '' ),
-				'label'       => __( 'Reference number', 'woocommerce-inpost' ),
+				'label'       => __( 'Reference number', 'inpost-for-woocommerce' ),
 				'label_class' => 'admin-label',
 				'input_class' => array( 'admin-input' ),
 			);
@@ -152,7 +154,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			$params = array(
 				'type'        => 'text',
 				'class'       => array( '' ),
-				'label'       => __( 'Receiver email', 'woocommerce-inpost' ),
+				'label'       => __( 'Receiver email', 'inpost-for-woocommerce' ),
 				'label_class' => 'admin-label',
 				'input_class' => array( 'admin-input' ),
 			);
@@ -164,7 +166,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			$params = array(
 				'type'        => 'text',
 				'class'       => array( '' ),
-				'label'       => __( 'Receiver phone', 'woocommerce-inpost' ),
+				'label'       => __( 'Receiver phone', 'inpost-for-woocommerce' ),
 				'label_class' => 'admin-label',
 				'input_class' => array( 'admin-input' ),
 			);
@@ -174,13 +176,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div style="float:left;">
 			<p>
 				<input class="button button-primary" type="submit"
-						value="<?php esc_html_e( 'Filter parcels', 'woocommerce-inpost' ); ?>"/>
+						value="<?php esc_html_e( 'Filter parcels', 'inpost-for-woocommerce' ); ?>"/>
 			</p>
 		</div>
 		<div style="clear:both;"></div>
 
 
-		<h3><?php esc_html_e( 'Actions for selected items', 'woocommerce-inpost' ); ?></h3>
+		<h3><?php esc_html_e( 'Actions for selected items', 'inpost-for-woocommerce' ); ?></h3>
 
 		<div style="float:left;">
 			<p>
@@ -190,7 +192,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<span class="tips" data-tip="">
 				<?php endif; ?>
 					<button class="button button-primary" id="get_stickers" name="get_stickers">
-						<?php esc_html_e( 'Get stickers', 'woocommerce-inpost' ); ?>
+						<?php esc_html_e( 'Get stickers', 'inpost-for-woocommerce' ); ?>
 					</button>
 				</span>
 			</p>
@@ -204,7 +206,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<span class="tips" data-tip="">
 				<?php endif; ?>
 					<button class="button button-primary" id="get_return_stickers" name="get_return_stickers">
-						<?php esc_html_e( 'Get return stickers', 'woocommerce-inpost' ); ?>
+						<?php esc_html_e( 'Get return stickers', 'inpost-for-woocommerce' ); ?>
 					</button>
 				</span>
 			</p>
@@ -219,7 +221,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div style="float:left;">
 			<p>
 				<a id="easypack_create_posting_confirmation" class="button-primary"
-					href=""><?php esc_html_e( 'Create posting confirmation', 'woocommerce-inpost' ); ?>
+					href=""><?php esc_html_e( 'Create posting confirmation', 'inpost-for-woocommerce' ); ?>
 				</a>
 			</p>
 			<span id="inpost_confirmation_error_response"></span>
@@ -239,7 +241,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<?php
 					esc_html_e(
 						'From the list, select the packages that you want to be collected to be sent. If Courier has been chosen, the collection of your packages by a courier will be arranged.',
-						'woocommerce-inpost'
+						'inpost-for-woocommerce'
 					);
 					?>
 						">
@@ -353,7 +355,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			}
 		});
 		if (count_parcels == 0) {
-			alert('<?php esc_html_e( 'No parcels selected.', 'woocommerce-inpost' ); ?>');
+			alert('<?php esc_html_e( 'No parcels selected.', 'inpost-for-woocommerce' ); ?>');
 			jQuery("#easypack_spinner_get_stickers").removeClass("is-active");
 			return false;
 		}
@@ -385,7 +387,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			}
 		});
 		if (count_parcels === 0) {
-			alert('<?php esc_html_e( 'No parcels selected.', 'woocommerce-inpost' ); ?>');
+			alert('<?php esc_html_e( 'No parcels selected.', 'inpost-for-woocommerce' ); ?>');
 			jQuery('#easypack_spinner_get_stickers').removeClass("is-active");
 			return false;
 		}
@@ -437,7 +439,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			}
 		});
 		if (count_parcels == 0) {
-			alert('<?php esc_html_e( 'No parcels selected.', 'woocommerce-inpost' ); ?>');
+			alert('<?php esc_html_e( 'No parcels selected.', 'inpost-for-woocommerce' ); ?>');
 			jQuery('#easypack_spinner_get_stickers').removeClass("is-active");
 			return false;
 		}
@@ -483,7 +485,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			}
 		});
 		if (count_parcels === 0) {
-			alert('<?php esc_html_e( 'No parcels selected to create manifest.', 'woocommerce-inpost' ); ?>');
+			alert('<?php esc_html_e( 'No parcels selected to create manifest.', 'inpost-for-woocommerce' ); ?>');
 			jQuery('#easypack_spinner_posting_confirmation').removeClass("is-active");
 			return false;
 		}

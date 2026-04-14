@@ -135,7 +135,7 @@ function inpost_pl_select_point_callback_blocks(point) {
 				data: data,
 				dataType: 'json',
 				success: function (response) {
-					console.log( 'Paczkomat saved in session data:', response );
+					//console.log( 'Paczkomat saved in session data:', response );
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
 					console.log( "Error response saving paczkomato into session" );
@@ -243,7 +243,7 @@ jQuery( document ).ready(
 	function () {
 
 		let inpost_methods = inpost_pl_get_configured_inpost_methods();
-		console.log( inpost_methods );
+		//console.log( inpost_methods );
 
 		let validation_modal = inpost_pl_create_validation_modal();
 		// Append modal to body.
@@ -287,7 +287,7 @@ jQuery( document ).ready(
 					'click',
 					function (e) {
 						e.preventDefault();
-						console.log( 'inpost-pl: click on map button jQuery' );
+						//console.log( 'inpost-pl: click on map button jQuery' );
 						if ( typeof inpostPlGeowidgetModalBlock != 'undefined' && inpostPlGeowidgetModalBlock !== null ) {
 
 							let checked_radio_control = jQuery( 'input[name^="radio-control-"]:checked' );

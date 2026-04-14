@@ -62,7 +62,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
                     class="dashicons dashicons-media-spreadsheet%s"></span>
                     </a>',
 				$shipment->getInternalData()->getOrderId(),
-				__( 'Print sticker', 'woocommerce-inpost' ),
+				__( 'Print sticker', 'inpost-for-woocommerce' ),
 				'',
 				''
 			);
@@ -77,7 +77,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
                     class="dashicons dashicons-media-spreadsheet%s"></span>
                     </a>',
 					$shipment->getInternalData()->getOrderId(),
-					__( 'Print return sticker', 'woocommerce-inpost' ),
+					__( 'Print return sticker', 'inpost-for-woocommerce' ),
 					'',
 					''
 				);
@@ -182,13 +182,13 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 		private function translateSendingMethod( $method ) {
 			switch ( $method ) {
                 case ShipX_Shipment_Model::SENDING_METHOD_PARCEL_LOCKER	=== $method:
-					return esc_html__( 'Parcel Locker', 'woocommerce-inpost' );
+					return esc_html__( 'Parcel Locker', 'inpost-for-woocommerce' );
 
 				case ShipX_Shipment_Model::SENDING_METHOD_DISPATCH_ORDER === $method:
-					return esc_html__( 'Courier', 'woocommerce-inpost' );
+					return esc_html__( 'Courier', 'inpost-for-woocommerce' );
 
 				case ShipX_Shipment_Model::SENDING_METHOD_POP === $method:
-					return esc_html__( 'POP', 'woocommerce-inpost' );
+					return esc_html__( 'POP', 'inpost-for-woocommerce' );
 				default:
 					return '';
 			}
@@ -231,7 +231,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 
 			$existed_additional_packages = EasyPack_Helper()->get_saved_additional_packages( $item['order'] );
 			if ( is_array( $existed_additional_packages ) && ! empty( $existed_additional_packages ) ) {
-				$additional_packages_notice .= esc_html__( 'An additional packages exists', 'woocommerce-inpost' );
+				$additional_packages_notice .= esc_html__( 'An additional packages exists', 'inpost-for-woocommerce' );
 				$additional_packages_notice .= ' (' . esc_attr( count( $existed_additional_packages ) ) . ')';
 			}
 
@@ -280,34 +280,34 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 		public function get_columns() {
 			$columns = array(
 				'cb'                  => '<input type="checkbox" />',
-				'package_number'      => __( 'Tracking number', 'woocommerce-inpost' ),
-				'order'               => __( 'Order ID', 'woocommerce-inpost' ),
-				'inpost_id'           => __( 'Inpost ID', 'woocommerce-inpost' ),
-				'created_timestamp'   => __( 'Date created', 'woocommerce-inpost' ),
-				'reference_number'    => __( 'Reference number', 'woocommerce-inpost' ),
-				'status'              => __( 'Status', 'woocommerce-inpost' )
+				'package_number'      => __( 'Tracking number', 'inpost-for-woocommerce' ),
+				'order'               => __( 'Order ID', 'inpost-for-woocommerce' ),
+				'inpost_id'           => __( 'Inpost ID', 'inpost-for-woocommerce' ),
+				'created_timestamp'   => __( 'Date created', 'inpost-for-woocommerce' ),
+				'reference_number'    => __( 'Reference number', 'inpost-for-woocommerce' ),
+				'status'              => __( 'Status', 'inpost-for-woocommerce' )
 					. $this->get_refresh_statuses_btn(),
-				'status_timestamp'    => __( 'Status change date', 'woocommerce-inpost' ),
-				'service'             => __( 'Service', 'woocommerce-inpost' ),
-				'attributes'          => __( 'Dimensions', 'woocommerce-inpost' ),
-				'cod'                 => __( 'COD', 'woocommerce-inpost' ),
-				'send_method_display' => __( 'Send method', 'woocommerce-inpost' ),
-				'shipping_address'    => __( 'Shipping address', 'woocommerce-inpost' ),
+				'status_timestamp'    => __( 'Status change date', 'inpost-for-woocommerce' ),
+				'service'             => __( 'Service', 'inpost-for-woocommerce' ),
+				'attributes'          => __( 'Dimensions', 'inpost-for-woocommerce' ),
+				'cod'                 => __( 'COD', 'inpost-for-woocommerce' ),
+				'send_method_display' => __( 'Send method', 'inpost-for-woocommerce' ),
+				'shipping_address'    => __( 'Shipping address', 'inpost-for-woocommerce' ),
 
 			);
 
 			if ( EasyPack_Shipment_Manager::is_courier_context() ) {
-				$columns['dispatch_order_status'] = __( 'Dispatch order status', 'woocommerce-inpost' );
-				$columns['dispatch_point_name']   = __( 'Dispatch point name', 'woocommerce-inpost' );
+				$columns['dispatch_order_status'] = __( 'Dispatch order status', 'inpost-for-woocommerce' );
+				$columns['dispatch_point_name']   = __( 'Dispatch point name', 'inpost-for-woocommerce' );
 			}
 
-			$columns['actions'] = __( 'Actions', 'woocommerce-inpost' );
+			$columns['actions'] = __( 'Actions', 'inpost-for-woocommerce' );
 
 			return $columns;
 		}
 
 		private function get_refresh_statuses_btn() {
-			return '<a title="' . __( 'Refresh statuses now', 'woocommerce-inpost' ) . '" 
+			return '<a title="' . __( 'Refresh statuses now', 'inpost-for-woocommerce' ) . '" 
                 id="refresh_statuses_btn"
                 name="refresh_statuses"
                 href="#">
@@ -448,14 +448,14 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 						$data['service'] = $shipment_service->get_customer_service_name( $shipment );
 
 						if ( $shipment->getInternalData()->getWeekend() ) {
-							$data['service'] = __( 'Parcel locker Weekend', 'woocommerce-inpost' );
+							$data['service'] = __( 'Parcel locker Weekend', 'inpost-for-woocommerce' );
 						}
 
 						$data['attributes'] = Easypack_Helper()->convert_size_to_symbol( $shipment_service->get_table_attributes( $shipment ) );
 
 						$data['cod'] = null === $shipment->getCod()
-							? __( 'No', 'woocommerce-inpost' )
-							: __( 'Yes', 'woocommerce-inpost' );
+							? __( 'No', 'inpost-for-woocommerce' )
+							: __( 'Yes', 'inpost-for-woocommerce' );
 
 						$data['actions'] = $this->getActions( $shipment );
 
@@ -520,7 +520,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 						$data['inpost_id']        = $shipment->getInternalData()->getInpostId();
 
 						if ( null !== $shipment->getCustomAttributes()->getTargetPoint() ) {
-							$data['shipping_address'] = __( 'Parcel Locker ', 'woocommerce-inpost' )
+							$data['shipping_address'] = __( 'Parcel Locker ', 'inpost-for-woocommerce' )
 								. ' '
 								. $shipment->getCustomAttributes()->getTargetPoint();
 						}
@@ -647,14 +647,14 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 							$data['service'] = $shipment_service->get_customer_service_name( $shipment );
 
 							if ( $shipment->getInternalData()->getWeekend() ) {
-								$data['service'] = __( 'Parcel locker Weekend', 'woocommerce-inpost' );
+								$data['service'] = __( 'Parcel locker Weekend', 'inpost-for-woocommerce' );
 							}
 
 							$data['attributes'] = Easypack_Helper()->convert_size_to_symbol( $shipment_service->get_table_attributes( $shipment ) );
 
 							$data['cod'] = null === $shipment->getCod()
-								? __( 'No', 'woocommerce-inpost' )
-								: __( 'Yes', 'woocommerce-inpost' );
+								? __( 'No', 'inpost-for-woocommerce' )
+								: __( 'Yes', 'inpost-for-woocommerce' );
 
 							$data['actions'] = $this->getActions( $shipment );
 
@@ -707,7 +707,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 							$data['inpost_id']        = $shipment->getInternalData()->getInpostId();
 
 							if ( null !== $shipment->getCustomAttributes()->getTargetPoint() ) {
-								$data['shipping_address'] = __( 'Parcel Locker ', 'woocommerce-inpost' )
+								$data['shipping_address'] = __( 'Parcel Locker ', 'inpost-for-woocommerce' )
 									. ' '
 									. $shipment->getCustomAttributes()->getTargetPoint();
 							}

@@ -3,12 +3,13 @@
 	Plugin Name: InPost PL
 	Plugin URI: https://wordpress.org/plugins/inpost-for-woocommerce/
 	Description: InPost for WooCommerce is a dedicated integration plugin, designed for small and medium-sized businesses that want to quickly and conveniently integrate with InPost services.
-	Version: 1.8.6
+	Version: 1.8.7
 	Author: iLabs.dev
 	Author URI: https://ilabs.dev/
-	Text Domain: woocommerce-inpost
+	Text Domain: inpost-for-woocommerce
 	Domain Path: /languages/
 	Tested up to: 6.9
+	License: GPLv3
 
 	Copyright 2022 Inspire Labs sp. z o.o.
 
@@ -39,7 +40,7 @@ use InspireLabs\WoocommerceInpost\EasyPack_Helper;
 
 define( 'WOOCOMMERCE_INPOST_PLUGIN_FILE', __FILE__ );
 define( 'WOOCOMMERCE_INPOST_PLUGIN_DIR', __DIR__ );
-define( 'WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION', '1.8.6' );
+define( 'WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION', '1.8.7' );
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -99,8 +100,8 @@ function easypack_clear_wc_shipping_cache() {
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'easypack_inpost_links_filter' );
 function easypack_inpost_links_filter( $links ) {
 	$plugin_links = array(
-		'<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=easypack_general' ) ) . '">' . esc_html__( 'Settings', 'woocommerce-inpost' ) . '</a>',
-		'<a href="https://inpost.pl/formularz-wsparcie" target="_blank">' . __( 'Support InPost', 'woocommerce-inpost' ) . '</a>',
+		'<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=easypack_general' ) ) . '">' . esc_html__( 'Settings', 'inpost-for-woocommerce' ) . '</a>',
+		'<a href="https://inpost.pl/formularz-wsparcie" target="_blank">' . __( 'Support InPost', 'inpost-for-woocommerce' ) . '</a>',
 	);
 
 	return array_merge( $plugin_links, $links );

@@ -62,7 +62,7 @@ class TrackingInfoEmail {
 					$tracking_url = EasyPack_Helper()->get_tracking_url();
 					$mailer       = WC()->mailer();
 					$recipient    = $order_email;
-					$subject      = esc_html__( 'Your order has been given a tracking number', 'woocommerce-inpost' );
+					$subject      = esc_html__( 'Your order has been given a tracking number', 'inpost-for-woocommerce' );
 					$content      = $this->get_tracking_info_email_html(
 						$tracking_url,
 						$tracking_numbers,

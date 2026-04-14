@@ -41,9 +41,9 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 				'instance-settings',
 			);
 			$this->id                 = 'easypack_shipping_esmartmix';
-			$this->method_title       = __( 'InPost SmartCourier', 'woocommerce-inpost' );
+			$this->method_title       = __( 'InPost SmartCourier', 'inpost-for-woocommerce' );
 			$this->method_description
-				= __( 'Alcohol delivery', 'woocommerce-inpost' );
+				= __( 'Alcohol delivery', 'inpost-for-woocommerce' );
 			$this->init();
 		}
 
@@ -59,40 +59,40 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 
 			$settings = array(
 				array(
-					'title'       => __( 'General settings', 'woocommerce-inpost' ),
+					'title'       => __( 'General settings', 'inpost-for-woocommerce' ),
 					'type'        => 'title',
 					'description' => '',
 					'id'          => 'section_general_settings',
 				),
 				'logo_upload'                            => array(
-					'name'  => __( 'Change logo', 'woocommerce-inpost' ),
-					'title' => __( 'Upload custom logo', 'woocommerce-inpost' ),
+					'name'  => __( 'Change logo', 'inpost-for-woocommerce' ),
+					'title' => __( 'Upload custom logo', 'inpost-for-woocommerce' ),
 					'type'  => 'logo_upload',
 					'id'    => 'logo_upload',
 				),
 				'title'                                  => array(
-					'title'             => __( 'Method title', 'woocommerce-inpost' ),
+					'title'             => __( 'Method title', 'inpost-for-woocommerce' ),
 					'type'              => 'text',
-					'default'           => __( 'InPost SmartCourier', 'woocommerce-inpost' ),
+					'default'           => __( 'InPost SmartCourier', 'inpost-for-woocommerce' ),
 					'custom_attributes' => array( 'required' => 'required' ),
 					'desc_tip'          => false,
 				),
 				'delivery_terms'                         => array(
-					'title'    => __( 'Terms of delivery', 'woocommerce-inpost' ),
+					'title'    => __( 'Terms of delivery', 'inpost-for-woocommerce' ),
 					'type'     => 'text',
 					'default'  => '',
 					'desc_tip' => false,
 				),
 				'insurance_inpost_pl'                    => array(
-					'title'       => __( 'Insurance', 'woocommerce-inpost' ),
-					'label'       => __( 'Set from order amount', 'woocommerce-inpost' ),
+					'title'       => __( 'Insurance', 'inpost-for-woocommerce' ),
+					'label'       => __( 'Set from order amount', 'inpost-for-woocommerce' ),
 					'type'        => 'checkbox',
 					'description' => '',
 					'default'     => 'no',
 					'desc_tip'    => true,
 				),
 				'insurance_value_inpost_pl'              => array(
-					'title'             => __( 'Default insurance amount', 'woocommerce-inpost' ),
+					'title'             => __( 'Default insurance amount', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -103,7 +103,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 					'placeholder'       => '0.00',
 				),
 				'free_shipping_cost'                     => array(
-					'title'             => __( 'Free shipping', 'woocommerce-inpost' ),
+					'title'             => __( 'Free shipping', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -112,35 +112,35 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 					'default'           => '',
 					'desc_tip'          => __(
 						'Enter the amount of the contract, from which shipping will be free (does not include virtual products).',
-						'woocommerce-inpost'
+						'inpost-for-woocommerce'
 					),
 					'placeholder'       => '0.00',
 				),
 				'show_free_shipping_label'               => array(
 					'title'       => '',
-					'label'       => __( 'Add label (free) to the end of title of shipping method', 'woocommerce-inpost' ),
+					'label'       => __( 'Add label (free) to the end of title of shipping method', 'inpost-for-woocommerce' ),
 					'type'        => 'checkbox',
 					'description' => '',
 					'default'     => 'yes',
 					'desc_tip'    => true,
 				),
 				'apply_minimum_order_rule_before_coupon' => array(
-					'title'       => __( 'Coupons discounts', 'woocommerce' ),
-					'label'       => __( 'Apply minimum order rule before coupon discount', 'woocommerce' ),
+					'title'       => __( 'Coupons discounts', 'inpost-for-woocommerce' ),
+					'label'       => __( 'Apply minimum order rule before coupon discount', 'inpost-for-woocommerce' ),
 					'type'        => 'checkbox',
-					'description' => __( 'If checked, free shipping would be available based on pre-discount order amount.', 'woocommerce' ),
+					'description' => __( 'If checked, free shipping would be available based on pre-discount order amount.', 'inpost-for-woocommerce' ),
 					'default'     => 'no',
 					'desc_tip'    => true,
 				),
 				'flat_rate'                              => array(
-					'title'   => __( 'Flat rate', 'woocommerce-inpost' ),
+					'title'   => __( 'Flat rate', 'inpost-for-woocommerce' ),
 					'type'    => 'checkbox',
-					'label'   => __( 'Set a flat-rate shipping fee for the entire order.', 'woocommerce-inpost' ),
+					'label'   => __( 'Set a flat-rate shipping fee for the entire order.', 'inpost-for-woocommerce' ),
 					'class'   => 'easypack_flat_rate',
 					'default' => 'yes',
 				),
 				'cost_per_order'                         => array(
-					'title'             => __( 'Cost of delivery', 'woocommerce-inpost' ),
+					'title'             => __( 'Cost of delivery', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -150,59 +150,59 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 					'default'           => '',
 					'desc_tip'          => __(
 						'Set a flat-rate shipping for all orders',
-						'woocommerce-inpost'
+						'inpost-for-woocommerce'
 					),
 					'placeholder'       => '0.00',
 				),
 				'tax_status'                             => array(
-					'title'   => __( 'Tax status', 'woocommerce' ),
+					'title'   => __( 'Tax status', 'inpost-for-woocommerce' ),
 					'type'    => 'select',
 					'class'   => 'wc-enhanced-select',
 					'default' => 'none',
 					'options' => array(
-						'none'    => _x( 'None', 'Tax status', 'woocommerce-inpost' ),
-						'taxable' => __( 'Taxable', 'woocommerce-inpost' ),
+						'none'    => _x( 'None', 'Tax status', 'inpost-for-woocommerce' ),
+						'taxable' => __( 'Taxable', 'inpost-for-woocommerce' ),
 					),
 				),
 				'source_of_parcel_dimensions'            => array(
-					'title'   => __( 'Where to get the dimensions of parcels', 'woocommerce-inpost' ),
+					'title'   => __( 'Where to get the dimensions of parcels', 'inpost-for-woocommerce' ),
 					'type'    => 'select',
 					'class'   => 'wc-enhanced-select',
 					'default' => 'courier',
 					'options' => array(
-						'courier_template'                => __( 'Template', 'woocommerce-inpost' ),
-						'courier_default_dimensions'      => __( 'Default value', 'woocommerce-inpost' ),
-						'courier_dimensions_from_product' => __( 'Product configuration', 'woocommerce-inpost' ),
+						'courier_template'                => __( 'Template', 'inpost-for-woocommerce' ),
+						'courier_default_dimensions'      => __( 'Default value', 'inpost-for-woocommerce' ),
+						'courier_dimensions_from_product' => __( 'Product configuration', 'inpost-for-woocommerce' ),
 					),
 				),
 				'default_send_method'                    => array(
-					'title'   => __( 'Default send method', 'woocommerce-inpost' ),
+					'title'   => __( 'Default send method', 'inpost-for-woocommerce' ),
 					'type'    => 'select',
 					'class'   => 'wc-enhanced-select',
 					'default' => 'courier',
 					'options' => array(
-						'pop'     => __( 'POP', 'woocommerce-inpost' ),
-						'courier' => __( 'Courier', 'woocommerce-inpost' ),
+						'pop'     => __( 'POP', 'inpost-for-woocommerce' ),
+						'courier' => __( 'Courier', 'inpost-for-woocommerce' ),
 					),
 				),
 				array(
-					'title'       => __( 'Rates table', 'woocommerce-inpost' ),
+					'title'       => __( 'Rates table', 'inpost-for-woocommerce' ),
 					'type'        => 'title',
 					'description' => '',
 					'id'          => 'section_general_settings',
 				),
 				'based_on'                               => array(
-					'title'    => __( 'Based on', 'woocommerce-inpost' ),
+					'title'    => __( 'Based on', 'inpost-for-woocommerce' ),
 					'type'     => 'select',
 					'desc_tip' => __(
 						'Select the method of calculating shipping cost. If the cost of shipping is to be calculated based on the weight of the cart and the products do not have a defined weight, the cost will be calculated incorrectly.',
-						'woocommerce-inpost'
+						'inpost-for-woocommerce'
 					),
 					'class'    => 'wc-enhanced-select easypack_based_on',
 					'options'  => array(
-						'price'       => esc_html__( 'Price', 'woocommerce-inpost' ),
-						'weight'      => esc_html__( 'Weight', 'woocommerce-inpost' ),
-						'product_qty' => esc_html__( 'Products qty', 'woocommerce-inpost' ),
+						'price'       => esc_html__( 'Price', 'inpost-for-woocommerce' ),
+						'weight'      => esc_html__( 'Weight', 'inpost-for-woocommerce' ),
+						'product_qty' => esc_html__( 'Products qty', 'inpost-for-woocommerce' ),
 					),
 				),
 				'rates'                                  => array(
@@ -381,8 +381,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 
 				if ( isset( $response['service'] ) && $response['service'] === 'unavailable' ) {
 					$ret['status']  = 'error';
-					$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'woocommerce-inpost' )
-						. __( 'The organization does not have an available service on its account', 'woocommerce-inpost' );
+					$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' )
+						. __( 'The organization does not have an available service on its account', 'inpost-for-woocommerce' );
 					\wc_get_logger()->debug( 'INPOST SmartCourier: ', array( 'source' => 'inpost-smartcourier-log' ) );
 					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-smartcourier-log' ) );
 					\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-smartcourier-log' ) );
@@ -392,8 +392,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 					&& $response['selected_offer']['carrier'] === 'carrier_inpost_courier_unavailable'
 				) {
 					$ret['status']  = 'error';
-					$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'woocommerce-inpost' )
-						. __( 'The organization does not have courier services available', 'woocommerce-inpost' );
+					$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' )
+						. __( 'The organization does not have courier services available', 'inpost-for-woocommerce' );
 					\wc_get_logger()->debug( 'INPOST SmartCourier: ', array( 'source' => 'inpost-smartcourier-log' ) );
 					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-smartcourier-log' ) );
 					\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-smartcourier-log' ) );
@@ -403,8 +403,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 					&& $response['parcels']['dimensions'] === 'invalid'
 				) {
 					$ret['status']  = 'error';
-					$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'woocommerce-inpost' )
-						. __( 'Providing incorrect dimensions/exceeding the permissible dimensions', 'woocommerce-inpost' );
+					$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' )
+						. __( 'Providing incorrect dimensions/exceeding the permissible dimensions', 'inpost-for-woocommerce' );
 					\wc_get_logger()->debug( 'INPOST SmartCourier: ', array( 'source' => 'inpost-smartcourier-log' ) );
 					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-smartcourier-log' ) );
 					\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-smartcourier-log' ) );
@@ -414,8 +414,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 					&& $response['parcels']['weight'] === 'invalid'
 				) {
 					$ret['status']  = 'error';
-					$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'woocommerce-inpost' )
-						. __( 'Exceeding the maximum weight', 'woocommerce-inpost' );
+					$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' )
+						. __( 'Exceeding the maximum weight', 'inpost-for-woocommerce' );
 					\wc_get_logger()->debug( 'INPOST SmartCourier: ', array( 'source' => 'inpost-smartcourier-log' ) );
 					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-smartcourier-log' ) );
 					\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-smartcourier-log' ) );
@@ -425,7 +425,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 					&& $response['transactions']['details'] !== null
 				) {
 					// $ret['status'] = 'error';
-					$ret['message'] = __( 'There are some transaction details: ', 'woocommerce-inpost' )
+					$ret['message'] = __( 'There are some transaction details: ', 'inpost-for-woocommerce' )
 						. esc_html( $response['transactions']['details'] );
 					\wc_get_logger()->debug( 'INPOST SmartCourier: ', array( 'source' => 'inpost-smartcourier-log' ) );
 					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-smartcourier-log' ) );
@@ -436,7 +436,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 				\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-smartcourier-log' ) );
 				\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-smartcourier-log' ) );
 				$ret['status']  = 'error';
-				$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'woocommerce-inpost' ) . EasyPack_API()->translate_error( $e->getMessage() );
+				$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' ) . EasyPack_API()->translate_error( $e->getMessage() );
 			}
 
 			if ( $ret['status'] == 'ok' ) {
@@ -444,7 +444,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 				$tracking_url = EasyPack_Helper()->get_tracking_url();
 
 				$order->add_order_note(
-					__( 'Shipment created', 'woocommerce-inpost' ),
+					__( 'Shipment created', 'inpost-for-woocommerce' ),
 					false
 				);
 
@@ -572,7 +572,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 			$send_method_disabled = false;
 			if ( EasyPack_API()->getCountry() === EasyPack_API::COUNTRY_PL ) {
 				$send_methods = array(
-					'courier' => __( 'Courier', 'woocommerce-inpost' ),
+					'courier' => __( 'Courier', 'inpost-for-woocommerce' ),
 				);
 			}
 			$selected_service = $shipment_service->get_customer_service_name_by_id( self::SERVICE_ID );

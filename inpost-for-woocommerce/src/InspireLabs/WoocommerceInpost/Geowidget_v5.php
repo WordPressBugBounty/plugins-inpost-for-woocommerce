@@ -80,11 +80,11 @@ class Geowidget_v5 {
 					'inpost-pl-manage-geowidget',
 					'inpost_pl_map',
 					array(
-						'button_text1'       => esc_html__( 'Select Parcel Locker', 'woocommerce-inpost' ),
-						'button_text2'       => esc_html__( 'Change Parcel Locker', 'woocommerce-inpost' ),
-						'error_text'         => esc_html__( 'Some error is occured', 'woocommerce-inpost' ),
-						'selected_text'      => esc_html__( 'Selected parcel locker:', 'woocommerce-inpost' ),
-						'updated_text'       => esc_html__( 'Pick up point has been successfuly written', 'woocommerce-inpost' ),
+						'button_text1'       => esc_html__( 'Select Parcel Locker', 'inpost-for-woocommerce' ),
+						'button_text2'       => esc_html__( 'Change Parcel Locker', 'inpost-for-woocommerce' ),
+						'error_text'         => esc_html__( 'Some error is occured', 'inpost-for-woocommerce' ),
+						'selected_text'      => esc_html__( 'Selected parcel locker:', 'inpost-for-woocommerce' ),
+						'updated_text'       => esc_html__( 'Pick up point has been successfuly written', 'inpost-for-woocommerce' ),
 						'geowidget_v5_token' => EasyPack::ENVIRONMENT_SANDBOX === $this->environment
 							? get_option( 'easypack_geowidget_sandbox_token' )
 							: get_option( 'easypack_geowidget_production_token' ),
@@ -120,7 +120,7 @@ class Geowidget_v5 {
 					'width'  => self::GEOWIDGET_WIDTH,
 					'height' => self::GEOWIDGET_HEIGHT,
 					'token'  => $this->get_token(),
-					'title'  => __( 'Select parcel locker', 'woocommerce-inpost' ),
+					'title'  => __( 'Select parcel locker', 'inpost-for-woocommerce' ),
 				)
 			);
 			wp_enqueue_style( 'geowidget-css', $this->get_geowidget_css_src(), array(), WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION );

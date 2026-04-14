@@ -13,5 +13,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 <br/><br/>
-<h2><a href="<?php echo esc_url( $returns_page ); ?>"><?php esc_html_e( 'Returns', 'woocommerce-inpost' ); ?></a></h2>
+<h2><a href="<?php echo esc_url( $returns_page ); ?>"><?php esc_html_e( 'Returns', 'inpost-for-woocommerce' ); ?></a></h2>
 <br/>

@@ -40,11 +40,11 @@ $courier_parcel_source = EasyPack_Helper()->get_source_of_courier_dimensions( $o
 $courier_parcel_size   = EasyPack_Helper()->get_courier_parcel_dimensions( $order_id, $courier_parcel_source );
 
 if ( 'courier_default_dimensions' === $courier_parcel_source || 'courier_dimensions_from_product' === $courier_parcel_source ) {
-    $courier_templates = array( '' => esc_html__( 'Choose template', 'woocommerce-inpost' ) ) + $courier_templates;
+    $courier_templates = array( '' => esc_html__( 'Choose template', 'inpost-for-woocommerce' ) ) + $courier_templates;
     $selected_template = '';
 } elseif ( empty( $courier_parcel_source ) ) {
     if ( 'yes' === get_option( 'easypack_set_default_courier_dimensions' ) ) {
-        $courier_templates = array( '' => esc_html__( 'Choose template', 'woocommerce-inpost' ) ) + $courier_templates;
+        $courier_templates = array( '' => esc_html__( 'Choose template', 'inpost-for-woocommerce' ) ) + $courier_templates;
         $selected_template = '';
     }
 }
@@ -73,14 +73,14 @@ $non_standard_value = ! empty( $courier_parcel_size['not_standard'] )
 	<span class="easypack-courier-repeat-block-btn-close">X</span>
 	<span class="easypack-courier-repeat-block-title">
 		<label for="easypack_courier_parcel_id">
-			<?php echo esc_html__( 'Parcel id', 'woocommerce-inpost' ); ?>
+			<?php echo esc_html__( 'Parcel id', 'inpost-for-woocommerce' ); ?>
 			<input id="easypack_courier_parcel_id" class="easypack-repeat-block-title" type="text" value="" name="easypack_courier_parcel_id[]">
 		</label>
 	</span>
 <?php
 
 if ( ! empty( $courier_templates ) ) {
-    echo esc_html__( 'Templates:', 'woocommerce-inpost' );
+    echo esc_html__( 'Templates:', 'inpost-for-woocommerce' );
 
     // Select among saved templates.
     $params = array(
@@ -104,7 +104,7 @@ $weight = array(
     'type'        => 'number',
     'class'       => array( 'easypack_parcel' ),
     'input_class' => array( 'easypack_parcel' ),
-    'label'       => esc_html__( 'Weight:', 'woocommerce-inpost' ) . ' ' . $parcel->getWeight()->getUnit(),
+    'label'       => esc_html__( 'Weight:', 'inpost-for-woocommerce' ) . ' ' . $parcel->getWeight()->getUnit(),
     'required'    => true,
 );
 
@@ -113,13 +113,13 @@ woocommerce_form_field( 'parcel_weight', $weight, $weight_value );
 $non_standard = array(
     'type'        => 'select',
     'options'     => array(
-        'no'  => esc_html__( 'no', 'woocommerce-inpost' ),
-        'yes' => esc_html__( 'yes', 'woocommerce-inpost' ),
+        'no'  => esc_html__( 'no', 'inpost-for-woocommerce' ),
+        'yes' => esc_html__( 'yes', 'inpost-for-woocommerce' ),
 
     ),
     'class'       => array( 'easypack_parcel' ),
     'input_class' => array( 'easypack_parcel' ),
-    'label'       => esc_html__( 'Non standard', 'woocommerce-inpost' ),
+    'label'       => esc_html__( 'Non standard', 'inpost-for-woocommerce' ),
     'required'    => true,
 );
 

@@ -11,7 +11,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
 <?php if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ) : ?>
     <div class="easypack_one_else_parcel_wrapper" style="display: block; margin-top: 15px;">
         <a id="easypack_need_one_else_parcel" href="#">
-            <?php esc_html_e("Create another shipment", "woocommerce-inpost"); ?>
+            <?php esc_html_e("Create another shipment", "inpost-for-woocommerce"); ?>
         </a>
 
         <?php
@@ -40,7 +40,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
         woocommerce_form_field( 'easypack_second_parcel', $params, $selected_option );
         ?>
         <button id="easypack_add_additional_parcel" class="button" style="margin-top: 15px;">
-            <?php echo esc_html__( 'Add another parcel', 'woocommerce-inpost' ); ?>
+            <?php echo esc_html__( 'Add another parcel', 'inpost-for-woocommerce' ); ?>
         </button>
         <span id="easypack_additional_spinner" class="spinner" style="margin-top: 15px;"></span>
 

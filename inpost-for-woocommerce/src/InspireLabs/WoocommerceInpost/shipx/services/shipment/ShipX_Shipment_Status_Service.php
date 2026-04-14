@@ -79,7 +79,7 @@ class ShipX_Shipment_Status_Service {
 	 */
 	public function get_statuses_key_value() {
 		$return = array(
-			'any' => __( 'Any status', 'woocommerce-inpost' ),
+			'any' => __( 'Any status', 'inpost-for-woocommerce' ),
 		);
 
 		$statuses = $this->get_statuses_from_db();
@@ -186,7 +186,7 @@ class ShipX_Shipment_Status_Service {
 			$shipment->getInternalData()->setStatus( 'new' );
 			$shipment->getInternalData()->setStatusChangedTimestamp( time() );
 
-			$shipment->getInternalData()->setStatusTitle( __( 'Not created yet', 'woocommerce-inpost' ) );
+			$shipment->getInternalData()->setStatusTitle( __( 'Not created yet', 'inpost-for-woocommerce' ) );
 			$shipment->getInternalData()->setStatusDescription( null );
 		} else {
 			$shipment->getInternalData()->setTrackingNumber( $search_results['tracking_number'] );
@@ -215,7 +215,7 @@ class ShipX_Shipment_Status_Service {
 
 		$return = '';
 		foreach ( $internalData->get_status_history() as $item ) {
-			$return .= $item->get_name() . ' ' . date( 'd-m-Y H:i:s', (int) $item->get_timestamp() + 7200 );
+			$return .= $item->get_name() . ' ' . gmdate( 'd-m-Y H:i:s', (int) $item->get_timestamp() + 7200 );
 			$return .= '<br>';
 		}
 

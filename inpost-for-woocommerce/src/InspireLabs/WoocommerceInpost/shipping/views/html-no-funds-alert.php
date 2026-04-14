@@ -8,14 +8,14 @@ if ( 'offer_selected' === $status ) : ?>
 		<?php
 		printf(
 			'%1s <a href="https://manager.paczkomaty.pl/auth/login" target="_blank" style="color:blue;">%1s</a> %1s',
-			esc_html__( 'The package has not been created! You do not have funds in', 'woocommerce-inpost' ),
-			esc_html__( 'your Parcel Manager account', 'woocommerce-inpost' ),
-			esc_html__( 'or a contract for InPost services.', 'woocommerce-inpost' )
+			esc_html__( 'The package has not been created! You do not have funds in', 'inpost-for-woocommerce' ),
+			esc_html__( 'your Parcel Manager account', 'inpost-for-woocommerce' ),
+			esc_html__( 'or a contract for InPost services.', 'inpost-for-woocommerce' )
 		);
 		?>
 	</p>
 	<p class="easypack_error" style="color:red; font-weight:bold;">	
-		<?php echo esc_html__( 'Re-creating a package is possible in the Package Manager after topping up funds.', 'woocommerce-inpost' ); ?>
+		<?php echo esc_html__( 'Re-creating a package is possible in the Package Manager after topping up funds.', 'inpost-for-woocommerce' ); ?>
 	</p>
 <?php endif; ?>
 <?php
@@ -43,9 +43,9 @@ if ( isset( $api_status_update_response ) && is_array( $api_status_update_respon
 				if ( is_array( $arr ) ) {
 					foreach ( $arr as $k => $v ) {
 						if ( 'sender' === $k && 'post_code_invalid' === $v ) {
-							$details .= esc_html__( 'Wrong sender postal code', 'woocommerce-inpost' );
+							$details .= esc_html__( 'Wrong sender postal code', 'inpost-for-woocommerce' );
 						} elseif ( 'receiver' === $k && 'post_code_invalid' === $v ) {
-							$details .= esc_html__( 'Wrong receiver postal code', 'woocommerce-inpost' );
+							$details .= esc_html__( 'Wrong receiver postal code', 'inpost-for-woocommerce' );
 						} else {
 							$details .= $k . ': ' . $v . ' ';
 						}

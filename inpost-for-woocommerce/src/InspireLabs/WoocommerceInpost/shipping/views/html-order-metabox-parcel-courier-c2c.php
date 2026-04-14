@@ -51,7 +51,7 @@ $status_service = EasyPack()->get_shipment_status_service();
         === $internal_data::API_VERSION_PRODUCTION
     ): ?>
         <span style="font-weight: bold; color: #a00">
-            <?php esc_html_e('This shipment was created in production API. Change API environment to production to process this shipment', 'woocommerce-inpost') ?>
+            <?php esc_html_e('This shipment was created in production API. Change API environment to production to process this shipment', 'inpost-for-woocommerce') ?>
         </span>
 
     <?php endif; ?>
@@ -60,7 +60,7 @@ $status_service = EasyPack()->get_shipment_status_service();
         === $internal_data::API_VERSION_SANDBOX
     ): ?>
         <span style="font-weight: bold; color: #a00">
-            <?php esc_html_e('This shipment was created in sandbox API. Change API environment to sandbox to process this shipment', 'woocommerce-inpost') ?>
+            <?php esc_html_e('This shipment was created in sandbox API. Change API environment to sandbox to process this shipment', 'inpost-for-woocommerce') ?>
         </span>
     <?php endif; ?>
     <?php return; ?>
@@ -80,14 +80,14 @@ if ( $disabled ) {
 ?>
 
 <p>
-    <span style="font-weight: bold"><?php esc_html_e('Service:', 'woocommerce-inpost') ?>
+    <span style="font-weight: bold"><?php esc_html_e('Service:', 'inpost-for-woocommerce') ?>
     </span>
     <span>
         <?php echo esc_html( $selected_service ); ?>
     </span>
 </p>
 
-<p><span style="font-weight: bold"><?php esc_html_e('Status:', 'woocommerce-inpost') ?> </span>
+<p><span style="font-weight: bold"><?php esc_html_e('Status:', 'inpost-for-woocommerce') ?> </span>
     <?php if ($shipment instanceof ShipX_Shipment_Model && ! $additional_package ): ?>
     <?php $status = $shipment->getInternalData()->getStatus() ?>
     <?php $status_title = $shipment->getInternalData()->getStatusTitle() ?>
@@ -96,14 +96,14 @@ if ( $disabled ) {
         (<?php echo esc_html( $status ); ?>)</span>
 </p>
 <?php else: ?>
-    <?php esc_html_e('Not created yet (new)', 'woocommerce-inpost') ?>
+    <?php esc_html_e('Not created yet (new)', 'inpost-for-woocommerce') ?>
 <?php endif ?>
 
 <?php if ( ! empty($shipment instanceof ShipX_Shipment_Model
     && $shipment->getInternalData()->getTrackingNumber()) && ! $additional_package
 ): ?>
     <span style="font-weight: bold">
-            <?php esc_html_e('Tracking number:', 'woocommerce-inpost') ?>
+            <?php esc_html_e('Tracking number:', 'inpost-for-woocommerce') ?>
     </span>
 
     <a target="_blank"
@@ -115,7 +115,7 @@ if ( $disabled ) {
 
 <?php include('costs/html-order-metabox-costs.php'); ?>
 
-<p><?php esc_html_e('Attributes:', 'woocommerce-inpost'); ?>
+<p><?php esc_html_e('Attributes:', 'inpost-for-woocommerce'); ?>
 <ul id="easypack_parcels" style="list-style: none">
     <?php /** @var ShipX_Shipment_Parcel_Model $parcel */ ?>
     <?php /** @var ShipX_Shipment_Parcel_Model[] $parcels */ ?>
@@ -142,10 +142,10 @@ if ( $disabled ) {
 
                 ?>
                 <?php if ( $status == 'new' && ! $first_parcel ) : ?>
-                    <button class="button easypack_remove_parcel"><?php esc_html_e('Remove', 'woocommerce-inpost'); ?></button>
+                    <button class="button easypack_remove_parcel"><?php esc_html_e('Remove', 'inpost-for-woocommerce'); ?></button>
                 <?php endif; ?>
             <?php else : ?>
-                <?php esc_html_e( 'Size', 'woocommerce-inpost' ); ?>:
+                <?php esc_html_e( 'Size', 'inpost-for-woocommerce' ); ?>:
                 <?php echo '<span style="font-size: 16px">'; ?>
                 <?php echo esc_html( EasyPack_Helper()->convert_size_to_symbol( $parcel->getTemplate() ) ); ?>
                 <?php echo '</span>'; ?>
@@ -165,7 +165,7 @@ if ( $disabled ) {
 <p>
     <?php if ( $status == 'new' ) : ?>
         <button id="easypack_send_parcels"
-                class="button button-primary"><?php esc_html_e('Send parcel', 'woocommerce-inpost'); ?></button>
+                class="button button-primary"><?php esc_html_e('Send parcel', 'inpost-for-woocommerce'); ?></button>
     <?php endif; ?>
 
     <?php include( 'html-no-funds-alert.php' ); ?>
@@ -173,7 +173,7 @@ if ( $disabled ) {
     <?php if ( $shipment instanceof ShipX_Shipment_Model
         && !empty($shipment->getInternalData()->getTrackingNumber()) && ! $additional_package ) : ?>
         <input id="get_stickers" type="submit" class="button button-primary"
-               value="<?php esc_html_e('Get sticker', 'woocommerce-inpost'); ?>">
+               value="<?php esc_html_e('Get sticker', 'inpost-for-woocommerce'); ?>">
         <input type="hidden" name="easypack_get_stickers_request"
                id="easypack_get_stickers_request">
         <input type="hidden" name="easypack_parcel"
@@ -271,7 +271,7 @@ if ( $disabled ) {
                                 '<span title="">'+ response.ref_number +'</span></p>';
 
                             let tracking_url = 'https://inpost.pl/sledzenie-przesylek?number=' + response.tracking_number;
-                            let button_text = '<?php echo esc_html__("Get sticker for additional package", "woocommerce-inpost");?>';
+                            let button_text = '<?php echo esc_html__("Get sticker for additional package", "inpost-for-woocommerce");?>';
 
                             additional_package_data += '<span style="font-weight:bold">Tracking number:</span>' +
                                 '<br><a target="_blank" ' +

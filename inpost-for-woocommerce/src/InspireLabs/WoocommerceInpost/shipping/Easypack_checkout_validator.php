@@ -75,18 +75,18 @@ class Easypack_checkout_validator
                 switch ($fieldset_key) {
                     case 'shipping' :
                         /* translators: %s: field name */
-                        $field_label = sprintf(__('Shipping %s', 'woocommerce'), $field_label);
+                        $field_label = sprintf(__('Shipping %s', 'inpost-for-woocommerce'), $field_label);
                         break;
                     case 'billing' :
                         /* translators: %s: field name */
-                        $field_label = sprintf(__('Billing %s', 'woocommerce'), $field_label);
+                        $field_label = sprintf(__('Billing %s', 'inpost-for-woocommerce'), $field_label);
                         break;
                 }
 
                 if (in_array('phone', $format)) {
 
                     if (false === $this->is_uk_phone($data[$key])) {
-                    $errors->add('validation', sprintf(__('Please enter a valid UK phone number.', 'woocommerce'),
+                    $errors->add('validation', sprintf(__('Please enter a valid UK phone number.', 'inpost-for-woocommerce'),
                         '<strong>' . esc_html($field_label) . '</strong>'));
                     }
                 }

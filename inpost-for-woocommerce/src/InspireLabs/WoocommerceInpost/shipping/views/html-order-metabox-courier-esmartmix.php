@@ -48,7 +48,7 @@ if ( true === $wrong_api_env ) {
 	if ( $internal_data->getApiVersion() === $internal_data::API_VERSION_PRODUCTION ) {
 		?>
 		<span style="font-weight: bold; color: #a00">
-			<?php esc_html_e( 'This shipment was created in production API. Change API environment to production to process this shipment', 'woocommerce-inpost' ); ?>
+			<?php esc_html_e( 'This shipment was created in production API. Change API environment to production to process this shipment', 'inpost-for-woocommerce' ); ?>
 		</span>
 		<?php
 	}
@@ -56,7 +56,7 @@ if ( true === $wrong_api_env ) {
 	if ( $internal_data->getApiVersion() === $internal_data::API_VERSION_SANDBOX ) {
 		?>
 		<span style="font-weight: bold; color: #a00">
-			<?php esc_html_e( 'This shipment was created in sandbox API. Change API environment to sandbox to process this shipment', 'woocommerce-inpost' ); ?>
+			<?php esc_html_e( 'This shipment was created in sandbox API. Change API environment to sandbox to process this shipment', 'inpost-for-woocommerce' ); ?>
 		</span>
 		<?php
 	}
@@ -76,12 +76,12 @@ if ( $disabled ) {
 ?>
 
 <p>
-	<span style="font-weight: bold"><?php esc_html_e( 'Service:', 'woocommerce-inpost' ); ?></span>
+	<span style="font-weight: bold"><?php esc_html_e( 'Service:', 'inpost-for-woocommerce' ); ?></span>
 	<span><?php echo esc_html( $selected_service ); ?></span>
 </p>
 
 <p>
-	<span style="font-weight: bold"><?php esc_html_e( 'Status:', 'woocommerce-inpost' ); ?></span>
+	<span style="font-weight: bold"><?php esc_html_e( 'Status:', 'inpost-for-woocommerce' ); ?></span>
 	<?php
 	if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ) {
 		$status       = $shipment->getInternalData()->getStatus();
@@ -90,7 +90,7 @@ if ( $disabled ) {
 		?>
 		<span title="<?php echo esc_attr( $status_desc ); ?>"><?php echo esc_html( $status_title ); ?> (<?php echo esc_html( $status ); ?>)</span>
 	<?php } else { ?>
-		<?php esc_html_e( 'Not created yet (new)', 'woocommerce-inpost' ); ?>
+		<?php esc_html_e( 'Not created yet (new)', 'inpost-for-woocommerce' ); ?>
 	<?php } ?>
 </p>
 
@@ -99,7 +99,7 @@ if ( ! empty( $shipment instanceof ShipX_Shipment_Model && $shipment->getInterna
 	?>
 	<p>
 		<span style="font-weight: bold">
-			<?php esc_html_e( 'Tracking number:', 'woocommerce-inpost' ); ?>
+			<?php esc_html_e( 'Tracking number:', 'inpost-for-woocommerce' ); ?>
 		</span>
 		<a target="_blank" href="<?php echo esc_url( $shipment_service->getTrackingUrl( $shipment ) ); ?>">
 			<?php echo esc_html( $shipment->getInternalData()->getTrackingNumber() ); ?>
@@ -113,7 +113,7 @@ include 'costs/html-order-metabox-costs.php';
 ?>
 
 <p>
-	<?php esc_html_e( 'Attributes:', 'woocommerce-inpost' ); ?>
+	<?php esc_html_e( 'Attributes:', 'inpost-for-woocommerce' ); ?>
 	<ul id="easypack_parcels" style="list-style: none">
 		<?php
 		/** @var ShipX_Shipment_Parcel_Model $parcel */
@@ -128,21 +128,21 @@ include 'costs/html-order-metabox-costs.php';
 						'type'        => 'number',
 						'class'       => array( 'easypack_parcel' ),
 						'input_class' => array( 'easypack_parcel' ),
-						'label'       => __( 'Length:', 'woocommerce-inpost' ) . ' (' . $parcel->getDimensions()->getUnit() . ')',
+						'label'       => __( 'Length:', 'inpost-for-woocommerce' ) . ' (' . $parcel->getDimensions()->getUnit() . ')',
 						'required'    => true,
 					);
 					$width  = array(
 						'type'        => 'number',
 						'class'       => array( 'easypack_parcel' ),
 						'input_class' => array( 'easypack_parcel' ),
-						'label'       => __( 'Width:', 'woocommerce-inpost' ) . ' (' . $parcel->getDimensions()->getUnit() . ')',
+						'label'       => __( 'Width:', 'inpost-for-woocommerce' ) . ' (' . $parcel->getDimensions()->getUnit() . ')',
 						'required'    => true,
 					);
 					$height = array(
 						'type'        => 'number',
 						'class'       => array( 'easypack_parcel' ),
 						'input_class' => array( 'easypack_parcel' ),
-						'label'       => __( 'Height:', 'woocommerce-inpost' ) . ' (' . $parcel->getDimensions()->getUnit() . ')',
+						'label'       => __( 'Height:', 'inpost-for-woocommerce' ) . ' (' . $parcel->getDimensions()->getUnit() . ')',
 						'required'    => true,
 					);
 
@@ -151,18 +151,18 @@ include 'costs/html-order-metabox-costs.php';
 
 					if ( 'new' === $status && ! $first_parcel ) {
 						?>
-						<button class="button easypack_remove_parcel"><?php esc_html_e( 'Remove', 'woocommerce-inpost' ); ?></button>
+						<button class="button easypack_remove_parcel"><?php esc_html_e( 'Remove', 'inpost-for-woocommerce' ); ?></button>
 						<?php
 					}
 				} else {
 					?>
-					<?php esc_html_e( 'Length', 'woocommerce-inpost' ); ?>: <?php echo esc_html( $parcel->getDimensions()->getLength() ); ?> <?php echo esc_html( $parcel->getDimensions()->getUnit() ); ?>
+					<?php esc_html_e( 'Length', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $parcel->getDimensions()->getLength() ); ?> <?php echo esc_html( $parcel->getDimensions()->getUnit() ); ?>
 					<br>
-					<?php esc_html_e( 'Width', 'woocommerce-inpost' ); ?>: <?php echo esc_html( $parcel->getDimensions()->getWidth() ); ?> <?php echo esc_html( $parcel->getDimensions()->getUnit() ); ?>
+					<?php esc_html_e( 'Width', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $parcel->getDimensions()->getWidth() ); ?> <?php echo esc_html( $parcel->getDimensions()->getUnit() ); ?>
 					<br>
-					<?php esc_html_e( 'Height', 'woocommerce-inpost' ); ?>: <?php echo esc_html( $parcel->getDimensions()->getHeight() ); ?> <?php echo esc_html( $parcel->getDimensions()->getUnit() ); ?>
+					<?php esc_html_e( 'Height', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $parcel->getDimensions()->getHeight() ); ?> <?php echo esc_html( $parcel->getDimensions()->getUnit() ); ?>
 					<br>
-					<?php esc_html_e( 'Weight', 'woocommerce-inpost' ); ?>: <?php echo esc_html( $parcel->getWeight()->getAmount() ); ?> <?php echo esc_html( $parcel->getWeight()->getUnit() ); ?>
+					<?php esc_html_e( 'Weight', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $parcel->getWeight()->getAmount() ); ?> <?php echo esc_html( $parcel->getWeight()->getUnit() ); ?>
 					<?php
 				}
 				?>
@@ -182,7 +182,7 @@ include 'html-send-method.php';
 
 <p>
 	<?php if ( 'new' === $status ) { ?>
-		<button id="easypack_send_parcels" class="button button-primary"><?php esc_html_e( 'Send parcel', 'woocommerce-inpost' ); ?></button>
+		<button id="easypack_send_parcels" class="button button-primary"><?php esc_html_e( 'Send parcel', 'inpost-for-woocommerce' ); ?></button>
 	<?php } ?>
 
 	<?php include 'html-no-funds-alert.php'; ?>
@@ -190,7 +190,7 @@ include 'html-send-method.php';
 	<?php
 	if ( $shipment instanceof ShipX_Shipment_Model && ! empty( $shipment->getInternalData()->getTrackingNumber() ) && ! $additional_package ) {
 		?>
-		<input id="get_stickers" type="submit" class="button button-primary" value="<?php esc_html_e( 'Get sticker', 'woocommerce-inpost' ); ?>">
+		<input id="get_stickers" type="submit" class="button button-primary" value="<?php esc_html_e( 'Get sticker', 'inpost-for-woocommerce' ); ?>">
 		<input type="hidden" name="easypack_get_stickers_request" id="easypack_get_stickers_request">
 		<input type="hidden" name="easypack_parcel" value="<?php echo esc_attr( $shipment->getInternalData()->getOrderId() ); ?>">
 	<?php } ?>
@@ -266,7 +266,7 @@ include 'html-send-method.php';
 								'<span title="">' + response.ref_number + '</span></p>';
 
 							let tracking_url = 'https://inpost.pl/sledzenie-przesylek?number=' + response.tracking_number;
-							let button_text = '<?php echo esc_html__( 'Get sticker for additional package', 'woocommerce-inpost' ); ?>';
+							let button_text = '<?php echo esc_html__( 'Get sticker for additional package', 'inpost-for-woocommerce' ); ?>';
 
 							additional_package_data += '<span style="font-weight:bold">Tracking number:</span>' +
 								'<br><a target="_blank" ' +

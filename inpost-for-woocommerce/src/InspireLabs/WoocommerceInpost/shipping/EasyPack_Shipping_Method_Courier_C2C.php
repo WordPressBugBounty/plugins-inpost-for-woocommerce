@@ -43,8 +43,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
 				'instance-settings',
 			);
 			$this->id                 = 'easypack_shipping_courier_c2c';
-			$this->method_title       = esc_html__( 'InPost Courier C2C', 'woocommerce-inpost' );
-			$this->method_description = esc_html__( 'InPost Courier C2C', 'woocommerce-inpost' );
+			$this->method_title       = esc_html__( 'InPost Courier C2C', 'inpost-for-woocommerce' );
+			$this->method_description = esc_html__( 'InPost Courier C2C', 'inpost-for-woocommerce' );
 			$this->init();
 		}
 
@@ -60,40 +60,40 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
 
 			$settings = array(
 				array(
-					'title'       => __( 'General settings', 'woocommerce-inpost' ),
+					'title'       => __( 'General settings', 'inpost-for-woocommerce' ),
 					'type'        => 'title',
 					'description' => '',
 					'id'          => 'section_general_settings',
 				),
 				'logo_upload'                            => array(
-					'name'  => __( 'Change logo', 'woocommerce-inpost' ),
-					'title' => __( 'Upload custom logo', 'woocommerce-inpost' ),
+					'name'  => __( 'Change logo', 'inpost-for-woocommerce' ),
+					'title' => __( 'Upload custom logo', 'inpost-for-woocommerce' ),
 					'type'  => 'logo_upload',
 					'id'    => 'logo_upload',
 				),
 				'title'                                  => array(
-					'title'             => __( 'Method title', 'woocommerce-inpost' ),
+					'title'             => __( 'Method title', 'inpost-for-woocommerce' ),
 					'type'              => 'text',
-					'default'           => __( 'InPost Courier C2C', 'woocommerce-inpost' ),
+					'default'           => __( 'InPost Courier C2C', 'inpost-for-woocommerce' ),
 					'custom_attributes' => array( 'required' => 'required' ),
 					'desc_tip'          => false,
 				),
 				'delivery_terms'                         => array(
-					'title'    => __( 'Terms of delivery', 'woocommerce-inpost' ),
+					'title'    => __( 'Terms of delivery', 'inpost-for-woocommerce' ),
 					'type'     => 'text',
 					'default'  => '',
 					'desc_tip' => false,
 				),
 				'insurance_inpost_pl'                    => array(
-					'title'       => __( 'Insurance', 'woocommerce-inpost' ),
-					'label'       => __( 'Set from order amount', 'woocommerce-inpost' ),
+					'title'       => __( 'Insurance', 'inpost-for-woocommerce' ),
+					'label'       => __( 'Set from order amount', 'inpost-for-woocommerce' ),
 					'type'        => 'checkbox',
 					'description' => '',
 					'default'     => 'no',
 					'desc_tip'    => true,
 				),
 				'insurance_value_inpost_pl'              => array(
-					'title'             => __( 'Default insurance amount', 'woocommerce-inpost' ),
+					'title'             => __( 'Default insurance amount', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -104,7 +104,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
 					'placeholder'       => '0.00',
 				),
 				'free_shipping_cost'                     => array(
-					'title'             => __( 'Free shipping', 'woocommerce-inpost' ),
+					'title'             => __( 'Free shipping', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -113,35 +113,35 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
 					'default'           => '',
 					'desc_tip'          => __(
 						'Enter the amount of the contract, from which shipping will be free (does not include virtual products).',
-						'woocommerce-inpost'
+						'inpost-for-woocommerce'
 					),
 					'placeholder'       => '0.00',
 				),
 				'show_free_shipping_label'               => array(
 					'title'       => '',
-					'label'       => __( 'Add label (free) to the end of title of shipping method', 'woocommerce-inpost' ),
+					'label'       => __( 'Add label (free) to the end of title of shipping method', 'inpost-for-woocommerce' ),
 					'type'        => 'checkbox',
 					'description' => '',
 					'default'     => 'yes',
 					'desc_tip'    => true,
 				),
 				'apply_minimum_order_rule_before_coupon' => array(
-					'title'       => __( 'Coupons discounts', 'woocommerce' ),
-					'label'       => __( 'Apply minimum order rule before coupon discount', 'woocommerce' ),
+					'title'       => __( 'Coupons discounts', 'inpost-for-woocommerce' ),
+					'label'       => __( 'Apply minimum order rule before coupon discount', 'inpost-for-woocommerce' ),
 					'type'        => 'checkbox',
-					'description' => __( 'If checked, free shipping would be available based on pre-discount order amount.', 'woocommerce' ),
+					'description' => __( 'If checked, free shipping would be available based on pre-discount order amount.', 'inpost-for-woocommerce' ),
 					'default'     => 'no',
 					'desc_tip'    => true,
 				),
 				'flat_rate'                              => array(
-					'title'   => __( 'Flat rate', 'woocommerce-inpost' ),
+					'title'   => __( 'Flat rate', 'inpost-for-woocommerce' ),
 					'type'    => 'checkbox',
-					'label'   => __( 'Set a flat-rate shipping fee for the entire order.', 'woocommerce-inpost' ),
+					'label'   => __( 'Set a flat-rate shipping fee for the entire order.', 'inpost-for-woocommerce' ),
 					'class'   => 'easypack_flat_rate',
 					'default' => 'yes',
 				),
 				'cost_per_order'                         => array(
-					'title'             => __( 'Cost of delivery', 'woocommerce-inpost' ),
+					'title'             => __( 'Cost of delivery', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -151,62 +151,62 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
 					'default'           => '',
 					'desc_tip'          => __(
 						'Set a flat-rate shipping for all orders',
-						'woocommerce-inpost'
+						'inpost-for-woocommerce'
 					),
 					'placeholder'       => '0.00',
 				),
 				'tax_status'                             => array(
-					'title'   => __( 'Tax status', 'woocommerce' ),
+					'title'   => __( 'Tax status', 'inpost-for-woocommerce' ),
 					'type'    => 'select',
 					'class'   => 'wc-enhanced-select',
 					'default' => 'none',
 					'options' => array(
-						'none'    => _x( 'None', 'Tax status', 'woocommerce-inpost' ),
-						'taxable' => __( 'Taxable', 'woocommerce-inpost' ),
+						'none'    => _x( 'None', 'Tax status', 'inpost-for-woocommerce' ),
+						'taxable' => __( 'Taxable', 'inpost-for-woocommerce' ),
 					),
 				),
 				'default_package_size_c2c'               => array(
-					'title'   => __( 'Default package size Courier C2C', 'woocommerce-inpost' ),
+					'title'   => __( 'Default package size Courier C2C', 'inpost-for-woocommerce' ),
 					'type'    => 'select',
 					'class'   => 'wc-enhanced-select',
 					'default' => 'small',
 					'options' => EasyPack()->get_package_sizes_xlarge(),
 				),
 				'default_send_method'                    => array(
-					'title'   => __( 'Default send method', 'woocommerce-inpost' ),
+					'title'   => __( 'Default send method', 'inpost-for-woocommerce' ),
 					'type'    => 'select',
 					'class'   => 'wc-enhanced-select',
 					'default' => 'parcel_machine',
 					'options' => array(
-						'parcel_machine' => __( 'Parcel Locker', 'woocommerce-inpost' ),
-						'pop'            => __( 'POP', 'woocommerce-inpost' ),
-						'courier'        => __( 'Courier', 'woocommerce-inpost' ),
+						'parcel_machine' => __( 'Parcel Locker', 'inpost-for-woocommerce' ),
+						'pop'            => __( 'POP', 'inpost-for-woocommerce' ),
+						'courier'        => __( 'Courier', 'inpost-for-woocommerce' ),
 					),
 				),
 				array(
-					'title'       => __( 'Rates table', 'woocommerce-inpost' ),
+					'title'       => __( 'Rates table', 'inpost-for-woocommerce' ),
 					'type'        => 'title',
 					'description' => '',
 					'id'          => 'section_general_settings',
 				),
 				'based_on'                               => array(
-					'title'       => __( 'Based on', 'woocommerce-inpost' ),
+					'title'       => __( 'Based on', 'inpost-for-woocommerce' ),
 					'type'        => 'select',
 					'desc_tip'    => __(
 						'Select the method of calculating shipping cost. If the cost of shipping is to be calculated based on the weight of the cart and the products do not have a defined weight, the cost will be calculated incorrectly.',
-						'woocommerce-inpost'
+						'inpost-for-woocommerce'
 					),
 					'description' => sprintf(
 						'<b id="easypack_dimensions_warning" style="color:red;display:none">%1s</b> %1s',
-						__( 'Attention!', 'woocommerce-inpost' ),
-						__( 'Set the dimension in the settings of each product. The default value is size \'A\'', 'woocommerce-inpost' )
+						__( 'Attention!', 'inpost-for-woocommerce' ),
+						__( 'Set the dimension in the settings of each product. The default value is size \'A\'', 'inpost-for-woocommerce' )
 					),
 					'class'       => 'wc-enhanced-select easypack_based_on',
 					'options'     => array(
-						'price'       => esc_html__( 'Price', 'woocommerce-inpost' ),
-						'weight'      => esc_html__( 'Weight', 'woocommerce-inpost' ),
-						'product_qty' => esc_html__( 'Products qty', 'woocommerce-inpost' ),
-						'size'        => esc_html__( 'Size (A, B, C)', 'woocommerce-inpost' ),
+						'price'       => esc_html__( 'Price', 'inpost-for-woocommerce' ),
+						'weight'      => esc_html__( 'Weight', 'inpost-for-woocommerce' ),
+						'product_qty' => esc_html__( 'Products qty', 'inpost-for-woocommerce' ),
+						'size'        => esc_html__( 'Size (A, B, C)', 'inpost-for-woocommerce' ),
 					),
 				),
 				'rates'                                  => array(
@@ -217,7 +217,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
 					'desc_tip' => '',
 				),
 				'gabaryt_a'                              => array(
-					'title'             => __( 'Size A', 'woocommerce-inpost' ),
+					'title'             => __( 'Size A', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -225,12 +225,12 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
 					),
 					'class'             => 'easypack_gabaryt_a',
 					'default'           => '',
-					'desc_tip'          => __( 'Set a flat-rate shipping for size A', 'woocommerce-inpost' ),
+					'desc_tip'          => __( 'Set a flat-rate shipping for size A', 'inpost-for-woocommerce' ),
 					'placeholder'       => '0.00',
 				),
 
 				'gabaryt_b'                              => array(
-					'title'             => __( 'Size B', 'woocommerce-inpost' ),
+					'title'             => __( 'Size B', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -238,12 +238,12 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
 					),
 					'class'             => 'easypack_gabaryt_b',
 					'default'           => '',
-					'desc_tip'          => __( 'Set a flat-rate shipping for size B', 'woocommerce-inpost' ),
+					'desc_tip'          => __( 'Set a flat-rate shipping for size B', 'inpost-for-woocommerce' ),
 					'placeholder'       => '0.00',
 				),
 
 				'gabaryt_c'                              => array(
-					'title'             => __( 'Size C', 'woocommerce-inpost' ),
+					'title'             => __( 'Size C', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -251,7 +251,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
 					),
 					'class'             => 'easypack_gabaryt_c',
 					'default'           => '',
-					'desc_tip'          => __( 'Set a flat-rate shipping for size C', 'woocommerce-inpost' ),
+					'desc_tip'          => __( 'Set a flat-rate shipping for size C', 'inpost-for-woocommerce' ),
 					'placeholder'       => '0.00',
 				),
 			);
@@ -404,7 +404,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
 
 			} catch ( Exception $e ) {
 				$ret['status']  = 'error';
-				$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'woocommerce-inpost' ) . EasyPack_API()->translate_error( $e->getMessage() );
+				$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' ) . EasyPack_API()->translate_error( $e->getMessage() );
 			}
 
 			if ( $ret['status'] == 'ok' ) {
@@ -412,7 +412,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
 				$tracking_url = EasyPack_Helper()->get_tracking_url();
 
 				$order->add_order_note(
-					__( 'Shipment created', 'woocommerce-inpost' ),
+					__( 'Shipment created', 'inpost-for-woocommerce' ),
 					false
 				);
 
@@ -539,9 +539,9 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C' ) ) {
 
 			$send_method_disabled = false;
 			$send_methods         = array(
-				'pop'            => __( 'POP', 'woocommerce-inpost' ),
-				'parcel_machine' => __( 'Parcel locker', 'woocommerce-inpost' ),
-				'courier'        => __( 'Courier', 'woocommerce-inpost' ),
+				'pop'            => __( 'POP', 'inpost-for-woocommerce' ),
+				'parcel_machine' => __( 'Parcel locker', 'inpost-for-woocommerce' ),
+				'courier'        => __( 'Courier', 'inpost-for-woocommerce' ),
 			);
 
 			$selected_service = $shipment_service->get_customer_service_name_by_id( self::SERVICE_ID );

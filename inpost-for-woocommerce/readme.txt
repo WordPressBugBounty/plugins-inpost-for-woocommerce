@@ -4,9 +4,9 @@ Tags: inpost, paczkomaty, etykiety, przesyłki
 Requires at least: 5.3
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable tag: 1.8.6
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Stable tag: 1.8.7
+License: GPLv3 or later
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
  
 InPost PL dla WooCommerce to dedykowana wtyczka do integracji, stworzona z myślą o małych i średnich firmach, które chcą w szybki i wygodny sposób zintegrować się z usługami InPost.
 
@@ -42,6 +42,9 @@ Po zainstalowaniu wtyczki skonfiguruj sposób dostawy InPost oraz ceny poszczeg�
 
 
 == Changelog ==
+
+= 1.8.7 =
+* Fix: webhook URL in settings
 
 = 1.8.6 =
 * Fix: dispatch orders (Zamawianie kuriera)

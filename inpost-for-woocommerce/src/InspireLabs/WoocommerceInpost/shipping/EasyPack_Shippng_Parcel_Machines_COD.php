@@ -47,11 +47,11 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 			);
 
 			$this->id                 = 'easypack_parcel_machines_cod';
-			$this->method_title       = __( 'InPost Locker 24/7 COD', 'woocommerce-inpost' );
+			$this->method_title       = __( 'InPost Locker 24/7 COD', 'inpost-for-woocommerce' );
 			$this->method_description
 				= esc_html__(
 					'Inpost Parcel Locker COD. Allow customers to pick up orders themselves.',
-					'woocommerce-inpost'
+					'inpost-for-woocommerce'
 				);
 			$this->init();
 		}
@@ -69,48 +69,48 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 
 			$settings = array(
 				array(
-					'title'       => __( 'General settings', 'woocommerce-inpost' ),
+					'title'       => __( 'General settings', 'inpost-for-woocommerce' ),
 					'type'        => 'title',
 					'description' => '',
 					'id'          => 'section_general_settings',
 				),
 				'logo_upload'                            => array(
-					'name'  => __( 'Change logo', 'woocommerce-inpost' ),
-					'title' => __( 'Upload custom logo', 'woocommerce-inpost' ),
+					'name'  => __( 'Change logo', 'inpost-for-woocommerce' ),
+					'title' => __( 'Upload custom logo', 'inpost-for-woocommerce' ),
 					'type'  => 'logo_upload',
 					'id'    => 'logo_upload',
 				),
 				'title'                                  => array(
-					'title'             => __( 'Method title', 'woocommerce-inpost' ),
+					'title'             => __( 'Method title', 'inpost-for-woocommerce' ),
 					'type'              => 'text',
-					'default'           => __( 'InPost Locker 24/7 COD', 'woocommerce-inpost' ),
+					'default'           => __( 'InPost Locker 24/7 COD', 'inpost-for-woocommerce' ),
 					'custom_attributes' => array( 'required' => 'required' ),
 					'desc_tip'          => false,
 				),
 				'delivery_terms'                         => array(
-					'title'    => __( 'Terms of delivery', 'woocommerce-inpost' ),
+					'title'    => __( 'Terms of delivery', 'inpost-for-woocommerce' ),
 					'type'     => 'text',
 					'default'  => '',
 					'desc_tip' => false,
 				),
-				'pww_mode'                         => array(
-                    'title'       => __( 'PWW mode', 'woocommerce-inpost' ),
-                    'label'       => __( 'Enabling this option allows you to create Parcel on Weekend shipments (despite the customer choosing the InPost Paczkomat 24/7 service) in the time intervals from Thursday (20:00) to Friday (18:00)', 'woocommerce-inpost' ),
-                    'type'        => 'checkbox',
-                    'description' => '',
-                    'default'     => 'no',
-                    'desc_tip'    => true,
-                ),
-				'insurance_inpost_pl'                    => array(
-					'title'       => __( 'Insurance', 'woocommerce-inpost' ),
-					'label'       => __( 'Set from order amount', 'woocommerce-inpost' ),
+				'pww_mode'                               => array(
+					'title'       => __( 'PWW mode', 'inpost-for-woocommerce' ),
+					'label'       => __( 'Enabling this option allows you to create Parcel on Weekend shipments (despite the customer choosing the InPost Paczkomat 24/7 service) in the time intervals from Thursday (20:00) to Friday (18:00)', 'inpost-for-woocommerce' ),
 					'type'        => 'checkbox',
-					'description' => __( '', 'woocommerce-inpost' ),
+					'description' => '',
+					'default'     => 'no',
+					'desc_tip'    => true,
+				),
+				'insurance_inpost_pl'                    => array(
+					'title'       => __( 'Insurance', 'inpost-for-woocommerce' ),
+					'label'       => __( 'Set from order amount', 'inpost-for-woocommerce' ),
+					'type'        => 'checkbox',
+					'description' => '',
 					'default'     => 'no',
 					'desc_tip'    => true,
 				),
 				'insurance_value_inpost_pl'              => array(
-					'title'             => __( 'Default insurance amount', 'woocommerce-inpost' ),
+					'title'             => __( 'Default insurance amount', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -121,7 +121,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 					'placeholder'       => '0.00',
 				),
 				'free_shipping_cost'                     => array(
-					'title'             => __( 'Free shipping', 'woocommerce-inpost' ),
+					'title'             => __( 'Free shipping', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -130,35 +130,35 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 					'default'           => '',
 					'desc_tip'          => __(
 						'Enter the amount of the contract, from which shipping will be free (does not include virtual products).',
-						'woocommerce-inpost'
+						'inpost-for-woocommerce'
 					),
 					'placeholder'       => '0.00',
 				),
 				'show_free_shipping_label'               => array(
 					'title'       => '',
-					'label'       => __( 'Add label (free) to the end of title of shipping method', 'woocommerce-inpost' ),
+					'label'       => __( 'Add label (free) to the end of title of shipping method', 'inpost-for-woocommerce' ),
 					'type'        => 'checkbox',
 					'description' => '',
 					'default'     => 'yes',
 					'desc_tip'    => true,
 				),
 				'apply_minimum_order_rule_before_coupon' => array(
-					'title'       => __( 'Coupons discounts', 'woocommerce' ),
-					'label'       => __( 'Apply minimum order rule before coupon discount', 'woocommerce' ),
+					'title'       => __( 'Coupons discounts', 'inpost-for-woocommerce' ),
+					'label'       => __( 'Apply minimum order rule before coupon discount', 'inpost-for-woocommerce' ),
 					'type'        => 'checkbox',
-					'description' => __( 'If checked, free shipping would be available based on pre-discount order amount.', 'woocommerce' ),
+					'description' => __( 'If checked, free shipping would be available based on pre-discount order amount.', 'inpost-for-woocommerce' ),
 					'default'     => 'no',
 					'desc_tip'    => true,
 				),
 				'flat_rate'                              => array(
-					'title'   => __( 'Flat rate', 'woocommerce-inpost' ),
+					'title'   => __( 'Flat rate', 'inpost-for-woocommerce' ),
 					'type'    => 'checkbox',
-					'label'   => __( 'Set a flat-rate shipping fee for the entire order.', 'woocommerce-inpost' ),
+					'label'   => __( 'Set a flat-rate shipping fee for the entire order.', 'inpost-for-woocommerce' ),
 					'class'   => 'easypack_flat_rate',
 					'default' => 'yes',
 				),
 				'cost_per_order'                         => array(
-					'title'             => __( 'Cost of delivery', 'woocommerce-inpost' ),
+					'title'             => __( 'Cost of delivery', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -168,51 +168,51 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 					'default'           => '',
 					'desc_tip'          => __(
 						'Set a flat-rate shipping for all orders',
-						'woocommerce-inpost'
+						'inpost-for-woocommerce'
 					),
 					'placeholder'       => '0.00',
 				),
 				'tax_status'                             => array(
-					'title'   => __( 'Tax status', 'woocommerce' ),
+					'title'   => __( 'Tax status', 'inpost-for-woocommerce' ),
 					'type'    => 'select',
 					'class'   => 'wc-enhanced-select',
 					'default' => 'none',
 					'options' => array(
-						'none'    => _x( 'None', 'Tax status', 'woocommerce-inpost' ),
-						'taxable' => __( 'Taxable', 'woocommerce-inpost' ),
+						'none'    => _x( 'None', 'Tax status', 'inpost-for-woocommerce' ),
+						'taxable' => __( 'Taxable', 'inpost-for-woocommerce' ),
 					),
 				),
 				'default_send_method'                    => array(
-					'title'   => __( 'Default send method', 'woocommerce-inpost' ),
+					'title'   => __( 'Default send method', 'inpost-for-woocommerce' ),
 					'type'    => 'select',
 					'class'   => 'wc-enhanced-select',
 					'default' => 'parcel_machine',
 					'options' => array(
-						'parcel_machine' => __( 'Parcel Locker', 'woocommerce-inpost' ),
-						'pop'            => __( 'POP', 'woocommerce-inpost' ),
-						'courier'        => __( 'Courier', 'woocommerce-inpost' ),
+						'parcel_machine' => __( 'Parcel Locker', 'inpost-for-woocommerce' ),
+						'pop'            => __( 'POP', 'inpost-for-woocommerce' ),
+						'courier'        => __( 'Courier', 'inpost-for-woocommerce' ),
 					),
 				),
 				array(
-					'title'       => __( 'Rates table', 'woocommerce-inpost' ),
+					'title'       => __( 'Rates table', 'inpost-for-woocommerce' ),
 					'type'        => 'title',
 					'description' => '',
 					'id'          => 'section_general_settings',
 				),
 
 				'based_on'                               => array(
-					'title'    => __( 'Based on', 'woocommerce-inpost' ),
+					'title'    => __( 'Based on', 'inpost-for-woocommerce' ),
 					'type'     => 'select',
 					'desc_tip' => __(
 						'Select the method of calculating shipping cost. If the cost of shipping is to be calculated based on the weight of the cart and the products do not have a defined weight, the cost will be calculated incorrectly.',
-						'woocommerce-inpost'
+						'inpost-for-woocommerce'
 					),
 					'class'    => 'wc-enhanced-select easypack_based_on',
 					'options'  => array(
-						'price'       => __( 'Price', 'woocommerce-inpost' ),
-						'weight'      => __( 'Weight', 'woocommerce-inpost' ),
-						'product_qty' => esc_html__( 'Products qty', 'woocommerce-inpost' ),
-						'size'        => esc_html__( 'Size (A, B, C)', 'woocommerce-inpost' ),
+						'price'       => __( 'Price', 'inpost-for-woocommerce' ),
+						'weight'      => __( 'Weight', 'inpost-for-woocommerce' ),
+						'product_qty' => esc_html__( 'Products qty', 'inpost-for-woocommerce' ),
+						'size'        => esc_html__( 'Size (A, B, C)', 'inpost-for-woocommerce' ),
 					),
 				),
 				'rates'                                  => array(
@@ -223,7 +223,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 					'desc_tip' => '',
 				),
 				'gabaryt_a'                              => array(
-					'title'             => __( 'Size A', 'woocommerce-inpost' ),
+					'title'             => __( 'Size A', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -231,12 +231,12 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 					),
 					'class'             => 'easypack_gabaryt_a',
 					'default'           => '',
-					'desc_tip'          => __( 'Set a flat-rate shipping for size A', 'woocommerce-inpost' ),
+					'desc_tip'          => __( 'Set a flat-rate shipping for size A', 'inpost-for-woocommerce' ),
 					'placeholder'       => '0.00',
 				),
 
 				'gabaryt_b'                              => array(
-					'title'             => __( 'Size B', 'woocommerce-inpost' ),
+					'title'             => __( 'Size B', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -244,12 +244,12 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 					),
 					'class'             => 'easypack_gabaryt_b',
 					'default'           => '',
-					'desc_tip'          => __( 'Set a flat-rate shipping for size B', 'woocommerce-inpost' ),
+					'desc_tip'          => __( 'Set a flat-rate shipping for size B', 'inpost-for-woocommerce' ),
 					'placeholder'       => '0.00',
 				),
 
 				'gabaryt_c'                              => array(
-					'title'             => __( 'Size C', 'woocommerce-inpost' ),
+					'title'             => __( 'Size C', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',
@@ -257,7 +257,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 					),
 					'class'             => 'easypack_gabaryt_c',
 					'default'           => '',
-					'desc_tip'          => __( 'Set a flat-rate shipping for size C', 'woocommerce-inpost' ),
+					'desc_tip'          => __( 'Set a flat-rate shipping for size C', 'inpost-for-woocommerce' ),
 					'placeholder'       => '0.00',
 				),
 			);
@@ -466,7 +466,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 			if ( isset( $_POST['cod_amounts'] ) && is_array( $_POST['cod_amounts'] ) ) {
 				$cod_amounts = array_map( 'sanitize_text_field', $_POST['cod_amounts'] );
 			}
-			
+
 			$cod = new ShipX_Shipment_Cod_Model();
 			$cod->setCurrency( ShipX_Shipment_Contstants::CURRENCY_PLN );
 
@@ -474,21 +474,20 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 				$total_amount = 0;
 				foreach ( $cod_amounts as $amount ) {
 					$total_amount = $total_amount + floatval( $amount );
-				}				
-				
+				}
+
 				$cod->setAmount( $total_amount );
 				$shipment_model->setCod( $cod );
-				
+
 			} else {
-				
+
 				$cod->setAmount( $order->get_total() );
 				$shipment_model->setCod( $cod );
 			}
 
 			$shipment_data = array();
-			
-			$shipment_array = EasyPack_Helper()->maybe_set_pww_param( $order_id, $shipment_array );
 
+			$shipment_array = EasyPack_Helper()->maybe_set_pww_param( $order_id, $shipment_array );
 
 			try {
 
@@ -505,7 +504,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 
 			} catch ( Exception $e ) {
 				$ret['status']  = 'error';
-				$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'woocommerce-inpost' ) . EasyPack_API()->translate_error( $e->getMessage() );
+				$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' ) . EasyPack_API()->translate_error( $e->getMessage() );
 			}
 
 			if ( $ret['status'] == 'ok' ) {
@@ -513,7 +512,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 				$tracking_url = EasyPack_Helper()->get_tracking_url();
 
 				$order->add_order_note(
-					__( 'Shipment created', 'woocommerce-inpost' ),
+					__( 'Shipment created', 'inpost-for-woocommerce' ),
 					false
 				);
 
@@ -636,13 +635,13 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 			$send_method_disabled = false;
 			if ( EasyPack_API()->getCountry() === EasyPack_API::COUNTRY_PL ) {
 				$send_methods = array(
-					'parcel_machine' => __( 'Parcel locker', 'woocommerce-inpost' ),
-					'courier'        => __( 'Courier', 'woocommerce-inpost' ),
-					'pop'            => __( 'POP', 'woocommerce-inpost' ),
+					'parcel_machine' => __( 'Parcel locker', 'inpost-for-woocommerce' ),
+					'courier'        => __( 'Courier', 'inpost-for-woocommerce' ),
+					'pop'            => __( 'POP', 'inpost-for-woocommerce' ),
 				);
 			} else {
 				$send_methods = array(
-					'parcel_machine' => __( 'Parcel locker', 'woocommerce-inpost' ),
+					'parcel_machine' => __( 'Parcel locker', 'inpost-for-woocommerce' ),
 				);
 			}
 

@@ -120,7 +120,7 @@ class EasyPack_Product_Shipping_Method_Selector {
 	 */
 	public function filter_woocommerce_product_data_tabs( $default_tabs ): array {
 		$default_tabs['custom_tab'] = array(
-			'label'    => __( 'InPost', 'woocommerce-inpost' ),
+			'label'    => __( 'InPost', 'inpost-for-woocommerce' ),
 			'target'   => 'wk_custom_tab_data',
 			'priority' => 60,
 			'class'    => array(),
@@ -307,7 +307,7 @@ class EasyPack_Product_Shipping_Method_Selector {
 		woocommerce_wp_select(
 			array(
 				'id'      => 'easypack_parcel_dimensions',
-				'label'   => __( 'InPost parcel dimensions', 'woocommerce-inpost' ),
+				'label'   => __( 'InPost parcel dimensions', 'inpost-for-woocommerce' ),
 				'options' => $options,
 				'value'   => get_post_meta( $post->ID, self::META_ID_SIZE, true ),
 			)

@@ -12,11 +12,11 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 	<?php if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ) : ?>
 		<label disabled style="display: block" for="reference_number"
 				class="graytext">
-			<?php esc_html_e( 'Reference number: ', 'woocommerce-inpost' ); ?>
+			<?php esc_html_e( 'Reference number: ', 'inpost-for-woocommerce' ); ?>
 		</label>
 	<?php else : ?>
 		<label disabled style="display: block" for="reference_number" class="">
-			<?php esc_html_e( 'Reference number: ', 'woocommerce-inpost' ); ?>
+			<?php esc_html_e( 'Reference number: ', 'inpost-for-woocommerce' ); ?>
 		</label>
 	<?php endif ?>
 

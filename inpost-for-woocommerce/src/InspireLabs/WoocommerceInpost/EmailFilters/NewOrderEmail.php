@@ -59,7 +59,7 @@ class NewOrderEmail {
             $notice = sprintf(
             /* translators: %1$s: Label text, %2$s: Parcel machine name */
                 '%1$s: %2$s',
-                __( 'Selected parcel machine', 'woocommerce-inpost' ),
+                __( 'Selected parcel machine', 'inpost-for-woocommerce' ),
                 $parcel_machine
             );
 

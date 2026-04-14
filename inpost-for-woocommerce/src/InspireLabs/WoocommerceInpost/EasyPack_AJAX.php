@@ -169,14 +169,14 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 						} else {
 							echo wp_json_encode(
 								array(
-									'details' => esc_html__( 'Check your selection.', 'woocommerce-inpost' ),
+									'details' => esc_html__( 'Check your selection.', 'inpost-for-woocommerce' ),
 								)
 							);
 							die;
 						}
 					}
 
-					echo wp_json_encode( array( 'details' => esc_html__( 'There are some validation errors.', 'woocommerce-inpost' ) ) );
+					echo wp_json_encode( array( 'details' => esc_html__( 'There are some validation errors.', 'inpost-for-woocommerce' ) ) );
 					die;
 				}
 
@@ -189,12 +189,12 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 							EasyPack_Helper::EasyPack_Helper()->print_sticker_by_inpost_id( $inpost_id );
 							die;
 						} else {
-							echo wp_json_encode( array( 'details' => esc_html__( 'Check your selection.', 'woocommerce-inpost' ) ) );
+							echo wp_json_encode( array( 'details' => esc_html__( 'Check your selection.', 'inpost-for-woocommerce' ) ) );
 							die;
 						}
 					}
 
-					echo wp_json_encode( array( 'details' => esc_html__( 'There are some validation errors.', 'woocommerce-inpost' ) ) );
+					echo wp_json_encode( array( 'details' => esc_html__( 'There are some validation errors.', 'inpost-for-woocommerce' ) ) );
 					die;
 				}
 			}
@@ -433,7 +433,7 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 				if ( empty( $shipping_method_class_name ) ) {
 					$return_content = array(
 						'status'  => 'bad',
-						'message' => esc_html__( 'Shipping method not found', 'woocommerce-inpost' ),
+						'message' => esc_html__( 'Shipping method not found', 'inpost-for-woocommerce' ),
 					);
 					echo wp_json_encode( $return_content );
 					wp_die();
@@ -453,7 +453,7 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 				} else {
 					$return_content = array(
 						'status'  => 'bad',
-						'message' => esc_html__( 'Error occured', 'woocommerce-inpost' ),
+						'message' => esc_html__( 'Error occured', 'inpost-for-woocommerce' ),
 					);
 					echo wp_json_encode( $return_content );
 					wp_die();

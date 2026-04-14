@@ -2,7 +2,7 @@
 namespace InspireLabs\WoocommerceInpost\shipx\services\shipment;
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 } // Exit if accessed directly.
 
 use Automattic\WooCommerce\Utilities\OrderUtil;
@@ -75,7 +75,12 @@ class ShipX_Shipment_Service {
 				: '';
 
 			if ( ! empty( $from_order_meta_raw ) ) {
-				$from_order_meta = unserialize( $from_order_meta_raw );
+				$from_order_meta = unserialize(
+					$from_order_meta_raw,
+					array(
+						'allowed_classes' => array( ShipX_Shipment_Model::class ),
+					)
+				);
 			}
 		}
 
@@ -400,7 +405,7 @@ class ShipX_Shipment_Service {
 				$weight->setAmount( $sizes['weight'] );
 				$parcel->setWeight( $weight );
 
-                $non_standard = false;
+				$non_standard = false;
 				if ( ! empty( $sizes['non_standard'] ) && 'yes' === $sizes['non_standard'] ) {
 					$non_standard = true;
 				}
@@ -695,44 +700,44 @@ class ShipX_Shipment_Service {
 	public function get_customer_service_name_by_id( $service_id ) {
 		switch ( $service_id ) {
 			case ShipX_Shipment_Model::SERVICE_INPOST_LETTER_ECOMMERCE:
-				return __( 'Parcel e-commerce InPost', 'woocommerce-inpost' );
+				return __( 'Parcel e-commerce InPost', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_LOCKER_STANDARD:
-				return __( 'Standard parcel locker shipment', 'woocommerce-inpost' );
+				return __( 'Standard parcel locker shipment', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_LOCKER_PASS_THRU:
-				return __( 'PassThru parcel (no logistics)', 'woocommerce-inpost' );
+				return __( 'PassThru parcel (no logistics)', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_LOCKER_ALLEGRO:
-				return __( 'Allegro InPost Parcel Lockers shipment', 'woocommerce-inpost' );
+				return __( 'Allegro InPost Parcel Lockers shipment', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_LETTER_ALLEGRO:
-				return __( 'Allegro InPost Registered Mail shipment', 'woocommerce-inpost' );
+				return __( 'Allegro InPost Registered Mail shipment', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_ALLEGRO:
-				return __( 'Allegro InPost Courier shipment', 'woocommerce-inpost' );
+				return __( 'Allegro InPost Courier shipment', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_PALETTE:
-				return __( 'Standard Pallet courier shipment', 'woocommerce-inpost' );
+				return __( 'Standard Pallet courier shipment', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_STANDARD:
-				return __( 'Standard courier shipment', 'woocommerce-inpost' );
+				return __( 'Standard courier shipment', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_EXPRESS_1000:
-				return __( 'Courier shipment with delivery to 10 a.m. on the following day', 'woocommerce-inpost' );
+				return __( 'Courier shipment with delivery to 10 a.m. on the following day', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_EXPRESS_1200:
-				return __( 'Courier shipment with delivery to 12 p.m. on the following day', 'woocommerce-inpost' );
+				return __( 'Courier shipment with delivery to 12 p.m. on the following day', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_EXPRESS_1700:
-				return __( 'Courier shipment with delivery to 5 p.m. on the following day', 'woocommerce-inpost' );
+				return __( 'Courier shipment with delivery to 5 p.m. on the following day', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_LOCAL_STANDARD:
-				return __( 'Standard local courier service', 'woocommerce-inpost' );
+				return __( 'Standard local courier service', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_LOCAL_EXPRESS:
-				return __( 'Express local courier service', 'woocommerce-inpost' );
+				return __( 'Express local courier service', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_LOCAL_SUPER_EXPRESS:
-				return __( 'Super Express local courier service', 'woocommerce-inpost' );
+				return __( 'Super Express local courier service', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_C2C:
-				return __( 'InPost Courier C2C', 'woocommerce-inpost' );
+				return __( 'InPost Courier C2C', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_C2C_COD:
-				return __( 'InPost Courier C2C COD', 'woocommerce-inpost' );
+				return __( 'InPost Courier C2C COD', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_LOCKER_ECONOMY:
-				return __( 'InPost Locker Economy', 'woocommerce-inpost' );
+				return __( 'InPost Locker Economy', 'inpost-for-woocommerce' );
 			case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_ESMARTMIX:
-				return __( 'InPost SmartCourier', 'woocommerce-inpost' );
+				return __( 'InPost SmartCourier', 'inpost-for-woocommerce' );
 		}
 
-		return __( 'Unknown service', 'woocommerce-inpost' );
+		return __( 'Unknown service', 'inpost-for-woocommerce' );
 	}
 
 	/**
@@ -756,7 +761,7 @@ class ShipX_Shipment_Service {
 		// $services[] = 'inpost_courier_allegro';
 
 		$return = array(
-			'any' => __( 'Any service', 'woocommerce-inpost' ),
+			'any' => __( 'Any service', 'inpost-for-woocommerce' ),
 		);
 		foreach ( $services as $id ) {
 			$return[ $id ] = $this->get_customer_service_name_by_id( $id );
@@ -784,34 +789,34 @@ class ShipX_Shipment_Service {
 				$dim_unit     = $dimensions->getUnit();
 				$length       = sprintf(
 					'%s: %s %s',
-					__( 'Length', 'woocommerce-inpost' ),
+					__( 'Length', 'inpost-for-woocommerce' ),
 					$dimensions->getLength(),
 					$dim_unit
 				);
 				$width        = sprintf(
 					'%s: %s %s',
-					__( 'Width', 'woocommerce-inpost' ),
+					__( 'Width', 'inpost-for-woocommerce' ),
 					$dimensions->getWidth(),
 					$dim_unit
 				);
 				$height       = sprintf(
 					'%s: %s %s',
-					__( 'Height', 'woocommerce-inpost' ),
+					__( 'Height', 'inpost-for-woocommerce' ),
 					$dimensions->getHeight(),
 					$dim_unit
 				);
 				$weight       = sprintf(
 					'%s: %s %s',
-					__( 'Weight', 'woocommerce-inpost' ),
+					__( 'Weight', 'inpost-for-woocommerce' ),
 					$weight->getAmount(),
 					$weight_unit
 				);
 				$non_standard = sprintf(
 					'%s: %s',
-					__( 'Non standard', 'woocommerce-inpost' ),
+					__( 'Non standard', 'inpost-for-woocommerce' ),
 					( $parcel->is_non_standard() === true
-						? __( 'yes', 'woocommerce-inpost' )
-						: __( 'no', 'woocommerce-inpost' ) )
+						? __( 'yes', 'inpost-for-woocommerce' )
+						: __( 'no', 'inpost-for-woocommerce' ) )
 				);
 
 				return sprintf(

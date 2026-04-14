@@ -30,7 +30,7 @@ class ShipX_Courier_Pickup_Service {
 		if ( empty( $dpoints['street'] ) ) {
 			$alerts = new Alerts();
 			$alerts->add_error(
-				'InPost PL: ' . esc_html__( 'No dispatch points or wrong configuration. Add dispatch points on the InPost options page.', 'woocommerce-inpost' )
+				'InPost PL: ' . esc_html__( 'No dispatch points or wrong configuration. Add dispatch points on the InPost options page.', 'inpost-for-woocommerce' )
 			);
 			$alerts->print_alerts();
 
@@ -42,7 +42,7 @@ class ShipX_Courier_Pickup_Service {
 
 				if ( ! isset( $dpoints['point_name'][ $i ] ) ) {
 					$this->dpoint_error(
-						esc_html__( 'point name', 'woocommerce-inpost' ),
+						esc_html__( 'point name', 'inpost-for-woocommerce' ),
 						$i
 					);
 					$point_name = '';
@@ -52,7 +52,7 @@ class ShipX_Courier_Pickup_Service {
 
 				if ( ! isset( $dpoints['postal_code'][ $i ] ) ) {
 					$this->dpoint_error(
-						esc_html__( 'postal code', 'woocommerce-inpost' ),
+						esc_html__( 'postal code', 'inpost-for-woocommerce' ),
 						$i
 					);
 					$postal_code = '';
@@ -61,14 +61,14 @@ class ShipX_Courier_Pickup_Service {
 				}
 
 				if ( ! isset( $dpoints['building_number'][ $i ] ) ) {
-					$this->dpoint_error( esc_html__( 'building number', 'woocommerce-inpost' ), $i );
+					$this->dpoint_error( esc_html__( 'building number', 'inpost-for-woocommerce' ), $i );
 					$building_number = '';
 				} else {
 					$building_number = $dpoints['building_number'][ $i ];
 				}
 
 				if ( ! isset( $dpoints['city'][ $i ] ) ) {
-					$this->dpoint_error( esc_html__( 'city', 'woocommerce-inpost' ), $i );
+					$this->dpoint_error( esc_html__( 'city', 'inpost-for-woocommerce' ), $i );
 					$city = '';
 				} else {
 					$city = $dpoints['city'][ $i ];
@@ -88,11 +88,12 @@ class ShipX_Courier_Pickup_Service {
 		$alerts = new Alerts();
 		$alerts->add_error(
 			'InPost PL: '
-							. sprintf(
-								__( 'The configuration of the dispatch points is incomplete. The field %1$s is missing at pickup point #%2$s', 'woocommerce-inpost' ),
-								$name,
-								$key + 1
-							)
+			. sprintf(
+			/* translators: %1$s: Field name that is missing, %2$s: Pickup point number */
+				__( 'The configuration of the dispatch points is incomplete. The field %1$s is missing at pickup point #%2$s', 'inpost-for-woocommerce' ),
+				$name,
+				$key + 1
+			)
 		);
 		$alerts->print_alerts();
 	}

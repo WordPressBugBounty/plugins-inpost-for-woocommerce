@@ -43,18 +43,18 @@ add_action(
 
 <tr class="easypack-parcel-machine">
 	<th class="easypack-parcel-machine-label">
-		<?php // echo __( 'Select Parcel Locker', 'woocommerce-inpost' ); ?>
+		<?php // echo __( 'Select Parcel Locker', 'inpost-for-woocommerce' ); ?>
 	</th>
 	<td class="easypack-parcel-machine-select">
 		<?php if ( defined( 'DOING_AJAX' ) && true === DOING_AJAX ) : ?>
 
 			<div class="easypack_show_geowidget" id="easypack_show_geowidget">
-				<?php echo esc_html__( 'Select parcel locker', 'woocommerce-inpost' ); ?>
+				<?php echo esc_html__( 'Select parcel locker', 'inpost-for-woocommerce' ); ?>
 			</div>
 
 			<div id="selected-parcel-machine" class="hidden-paczkomat-data">
 				<div><span class="easypack-visible-point-header italic" style="font-weight: bold">
-				<?php echo esc_html__( 'Selected parcel locker:', 'woocommerce-inpost' ); ?>
+				<?php echo esc_html__( 'Selected parcel locker:', 'inpost-for-woocommerce' ); ?>
 				</span></div>
 				<span class="easypack-visible-point-description" id="selected-parcel-machine-id"></span>
 

@@ -30,7 +30,7 @@ $params = array(
     'options' => $send_methods,
     'class' => array('wc-enhanced-select'),
     'custom_attributes' => $custom_attributes,
-    'label' => esc_html__( 'Send method', 'woocommerce-inpost' ),
+    'label' => esc_html__( 'Send method', 'inpost-for-woocommerce' ),
 );
 if( 'parcel_locker' === $send_method ) {
     $send_method = 'parcel_machine';

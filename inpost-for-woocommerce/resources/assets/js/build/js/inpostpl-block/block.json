@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "inpost-pl/block",
   "version": "2.0.0",
   "title": "Inpost PL Shipping Options Block",
@@ -29,6 +29,6 @@
       "default": ""
     }
   },
-  "textdomain": "woocommerce-inpost",
+  "textdomain": "inpost-for-woocommerce",
   "editorStyle": ""
 }

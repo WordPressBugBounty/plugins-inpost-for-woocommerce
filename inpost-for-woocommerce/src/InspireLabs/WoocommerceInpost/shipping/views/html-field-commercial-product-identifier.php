@@ -10,11 +10,11 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model; ?>
 <?php if ( $shipment instanceof ShipX_Shipment_Model ): ?>
     <label disabled style="display: block" for="commercial_product_identifier"
            class="graytext">
-		<?php esc_html_e( 'Commercial product identifier: ', 'woocommerce-inpost' ); ?>
+		<?php esc_html_e( 'Commercial product identifier: ', 'inpost-for-woocommerce' ); ?>
     </label>
 <?php else: ?>
     <label disabled style="display: block" for="commercial_product_identifier" class="">
-		<?php esc_html_e( 'Commercial product identifier: ', 'woocommerce-inpost' ); ?>
+		<?php esc_html_e( 'Commercial product identifier: ', 'inpost-for-woocommerce' ); ?>
     </label>
 <?php endif ?>
 

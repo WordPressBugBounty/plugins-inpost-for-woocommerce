@@ -57,7 +57,7 @@ class EasyPackCoupons
     }
 
     function easypack_custom_discount_type( $discount_types ) {
-        $discount_types['easypack_inpost_discount'] = esc_html__( 'Inpost', 'woocommerce-inpost' );
+        $discount_types['easypack_inpost_discount'] = esc_html__( 'Inpost', 'inpost-for-woocommerce' );
         return $discount_types;
     }
 
@@ -119,7 +119,7 @@ class EasyPackCoupons
                 'easypack-coupons',
                 'easypack_coupons',
                 array(
-                    'description' => __( 'Check this box if the coupon grants free shipping for selected Inpost methods', 'woocommerce-inpost' )
+                    'description' => __( 'Check this box if the coupon grants free shipping for selected Inpost methods', 'inpost-for-woocommerce' )
                 )
             );*/
         }
@@ -163,7 +163,7 @@ class EasyPackCoupons
                         if( in_array($rate->id, $allowed_methods )) {
 
                             // Append rate label titles (free)
-                            $rates[$rate_key]->label .= ' (' . __('Free!', 'woocommerce') . ')';
+                            $rates[$rate_key]->label .= ' (' . __('Free!', 'inpost-for-woocommerce') . ')';
 
                             // Set rate cost
                             $rates[$rate_key]->cost = 0;
@@ -186,7 +186,7 @@ class EasyPackCoupons
                             if ( $inpost_coupon_amount > (float)$rate->cost ) {
 
                                 // Append rate label titles (free)
-                                $rates[$rate_key]->label .= ' (' . __('Free!', 'woocommerce') . ')';
+                                $rates[$rate_key]->label .= ' (' . __('Free!', 'inpost-for-woocommerce') . ')';
 
                                 // Set rate cost
                                 $rates[$rate_key]->cost = 0;
@@ -221,7 +221,7 @@ class EasyPackCoupons
 
         if($coupon->get_discount_type() === 'easypack_inpost_discount'){
             if ($coupon->get_free_shipping() ) {
-                return __( 'Free shipping coupon', 'woocommerce' );
+                return __( 'Free shipping coupon', 'inpost-for-woocommerce' );
             }
 
             $inpost_coupon_amount = (float) $coupon->get_amount();

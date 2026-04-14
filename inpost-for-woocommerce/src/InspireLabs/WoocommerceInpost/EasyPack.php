@@ -66,9 +66,9 @@ class EasyPack extends inspire_Plugin4 {
 
 	public static $instance;
 
-	public static $text_domain = 'woocommerce-inpost';
+	public static $text_domain = 'inpost-for-woocommerce';
 
-	protected $_pluginNamespace = 'woocommerce-inpost';
+	protected $_pluginNamespace = 'inpost-for-woocommerce';
 
 	/**
 	 * @var WC_Shipping_Method[]
@@ -198,8 +198,8 @@ class EasyPack extends inspire_Plugin4 {
 				$product_table = new EasyPack_Custom_Product_List_Table();
 				add_submenu_page(
 					'inpost',
-					__( 'Products Settings', 'woocommerce-inpost' ),
-					__( 'Products Settings', 'woocommerce-inpost' ),
+					__( 'Products Settings', 'inpost-for-woocommerce' ),
+					__( 'Products Settings', 'inpost-for-woocommerce' ),
 					'view_woocommerce_reports',
 					'easypack_product_settings',
 					array( $product_table, 'render_custom_product_settings_page' )
@@ -318,7 +318,7 @@ class EasyPack extends inspire_Plugin4 {
 				$items['shipping']['value']
 					.= sprintf(
 						'<br>%1s:<br><span class="ep-chosen-parcel-machine">%1s</span><br><span class="italic">%3s</span>',
-						esc_html__( 'Selected parcel machine', 'woocommerce-inpost' ),
+						esc_html__( 'Selected parcel machine', 'inpost-for-woocommerce' ),
 						esc_attr( $parcel_machine_id ),
 						esc_html( $parcel_desc )
 					);
@@ -339,7 +339,8 @@ class EasyPack extends inspire_Plugin4 {
 	 */
 	public function init_shipping_methods() {
 
-		$merchant_services = array();
+		$merchant_services   = array();
+		$can_update_services = is_admin() && ( current_user_can( 'manage_woocommerce' ) || current_user_can( 'manage_options' ) );
 
 		$main_methods = array(
 			'inpost_locker_standard',
@@ -359,7 +360,7 @@ class EasyPack extends inspire_Plugin4 {
 		if ( ! empty( $stored_organization ) && is_array( $stored_organization ) ) {
 			if ( isset( $stored_organization['services'] ) && is_array( $stored_organization['services'] ) ) {
 				foreach ( $main_methods as $service ) {
-					if ( in_array( $service, $stored_organization['services'] ) ) {
+					if ( in_array( $service, $stored_organization['services'], true ) ) {
 						$merchant_services[] = $service;
 					}
 				}
@@ -367,15 +368,18 @@ class EasyPack extends inspire_Plugin4 {
 		}
 
 		if ( empty( $merchant_services ) ) {
-            // base method.
-            $merchant_services = array( 'inpost_locker_standard' );
-			$this->get_merchant_services();
+			// base method.
+			$merchant_services = array( 'inpost_locker_standard' );
+			if ( $can_update_services ) {
+				$this->get_merchant_services();
+			}
 		}
 
-        if ( ( time() - (int) get_option( 'inpost_pl_last_time_update_services', 0 ) ) > 86400 ) {
-
-            $this->get_merchant_services();
-        }
+		if ( ( time() - (int) get_option( 'inpost_pl_last_time_update_services', 0 ) ) > 86400 ) {
+			if ( $can_update_services ) {
+				$this->get_merchant_services();
+			}
+		}
 
 		if ( is_array( $merchant_services ) && ! empty( $merchant_services ) ) {
 			if ( in_array( EasyPack_Shippng_Parcel_Machines::SERVICE_ID, $merchant_services ) ) {
@@ -506,10 +510,10 @@ class EasyPack extends inspire_Plugin4 {
 		}
 
 		if ( is_array( $rates ) && ! empty( $rates ) ) {
-			
+
 			$fs_linked_methods_disabled = array();
-            $fs_linked_methods_enabled = array();
-			
+			$fs_linked_methods_enabled  = array();
+
 			foreach ( $rates as $k => $rate_object ) {
 				// if Flexible shipping is active we need check if some our Easypack methods is linked to FS.
 				if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
@@ -528,11 +532,11 @@ class EasyPack extends inspire_Plugin4 {
 						// check if linked FS methods are allowed for all products in cart.
 						if ( 0 === strpos( $linked_method, 'easypack_' ) ) {
 							if ( in_array( $k, $methods_allowed_by_cart ) ) {
-								$rates_allowed[ $k ] = $rate_object;
-                                $fs_linked_methods_enabled[] = $k;
+								$rates_allowed[ $k ]         = $rate_object;
+								$fs_linked_methods_enabled[] = $k;
 							} else {
-                                $fs_linked_methods_disabled[] = $k;
-                            }
+								$fs_linked_methods_disabled[] = $k;
+							}
 						}
 					}
 				}
@@ -548,35 +552,34 @@ class EasyPack extends inspire_Plugin4 {
 		}
 
 		if ( ! empty( $rates_allowed ) ) {
-			
-			if( ! empty($fs_linked_methods_disabled) ) {
-                foreach ($fs_linked_methods_disabled as $method_id ) {
-                    unset($rates_allowed[$method_id]);
-                }
-            }
-			
-			$packages[0]['rates'] = $rates_allowed;			
-			
+
+			if ( ! empty( $fs_linked_methods_disabled ) ) {
+				foreach ( $fs_linked_methods_disabled as $method_id ) {
+					unset( $rates_allowed[ $method_id ] );
+				}
+			}
+
+			$packages[0]['rates'] = $rates_allowed;
+
 		} else {
 			// No InPost allowed methods.
-            if( empty( $methods_allowed_by_cart ) ) {
+			if ( empty( $methods_allowed_by_cart ) ) {
 
-                if ( isset( $packages[0]['rates'] ) && is_array( $packages[0]['rates'] ) && ! empty( $packages[0]['rates'] ) ) {
+				if ( isset( $packages[0]['rates'] ) && is_array( $packages[0]['rates'] ) && ! empty( $packages[0]['rates'] ) ) {
 
-                    foreach ( $packages[0]['rates'] as $k => $rate ) {
-                        if ( 0 === strpos( $k, 'easypack_' ) ) {
-                            unset( $packages[0]['rates'][ $k ] );
-                        }
-                    }
+					foreach ( $packages[0]['rates'] as $k => $rate ) {
+						if ( 0 === strpos( $k, 'easypack_' ) ) {
+							unset( $packages[0]['rates'][ $k ] );
+						}
+					}
 
-                    if( ! empty( $fs_linked_methods_enabled ) ) {
-                        foreach ($fs_linked_methods_enabled as $method_id ) {
-                            unset( $packages[0]['rates'][ $method_id ] );
-                        }
-                    }
-                }
-
-            }
+					if ( ! empty( $fs_linked_methods_enabled ) ) {
+						foreach ( $fs_linked_methods_enabled as $method_id ) {
+							unset( $packages[0]['rates'][ $method_id ] );
+						}
+					}
+				}
+			}
 		}
 
 		return $packages;
@@ -589,49 +592,49 @@ class EasyPack extends inspire_Plugin4 {
 
 	public function get_package_sizes() {
 		return array(
-			'small'  => __( 'A 8 x 38 x 64 cm', 'woocommerce-inpost' ),
-			'medium' => __( 'B 19 x 38 x 64 cm', 'woocommerce-inpost' ),
-			'large'  => __( 'C 41 x 38 x 64 cm', 'woocommerce-inpost' ),
+			'small'  => __( 'A 8 x 38 x 64 cm', 'inpost-for-woocommerce' ),
+			'medium' => __( 'B 19 x 38 x 64 cm', 'inpost-for-woocommerce' ),
+			'large'  => __( 'C 41 x 38 x 64 cm', 'inpost-for-woocommerce' ),
 		);
 	}
 
 	public function get_package_sizes_xlarge() {
 		return array(
-			'small'  => __( 'A 8 x 38 x 64 cm', 'woocommerce-inpost' ),
-			'medium' => __( 'B 19 x 38 x 64 cm', 'woocommerce-inpost' ),
-			'large'  => __( 'C 41 x 38 x 64 cm', 'woocommerce-inpost' ),
-			'xlarge' => __( 'D 50 x 50 x 80 cm', 'woocommerce-inpost' ),
+			'small'  => __( 'A 8 x 38 x 64 cm', 'inpost-for-woocommerce' ),
+			'medium' => __( 'B 19 x 38 x 64 cm', 'inpost-for-woocommerce' ),
+			'large'  => __( 'C 41 x 38 x 64 cm', 'inpost-for-woocommerce' ),
+			'xlarge' => __( 'D 50 x 50 x 80 cm', 'inpost-for-woocommerce' ),
 		);
 	}
 
 	public function get_package_sizes_display() {
 		return array(
-			'small'  => __( 'A', 'woocommerce-inpost' ),
-			'medium' => __( 'B', 'woocommerce-inpost' ),
-			'large'  => __( 'C', 'woocommerce-inpost' ),
+			'small'  => __( 'A', 'inpost-for-woocommerce' ),
+			'medium' => __( 'B', 'inpost-for-woocommerce' ),
+			'large'  => __( 'C', 'inpost-for-woocommerce' ),
 		);
 	}
 
 	public function get_package_weights_parcel_machines() {
 		return array(
-			'1'  => __( '1 kg', 'woocommerce-inpost' ),
-			'2'  => __( '2 kg', 'woocommerce-inpost' ),
-			'5'  => __( '5 kg', 'woocommerce-inpost' ),
-			'10' => __( '10 kg', 'woocommerce-inpost' ),
-			'15' => __( '15 kg', 'woocommerce-inpost' ),
-			'20' => __( '20 kg', 'woocommerce-inpost' ),
+			'1'  => __( '1 kg', 'inpost-for-woocommerce' ),
+			'2'  => __( '2 kg', 'inpost-for-woocommerce' ),
+			'5'  => __( '5 kg', 'inpost-for-woocommerce' ),
+			'10' => __( '10 kg', 'inpost-for-woocommerce' ),
+			'15' => __( '15 kg', 'inpost-for-woocommerce' ),
+			'20' => __( '20 kg', 'inpost-for-woocommerce' ),
 		);
 	}
 
 	public function get_package_weights_courier() {
 		return array(
-			'1'  => __( '1 kg', 'woocommerce-inpost' ),
-			'2'  => __( '2 kg', 'woocommerce-inpost' ),
-			'5'  => __( '5 kg', 'woocommerce-inpost' ),
-			'10' => __( '10 kg', 'woocommerce-inpost' ),
-			'15' => __( '15 kg', 'woocommerce-inpost' ),
-			'20' => __( '20 kg', 'woocommerce-inpost' ),
-			'25' => __( '25 kg', 'woocommerce-inpost' ),
+			'1'  => __( '1 kg', 'inpost-for-woocommerce' ),
+			'2'  => __( '2 kg', 'inpost-for-woocommerce' ),
+			'5'  => __( '5 kg', 'inpost-for-woocommerce' ),
+			'10' => __( '10 kg', 'inpost-for-woocommerce' ),
+			'15' => __( '15 kg', 'inpost-for-woocommerce' ),
+			'20' => __( '20 kg', 'inpost-for-woocommerce' ),
+			'25' => __( '25 kg', 'inpost-for-woocommerce' ),
 		);
 	}
 
@@ -668,15 +671,15 @@ class EasyPack extends inspire_Plugin4 {
 					'easypack-front-js',
 					'easypack_front_map',
 					array(
-						'button_text1'       => __( 'Select Parcel Locker', 'woocommerce-inpost' ),
-						'button_text2'       => __( 'Change Parcel Locker', 'woocommerce-inpost' ),
-						'selected_text'      => __( 'Selected parcel locker:', 'woocommerce-inpost' ),
+						'button_text1'       => __( 'Select Parcel Locker', 'inpost-for-woocommerce' ),
+						'button_text2'       => __( 'Change Parcel Locker', 'inpost-for-woocommerce' ),
+						'selected_text'      => __( 'Selected parcel locker:', 'inpost-for-woocommerce' ),
 						'geowidget_v5_token' => self::ENVIRONMENT_SANDBOX === self::get_environment()
 							? get_option( 'easypack_geowidget_sandbox_token' )
 							: get_option( 'easypack_geowidget_production_token' ),
 						'inpost_methods'     => EasyPack_Helper()->get_inpost_methods(),
-						'error_text'         => esc_html__( 'Some error is occured', 'woocommerce-inpost' ),
-						'updated_text'       => esc_html__( 'Pick up point has been successfuly written', 'woocommerce-inpost' ),
+						'error_text'         => esc_html__( 'Some error is occured', 'inpost-for-woocommerce' ),
+						'updated_text'       => esc_html__( 'Pick up point has been successfuly written', 'inpost-for-woocommerce' ),
 						'ajaxurl'            => admin_url( 'admin-ajax.php' ),
 						'security'           => wp_create_nonce( 'easypack_nonce' ),
 						'preloader'          => esc_url( $this->getPluginImages() . 'inpost-pl-loader.gif' ),
@@ -749,7 +752,7 @@ class EasyPack extends inspire_Plugin4 {
 		}
 
 		if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
-			if ( isset( $_GET['tab'] ) && $_GET['tab'] == 'easypack_general' ) {
+			if ( isset( $_GET['tab'] ) && 'easypack_general' === $_GET['tab'] ) {
 				wp_register_script(
 					'easypack-admin-settings-page',
 					$this->getPluginJs() . 'admin-settings-page.js',
@@ -762,12 +765,13 @@ class EasyPack extends inspire_Plugin4 {
 					'easypack-admin-settings-page',
 					'easypack_settings',
 					array(
-						'change_country_alert' => __( 'Are you sure to change the country?', 'woocommerce-inpost' ),
+						'change_country_alert' => __( 'Are you sure to change the country?', 'inpost-for-woocommerce' ),
 						'debug_notice'         => __(
 							'Does not work simultaneously with the option \'JS mode of map button\'',
-							'woocommerce-inpost'
+							'inpost-for-woocommerce'
 						),
-						'webhook_notice'       => __( 'Copied!', 'woocommerce-inpost' ),
+						'webhook_notice'       => __( 'Copied!', 'inpost-for-woocommerce' ),
+						'webhook_url'          => esc_url( EasyPack_Helper()->get_webhook_url() ),
 					)
 				);
 
@@ -778,7 +782,7 @@ class EasyPack extends inspire_Plugin4 {
 		}
 
 		if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
-			if ( isset( $_GET['tab'] ) && $_GET['tab'] == 'shipping' && isset( $_GET['instance_id'] ) ) {
+			if ( isset( $_GET['tab'] ) && 'shipping' === $_GET['tab'] && isset( $_GET['instance_id'] ) ) {
 
 				wp_enqueue_media(); // logo upload dependency.
 
@@ -900,9 +904,9 @@ class EasyPack extends inspire_Plugin4 {
 	 */
 	public function get_package_sizes_gabaryt() {
 		return array(
-			'small'  => __( 'Size A (8 x 38 x 64 cm)', 'woocommerce-inpost' ),
-			'medium' => __( 'Size B (19 x 38 x 64 cm)', 'woocommerce-inpost' ),
-			'large'  => __( 'Size C (41 x 38 x 64 cm)', 'woocommerce-inpost' ),
+			'small'  => __( 'Size A (8 x 38 x 64 cm)', 'inpost-for-woocommerce' ),
+			'medium' => __( 'Size B (19 x 38 x 64 cm)', 'inpost-for-woocommerce' ),
+			'large'  => __( 'Size C (41 x 38 x 64 cm)', 'inpost-for-woocommerce' ),
 		);
 	}
 
@@ -924,7 +928,7 @@ class EasyPack extends inspire_Plugin4 {
 		$api_key         = get_option( 'easypack_token' );
 
 		if ( empty( $api_key ) || empty( $organization_id ) ) {
-			$error = esc_html__( 'API key or Organization ID is empty', 'woocommerce-inpost' );
+			$error = esc_html__( 'API key or Organization ID is empty', 'inpost-for-woocommerce' );
 			return $error;
 		}
 
@@ -932,7 +936,7 @@ class EasyPack extends inspire_Plugin4 {
 			$organization_service = self::EasyPack()->get_organization_service();
 			$organization         = $organization_service->query_organisation();
 			if ( ! is_object( $organization ) ) {
-				$error = esc_html__( "Error when trying to get API services. Check wc-logs, file 'inpost-pl-services-error'", 'woocommerce-inpost' );
+				$error = esc_html__( "Error when trying to get API services. Check wc-logs, file 'inpost-pl-services-error'", 'inpost-for-woocommerce' );
 			}
 		} catch ( Exception $e ) {
 			$error = $e->getMessage();
@@ -966,9 +970,9 @@ class EasyPack extends inspire_Plugin4 {
 				array(
 					'ajaxurl'            => admin_url( 'admin-ajax.php' ),
 					'security'           => wp_create_nonce( 'easypack_nonce' ),
-					'button_text1'       => esc_html__( 'Select Parcel Locker', 'woocommerce-inpost' ),
-					'button_text2'       => esc_html__( 'Change Parcel Locker', 'woocommerce-inpost' ),
-					'phone_text'         => esc_html__( 'Phone number (required)', 'woocommerce-inpost' ),
+					'button_text1'       => esc_html__( 'Select Parcel Locker', 'inpost-for-woocommerce' ),
+					'button_text2'       => esc_html__( 'Change Parcel Locker', 'inpost-for-woocommerce' ),
+					'phone_text'         => esc_html__( 'Phone number (required)', 'inpost-for-woocommerce' ),
 					'geowidget_v5_token' => self::ENVIRONMENT_SANDBOX === self::get_environment()
 						? get_option( 'easypack_geowidget_sandbox_token' )
 						: get_option( 'easypack_geowidget_production_token' ),
@@ -1140,7 +1144,7 @@ class EasyPack extends inspire_Plugin4 {
 		if ( isset( $_POST['all_data'] ) ) {
 			$data_return = $_POST['all_data'];
 		} else {
-			wp_send_json( array( 'error' => esc_html__( 'Error in data', 'woocommerce-inpost' ) ) );
+			wp_send_json( array( 'error' => esc_html__( 'Error in data', 'inpost-for-woocommerce' ) ) );
 		}
 
 		echo wp_json_encode( $data_return );
@@ -1282,49 +1286,49 @@ class EasyPack extends inspire_Plugin4 {
 		$settings = array();
 		if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
 			$settings['fs_inpost_pl_method'] = array(
-				'title'   => esc_html__( "Integration with 'InPost PL' plugin", 'woocommerce-inpost' ),
+				'title'   => esc_html__( "Integration with 'InPost PL' plugin", 'inpost-for-woocommerce' ),
 				'type'    => 'select',
 				'default' => 'all',
 				'options' => array(
-					'0'                                    => esc_html__( 'None', 'woocommerce-inpost' ),
-					'easypack_parcel_machines'             => esc_html__( 'InPost Locker 24/7', 'woocommerce-inpost' ),
-					'easypack_parcel_machines_cod'         => esc_html__( 'InPost Locker 24/7 COD', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_c2c'        => esc_html__( 'InPost Courier C2C', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_c2c_cod'    => esc_html__( 'InPost Courier C2C COD', 'woocommerce-inpost' ),
-					'easypack_parcel_machines_weekend'     => esc_html__( 'InPost Locker Weekend', 'woocommerce-inpost' ),
-					'easypack_parcel_machines_weekend_cod' => esc_html__( 'InPost Locker Weekend COD', 'woocommerce-inpost' ),
-					'easypack_shipping_courier'            => esc_html__( 'InPost Courier', 'woocommerce-inpost' ),
-					'easypack_cod_shipping_courier'        => esc_html__( 'InPost Courier COD', 'woocommerce-inpost' ),
-					'easypack_shipping_esmartmix'          => esc_html__( 'InPost Smart Courier', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_local_express' => esc_html__( 'InPost Courier Local Express', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_le_cod'     => esc_html__( 'InPost Courier Local Express COD', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_local_standard' => esc_html__( 'InPost Courier Local Standard', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_local_standard_cod' => esc_html__( 'InPost Courier Local Standard COD', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_lse'        => esc_html__( 'InPost Courier Local Super Express', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_lse_cod'    => esc_html__( 'InPost Courier Local Super Express COD', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_palette'    => esc_html__( 'InPost Courier Palette', 'woocommerce-inpost' ),
-					'easypack_shipping_courier_palette_cod' => esc_html__( 'InPost Courier Palette COD', 'woocommerce-inpost' ),
+					'0'                                    => esc_html__( 'None', 'inpost-for-woocommerce' ),
+					'easypack_parcel_machines'             => esc_html__( 'InPost Locker 24/7', 'inpost-for-woocommerce' ),
+					'easypack_parcel_machines_cod'         => esc_html__( 'InPost Locker 24/7 COD', 'inpost-for-woocommerce' ),
+					'easypack_shipping_courier_c2c'        => esc_html__( 'InPost Courier C2C', 'inpost-for-woocommerce' ),
+					'easypack_shipping_courier_c2c_cod'    => esc_html__( 'InPost Courier C2C COD', 'inpost-for-woocommerce' ),
+					'easypack_parcel_machines_weekend'     => esc_html__( 'InPost Locker Weekend', 'inpost-for-woocommerce' ),
+					'easypack_parcel_machines_weekend_cod' => esc_html__( 'InPost Locker Weekend COD', 'inpost-for-woocommerce' ),
+					'easypack_shipping_courier'            => esc_html__( 'InPost Courier', 'inpost-for-woocommerce' ),
+					'easypack_cod_shipping_courier'        => esc_html__( 'InPost Courier COD', 'inpost-for-woocommerce' ),
+					'easypack_shipping_esmartmix'          => esc_html__( 'InPost Smart Courier', 'inpost-for-woocommerce' ),
+					'easypack_shipping_courier_local_express' => esc_html__( 'InPost Courier Local Express', 'inpost-for-woocommerce' ),
+					'easypack_shipping_courier_le_cod'     => esc_html__( 'InPost Courier Local Express COD', 'inpost-for-woocommerce' ),
+					'easypack_shipping_courier_local_standard' => esc_html__( 'InPost Courier Local Standard', 'inpost-for-woocommerce' ),
+					'easypack_shipping_courier_local_standard_cod' => esc_html__( 'InPost Courier Local Standard COD', 'inpost-for-woocommerce' ),
+					'easypack_shipping_courier_lse'        => esc_html__( 'InPost Courier Local Super Express', 'inpost-for-woocommerce' ),
+					'easypack_shipping_courier_lse_cod'    => esc_html__( 'InPost Courier Local Super Express COD', 'inpost-for-woocommerce' ),
+					'easypack_shipping_courier_palette'    => esc_html__( 'InPost Courier Palette', 'inpost-for-woocommerce' ),
+					'easypack_shipping_courier_palette_cod' => esc_html__( 'InPost Courier Palette COD', 'inpost-for-woocommerce' ),
 
 				),
 			);
 
 			$settings['fs_inpost_pl_weekend_day_from'] = array(
-				'title'   => esc_html__( 'Available from day of week', 'woocommerce' ),
+				'title'   => esc_html__( 'Available from day of week', 'inpost-for-woocommerce' ),
 				'type'    => 'select',
 				'class'   => 'wc-enhanced-select fs-inpost-pl-weekend',
 				'default' => '4',
 				'options' => array(
-					'1' => esc_html__( 'Monday', 'woocommerce-inpost' ),
-					'2' => esc_html__( 'Tuesday', 'woocommerce-inpost' ),
-					'3' => esc_html__( 'Wednesday', 'woocommerce-inpost' ),
-					'4' => esc_html__( 'Thursday', 'woocommerce-inpost' ),
-					'5' => esc_html__( 'Friday', 'woocommerce-inpost' ),
-					'6' => esc_html__( 'Saturday', 'woocommerce-inpost' ),
+					'1' => esc_html__( 'Monday', 'inpost-for-woocommerce' ),
+					'2' => esc_html__( 'Tuesday', 'inpost-for-woocommerce' ),
+					'3' => esc_html__( 'Wednesday', 'inpost-for-woocommerce' ),
+					'4' => esc_html__( 'Thursday', 'inpost-for-woocommerce' ),
+					'5' => esc_html__( 'Friday', 'inpost-for-woocommerce' ),
+					'6' => esc_html__( 'Saturday', 'inpost-for-woocommerce' ),
 				),
 			);
 
 			$settings['fs_inpost_pl_weekend_hour_from'] = array(
-				'title'    => esc_html__( 'Available from hour', 'woocommerce-inpost' ),
+				'title'    => esc_html__( 'Available from hour', 'inpost-for-woocommerce' ),
 				'type'     => 'time',
 				'default'  => '',
 				'desc_tip' => false,
@@ -1332,22 +1336,22 @@ class EasyPack extends inspire_Plugin4 {
 			);
 
 			$settings['fs_inpost_pl_weekend_day_to'] = array(
-				'title'   => esc_html__( 'Available to day of week', 'woocommerce' ),
+				'title'   => esc_html__( 'Available to day of week', 'inpost-for-woocommerce' ),
 				'type'    => 'select',
 				'class'   => 'wc-enhanced-select fs-inpost-pl-weekend',
 				'default' => '5',
 				'options' => array(
-					'1' => esc_html__( 'Monday', 'woocommerce-inpost' ),
-					'2' => esc_html__( 'Tuesday', 'woocommerce-inpost' ),
-					'3' => esc_html__( 'Wednesday', 'woocommerce-inpost' ),
-					'4' => esc_html__( 'Thursday', 'woocommerce-inpost' ),
-					'5' => esc_html__( 'Friday', 'woocommerce-inpost' ),
-					'6' => esc_html__( 'Saturday', 'woocommerce-inpost' ),
+					'1' => esc_html__( 'Monday', 'inpost-for-woocommerce' ),
+					'2' => esc_html__( 'Tuesday', 'inpost-for-woocommerce' ),
+					'3' => esc_html__( 'Wednesday', 'inpost-for-woocommerce' ),
+					'4' => esc_html__( 'Thursday', 'inpost-for-woocommerce' ),
+					'5' => esc_html__( 'Friday', 'inpost-for-woocommerce' ),
+					'6' => esc_html__( 'Saturday', 'inpost-for-woocommerce' ),
 				),
 			);
 
 			$settings['fs_inpost_pl_weekend_hour_to'] = array(
-				'title'    => esc_html__( 'Available to hour', 'woocommerce-inpost' ),
+				'title'    => esc_html__( 'Available to hour', 'inpost-for-woocommerce' ),
 				'type'     => 'time',
 				'default'  => '',
 				'desc_tip' => false,
@@ -1355,9 +1359,9 @@ class EasyPack extends inspire_Plugin4 {
 			);
 
 			$settings['fs_insurance_inpost_pl'] = array(
-				'title'    => esc_html__( 'Insurance', 'woocommerce-inpost' )
+				'title'    => esc_html__( 'Insurance', 'inpost-for-woocommerce' )
 								. ' InPost PL: '
-								. esc_html__( 'set from order amount', 'woocommerce-inpost' ),
+								. esc_html__( 'set from order amount', 'inpost-for-woocommerce' ),
 				'type'     => 'checkbox',
 				'default'  => 'no',
 				'desc_tip' => false,
@@ -1365,7 +1369,7 @@ class EasyPack extends inspire_Plugin4 {
 			);
 
 			$settings['fs_insurance_value_inpost_pl'] = array(
-				'title'             => esc_html__( 'Default insurance amount', 'woocommerce-inpost' ),
+				'title'             => esc_html__( 'Default insurance amount', 'inpost-for-woocommerce' ),
 				'type'              => 'number',
 				'custom_attributes' => array(
 					'step' => 'any',
@@ -1408,7 +1412,7 @@ class EasyPack extends inspire_Plugin4 {
 	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain(
-			'woocommerce-inpost',
+			'inpost-for-woocommerce',
 			false,
 			dirname( plugin_basename( WOOCOMMERCE_INPOST_PLUGIN_FILE ) ) . '/languages/'
 		);
@@ -1497,8 +1501,8 @@ class EasyPack extends inspire_Plugin4 {
 
 			echo '<div class="pre-order-details-message" style="padding: 5px; margin-bottom: 20px; border-radius: 5px;">';
 			echo '<div class="pre-order-details-message-wrap" style="background: #f65d5d;padding:30px;">';
-			echo '<p style="color:#fff">⚠️ <b>' . esc_html__( 'It seems you forgot to select the InPost pick up point.', 'woocommerce-inpost' ) . '</b></p>';
-			echo '<p style="color:#fff"><b>' . esc_html__( 'If so, please select InPost pick up point from this list or on the map.', 'woocommerce-inpost' ) . '</b></p>';
+			echo '<p style="color:#fff">⚠️ <b>' . esc_html__( 'It seems you forgot to select the InPost pick up point.', 'inpost-for-woocommerce' ) . '</b></p>';
+			echo '<p style="color:#fff"><b>' . esc_html__( 'If so, please select InPost pick up point from this list or on the map.', 'inpost-for-woocommerce' ) . '</b></p>';
 			echo '</div>';
 
 			if ( ! empty( $points_data['items'] ) ) {
@@ -1516,9 +1520,9 @@ class EasyPack extends inspire_Plugin4 {
 					$point_type = '';
 					if ( isset( $point['type'] ) && is_array( $point['type'] ) ) {
 						if ( in_array( 'parcel_locker', $point['type'] ) ) {
-							$point_type = '📦 ' . esc_html__( 'Paczkomat', 'woocommerce-inpost' );
+							$point_type = '📦 ' . esc_html__( 'Paczkomat', 'inpost-for-woocommerce' );
 						} elseif ( in_array( 'pok', $point['type'] ) || in_array( 'pop', $point['type'] ) ) {
-							$point_type = '🏪 ' . esc_html__( 'POP', 'woocommerce-inpost' );
+							$point_type = '🏪 ' . esc_html__( 'POP', 'inpost-for-woocommerce' );
 						}
 					}
 
@@ -1568,12 +1572,12 @@ class EasyPack extends inspire_Plugin4 {
                          <img src="' . esc_url( $this->getPluginImages() . 'inpost-pl-loader.gif' ) . '">
                     </div>
                     <div class="easypack_show_geowidget inpost_pl_geowidget_typ" id="easypack_show_geowidget">
-                        ' . esc_html__( 'Select parcel locker', 'woocommerce-inpost' ) . '
+                        ' . esc_html__( 'Select parcel locker', 'inpost-for-woocommerce' ) . '
                     </div>
                     <div id="selected-parcel-machine" class="hidden-inpost-pl-typ-data">
                         <div>
                           <span class="font-height-600">'
-				. esc_html__( 'Selected parcel locker:', 'woocommerce-inpost' ) .
+				. esc_html__( 'Selected parcel locker:', 'inpost-for-woocommerce' ) .
 				'</span>
                         </div>
                         <span class="italic" id="selected-parcel-locker-pl-id" style="display: none;"></span>
@@ -1717,34 +1721,33 @@ class EasyPack extends inspire_Plugin4 {
 			$this->get_or_update_data_from_api();
 		}
 
-        // try to connect to API only once per 1 hour to avoid make website slow.
-        $maybe_timeout = get_option( 'inpost_pl_api_returned_error' );
-        $now           = time();
-        if ( $maybe_timeout && $maybe_timeout > $now ) {
-            return;
-        } else {
-            delete_option( 'inpost_pl_api_returned_error' );
-        }
+		// try to connect to API only once per 1 hour to avoid make website slow.
+		$maybe_timeout = get_option( 'inpost_pl_api_returned_error' );
+		$now           = time();
+		if ( $maybe_timeout && $maybe_timeout > $now ) {
+			return;
+		} else {
+			delete_option( 'inpost_pl_api_returned_error' );
+		}
 
-        $maybe_error = $this->get_or_update_data_from_api();
+		$maybe_error = $this->get_or_update_data_from_api();
 
-        if ( ! empty( $maybe_error ) ) {
-            $timeout = time() + 300;
-            update_option( 'inpost_pl_api_returned_error', $timeout );
+		if ( ! empty( $maybe_error ) ) {
+			$timeout = time() + 300;
+			update_option( 'inpost_pl_api_returned_error', $timeout );
 
-            if ( $forced ) {
-                $alerts = new Alerts();
-                $error  = sprintf(
-                    '%s %s <br><a target="_blank" href="https://inpost.pl/formularz-wsparcie">%s</a>',
-                    'InPost PL: ' . esc_html__( 'Some error occured whe we try to get list of services:', 'woocommerce-inpost' ),
-                    esc_html( $maybe_error ),
-                    esc_html__( 'contact to support', 'woocommerce-inpost' )
-                );
+			if ( $forced ) {
+				$alerts = new Alerts();
+				$error  = sprintf(
+					'%s %s <br><a target="_blank" href="https://inpost.pl/formularz-wsparcie">%s</a>',
+					'InPost PL: ' . esc_html__( 'Some error occured whe we try to get list of services:', 'inpost-for-woocommerce' ),
+					esc_html( $maybe_error ),
+					esc_html__( 'contact to support', 'inpost-for-woocommerce' )
+				);
 
-                $alerts->add_error( $error );
-            }
-        }
-
+				$alerts->add_error( $error );
+			}
+		}
 	}
 
 

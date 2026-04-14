@@ -15,14 +15,14 @@ if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ) {
 	$input_disabled = ' disabled ';
 	?>
 	<label disabled style="display: block" for="insurance_amounts" class="graytext">
-		<?php esc_html_e( 'Insurance amount: ', 'woocommerce-inpost' ); ?>
+		<?php esc_html_e( 'Insurance amount: ', 'inpost-for-woocommerce' ); ?>
 	</label>
 	<?php
 } else {
 	$input_disabled = '';
 	?>
 	<label style="display: block" for="insurance_amounts">
-		<?php esc_html_e( 'Insurance amount: ', 'woocommerce-inpost' ); ?>
+		<?php esc_html_e( 'Insurance amount: ', 'inpost-for-woocommerce' ); ?>
 	</label>
 	<?php
 }

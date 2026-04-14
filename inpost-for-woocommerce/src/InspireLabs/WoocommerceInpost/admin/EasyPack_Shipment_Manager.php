@@ -66,8 +66,8 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 
 			$icon_svg = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIj8+Cjxzdmcgd2lkdGg9IjI0Ni45OTk5OTk5OTk5OTk5NyIgaGVpZ2h0PSIyMjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiA8Zz4KICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+CiAgPGcgaWQ9InN2Z18xIiBzdHJva2U9Im51bGwiPgogICA8cGF0aCBpZD0ic3ZnXzciIGQ9Im0xMDEuNTYxMDQsMTEwLjY3NDkyYzAsMCAtMTEuNjQ2MzcsNC41MDMxIC0yNi4wMTU5LDQuNTAzMWMtMTQuMzY4MTQsMCAtMjYuMDE1OSwtNC41MDMxIC0yNi4wMTU5LC00LjUwMzFzMTEuNjQ3NzUsLTQuNTAwMzMgMjYuMDE1OSwtNC41MDAzM2MxNC4zNjk1MywwIDI2LjAxNTksNC41MDAzMyAyNi4wMTU5LDQuNTAwMzMiIGZpbGw9IiNGRkNDMDAiIHN0cm9rZT0ibnVsbCIvPgogICA8cGF0aCBpZD0ic3ZnXzgiIGQ9Im0xMzcuNTM0NjUsNDQuNDYwM2MwLDAgLTEwLjMyMDA2LC02Ljk0OTY1IC0xOC4zNTM5OSwtMTguNjI3ODNjLTguMDMzOTQsLTExLjY3NjggLTEwLjc0MDUsLTIzLjY1OTI0IC0xMC43NDA1LC0yMy42NTkyNHMxMC4zMTg2OCw2Ljk0ODI3IDE4LjM1Mzk5LDE4LjYyNTA3YzguMDMzOTQsMTEuNjc5NTYgMTAuNzQwNSwyMy42NjIwMSAxMC43NDA1LDIzLjY2MjAxIiBmaWxsPSIjRkZDQzAwIiBzdHJva2U9Im51bGwiLz4KICAgPHBhdGggaWQ9InN2Z185IiBkPSJtMTExLjE4NjgzLDczLjAzMjAxYzAsMCAtMTIuNDM4ODQsLTEuMzg1NzggLTI1LjEyNTI0LC03Ljk5OTM2Yy0xMi42ODY0LC02LjYxMjIgLTIwLjgxNDM4LC0xNS45NDc1NSAtMjAuODE0MzgsLTE1Ljk0NzU1czEyLjQzODg0LDEuMzg1NzggMjUuMTI1MjQsNy45OTkzNmMxMi42ODY0LDYuNjEyMiAyMC44MTQzOCwxNS45NDc1NSAyMC44MTQzOCwxNS45NDc1NSIgZmlsbD0iI0ZGQ0MwMCIgc3Ryb2tlPSJudWxsIi8+CiAgIDxwYXRoIGlkPSJzdmdfMTAiIGQ9Im0xMzUuNzU4ODYsMTMwLjc2ODc1YzcuNTI5MTMsLTIuMjg0NzQgMTMuOTA0ODMsLTUuNjE5MTkgMTMuOTA0ODMsLTUuNjE5MTlzLTE3LjczNTc5LC00LjkzMDQ1IC0xNi40MzU3NSwtMjMuNDU0NTVjNC4wNzI5OCwtMzAuMzk3MjkgMjguNjgzNzQsLTU0LjI2MTIyIDU5LjQ5NDU1LC01OC4xMDMyM2MtMy4yNjgwNiwtMC40NTA4NiAtNi42MDUyOCwtMC42ODczNiAtMTAuMDAxOTcsLTAuNjcyMTVjLTM4LjEwODk4LDAuMTY4NzMgLTY4Ljg2MzA5LDMwLjU5NTA2IC02OC42OTE2LDY3Ljk1NzIyYzAuMTcwMTEsMzcuMzYwNzcgMzEuMjA0OTcsNjcuNTEwNSA2OS4zMTI1Nyw2Ny4zNDMxNmMzLjE3ODE3LC0wLjAxMzgzIDYuMzAxMDIsLTAuMjU3MjQgOS4zNjMwMSwtMC42Nzc2OGMtMjcuMDQwNzEsLTMuMzc4NzEgLTQ5LjA1MDAyLC0yMi4wNzE1NCAtNTYuOTQ1NjUsLTQ2Ljc3MzU3bDAuMDAwMDEsLTAuMDAwMDF6IiBmaWxsPSIjRkZDQzAwIi8+CiAgIDxwYXRoIGlkPSJzdmdfMTEiIGQ9Im0xMzcuNTM0NjUsMTc2LjYzMjNjMCwwIC0xMC4zMjAwNiw2Ljk0OTY1IC0xOC4zNTM5OSwxOC42MjkyMWMtOC4wMzM5NCwxMS42NzU0MSAtMTAuNzQwNSwyMy42NjA2MiAtMTAuNzQwNSwyMy42NjA2MnMxMC4zMTg2OCwtNi45NDk2NSAxOC4zNTM5OSwtMTguNjI3ODNjOC4wMzM5NCwtMTEuNjc2OCAxMC43NDA1LC0yMy42NjIwMSAxMC43NDA1LC0yMy42NjIwMSIgZmlsbD0iI0ZGQ0MwMCIgc3Ryb2tlPSJudWxsIi8+CiAgIDxwYXRoIGlkPSJzdmdfMTIiIGQ9Im0xMTEuMTg2ODMsMTQ4LjA2MTk3YzAsMCAtMTIuNDM4ODQsMS4zODU3OCAtMjUuMTI1MjQsNy45OTkzNmMtMTIuNjg2NCw2LjYxMDgxIC0yMC44MTQzOCwxNS45NDYxNyAtMjAuODE0MzgsMTUuOTQ2MTdzMTIuNDM4ODQsLTEuMzg1NzggMjUuMTI1MjQsLTcuOTk3OThzMjAuODE0MzgsLTE1Ljk0NzU1IDIwLjgxNDM4LC0xNS45NDc1NSIgZmlsbD0iI0ZGQ0MwMCIgc3Ryb2tlPSJudWxsIi8+CiAgPC9nPgogPC9nPgo8L3N2Zz4=';
 			add_menu_page(
-				__( 'InPost', 'woocommerce-inpost' ),
-				__( 'InPost', 'woocommerce-inpost' ),
+				__( 'InPost', 'inpost-for-woocommerce' ),
+				__( 'InPost', 'inpost-for-woocommerce' ),
 				'view_woocommerce_reports',
 				'inpost',
 				null,
@@ -76,15 +76,15 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 			);
 			add_submenu_page(
 				'inpost',
-				__( 'Settings', 'woocommerce-inpost' ),
-				__( 'Settings', 'woocommerce-inpost' ),
+				__( 'Settings', 'inpost-for-woocommerce' ),
+				__( 'Settings', 'inpost-for-woocommerce' ),
 				'view_woocommerce_reports',
 				'admin.php?page=wc-settings&tab=easypack_general'
 			);
 			add_submenu_page(
 				'inpost',
-				__( 'Shipments', 'woocommerce-inpost' ),
-				__( 'Shipments', 'woocommerce-inpost' ),
+				__( 'Shipments', 'inpost-for-woocommerce' ),
+				__( 'Shipments', 'inpost-for-woocommerce' ),
 				'view_woocommerce_reports',
 				'easypack_shipment',
 				array( __CLASS__, 'easypack_shipment' )
@@ -103,10 +103,9 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 			$view_var_points        = $courier_pickup_service->getDispatchPointsStrArray();
 			$dispatch_point         = (int) get_option( EasyPack::ATTRIBUTE_PREFIX . '_dpoint_selected' );
 
-
-			$view_var_send_methods  = self::get_send_methods_for_country( EasyPack_API()->api_country() );
-			$view_var_statuses      = $status_service->get_statuses_key_value();
-			$view_var_services      = $shipment_service->get_services_key_value();
+			$view_var_send_methods = self::get_send_methods_for_country( EasyPack_API()->api_country() );
+			$view_var_statuses     = $status_service->get_statuses_key_value();
+			$view_var_services     = $shipment_service->get_services_key_value();
 
 			if ( true === self::is_pickup() ) {
 				self::pickup();
@@ -155,12 +154,12 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 
 			try {
 				$courier_pickup_service->createDispatchOrder( $dispatch_point_arr, $shipments_to_pick_up );
-				$message = esc_html__( 'Shipments dispathed ', 'woocommerce-inpost' );
+				$message = esc_html__( 'Shipments dispathed ', 'inpost-for-woocommerce' );
 				printf( '<div class="updated"><p>%s</p></div>', esc_html( $message ) );
 
 			} catch ( Exception $e ) {
 				$class   = 'error';
-				$message = esc_html__( 'Error while creating manifest: ', 'woocommerce-inpost' ) . $e->getMessage();
+				$message = esc_html__( 'Error while creating manifest: ', 'inpost-for-woocommerce' ) . $e->getMessage();
 				printf( '<div class="%s"><p>%s</p></div>', esc_attr( $class ), wp_kses_post( $message ) );
 			}
 		}
@@ -196,12 +195,12 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 					$shipments_to_pick_up
 				);
 
-				$message = __( 'Shipments dispathed ', 'woocommerce-inpost' );
+				$message = __( 'Shipments dispathed ', 'inpost-for-woocommerce' );
 				printf( '<div class="updated"><p>%s</p></div>', esc_html( $message ) );
 
 			} catch ( Exception $e ) {
 				$class   = 'error';
-				$message = __( 'Error while creating manifest: ', 'woocommerce-inpost' ) . $e->getMessage();
+				$message = __( 'Error while creating manifest: ', 'inpost-for-woocommerce' ) . $e->getMessage();
 				printf( '<div class="%s"><p>%s</p></div>', esc_attr( $class ), wp_kses_post( $message ) );
 			}
 		}
@@ -214,16 +213,16 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 		private static function get_send_methods_for_country( $api_country ) {
 			if ( $api_country === EasyPack_API::COUNTRY_PL ) {
 				return array(
-					'any'            => __( 'All', 'woocommerce-inpost' ),
-					'parcel_locker'  => __( 'Parcel Locker', 'woocommerce-inpost' ),
-					'dispatch_order' => __( 'Courier', 'woocommerce-inpost' ),
-					'pop'            => __( 'POP', 'woocommerce-inpost' ),
+					'any'            => __( 'All', 'inpost-for-woocommerce' ),
+					'parcel_locker'  => __( 'Parcel Locker', 'inpost-for-woocommerce' ),
+					'dispatch_order' => __( 'Courier', 'inpost-for-woocommerce' ),
+					'pop'            => __( 'POP', 'inpost-for-woocommerce' ),
 				);
 			}
 
 			if ( $api_country === EasyPack_API::COUNTRY_UK ) {
 				return array(
-					'parcel_locker' => __( 'Parcel Locker', 'woocommerce-inpost' ),
+					'parcel_locker' => __( 'Parcel Locker', 'inpost-for-woocommerce' ),
 				);
 			}
 		}
@@ -335,7 +334,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 
 		public static function getReceiverPhoneFilterFromRequest() {
 			return ! empty( $_GET['receiver_phone'] )
-				? esc_sql( strip_shortcodes( strip_tags( $_GET['receiver_phone'] ) ) )
+				? esc_sql( strip_shortcodes( wp_strip_all_tags( $_GET['receiver_phone'] ) ) )
 				: null;
 		}
 	}

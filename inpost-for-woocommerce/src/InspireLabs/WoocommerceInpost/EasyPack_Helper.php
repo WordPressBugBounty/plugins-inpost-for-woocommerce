@@ -73,14 +73,14 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 						$headers->getAll()['content-type']
 					)
 				);
-
-				echo $results['body'];
+				// PDF string.
+				echo $results['body']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				die();
 
 			} catch ( Exception $e ) {
 				$ret['status']  = 'error';
 				$ret['message'] = $e->getMessage();
-				wp_die( esc_html__( 'Error while creating manifest:  ', 'woocommerce-inpost' ) . esc_html( $e->getMessage() ) );
+				wp_die( esc_html__( 'Error while creating manifest:  ', 'inpost-for-woocommerce' ) . esc_html( $e->getMessage() ) );
 
 			}
 		}
@@ -190,14 +190,14 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 						$headers->getAll()['content-type']
 					)
 				);
-
-				echo $results['body'];
+				// PDF string.
+				echo $results['body']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				die();
 
 			} catch ( Exception $e ) {
 				$ret['status']  = 'error';
 				$ret['message'] = $e->getMessage();
-				wp_die( esc_html__( 'Error while creating manifest:  ', 'woocommerce-inpost' ) . esc_html( $e->getMessage() ) );
+				wp_die( esc_html__( 'Error while creating manifest:  ', 'inpost-for-woocommerce' ) . esc_html( $e->getMessage() ) );
 
 			}
 		}
@@ -217,8 +217,8 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 							$results['headers']['data']['content-type']
 						)
 					);
-
-					echo $results['body'];
+					// PDF string.
+					echo $results['body']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					wp_die();
 
 				} else {
@@ -240,7 +240,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			} catch ( Exception $e ) {
 				$ret['status']  = 'error';
 				$ret['message'] = $e->getMessage();
-				wp_die( esc_html__( 'Error while creating manifest PDF: ', 'woocommerce-inpost' ) . esc_html( $e->getMessage() ) );
+				wp_die( esc_html__( 'Error while creating manifest PDF: ', 'inpost-for-woocommerce' ) . esc_html( $e->getMessage() ) );
 
 			}
 		}
@@ -927,24 +927,27 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		 * @param int $order_id The order ID.
 		 * @return array Array of additional packages or empty array if none found.
 		 *
-		 * @since 1.0.0
 		 * @access public
 		 */
 		public function get_saved_additional_packages( $order_id ) {
 
-			$additional_packages = isset( get_post_meta( $order_id )['_easypack_additional_packages'][0] )
-				? get_post_meta( $order_id )['_easypack_additional_packages'][0]
-				: get_post_meta( $order_id, '_easypack_additional_packages', true );
+			$additional_packages = get_post_meta( $order_id, '_easypack_additional_packages', true );
 
-			if ( ! empty( $additional_packages ) ) {
-				if ( is_array( $additional_packages ) ) {
-					return $additional_packages;
-				} else {
-					return is_array( unserialize( $additional_packages ) ) ? unserialize( $additional_packages ) : array();
-				}
+			if ( empty( $additional_packages ) ) {
+				return array();
 			}
 
-			return array();
+			if ( is_array( $additional_packages ) ) {
+				return $additional_packages;
+			}
+
+			if ( ! is_string( $additional_packages ) ) {
+				return array();
+			}
+
+			$unserialized = @unserialize( $additional_packages, array( 'allowed_classes' => false ) );
+
+			return is_array( $unserialized ) ? $unserialized : array();
 		}
 
 
@@ -1035,7 +1038,12 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 								: '';
 
 							if ( ! empty( $from_order_meta_raw ) ) {
-								$shipment = unserialize( $from_order_meta_raw );
+								$shipment = unserialize(
+									$from_order_meta_raw,
+									array(
+										'allowed_classes' => array( ShipX_Shipment_Model::class ),
+									)
+								);
 							}
 						}
 					}
@@ -1276,7 +1284,12 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 							: '';
 
 						if ( ! empty( $from_order_meta_raw ) ) {
-							$shipment = unserialize( $from_order_meta_raw );
+							$shipment = unserialize(
+								$from_order_meta_raw,
+								array(
+									'allowed_classes' => array( ShipX_Shipment_Model::class ),
+								)
+							);
 						}
 					}
 				}
@@ -2039,8 +2052,8 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		public function is_pww_time() {
 
 			// Get current time in Warsaw timezone.
-			date_default_timezone_set( 'Europe/Warsaw' );
-			$current_time = new \DateTime();
+			$tz           = new \DateTimeZone( 'Europe/Warsaw' );
+			$current_time = new \DateTimeImmutable( 'now', $tz );
 
 			// Get current day of week (1 = Monday, 2 = Tuesday, etc.)
 			$current_day = (int) $current_time->format( 'N' );
@@ -2050,12 +2063,12 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			$current_minute = (int) $current_time->format( 'i' );
 
 			// Check if it's Thursday after 20:00
-			if ( $current_day === 4 && ( $current_hour > 20 || ( $current_hour === 20 && $current_minute >= 0 ) ) ) {
+			if ( 4 === $current_day && ( $current_hour > 20 || ( 20 === $current_hour && $current_minute >= 0 ) ) ) {
 				return true;
 			}
 
 			// Check if it's Friday before 18:00
-			if ( $current_day === 5 && ( $current_hour < 18 ) ) {
+			if ( 5 === $current_day && ( $current_hour < 18 ) ) {
 				return true;
 			}
 

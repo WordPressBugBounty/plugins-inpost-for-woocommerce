@@ -60,7 +60,7 @@ class EasyPackWooBlocks implements IntegrationInterface {
 
 		wp_set_script_translations(
 			'inpost-pl-wc-blocks-integration',
-			'woocommerce-inpost',
+			'inpost-for-woocommerce',
 			$translations_folder
 		);
 	}
@@ -91,7 +91,7 @@ class EasyPackWooBlocks implements IntegrationInterface {
 	public function get_script_data() {
 		return array(
 			'configured_methods' => EasyPack_Helper()->get_inpost_methods(),
-			'map_btn_text'       => esc_html__( 'Select Parcel Locker', 'woocommerce-inpost' ),
+			'map_btn_text'       => esc_html__( 'Select Parcel Locker', 'inpost-for-woocommerce' ),
 		);
 	}
 

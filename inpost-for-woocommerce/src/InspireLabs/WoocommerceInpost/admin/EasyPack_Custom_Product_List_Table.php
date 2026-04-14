@@ -67,13 +67,13 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 	public function get_columns() {
 		$columns = array(
 			'cb'               => '<input type="checkbox" />',
-			'title'            => __( 'Product', 'woocommerce' ),
-			'img'              => __( 'Img', 'woocommerce-inpost' ),
-			'sku'              => __( 'SKU', 'woocommerce' ),
-			'categories'       => __( 'Categories', 'woocommerce' ),
-			'shipping_methods' => __( 'Allowed Shipping Methods', 'woocommerce-inpost' ),
-			'locker'           => __( 'Locker size', 'woocommerce-inpost' ),
-			'action_result'    => __( 'Action', 'woocommerce' ),
+			'title'            => __( 'Product', 'inpost-for-woocommerce' ),
+			'img'              => __( 'Img', 'inpost-for-woocommerce' ),
+			'sku'              => __( 'SKU', 'inpost-for-woocommerce' ),
+			'categories'       => __( 'Categories', 'inpost-for-woocommerce' ),
+			'shipping_methods' => __( 'Allowed Shipping Methods', 'inpost-for-woocommerce' ),
+			'locker'           => __( 'Locker size', 'inpost-for-woocommerce' ),
+			'action_result'    => __( 'Action', 'inpost-for-woocommerce' ),
 		);
 		return $columns;
 	}
@@ -219,7 +219,7 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 			case 'img':
 				return $this->get_product_preview_html( $item->get_id() );
 			case 'categories':
-				return strip_tags( wc_get_product_category_list( $item->get_id() ) );
+				return wp_strip_all_tags( wc_get_product_category_list( $item->get_id() ) );
 			case 'shipping_methods':
 				return $this->get_product_inpost_shipping_methods( $item->get_id() );
 			case 'locker':
@@ -350,9 +350,9 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 		$meta_key = EasyPack::ATTRIBUTE_PREFIX . '_parcel_dimensions';
 
 		$options = array(
-			'small'  => __( 'Size A', 'woocommerce-inpost' ),
-			'medium' => __( 'Size B', 'woocommerce-inpost' ),
-			'large'  => __( 'Size C', 'woocommerce-inpost' ),
+			'small'  => __( 'Size A', 'inpost-for-woocommerce' ),
+			'medium' => __( 'Size B', 'inpost-for-woocommerce' ),
+			'large'  => __( 'Size C', 'inpost-for-woocommerce' ),
 		);
 
 		ob_start();
@@ -390,7 +390,7 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 	 */
 	public function get_action_result_html( $product_id ) {
 		return '<span class="inpost_action_result" data-id="' . esc_attr( $product_id ) . '">
-		<input type="button" data-product-id="' . esc_attr( $product_id ) . '" class="button button-secondary button-large inpost-pl-update-single-product" value="' . esc_html__( 'Update settings', 'woocommerce-inpost' ) . '">
+		<input type="button" data-product-id="' . esc_attr( $product_id ) . '" class="button button-secondary button-large inpost-pl-update-single-product" value="' . esc_html__( 'Update settings', 'inpost-for-woocommerce' ) . '">
         <span data-action-id="' . esc_attr( $product_id ) . '" style="display:none;" class="status inpost-pl-action-status" title="OK"></span>
         <img data-id="' . esc_attr( $product_id ) . '" class="inpost_action_result_preloader" style="display:none;" src="' . esc_url( home_url() ) . '/wp-includes/js/tinymce/skins/lightgray/img/loader.gif">
         </span>';
@@ -420,15 +420,15 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 						<img style="max-height:200px;display:flex;margin-left:auto;margin-right:auto;margin-bottom:20px;" id="inpost-pl-dimensions" src="<?php echo esc_url( $img ); ?>" alt="gabaryt Inpost">
 					</div>
 					<div class="inpost_pl_row_item item_right" style="padding:5px 5px 5px 5px;">
-						<?php echo esc_html__( 'By changing these settings you change the settings for all products on the page in a similar way.', 'woocommerce-inpost' ); ?>
+						<?php echo esc_html__( 'By changing these settings you change the settings for all products on the page in a similar way.', 'inpost-for-woocommerce' ); ?>
 						<div class="inpost_pl_row">
 							<span class="inpost_pl_row_item item_left">
 								<?php
 
 								$options = array(
-									'small'  => __( 'Size A', 'woocommerce-inpost' ),
-									'medium' => __( 'Size B', 'woocommerce-inpost' ),
-									'large'  => __( 'Size C', 'woocommerce-inpost' ),
+									'small'  => __( 'Size A', 'inpost-for-woocommerce' ),
+									'medium' => __( 'Size B', 'inpost-for-woocommerce' ),
+									'large'  => __( 'Size C', 'inpost-for-woocommerce' ),
 								);
 
 								$size_status_args = array(
@@ -477,8 +477,8 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 								<?php // $product_table->bulk_actions(); ?>
 							</div>
 							<div class="alignright actions">
-								<input type="button" class="button button-primary button-large inpost-pl-update-product-bulk" value="<?php echo esc_html__( 'Update all products on page', 'woocommerce-inpost' ); ?>">
-								<input type="button" class="button button-secondary button-large inpost-pl-update-reload" value="<?php echo esc_html__( 'Re-load page', 'woocommerce-inpost' ); ?>">
+								<input type="button" class="button button-primary button-large inpost-pl-update-product-bulk" value="<?php echo esc_html__( 'Update all products on page', 'inpost-for-woocommerce' ); ?>">
+								<input type="button" class="button button-secondary button-large inpost-pl-update-reload" value="<?php echo esc_html__( 'Re-load page', 'inpost-for-woocommerce' ); ?>">
 							</div>
 						</div>
 					</div>
@@ -504,7 +504,7 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 				// Add product type filter.
 				$product_types = wc_get_product_types();
 				echo '<select name="product_type" id="dropdown_product_type">';
-				echo '<option value="">' . esc_html__( 'Filter by product type', 'woocommerce' ) . '</option>';
+				echo '<option value="">' . esc_html__( 'Filter by product type', 'inpost-for-woocommerce' ) . '</option>';
 				foreach ( $product_types as $value => $label ) {
 					echo '<option value="' . esc_attr( $value ) . '"';
 					if ( isset( $_GET['product_type'] ) && $_GET['product_type'] === $value ) {
@@ -534,7 +534,7 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
                 }
 
                 echo '<select name="product_shipping_class" id="dropdown_shipping_classes">';
-                echo '<option value="">' . esc_html__( 'Per shipping class', 'woocommerce-inpost' ) . '</option>';
+                echo '<option value="">' . esc_html__( 'Per shipping class', 'inpost-for-woocommerce' ) . '</option>';
                 if( ! empty( $shipping_classes ) && is_array( $shipping_classes ) ) {
                     foreach ( $shipping_classes as $value => $label ) {
                         echo '<option value="' . esc_attr($value) . '"';
@@ -548,7 +548,7 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 				
 				
 				echo '<select name="per_page" id="dropdown_product_qty">';
-				echo '<option value="">' . esc_html__( 'Per page', 'woocommerce-inpost' ) . '</option>';
+				echo '<option value="">' . esc_html__( 'Per page', 'inpost-for-woocommerce' ) . '</option>';
 				foreach ( $product_qtys as $value => $label ) {
 					echo '<option value="' . esc_attr( $value ) . '"';
 					if ( isset( $_GET['per_page'] ) && $_GET['per_page'] == $value ) {
@@ -571,8 +571,8 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 					<div class="alignleft actions bulkactions">
 					</div>
 					<div class="alignleft actions">
-						<input type="button" class="button button-primary button-large inpost-pl-update-product-bulk" value="<?php echo esc_html__( 'Update all products on page', 'woocommerce-inpost' ); ?>">
-						<input type="button" class="button button-secondary button-large inpost-pl-update-reload" value="<?php echo esc_html__( 'Re-load page', 'woocommerce-inpost' ); ?>">
+						<input type="button" class="button button-primary button-large inpost-pl-update-product-bulk" value="<?php echo esc_html__( 'Update all products on page', 'inpost-for-woocommerce' ); ?>">
+						<input type="button" class="button button-secondary button-large inpost-pl-update-reload" value="<?php echo esc_html__( 'Re-load page', 'inpost-for-woocommerce' ); ?>">
 					</div>
 				</div>
 			</form>
