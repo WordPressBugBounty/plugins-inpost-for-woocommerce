@@ -4,7 +4,7 @@ Tags: inpost, paczkomaty, etykiety, przesyłki
 Requires at least: 5.3
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable tag: 1.8.7
+Stable tag: 1.8.8
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
  
@@ -42,6 +42,10 @@ Po zainstalowaniu wtyczki skonfiguruj sposób dostawy InPost oraz ceny poszczeg�
 
 
 == Changelog ==
+
+= 1.8.8 =
+* Fix: webhook initial  status
+* Fix: product table Polylang compatibility
 
 = 1.8.7 =
 * Fix: webhook URL in settings

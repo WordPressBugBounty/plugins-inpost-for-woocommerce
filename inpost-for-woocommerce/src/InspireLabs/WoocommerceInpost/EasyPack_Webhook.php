@@ -168,8 +168,8 @@ class EasyPack_Webhook {
 
 		if ( ! empty( $webhook_body['payload']['status'] ) ) {
 			$status = $webhook_body['payload']['status'];
-		} elseif ( ! empty( $webhook_body['event'] ) ) {
-			$status = $webhook_body['event'];
+		} elseif ( ! empty( $webhook_body['event'] ) && 'shipment_confirmed' === $webhook_body['event'] ) {
+			$status = 'confirmed';
 		}
 
 		if ( empty( $status ) ) {

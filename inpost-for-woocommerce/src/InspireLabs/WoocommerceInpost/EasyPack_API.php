@@ -712,6 +712,26 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 
 		public function customer_parcel_create( $args ) {
+			$order_id = null;
+			if ( is_array( $args )
+				&& isset( $args['internal_data'] )
+				&& is_array( $args['internal_data'] )
+			) {
+				if ( ! empty( $args['internal_data']['order_id'] ) ) {
+					$order_id = absint( $args['internal_data']['order_id'] );
+				}
+			}
+
+			/**
+			 * Filter shipment payload sent to ShipX create endpoint.
+			 *
+			 * Allows customizing request data before API call, e.g. enriching
+			 * receiver address fields from custom checkout meta.
+			 *
+			 * @param array $args Shipment payload.
+			 * @param int|null $order_id Related WooCommerce order ID when available.
+			 */
+			$args = apply_filters( 'inpost_pl_customer_parcel_create_payload', $args, $order_id );
 
 			$organizationId = get_option( 'easypack_organization_id' );
 			$response       = $this->post( sprintf( '/organizations/%d/shipments', $organizationId ), $args );

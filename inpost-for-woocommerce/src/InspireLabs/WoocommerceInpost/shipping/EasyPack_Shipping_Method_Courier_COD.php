@@ -27,6 +27,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 
 		const SERVICE_ID = ShipX_Shipment_Model::SERVICE_INPOST_COURIER_STANDARD;
 
+		const SHIPPING_METHOD_ID = 'easypack_cod_shipping_courier';
+
 		/**
 		 * Constructor for shipping class
 		 *
@@ -40,10 +42,22 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 				'shipping-zones',
 				'instance-settings',
 			);
-			$this->id           = 'easypack_cod_shipping_courier';
-			$this->method_title = __( 'InPost Courier COD', 'inpost-for-woocommerce' );
-            $this->method_description = esc_html__('InPost Courier COD', 'inpost-for-woocommerce' );
+			$this->id                 = static::SHIPPING_METHOD_ID;
+			$this->method_title       = $this->get_method_title();
+			$this->method_description = $this->get_method_description();
 			$this->init();
+		}
+
+		public function get_method_title(): string {
+			return __( 'InPost Courier COD', 'inpost-for-woocommerce' );
+		}
+
+		public function get_method_description(): string {
+			return esc_html__( 'InPost Courier COD', 'inpost-for-woocommerce' );
+		}
+
+		protected function get_settings_default_title(): string {
+			return __( 'InPost Courier COD', 'inpost-for-woocommerce' );
 		}
 
 		public function generate_rates_html( $key, $data ) {
@@ -72,7 +86,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 				'title'                                  => array(
 					'title'             => __( 'Method title', 'inpost-for-woocommerce' ),
 					'type'              => 'text',
-					'default'           => __( 'InPost Courier COD', 'inpost-for-woocommerce' ),
+					'default'           => $this->get_settings_default_title(),
 					'custom_attributes' => array( 'required' => 'required' ),
 					'desc_tip'          => false,
 				),
@@ -244,7 +258,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 
 
 		public function order_metabox( $post ) {
-			self::order_metabox_content( $post );
+			static::order_metabox_content( $post );
 		}
 
 
@@ -355,7 +369,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 				$parcels,
 				$order_id,
 				$send_method,
-				self::SERVICE_ID,
+				static::SERVICE_ID,
 				$courier_parcel_data,
 				null,
 				$cod_amount,
@@ -377,7 +391,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 		public static function ajax_create_package( $courier = false ) {
 			$ret = array( 'status' => 'ok' );
 
-			$shipment_model   = self::ajax_create_shipment_model();
+			$shipment_model   = static::ajax_create_shipment_model();
 			$order_id         = $shipment_model->getInternalData()->getOrderId();
 			$shipment_service = EasyPack::EasyPack()->get_shipment_service();
 			$shipment_array   = $shipment_service->shipment_to_array( $shipment_model );
@@ -454,7 +468,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 						$ret['api_status'] = $status_service->getStatusDescription( $response['status'] );
 					}
 				} else {
-					$ret['content'] = self::order_metabox_content( get_post( $order_id ), false, $shipment_model );
+					$ret['content'] = static::order_metabox_content( get_post( $order_id ), false, $shipment_model );
 					if ( isset( $shipment_data['tracking'] ) && ! empty( $shipment_data['tracking'] ) ) {
 						$ret['tracking_number'] = $shipment_data['tracking'];
 						$ret['inpost_id']       = $shipment_data['inpost_id'];
@@ -491,7 +505,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 			$shipment = null,
 			$additional_package = false
 		) {
-			$wp_ajax_action_create = self::WP_AJAX_ACTION_CREATE;
+			$wp_ajax_action_create = static::WP_AJAX_ACTION_CREATE;
 			if ( ! $output ) {
 				ob_start();
 			}
@@ -511,7 +525,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 			if ( $shipment instanceof ShipX_Shipment_Model
 				&& false === $shipment_service->is_shipment_match_to_current_api( $shipment )
 			) {
-				wp_nonce_field( self::NONCE_ACTION, 'wp_nonce' );
+				wp_nonce_field( static::NONCE_ACTION, 'wp_nonce' );
 				$wrong_api_env = true;
 				include 'views/html-order-metabox-courier-cod.php';
 				if ( ! $output ) {
@@ -574,10 +588,10 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 					'parcel_machine' => __( 'Parcel locker', 'inpost-for-woocommerce' ),
 				);
 			}
-			$selected_service = $shipment_service->get_customer_service_name_by_id( self::SERVICE_ID );
+			$selected_service = $shipment_service->get_customer_service_name_by_id( static::SERVICE_ID );
 			include 'views/html-order-metabox-courier-cod.php';
 
-			wp_nonce_field( self::NONCE_ACTION, 'wp_nonce' );
+			wp_nonce_field( static::NONCE_ACTION, 'wp_nonce' );
 			if ( ! $output ) {
 				$out = ob_get_clean();
 

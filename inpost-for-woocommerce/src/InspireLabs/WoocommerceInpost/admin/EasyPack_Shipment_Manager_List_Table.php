@@ -3,7 +3,7 @@
 namespace InspireLabs\WoocommerceInpost\admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 } // Exit if accessed directly.
 
 use Automattic\WooCommerce\Utilities\OrderUtil;
@@ -107,7 +107,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 			$send_method = EasyPack_Shipment_Manager::getSendingMethodFilterFromRequest();
 
 			if ( ( null !== $send_method && 'any' !== $send_method )
-				&& $send_method !== $shipment->getCustomAttributes()->getSendingMethod()
+			     && $send_method !== $shipment->getCustomAttributes()->getSendingMethod()
 			) {
 
 				return false;
@@ -116,7 +116,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 			$status = EasyPack_Shipment_Manager::getStatusFilterFromRequest();
 
 			if ( ( null !== $status && 'any' !== $status )
-				&& $status !== $shipment->getInternalData()->getStatus()
+			     && $status !== $shipment->getInternalData()->getStatus()
 			) {
 				return false;
 			}
@@ -124,7 +124,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 			$service = EasyPack_Shipment_Manager::getServiceFilterFromRequest();
 
 			if ( ( null !== $service && 'any' !== $service )
-				&& $service !== $shipment->getService()
+			     && $service !== $shipment->getService()
 			) {
 				return false;
 			}
@@ -132,7 +132,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 			$tracking_number = EasyPack_Shipment_Manager::getTrackingNumberFilterFromRequest();
 
 			if ( null !== $tracking_number
-				&& $tracking_number !== $shipment->getInternalData()->getTrackingNumber()
+			     && $tracking_number !== $shipment->getInternalData()->getTrackingNumber()
 			) {
 				return false;
 			}
@@ -140,7 +140,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 			$order_id = EasyPack_Shipment_Manager::getOrderIdFilterFromRequest();
 
 			if ( null !== $order_id
-				&& $order_id !== $shipment->getInternalData()->getOrderId()
+			     && $order_id !== $shipment->getInternalData()->getOrderId()
 			) {
 				return false;
 			}
@@ -148,8 +148,8 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 			$reference_number = EasyPack_Shipment_Manager::getReferenceNumberFilterFromRequest();
 
 			if ( null !== $reference_number
-				&& (string) $reference_number
-				!== (string) $shipment->getReference()
+			     && (string) $reference_number
+			        !== (string) $shipment->getReference()
 			) {
 				return false;
 			}
@@ -157,7 +157,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 			$receiver_email = EasyPack_Shipment_Manager::getReceiverEmailFilterFromRequest();
 
 			if ( null !== $receiver_email
-				&& $receiver_email !== $shipment->getReceiver()->getEmail()
+			     && $receiver_email !== $shipment->getReceiver()->getEmail()
 			) {
 				return false;
 			}
@@ -165,7 +165,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 			$receiver_phone = EasyPack_Shipment_Manager::getReceiverPhoneFilterFromRequest();
 
 			if ( null !== $receiver_phone
-				&& $receiver_phone !== $shipment->getReceiver()->getPhone()
+			     && $receiver_phone !== $shipment->getReceiver()->getPhone()
 			) {
 				return false;
 			}
@@ -181,7 +181,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 		 */
 		private function translateSendingMethod( $method ) {
 			switch ( $method ) {
-                case ShipX_Shipment_Model::SENDING_METHOD_PARCEL_LOCKER	=== $method:
+				case ShipX_Shipment_Model::SENDING_METHOD_PARCEL_LOCKER	=== $method:
 					return esc_html__( 'Parcel Locker', 'inpost-for-woocommerce' );
 
 				case ShipX_Shipment_Model::SENDING_METHOD_DISPATCH_ORDER === $method:
@@ -286,7 +286,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 				'created_timestamp'   => __( 'Date created', 'inpost-for-woocommerce' ),
 				'reference_number'    => __( 'Reference number', 'inpost-for-woocommerce' ),
 				'status'              => __( 'Status', 'inpost-for-woocommerce' )
-					. $this->get_refresh_statuses_btn(),
+				                         . $this->get_refresh_statuses_btn(),
 				'status_timestamp'    => __( 'Status change date', 'inpost-for-woocommerce' ),
 				'service'             => __( 'Service', 'inpost-for-woocommerce' ),
 				'attributes'          => __( 'Dimensions', 'inpost-for-woocommerce' ),
@@ -365,7 +365,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 
 			$posts_per_page = 150;
 			$paged          = isset( $_GET['shipments_page'] ) ? sanitize_text_field( $_GET['shipments_page'] ) : 1;
-			
+
 
 			$args = array(
 				'post_type'      => 'shop_order',
@@ -431,11 +431,11 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 				if ( $easypack_parcels ) {
 					$easypack_parcels_uniq = array();
 
-                    foreach($easypack_parcels as $key=> $parcel) {
+					foreach($easypack_parcels as $key=> $parcel) {
 						if($key === 0) {
 							$easypack_parcels_uniq[$key] = $parcel;
 						}
-					}					
+					}
 
 					foreach ( $easypack_parcels_uniq as $key => $parcel ) {
 
@@ -463,11 +463,19 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 							$shipment->getCustomAttributes()->getSendingMethod()
 						);
 
-						$data['status'] = $shipment
-								->getInternalData()
-								->getStatusTitle()
-							. ' (' . $shipment->getInternalData()
-								->getStatus() . ')';
+						$current_inpost_api_status = $shipment->getInternalData()->getStatus();
+
+						$maybe_update_statuses = array(
+							'created',
+							'offers_prepared',
+							'offer_selected',
+						);
+						if( in_array( $current_inpost_api_status, $maybe_update_statuses, true ) ) {
+							$status_service->refreshStatus( $shipment );
+							$current_inpost_api_status = $shipment->getInternalData()->getStatus();
+						}
+
+						$data['status'] = $shipment->getInternalData()->getStatusTitle() . ' (' . $current_inpost_api_status . ')';
 						/*
 						$data['status_timestamp'] =gmdate( 'd-m-Y H:i:s',
 							$shipment
@@ -476,7 +484,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 						*/
 
 						if ( is_numeric( $shipment->getInternalData()->getStatusChangedTimestamp() )
-							&& (int) $shipment->getInternalData()->getStatusChangedTimestamp() == $shipment->getInternalData()->getStatusChangedTimestamp() ) {
+						     && (int) $shipment->getInternalData()->getStatusChangedTimestamp() == $shipment->getInternalData()->getStatusChangedTimestamp() ) {
 							$data['status_timestamp'] =gmdate( 'd-m-Y H:i:s', (int) $shipment->getInternalData()->getStatusChangedTimestamp() + 7200 );
 						} else {
 							$data['status_timestamp'] =gmdate( 'd-m-Y H:i:s', (int) strtotime( $shipment->getInternalData()->getStatusChangedTimestamp() ) + 7200 );
@@ -489,7 +497,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 						*/
 
 						if ( is_numeric( $shipment->getInternalData()->getCreatedAt() )
-							&& (int) $shipment->getInternalData()->getCreatedAt() == $shipment->getInternalData()->getCreatedAt() ) {
+						     && (int) $shipment->getInternalData()->getCreatedAt() == $shipment->getInternalData()->getCreatedAt() ) {
 							$data['created_timestamp'] = gmdate( 'd-m-Y H:i:s', (int) $shipment->getInternalData()->getCreatedAt() + 7200 );
 						} else {
 							$data['created_timestamp'] = gmdate( 'd-m-Y H:i:s', (int) strtotime( $shipment->getInternalData()->getCreatedAt() ) + 7200 );
@@ -498,15 +506,15 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 						if ( EasyPack_Shipment_Manager::is_courier_context() ) {
 
 							$dispatch_status = $shipment->getInternalData()
-								->getDispatchStatus();
+							                            ->getDispatchStatus();
 							if ( null === $dispatch_status ) {
 								$data['dispatch_point_name']   = '-';
 								$data['dispatch_order_status'] = '-';
 							} else {
 								$data['dispatch_point_name'] = $pickup_service->getDispatchPointStr(
 									$shipment->getInternalData()
-										->getDispatchStatus()
-										->getDispathOrderPointName()
+									         ->getDispatchStatus()
+									         ->getDispathOrderPointName()
 								);
 
 								$data['dispatch_order_status'] = $pickup_service->get_dispatch_order_status_string( $dispatch_status->getDispathOrderStatus() );
@@ -515,14 +523,14 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 
 						$data['order']            = $order_id;
 						$data['shipping_address']
-							= $order->get_formatted_shipping_address();
+						                          = $order->get_formatted_shipping_address();
 						$data['reference_number'] = $shipment->getReference();
 						$data['inpost_id']        = $shipment->getInternalData()->getInpostId();
 
 						if ( null !== $shipment->getCustomAttributes()->getTargetPoint() ) {
 							$data['shipping_address'] = __( 'Parcel Locker ', 'inpost-for-woocommerce' )
-								. ' '
-								. $shipment->getCustomAttributes()->getTargetPoint();
+							                            . ' '
+							                            . $shipment->getCustomAttributes()->getTargetPoint();
 						}
 
 						$data['parcel_id'] = $parcel->getId();
@@ -627,14 +635,14 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 					$easypack_parcels = $shipment->getParcels();
 
 					if ( $easypack_parcels ) {
-					
+
 						$easypack_parcels_uniq = array();
 
 						foreach($easypack_parcels as $key => $parcel) {
 							if($key === 0) {
 								$easypack_parcels_uniq[$key] = $parcel;
 							}
-						}                        
+						}
 
 						foreach ( $easypack_parcels_uniq as $key => $parcel ) {
 
@@ -662,21 +670,29 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 								$shipment->getCustomAttributes()->getSendingMethod()
 							);
 
-							$data['status'] = $shipment
-									->getInternalData()
-									->getStatusTitle()
-								. ' (' . $shipment->getInternalData()
-									->getStatus() . ')';
+							$current_inpost_api_status = $shipment->getInternalData()->getStatus();
+
+							$maybe_update_statuses = array(
+								'created',
+								'offers_prepared',
+								'offer_selected',
+							);
+							if( in_array( $current_inpost_api_status, $maybe_update_statuses, true ) ) {
+								$status_service->refreshStatus( $shipment );
+								$current_inpost_api_status = $shipment->getInternalData()->getStatus();
+							}
+
+							$data['status'] = $shipment->getInternalData()->getStatusTitle() . ' (' . $current_inpost_api_status . ')';
 
 							if ( is_numeric( $shipment->getInternalData()->getStatusChangedTimestamp() )
-								&& (int) $shipment->getInternalData()->getStatusChangedTimestamp() == $shipment->getInternalData()->getStatusChangedTimestamp() ) {
+							     && (int) $shipment->getInternalData()->getStatusChangedTimestamp() == $shipment->getInternalData()->getStatusChangedTimestamp() ) {
 								$data['status_timestamp'] = gmdate( 'd-m-Y H:i:s', (int) $shipment->getInternalData()->getStatusChangedTimestamp() + 7200 );
 							} else {
 								$data['status_timestamp'] = gmdate( 'd-m-Y H:i:s', (int) strtotime( $shipment->getInternalData()->getStatusChangedTimestamp() ) + 7200 );
 							}
 
 							if ( is_numeric( $shipment->getInternalData()->getCreatedAt() )
-								&& (int) $shipment->getInternalData()->getCreatedAt() == $shipment->getInternalData()->getCreatedAt() ) {
+							     && (int) $shipment->getInternalData()->getCreatedAt() == $shipment->getInternalData()->getCreatedAt() ) {
 								$data['created_timestamp'] = gmdate( 'd-m-Y H:i:s', (int) $shipment->getInternalData()->getCreatedAt() + 7200 );
 							} else {
 								$data['created_timestamp'] = gmdate( 'd-m-Y H:i:s', (int) strtotime( $shipment->getInternalData()->getCreatedAt() ) + 7200 );
@@ -685,15 +701,15 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 							if ( EasyPack_Shipment_Manager::is_courier_context() ) {
 
 								$dispatch_status = $shipment->getInternalData()
-									->getDispatchStatus();
+								                            ->getDispatchStatus();
 								if ( null === $dispatch_status ) {
 									$data['dispatch_point_name']   = '-';
 									$data['dispatch_order_status'] = '-';
 								} else {
 									$data['dispatch_point_name'] = $pickup_service->getDispatchPointStr(
 										$shipment->getInternalData()
-											->getDispatchStatus()
-											->getDispathOrderPointName()
+										         ->getDispatchStatus()
+										         ->getDispathOrderPointName()
 									);
 
 									$data['dispatch_order_status'] = $pickup_service->get_dispatch_order_status_string( $dispatch_status->getDispathOrderStatus() );
@@ -702,14 +718,14 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) :
 
 							$data['order']            = $order_id;
 							$data['shipping_address']
-								= $order->get_formatted_shipping_address();
+							                          = $order->get_formatted_shipping_address();
 							$data['reference_number'] = $shipment->getReference();
 							$data['inpost_id']        = $shipment->getInternalData()->getInpostId();
 
 							if ( null !== $shipment->getCustomAttributes()->getTargetPoint() ) {
 								$data['shipping_address'] = __( 'Parcel Locker ', 'inpost-for-woocommerce' )
-									. ' '
-									. $shipment->getCustomAttributes()->getTargetPoint();
+								                            . ' '
+								                            . $shipment->getCustomAttributes()->getTargetPoint();
 							}
 
 							$data['parcel_id'] = $parcel->getId();

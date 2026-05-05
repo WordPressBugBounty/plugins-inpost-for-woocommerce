@@ -5,338 +5,46 @@
 
 namespace InspireLabs\WoocommerceInpost\shipping;
 
-use InspireLabs\WoocommerceInpost\EasyPack;
-use InspireLabs\WoocommerceInpost\EasyPack_Helper;
 use Exception;
+use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\EasyPack_API;
-use InspireLabs\WoocommerceInpost\Geowidget_v5;
+use InspireLabs\WoocommerceInpost\EasyPack_Helper;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
-use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Dimensions_Model;
-use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Model;
-use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Weight_Model;
 use ReflectionException;
-use InspireLabs\WoocommerceInpost\EmailFilters\TrackingInfoEmail;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
-} // Exit if accessed directly.
+} // Exit if accessed directly
 
 if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
-	/**
-	 * EasyPack_Shipping_Parcel_Machines_Weekend_COD
-	 */
 	class EasyPack_Shipping_Parcel_Machines_Weekend_COD extends EasyPack_Shipping_Parcel_Machines_Weekend {
 
-		/**
-		 * SERVICE_ID
-		 */
 		const SERVICE_ID = ShipX_Shipment_Model::SERVICE_INPOST_LOCKER_WEEKEND;
 
-		/**
-		 * NONCE_ACTION
-		 */
 		const NONCE_ACTION = self::SERVICE_ID;
 
+		const SHIPPING_METHOD_ID = 'easypack_parcel_machines_weekend_cod';
 
-		/**
-		 * Constructor for shipping class
-		 *
-		 * @param int $instance_id Shipping method instance.
-		 *
-		 * @access public
-		 * @return void
-		 */
-		public function __construct( $instance_id = 0 ) {
-			parent::__construct();
-			$this->init_form_fields();
-			$this->instance_id        = absint( $instance_id );
-			$this->supports           = array(
-				'shipping-zones',
-				'instance-settings',
-			);
-			$this->id                 = 'easypack_parcel_machines_weekend_cod';
-			$this->method_description
-				= esc_html__( 'Allow customers to pick up orders in weekend.', 'inpost-for-woocommerce' );
-			$this->method_title       = esc_html__( 'InPost Locker Weekend COD', 'inpost-for-woocommerce' );
-			$this->init();
+		public function get_method_title(): string {
+			return esc_html__( 'InPost Locker Weekend COD', 'inpost-for-woocommerce' );
 		}
 
-
-		/**
-		 * Init form fields
-		 *
-		 * @return void
-		 */
-		public function init_form_fields(): void {
-
-			$settings = array(
-				array(
-					'title'       => esc_html__( 'General settings', 'inpost-for-woocommerce' ),
-					'type'        => 'title',
-					'description' => '',
-					'id'          => 'section_general_settings',
-				),
-				'logo_upload'                            => array(
-					'name'  => esc_html__( 'Change logo', 'inpost-for-woocommerce' ),
-					'title' => esc_html__( 'Upload custom logo', 'inpost-for-woocommerce' ),
-					'type'  => 'logo_upload',
-					'id'    => 'logo_upload',
-				),
-				'title'                                  => array(
-					'title'    => esc_html__( 'Method title', 'inpost-for-woocommerce' ),
-					'type'     => 'text',
-					'default'  => esc_html__( 'InPost Locker Weekend COD', 'inpost-for-woocommerce' ),
-					'desc_tip' => false,
-				),
-				'delivery_terms'                         => array(
-					'title'    => __( 'Terms of delivery', 'inpost-for-woocommerce' ),
-					'type'     => 'text',
-					'default'  => '',
-					'desc_tip' => false,
-				),
-				'insurance_inpost_pl'                    => array(
-					'title'       => esc_html__( 'Insurance', 'inpost-for-woocommerce' ),
-					'label'       => esc_html__( 'Set from order amount', 'inpost-for-woocommerce' ),
-					'type'        => 'checkbox',
-					'description' => '',
-					'default'     => 'no',
-					'desc_tip'    => true,
-				),
-				'insurance_value_inpost_pl'              => array(
-					'title'             => esc_html__( 'Default insurance amount', 'inpost-for-woocommerce' ),
-					'type'              => 'number',
-					'custom_attributes' => array(
-						'step' => 'any',
-						'min'  => '0',
-					),
-					'default'           => '',
-					'desc_tip'          => false,
-					'placeholder'       => '0.00',
-				),
-
-				array(
-					'title'       => esc_html__( 'Time settings', 'inpost-for-woocommerce' ),
-					'type'        => 'title',
-					'description' => '',
-					'id'          => 'section_easypack_weekend_settings',
-				),
-
-				'day_from'                               => array(
-					'title'   => esc_html__( 'Available from day of week', 'inpost-for-woocommerce' ),
-					'type'    => 'select',
-					'class'   => 'wc-enhanced-select',
-					'default' => '4',
-					'options' => array(
-						'1' => esc_html__( 'Monday', 'inpost-for-woocommerce' ),
-						'2' => esc_html__( 'Tuesday', 'inpost-for-woocommerce' ),
-						'3' => esc_html__( 'Wednesday', 'inpost-for-woocommerce' ),
-						'4' => esc_html__( 'Thursday', 'inpost-for-woocommerce' ),
-						'5' => esc_html__( 'Friday', 'inpost-for-woocommerce' ),
-						'6' => esc_html__( 'Saturday', 'inpost-for-woocommerce' ),
-						'7' => esc_html__( 'Sunday', 'inpost-for-woocommerce' ),
-					),
-				),
-
-				'hour_from'                              => array(
-					'title'    => esc_html__( 'Available from hour', 'inpost-for-woocommerce' ),
-					'type'     => 'time',
-					'default'  => '',
-					'desc_tip' => false,
-				),
-
-				'day_to'                                 => array(
-					'title'   => esc_html__( 'Available to day of week', 'inpost-for-woocommerce' ),
-					'type'    => 'select',
-					'class'   => 'wc-enhanced-select',
-					'default' => '5',
-					'options' => array(
-						'1' => esc_html__( 'Monday', 'inpost-for-woocommerce' ),
-						'2' => esc_html__( 'Tuesday', 'inpost-for-woocommerce' ),
-						'3' => esc_html__( 'Wednesday', 'inpost-for-woocommerce' ),
-						'4' => esc_html__( 'Thursday', 'inpost-for-woocommerce' ),
-						'5' => esc_html__( 'Friday', 'inpost-for-woocommerce' ),
-						'6' => esc_html__( 'Saturday', 'inpost-for-woocommerce' ),
-						'7' => esc_html__( 'Sunday', 'inpost-for-woocommerce' ),
-					),
-				),
-
-				'hour_to'                                => array(
-					'title'    => esc_html__( 'Available to hour', 'inpost-for-woocommerce' ),
-					'type'     => 'time',
-					'default'  => '',
-					'desc_tip' => false,
-				),
-
-				array(
-					'title'       => esc_html__( 'Price settings', 'inpost-for-woocommerce' ),
-					'type'        => 'title',
-					'description' => '',
-					'id'          => 'section_easypack_weekend_price_settings',
-				),
-
-				'free_shipping_cost'                     => array(
-					'title'             => esc_html__( 'Free shipping', 'inpost-for-woocommerce' ),
-					'type'              => 'number',
-					'custom_attributes' => array(
-						'step' => 'any',
-						'min'  => '0',
-					),
-					'default'           => '',
-					'desc_tip'          => esc_html__(
-						'Enter the amount of the order from which the shipping will be free (does not include virtual products). ',
-						'inpost-for-woocommerce'
-					),
-					'placeholder'       => '0.00',
-				),
-				'show_free_shipping_label'               => array(
-					'title'       => '',
-					'label'       => esc_html__( 'Add label (free) to the end of title of shipping method', 'inpost-for-woocommerce' ),
-					'type'        => 'checkbox',
-					'description' => '',
-					'default'     => 'yes',
-					'desc_tip'    => true,
-				),
-				'apply_minimum_order_rule_before_coupon' => array(
-					'title'       => esc_html__( 'Coupons discounts', 'inpost-for-woocommerce' ),
-					'label'       => esc_html__( 'Apply minimum order rule before coupon discount', 'inpost-for-woocommerce' ),
-					'type'        => 'checkbox',
-					'description' => esc_html__( 'If checked, free shipping would be available based on pre-discount order amount.', 'inpost-for-woocommerce' ),
-					'default'     => 'no',
-					'desc_tip'    => true,
-				),
-				'flat_rate'                              => array(
-					'title'   => __( 'Flat rate', 'inpost-for-woocommerce' ),
-					'type'    => 'checkbox',
-					'label'   => esc_html__( 'Set a flat-rate shipping fee for the entire order.', 'inpost-for-woocommerce' ),
-					'class'   => 'easypack_flat_rate',
-					'default' => 'yes',
-				),
-				'cost_per_order'                         => array(
-					'title'             => esc_html__( 'Cost of delivery', 'inpost-for-woocommerce' ),
-					'type'              => 'number',
-					'custom_attributes' => array(
-						'step' => 'any',
-						'min'  => '0',
-					),
-					'class'             => 'easypack_cost_per_order',
-					'default'           => '',
-					'desc_tip'          => esc_html__(
-						'Set a flat-rate shipping for all orders',
-						'inpost-for-woocommerce'
-					),
-					'placeholder'       => '0.00',
-				),
-				'tax_status'                             => array(
-					'title'   => esc_html__( 'Tax status', 'inpost-for-woocommerce' ),
-					'type'    => 'select',
-					'class'   => 'wc-enhanced-select',
-					'default' => 'none',
-					'options' => array(
-						'none'    => _x( 'None', 'Tax status', 'inpost-for-woocommerce' ),
-						'taxable' => esc_html__( 'Taxable', 'inpost-for-woocommerce' ),
-					),
-				),
-				'default_send_method'                    => array(
-					'title'   => __( 'Default send method', 'inpost-for-woocommerce' ),
-					'type'    => 'select',
-					'class'   => 'wc-enhanced-select',
-					'default' => 'parcel_machine',
-					'options' => array(
-						'parcel_machine' => __( 'Parcel Locker', 'inpost-for-woocommerce' ),
-						'pop'            => __( 'POP', 'inpost-for-woocommerce' ),
-						'courier'        => __( 'Courier', 'inpost-for-woocommerce' ),
-					),
-				),
-				array(
-					'title'       => esc_html__( 'Rates table', 'inpost-for-woocommerce' ),
-					'type'        => 'title',
-					'description' => '',
-					'id'          => 'section_general_settings',
-				),
-				'based_on'                               => array(
-					'title'       => esc_html__( 'Based on', 'inpost-for-woocommerce' ),
-					'type'        => 'select',
-					'desc_tip'    => esc_html__(
-						'Select the method of calculating shipping cost. If the cost of shipping is to be calculated based on the weight of the cart and the products do not have a defined weight, the cost will be calculated incorrectly.',
-						'inpost-for-woocommerce'
-					),
-					'description' => sprintf(
-						'<b id="easypack_dimensions_warning" style="color:red;display:none">%1s</b> %1s',
-						esc_html__( 'Attention!', 'inpost-for-woocommerce' ),
-						esc_html__( 'Set the dimension in the settings of each product. The default value is size \'A\'', 'inpost-for-woocommerce' )
-					),
-					'class'       => 'wc-enhanced-select easypack_based_on',
-					'options'     => array(
-						'price'       => esc_html__( 'Price', 'inpost-for-woocommerce' ),
-						'weight'      => esc_html__( 'Weight', 'inpost-for-woocommerce' ),
-						'product_qty' => esc_html__( 'Products qty', 'inpost-for-woocommerce' ),
-						'size'        => esc_html__( 'Size (A, B, C)', 'inpost-for-woocommerce' ),
-					),
-				),
-				'rates'                                  => array(
-					'title'    => '',
-					'type'     => 'rates',
-					'class'    => 'easypack_rates',
-					'default'  => '',
-					'desc_tip' => '',
-				),
-
-				'gabaryt_a'                              => array(
-					'title'             => esc_html__( 'Size A', 'inpost-for-woocommerce' ),
-					'type'              => 'number',
-					'custom_attributes' => array(
-						'step' => 'any',
-						'min'  => '0',
-					),
-					'class'             => 'easypack_gabaryt_a',
-					'default'           => '',
-					'desc_tip'          => esc_html__( 'Set a flat-rate shipping for size A', 'inpost-for-woocommerce' ),
-					'placeholder'       => '0.00',
-				),
-
-				'gabaryt_b'                              => array(
-					'title'             => esc_html__( 'Size B', 'inpost-for-woocommerce' ),
-					'type'              => 'number',
-					'custom_attributes' => array(
-						'step' => 'any',
-						'min'  => '0',
-					),
-					'class'             => 'easypack_gabaryt_b',
-					'default'           => '',
-					'desc_tip'          => esc_html__( 'Set a flat-rate shipping for size B', 'inpost-for-woocommerce' ),
-					'placeholder'       => '0.00',
-				),
-
-				'gabaryt_c'                              => array(
-					'title'             => esc_html__( 'Size C', 'inpost-for-woocommerce' ),
-					'type'              => 'number',
-					'custom_attributes' => array(
-						'step' => 'any',
-						'min'  => '0',
-					),
-					'class'             => 'easypack_gabaryt_c',
-					'default'           => '',
-					'desc_tip'          => esc_html__( 'Set a flat-rate shipping for size C', 'inpost-for-woocommerce' ),
-					'placeholder'       => '0.00',
-				),
-			);
-
-			$settings = $this->add_shipping_classes_settings( $settings );
-
-			$this->instance_form_fields = $settings;
-			$this->form_fields          = $settings;
+		public function get_method_description(): string {
+			return esc_html__( 'Allow customers to pick up orders in weekend.', 'inpost-for-woocommerce' );
 		}
 
+		protected function get_settings_default_title(): string {
+			return esc_html__( 'InPost Locker Weekend COD', 'inpost-for-woocommerce' );
+		}
 
-		/**
-		 * Creates a shipment model from AJAX request data.
-		 *
-		 * @return ShipX_Shipment_Model|null The created shipment object or null on failure.
-		 * @throws Exception When validation fails.
-		 *
-		 * @since 1.0.0
-		 * @access public static
-		 */
+		protected static function get_order_metabox_template(): string {
+			return 'views/html-order-matabox-parcel-machines-weekend-cod.php';
+		}
+
+		protected static function get_geowidget_method_id(): string {
+			return 'easypack_parcel_machines_weekend_cod';
+		}
+
 		public static function ajax_create_shipment_model() {
 
 			$order_id = (int) sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
@@ -422,7 +130,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 				$parcels,
 				$order_id,
 				$send_method,
-				self::SERVICE_ID,
+				static::SERVICE_ID,
 				array(),
 				$parcel_machine_id,
 				$cod_amount,
@@ -436,146 +144,6 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 			return $shipment;
 		}
 
-
-		/**
-		 * Metabox in order details
-		 *
-		 * @param \WC_Order | \WP_Post $post $post.
-		 * @param bool                 $output $output.
-		 * @param null                 $shipment $shipment.
-		 * @param bool                 $additional_package $additional_package.
-		 *
-		 * @return string
-		 */
-		public static function order_metabox_content(
-			$post,
-			$output = true,
-			$shipment = null,
-			$additional_package = false
-		): string {
-
-			$out = '';
-
-			if ( ! $output ) {
-				ob_start();
-			}
-			$shipment_service = EasyPack::EasyPack()->get_shipment_service();
-
-			if ( is_a( $post, 'WC_Order' ) ) {
-				$order_id = $post->get_id();
-			} else {
-				$order_id = $post->ID;
-			}
-			$send_method = '';
-
-			$geowidget_config = ( new Geowidget_v5() )->get_pickup_delivery_configuration( 'easypack_parcel_machines_weekend_cod' );
-			if ( false === $shipment instanceof ShipX_Shipment_Model ) {
-				$shipment = $shipment_service->get_shipment_by_order_id( $order_id );
-			}
-
-			if ( $shipment instanceof ShipX_Shipment_Model
-				&& false === $shipment_service->is_shipment_match_to_current_api( $shipment )
-			) {
-				wp_nonce_field( self::NONCE_ACTION, 'wp_nonce' );
-				$wrong_api_env = true;
-				include 'views/html-order-matabox-parcel-machines-weekend-cod.php';
-				if ( ! $output ) {
-					$out = ob_get_clean();
-
-					return $out;
-				}
-
-				return $out;
-			}
-			$wrong_api_env = false;
-
-			$order = wc_get_order( $order_id );
-
-			if ( null !== $shipment && ! $additional_package ) {
-				$parcels      = $shipment->getParcels();
-				$tracking_url = $shipment->getInternalData()->getTrackingNumber();
-				$stickers_url = $shipment->getInternalData()->getLabelUrl();
-
-				$api_status_update_response = array();
-
-				if ( true === $output ) {
-					$api_status_update_response = EasyPack_Helper()->refresh_shipment_status( $order_id );
-				}
-
-				$status            = $shipment->getInternalData()->getStatus();
-				$parcel_machine_id = $shipment->getCustomAttributes()->getTargetPoint();
-				$send_method       = $shipment->getCustomAttributes()->getSendingMethod();
-				$disabled          = true;
-			} else {
-				$package_sizes_display = EasyPack()->get_package_sizes_display();
-				$parcels               = array();
-				$parcel                = new ShipX_Shipment_Parcel_Model();
-				$parcel->setTemplate( get_option( 'easypack_default_package_size', 'small' ) );
-				$parcels[] = $parcel;
-
-				$parcel_machine_from_order = get_post_meta( $order_id, '_parcel_machine_id', true );
-				$parcel_machine_id         = ! empty( $parcel_machine_from_order )
-					? $parcel_machine_from_order
-					: get_option( 'easypack_default_machine_id' );
-
-				$tracking_url = false;
-				$status       = 'new';
-				$send_method  = EasyPack_Helper()->get_default_send_method( $order_id );
-				$disabled     = false;
-			}
-			$package_sizes = EasyPack()->get_package_sizes();
-
-			$send_method_disabled = false;
-
-			$send_methods = array(
-				'parcel_machine' => esc_html__( 'Parcel locker', 'inpost-for-woocommerce' ),
-				'courier'        => esc_html__( 'Courier', 'inpost-for-woocommerce' ),
-			);
-
-			$selected_service = $shipment_service->get_customer_service_name_by_id( self::SERVICE_ID );
-			include 'views/html-order-matabox-parcel-machines-weekend-cod.php';
-
-			wp_nonce_field( self::NONCE_ACTION, 'wp_nonce' );
-			if ( ! $output ) {
-				$out = ob_get_clean();
-
-				return $out;
-			}
-
-			return $out;
-		}
-
-
-
-		/**
-		 * Order metabox
-		 *
-		 * @param \WC_Order | \WP_Post $post $post.
-		 *
-		 * @return void
-		 */
-		public function order_metabox( $post ) {
-
-			self::order_metabox_content( $post );
-		}
-
-
-		/**
-		 * Get PWW logo
-		 *
-		 * @return string
-		 */
-		public function get_logo(): string {
-
-			$custom_logo = null;
-
-			if ( empty( $custom_logo ) ) {
-				return '<img style="height:22px; float:right;" src="' . untrailingslashit( EasyPack()->getPluginImages() . 'logo/inpost-paczka-w-weekend.png" />' );
-			} else {
-				return '<img style="height:22px; float:right;" src="' . untrailingslashit( $custom_logo );
-			}
-		}
-
 		/**
 		 * Ajax create package Weekend COD
 		 *
@@ -586,13 +154,12 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 		public static function ajax_create_package( $courier = false ) {
 			$ret = array( 'status' => 'ok' );
 
-			$shipment_model = self::ajax_create_shipment_model();
+			$shipment_model = static::ajax_create_shipment_model();
 
 			$order_id         = $shipment_model->getInternalData()->getOrderId();
 			$shipment_service = EasyPack::EasyPack()->get_shipment_service();
 			$shipment_array   = $shipment_service->shipment_to_array( $shipment_model );
 			$status_service   = EasyPack::EasyPack()->get_shipment_status_service();
-			$label_url        = '';
 
 			// required parameter for Paczka w Weekend.
 			$shipment_array['end_of_week_collection'] = true;
@@ -601,7 +168,6 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 
 			\wc_get_logger()->debug( 'PWW COD TO API: ', array( 'source' => 'pww-cod-log' ) );
 			\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'pww-cod-log' ) );
-			// die();
 
 			try {
 
@@ -610,7 +176,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 				\wc_get_logger()->debug( 'PWW COD API RESP: ', array( 'source' => 'pww-cod-log' ) );
 				\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'pww-cod-log' ) );
 
-				$shipment_data = self::save_to_order_meta(
+				$shipment_data = static::save_to_order_meta(
 					$order_id,
 					$shipment_model,
 					$shipment_service,
@@ -625,8 +191,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 			}
 
 			if ( 'ok' === $ret['status'] ) {
-				$order        = wc_get_order( $order_id );
-				$tracking_url = EasyPack_Helper()->get_tracking_url();
+				$order = wc_get_order( $order_id );
 
 				$order->add_order_note(
 					esc_html__( 'Shipment created', 'inpost-for-woocommerce' ),
@@ -642,7 +207,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 						$ret['api_status'] = $status_service->getStatusDescription( $response['status'] );
 					}
 				} else {
-					$ret['content'] = self::order_metabox_content( get_post( $order_id ), false, $shipment_model );
+					$ret['content'] = static::order_metabox_content( get_post( $order_id ), false, $shipment_model );
 					if ( isset( $shipment_data['tracking'] ) && ! empty( $shipment_data['tracking'] ) ) {
 						$ret['tracking_number'] = $shipment_data['tracking'];
 						$ret['inpost_id']       = $shipment_data['inpost_id'];

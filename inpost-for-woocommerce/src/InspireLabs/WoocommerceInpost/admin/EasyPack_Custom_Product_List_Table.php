@@ -105,6 +105,13 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 			'fields'         => 'ids',
 		);
 
+		// Polylang (and Polylang Pro) filters queries in admin by current language.
+		// For this bulk-edit table we want to list ALL product translations (all post IDs).
+		if ( function_exists( 'pll_languages_list' ) ) {
+			$langs        = pll_languages_list( array( 'fields' => 'slug' ) );
+			$args['lang'] = is_array( $langs ) && ! empty( $langs ) ? implode( ',', $langs ) : '';
+		}
+
 		if ( ! empty( $_REQUEST['s'] ) ) {
 			$args['s'] = $_REQUEST['s'];
 		}
@@ -167,6 +174,13 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 			'order'          => isset( $_REQUEST['order'] ) ? sanitize_text_field( $_REQUEST['order'] ) : 'DESC',
 			'paged'          => $page_number,
 		);
+
+		// Polylang (and Polylang Pro) filters queries in admin by current language.
+		// For this bulk-edit table we want to list ALL product translations (all post IDs).
+		if ( function_exists( 'pll_languages_list' ) ) {
+			$langs        = pll_languages_list( array( 'fields' => 'slug' ) );
+			$args['lang'] = is_array( $langs ) && ! empty( $langs ) ? implode( ',', $langs ) : '';
+		}
 
 		if ( ! empty( $_REQUEST['s'] ) ) {
 			$args['s'] = sanitize_text_field( $_REQUEST['s'] );
@@ -406,7 +420,7 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 		$product_table = new EasyPack_Custom_Product_List_Table();
 
 		$product_table->prepare_items();
-		$current_rel_uri = add_query_arg( null, null );
+		$current_rel_uri = add_query_arg( '', '' );
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>

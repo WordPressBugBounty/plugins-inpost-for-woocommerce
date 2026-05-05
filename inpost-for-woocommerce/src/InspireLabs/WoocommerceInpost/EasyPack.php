@@ -112,12 +112,14 @@ class EasyPack extends inspire_Plugin4 {
 	public function hooks() {
 
 		add_action( 'plugins_loaded', array( $this, 'init_easypack' ), 100 );
-		add_action( 'before_woocommerce_init', array( $this, 'add_settings_to_flexible_shipping' ) );
+		
+		add_action( 'plugins_loaded', array( $this, 'add_settings_to_flexible_shipping' ), 20 );
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_filter( 'woocommerce_package_rates', array( $this, 'check_paczka_weekend_fs_settings' ), 10, 2 );
 
+		// Initialize InPost shipping methods when WooCommerce shipping is initializing.		
 		add_action(
-			'after_setup_theme',
+			'init',
 			function () {
 				if ( 'yes' === get_option( 'easypack_debug_mode' ) ) {
 					if ( current_user_can( 'administrator' ) ) {
@@ -126,7 +128,8 @@ class EasyPack extends inspire_Plugin4 {
 				} else {
 					$this->init_shipping_methods();
 				}
-			}
+			},
+			5
 		);
 
 		add_action( 'send_tracking_numbers_email', array( $this, 'send_tracking_numbers_email_callback' ) );
@@ -1188,14 +1191,9 @@ class EasyPack extends inspire_Plugin4 {
 	 * Add custom fields to each shipping method.
 	 */
 	public function add_settings_to_flexible_shipping() {
-
 		if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
-			$shipping_methods = WC()->shipping->get_shipping_methods();
-			foreach ( $shipping_methods as $shipping_method ) {
-				if ( 'flexible_shipping_single' === $shipping_method->id ) {
-					add_filter( 'woocommerce_shipping_instance_form_fields_' . $shipping_method->id, array( $this, 'add_map_field' ) );
-				}
-			}
+			// Flexible Shipping "A single Flexible Shipping method" uses method id: flexible_shipping_single.			
+			add_filter( 'woocommerce_shipping_instance_form_fields_flexible_shipping_single', array( $this, 'add_map_field' ), PHP_INT_MAX );
 		}
 	}
 

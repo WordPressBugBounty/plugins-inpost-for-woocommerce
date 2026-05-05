@@ -25,6 +25,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 
 		const NONCE_ACTION = self::SERVICE_ID;
 
+		const SHIPPING_METHOD_ID = 'easypack_parcel_machines_weekend';
+
 		static $review_order_after_shipping_once = false;
 
 		/**
@@ -40,11 +42,30 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 				'shipping-zones',
 				'instance-settings',
 			);
-			$this->id                 = 'easypack_parcel_machines_weekend';
-			$this->method_description
-				= __( 'Allow customers to pick up orders in weekend.', 'inpost-for-woocommerce' );
-			$this->method_title       = __( 'InPost Locker Weekend', 'inpost-for-woocommerce' );
+			$this->id                 = static::SHIPPING_METHOD_ID;
+			$this->method_description = $this->get_method_description();
+			$this->method_title       = $this->get_method_title();
 			$this->init();
+		}
+
+		public function get_method_title(): string {
+			return __( 'InPost Locker Weekend', 'inpost-for-woocommerce' );
+		}
+
+		public function get_method_description(): string {
+			return __( 'Allow customers to pick up orders in weekend.', 'inpost-for-woocommerce' );
+		}
+
+		protected function get_settings_default_title(): string {
+			return __( 'InPost Locker Weekend', 'inpost-for-woocommerce' );
+		}
+
+		protected static function get_order_metabox_template(): string {
+			return 'views/html-order-matabox-parcel-machines-weekend.php';
+		}
+
+		protected static function get_geowidget_method_id(): string {
+			return 'easypack_parcel_machines_weekend';
 		}
 
 		public function generate_rates_html( $key, $data ) {
@@ -74,7 +95,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 				'title'                                  => array(
 					'title'    => __( 'Method title', 'inpost-for-woocommerce' ),
 					'type'     => 'text',
-					'default'  => __( 'InPost Locker Weekend', 'inpost-for-woocommerce' ),
+					'default'  => $this->get_settings_default_title(),
 					'desc_tip' => false,
 				),
 				'delivery_terms'                         => array(
@@ -428,7 +449,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 		public static function ajax_create_package( $courier = false ) {
 			$ret = array( 'status' => 'ok' );
 
-			$shipment_model = self::ajax_create_shipment_model();
+			$shipment_model = static::ajax_create_shipment_model();
 
 			$order_id         = $shipment_model->getInternalData()->getOrderId();
 			$shipment_service = EasyPack::EasyPack()->get_shipment_service();
@@ -445,7 +466,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 
 				$response = EasyPack_API()->customer_parcel_create( $shipment_array );
 
-				$shipment_data = self::save_to_order_meta(
+				$shipment_data = static::save_to_order_meta(
 					$order_id,
 					$shipment_model,
 					$shipment_service,
@@ -477,7 +498,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 						$ret['api_status'] = $status_service->getStatusDescription( $response['status'] );
 					}
 				} else {
-					$ret['content'] = self::order_metabox_content( get_post( $order_id ), false, $shipment_model );
+					$ret['content'] = static::order_metabox_content( get_post( $order_id ), false, $shipment_model );
 					if ( isset( $shipment_data['tracking'] ) && ! empty( $shipment_data['tracking'] ) ) {
 						$ret['tracking_number'] = $shipment_data['tracking'];
 						$ret['inpost_id']       = $shipment_data['inpost_id'];
@@ -501,7 +522,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 
 
 		public function order_metabox( $post ) {
-			self::order_metabox_content( $post );
+			static::order_metabox_content( $post );
 		}
 
 
@@ -532,7 +553,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 			}
 			$send_method = '';
 
-			$geowidget_config = ( new Geowidget_v5() )->get_pickup_delivery_configuration( 'easypack_parcel_machines_weekend' );
+			$geowidget_config = ( new Geowidget_v5() )->get_pickup_delivery_configuration( static::get_geowidget_method_id() );
 			if ( false === $shipment instanceof ShipX_Shipment_Model ) {
 				$shipment = $shipment_service->get_shipment_by_order_id( $order_id );
 			}
@@ -540,9 +561,9 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 			if ( $shipment instanceof ShipX_Shipment_Model
 				&& false === $shipment_service->is_shipment_match_to_current_api( $shipment )
 			) {
-				wp_nonce_field( self::NONCE_ACTION, 'wp_nonce' );
+				wp_nonce_field( static::NONCE_ACTION, 'wp_nonce' );
 				$wrong_api_env = true;
-				include 'views/html-order-matabox-parcel-machines-weekend.php';
+				include static::get_order_metabox_template();
 				if ( ! $output ) {
 					$out = ob_get_clean();
 
@@ -605,10 +626,10 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 					'parcel_machine' => __( 'Parcel locker', 'inpost-for-woocommerce' ),
 				);
 			}
-			$selected_service = $shipment_service->get_customer_service_name_by_id( self::SERVICE_ID );
-			include 'views/html-order-matabox-parcel-machines-weekend.php';
+			$selected_service = $shipment_service->get_customer_service_name_by_id( static::SERVICE_ID );
+			include static::get_order_metabox_template();
 
-			wp_nonce_field( self::NONCE_ACTION, 'wp_nonce' );
+			wp_nonce_field( static::NONCE_ACTION, 'wp_nonce' );
 			if ( ! $output ) {
 				$out = ob_get_clean();
 
