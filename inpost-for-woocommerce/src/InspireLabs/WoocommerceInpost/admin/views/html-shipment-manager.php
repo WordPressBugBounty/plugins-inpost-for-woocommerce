@@ -87,8 +87,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 		<div style="float:none;">
 			<?php
-            //error_log(print_r('view_var_statuses', true));
-            //error_log(print_r($view_var_statuses, true));
 			$params = array(
 				'type'        => 'select',
 				'options'     => $view_var_statuses,

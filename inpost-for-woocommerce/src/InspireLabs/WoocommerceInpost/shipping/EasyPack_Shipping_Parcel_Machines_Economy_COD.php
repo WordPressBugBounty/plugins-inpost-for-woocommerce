@@ -34,7 +34,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Economy_COD' ) ) {
 		}
 
 		protected static function get_order_metabox_template(): string {
-			return 'views/html-order-matabox-parcel-machines-economy-cod.php';
+			return 'views/html-order-metabox-parcel-machines-economy-cod.php';
 		}
 
 		protected static function get_geowidget_method_id(): string {

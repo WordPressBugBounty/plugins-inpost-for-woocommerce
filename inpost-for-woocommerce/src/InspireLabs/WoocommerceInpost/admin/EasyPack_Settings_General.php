@@ -393,6 +393,24 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 
 				array(
 					'title'    => __(
+						'Enable InPost metabox to create shipments for all orders in your shop',
+						'inpost-for-woocommerce'
+					),
+					'id'       => 'easypack_enable_metabox_for_all_orders',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => __(
+						'Enable this setting if you want to enable output of InPost shipment creation metabox for each order in your store.',
+						'inpost-for-woocommerce'
+					),
+					'default'  => '',
+					'options'  => array(),
+
+				),
+
+				array(
+					'title'    => __(
 						'Enable SmartCourier method for all products in your shop',
 						'inpost-for-woocommerce'
 					),

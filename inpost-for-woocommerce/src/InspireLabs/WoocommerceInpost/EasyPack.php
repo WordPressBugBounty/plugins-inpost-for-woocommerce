@@ -112,12 +112,12 @@ class EasyPack extends inspire_Plugin4 {
 	public function hooks() {
 
 		add_action( 'plugins_loaded', array( $this, 'init_easypack' ), 100 );
-		
+
 		add_action( 'plugins_loaded', array( $this, 'add_settings_to_flexible_shipping' ), 20 );
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_filter( 'woocommerce_package_rates', array( $this, 'check_paczka_weekend_fs_settings' ), 10, 2 );
 
-		// Initialize InPost shipping methods when WooCommerce shipping is initializing.		
+		// Initialize InPost shipping methods when WooCommerce shipping is initializing.
 		add_action(
 			'init',
 			function () {
@@ -288,14 +288,14 @@ class EasyPack extends inspire_Plugin4 {
 	 *
 	 * @param array    $items $items.
 	 *
-	 * @param WC_Order $wcOrder $wcOrder.
+	 * @param WC_Order $wc_order $wc_order.
 	 *
 	 * @return array
 	 */
-	public function show_parcel_machine_in_order_details( $items, $wcOrder ) {
+	public function show_parcel_machine_in_order_details( $items, $wc_order ) {
 
-		$parcel_desc       = html_entity_decode( $wcOrder->get_meta( '_parcel_machine_desc' ) );
-		$parcel_machine_id = html_entity_decode( $wcOrder->get_meta( '_parcel_machine_id' ) );
+		$parcel_desc       = html_entity_decode( $wc_order->get_meta( '_parcel_machine_desc' ) );
+		$parcel_machine_id = html_entity_decode( $wc_order->get_meta( '_parcel_machine_id' ) );
 
 		$parcel_locker_methods = array(
 			'easypack_parcel_machines',
@@ -306,16 +306,16 @@ class EasyPack extends inspire_Plugin4 {
 			'easypack_parcel_machines_weekend_cod',
 		);
 
-		$fs_method_name = get_post_meta( $wcOrder->get_id(), '_fs_easypack_method_name', true );
+		$fs_method_name = get_post_meta( $wc_order->get_id(), '_fs_easypack_method_name', true );
 
 		$shipping_method_id = '';
 
-		foreach ( $wcOrder->get_items( 'shipping' ) as $item_id => $item ) {
+		foreach ( $wc_order->get_items( 'shipping' ) as $item_id => $item ) {
 			$shipping_method_id = $item->get_method_id(); // The method ID.
 		}
 
-		if ( in_array( $shipping_method_id, $parcel_locker_methods )
-			|| ( isset( $fs_method_name ) && in_array( $fs_method_name, $parcel_locker_methods ) ) ) {
+		if ( in_array( $shipping_method_id, $parcel_locker_methods, true )
+			|| ( isset( $fs_method_name ) && in_array( $fs_method_name, $parcel_locker_methods, true ) ) ) {
 
 			if ( isset( $items['shipping'] ) && ! empty( $parcel_machine_id ) ) {
 				$items['shipping']['value']
@@ -987,15 +987,29 @@ class EasyPack extends inspire_Plugin4 {
 	}
 
 
+	/**
+	 * Saves InPost parcel locker data to order meta during block checkout process.
+	 *
+	 * Extracts parcel locker ID from checkout request or WooCommerce session and stores
+	 * it in order metadata. Handles Flexible Shipping integration by saving linked method
+	 * name. Removes 'PL_' prefix from parcel machine IDs if present. Falls back to session
+	 * data for Google Pay payments. Clears session data after saving.
+	 *
+	 * @param WC_Order   $order   The WooCommerce order object.
+	 * @param WP_REST_Request $request The REST API request object containing checkout data.
+	 *
+	 * @return void Returns early if order is invalid.
+	 */
 	public function block_checkout_save_parcel_locker_in_order_meta( $order, $request ) {
 
-		if ( ! $order ) {
+		if ( ! $order || is_wp_error( $order ) ) {
 			return;
 		}
 
 		$order_id           = $order->get_id();
 		$shipping_method_id = null;
 		$fs_method_name     = '';
+		$fs_instance_id     = '';
 
 		foreach ( $order->get_items( 'shipping' ) as $item_id => $item ) {
 			$shipping_method_id          = $item->get_method_id();
@@ -1010,7 +1024,6 @@ class EasyPack extends inspire_Plugin4 {
 			$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $fs_instance_id );
 			if ( ! empty( $fs_method_name ) ) {
 				$order->update_meta_data( '_fs_easypack_method_name', $fs_method_name );
-				$order->save();
 			}
 		}
 
@@ -1026,7 +1039,6 @@ class EasyPack extends inspire_Plugin4 {
 
 			update_post_meta( $order_id, '_parcel_machine_id', $parcel_machine_id );
 			$order->update_meta_data( '_parcel_machine_id', $parcel_machine_id );
-			$order->save();
 
 		} else {
 
@@ -1044,13 +1056,14 @@ class EasyPack extends inspire_Plugin4 {
 
 						update_post_meta( $order_id, '_parcel_machine_id', $inpost_pl_paczkomat );
 						$order->update_meta_data( '_parcel_machine_id', $inpost_pl_paczkomat );
-						$order->save();
 					}
 					// Clear session data.
 					WC()->session->__unset( 'inpost_pl_wc_paczkomat' );
 				}
 			}
 		}
+
+		$order->save();
 	}
 
 
@@ -1192,7 +1205,7 @@ class EasyPack extends inspire_Plugin4 {
 	 */
 	public function add_settings_to_flexible_shipping() {
 		if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
-			// Flexible Shipping "A single Flexible Shipping method" uses method id: flexible_shipping_single.			
+			// Flexible Shipping "A single Flexible Shipping method" uses method id: flexible_shipping_single.
 			add_filter( 'woocommerce_shipping_instance_form_fields_flexible_shipping_single', array( $this, 'add_map_field' ), PHP_INT_MAX );
 		}
 	}
@@ -1603,19 +1616,19 @@ class EasyPack extends inspire_Plugin4 {
 			return;
 		}
 
+		$fs_instance_id = '';
+
 		if ( ! empty( $_POST['parcel_machine_id'] ) ) {
 			$paczkomat_id = sanitize_text_field( wp_unslash( $_POST['parcel_machine_id'] ) );
 			if ( 'PL_' === substr( $paczkomat_id, 0, 3 ) ) {
 				$paczkomat_id = substr( $paczkomat_id, 3 );
 			}
 			$order->update_meta_data( '_parcel_machine_id', $paczkomat_id );
-			$order->save();
 		}
 
 		if ( ! empty( $_POST['parcel_machine_desc'] ) ) {
 			$paczkomat_desc = sanitize_text_field( wp_unslash( $_POST['parcel_machine_desc'] ) );
 			$order->update_meta_data( '_parcel_machine_desc', $paczkomat_desc );
-			$order->save();
 		}
 
 		// save easypack method name in metadata to show later required metabox in order details.
@@ -1627,9 +1640,10 @@ class EasyPack extends inspire_Plugin4 {
 			$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $fs_instance_id );
 			if ( ! empty( $fs_method_name ) ) {
 				$order->update_meta_data( '_fs_easypack_method_name', $fs_method_name );
-				$order->save();
 			}
 		}
+
+		$order->save();
 	}
 
 
@@ -1760,13 +1774,13 @@ class EasyPack extends inspire_Plugin4 {
 	 */
 	public function create_shipment_automatically( $order_id ) {
 
-		$order = wc_get_order( $order_id );
-
-		if ( ! $order || is_wp_error( $order ) ) {
+		if ( 'yes' !== get_option( 'easypack_create_shipment_automatically' ) ) {
 			return;
 		}
 
-		if ( 'yes' !== get_option( 'easypack_create_shipment_automatically' ) ) {
+		$order = wc_get_order( $order_id );
+
+		if ( ! $order || is_wp_error( $order ) ) {
 			return;
 		}
 
@@ -1802,11 +1816,11 @@ class EasyPack extends inspire_Plugin4 {
 	 */
 	public function create_shipment_automatically_on_paid( $order_id, $status_from, $status_to, $order ) {
 
-		if ( ! $order || is_wp_error( $order ) ) {
+		if ( 'yes' !== get_option( 'easypack_create_shipment_automatically' ) ) {
 			return;
 		}
 
-		if ( 'yes' !== get_option( 'easypack_create_shipment_automatically' ) ) {
+		if ( ! $order || is_wp_error( $order ) ) {
 			return;
 		}
 
@@ -1821,8 +1835,7 @@ class EasyPack extends inspire_Plugin4 {
 
 		$paid_statuses = array( 'processing', 'completed' );
 
-		if ( in_array( $status_to, $paid_statuses ) && ! in_array( $status_from, $paid_statuses ) ) {
-			// $this->send_shipment_automatically( $order_id );
+		if ( in_array( $status_to, $paid_statuses, true ) && ! in_array( $status_from, $paid_statuses, true ) ) {
 
 			wp_schedule_single_event(
 				time() + 40,
@@ -1970,7 +1983,10 @@ class EasyPack extends inspire_Plugin4 {
 						$shipment_array['additional_services'][] = 'email';
 					}
 				} else {
-					$shipment_array = EasyPack_Helper()->maybe_set_pww_param( $order_id, $shipment_array );
+
+					if ( 'easypack_parcel_machines_cod' === $class_instance::SHIPPING_METHOD_ID || 'easypack_parcel_machines' === $class_instance::SHIPPING_METHOD_ID ) {
+						$shipment_array = EasyPack_Helper()->maybe_set_pww_param( $order_id, $shipment_array );
+					}
 				}
 
 				if ( null !== $cod_amount && floatval( $cod_amount ) > 0 ) {
@@ -1995,17 +2011,20 @@ class EasyPack extends inspire_Plugin4 {
 					$response
 				);
 
-				\wc_get_logger()->debug( 'INPOST create_package automatically: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
-				\wc_get_logger()->debug( 'DATA to API: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
-				\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
-				\wc_get_logger()->debug( 'RESPONSE from API: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
-				\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
-
+				if ( function_exists( 'wc_get_logger' ) ) {
+					\wc_get_logger()->debug( 'INPOST create_package automatically: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+					\wc_get_logger()->debug( 'DATA to API: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+					\wc_get_logger()->debug( 'RESPONSE from API: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+				}
 			} catch ( Exception $e ) {
-				\wc_get_logger()->debug( 'INPOST create_package automatically Exception: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
-				\wc_get_logger()->debug( print_r( $order_id, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
-				\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
-				\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+				if ( function_exists( 'wc_get_logger' ) ) {
+					\wc_get_logger()->debug( 'INPOST create_package automatically Exception: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $order_id, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+				}
 			}
 		}
 	}
@@ -2037,21 +2056,7 @@ class EasyPack extends inspire_Plugin4 {
 		$delivery_terms_meta_id = null;
 		$fs_method_name         = '';
 
-		$courier_methods = array(
-			'easypack_shipping_courier',
-			'easypack_shipping_courier_local_express',
-			'easypack_shipping_courier_c2c',
-			'easypack_shipping_courier_c2c_cod',
-			'easypack_cod_shipping_courier',
-			'easypack_shipping_courier_le_cod',
-			'easypack_shipping_courier_local_standard',
-			'easypack_shipping_courier_local_standard_cod',
-			'easypack_shipping_courier_lse',
-			'easypack_shipping_courier_lse_cod',
-			'easypack_shipping_courier_palette',
-			'easypack_shipping_courier_palette_cod',
-			'easypack_shipping_esmartmix',
-		);
+		$courier_methods = EasyPack_Helper()->get_couriers_methods_ids();
 
 		if ( $wc_order_item_shipping_obj instanceof WC_Order_Item_Shipping ) {
 

@@ -3,7 +3,7 @@
 namespace InspireLabs\WoocommerceInpost;
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 } // Exit if accessed directly.
 
 /**
@@ -106,11 +106,15 @@ class Geowidget_v5 {
 	public function enqueue_admin_scripts() {
 
 		if ( EasyPack_Helper()->is_required_pages_for_modal() ) {
+
+			$admin_geowidget_js_path     = $this->assets_js_uri . 'admin-geowidget-settings.js';
+			$admin_geowidget_js_path_ver = file_exists( $admin_geowidget_js_path ) ? filemtime( $admin_geowidget_js_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;
+
 			wp_enqueue_script(
 				'easypack-admin-geowidget-settings',
 				$this->assets_js_uri . 'admin-geowidget-settings.js',
 				array( 'jquery' ),
-				WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
+				$admin_geowidget_js_path_ver,
 				array( 'in_footer' => true )
 			);
 			wp_localize_script(
@@ -121,6 +125,7 @@ class Geowidget_v5 {
 					'height' => self::GEOWIDGET_HEIGHT,
 					'token'  => $this->get_token(),
 					'title'  => __( 'Select parcel locker', 'inpost-for-woocommerce' ),
+					'alert'  => __( 'Parcel locker ID code is required', 'inpost-for-woocommerce' ),
 				)
 			);
 			wp_enqueue_style( 'geowidget-css', $this->get_geowidget_css_src(), array(), WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION );

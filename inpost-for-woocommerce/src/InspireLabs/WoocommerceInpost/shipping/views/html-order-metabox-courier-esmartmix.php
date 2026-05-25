@@ -75,10 +75,10 @@ if ( $disabled ) {
 }
 ?>
 
-<p>
-	<span style="font-weight: bold"><?php esc_html_e( 'Service:', 'inpost-for-woocommerce' ); ?></span>
-	<span><?php echo esc_html( $selected_service ); ?></span>
-</p>
+<span class="easypack_pre_select_service_title" style="font-weight: bold">
+	<?php esc_html_e( 'Service:', 'inpost-for-woocommerce' ); ?>
+</span>
+<?php require 'services/html-service-first-package-selector.php'; ?>
 
 <p>
 	<span style="font-weight: bold"><?php esc_html_e( 'Status:', 'inpost-for-woocommerce' ); ?></span>
@@ -109,7 +109,7 @@ if ( ! empty( $shipment instanceof ShipX_Shipment_Model && $shipment->getInterna
 	<?php
 }
 
-include 'costs/html-order-metabox-costs.php';
+require 'costs/html-order-metabox-costs.php';
 ?>
 
 <p>
@@ -176,8 +176,8 @@ include 'costs/html-order-metabox-costs.php';
 
 <?php
 // include 'services/html-service-insurance.php';
-include 'html-field-reference.php';
-include 'html-send-method.php';
+require 'html-field-reference.php';
+require 'html-send-method.php';
 ?>
 
 <p>
@@ -185,7 +185,7 @@ include 'html-send-method.php';
 		<button id="easypack_send_parcels" class="button button-primary"><?php esc_html_e( 'Send parcel', 'inpost-for-woocommerce' ); ?></button>
 	<?php } ?>
 
-	<?php include 'html-no-funds-alert.php'; ?>
+	<?php require 'html-no-funds-alert.php'; ?>
 
 	<?php
 	if ( $shipment instanceof ShipX_Shipment_Model && ! empty( $shipment->getInternalData()->getTrackingNumber() ) && ! $additional_package ) {
@@ -230,6 +230,12 @@ include 'html-send-method.php';
 
 		var order_id = '<?php echo esc_attr( $order_id ); ?>';
 
+		let shipping_method_changed = false;
+		let metabox_id = jQuery(metabox).attr('id');
+		if('easypack_shipment_changed' ===  metabox_id ) {
+			shipping_method_changed = true;
+		}
+
 		var data = {
 			action: 'easypack',
 			easypack_action: '<?php echo esc_attr( $wp_ajax_action_create ); ?>',
@@ -244,7 +250,9 @@ include 'html-send-method.php';
 			send_method: jQuery(metabox).find('#easypack_send_method').val(),
 			insurance_amounts: insurance_amounts,
 			reference_number: jQuery(metabox).find('#reference_number').val(),
-			easypack_additional_package: jQuery(metabox).find('#easypack_additional_package').val()
+			easypack_additional_package: jQuery(metabox).find('#easypack_additional_package').val(),
+			shipping_method_changed: shipping_method_changed,
+            selected_inpost_method: jQuery(metabox).find('#easypack_change_first_parcel').val(),
 		};
 
 		jQuery.post(ajaxurl, data, function (response) {
@@ -309,6 +317,6 @@ include 'html-send-method.php';
 </script>
 
 <?php
-include 'services/html-service-get-label.php';
-include 'services/html-service-view-additional-package.php';
-include 'services/html-service-additional-package.php';
+require 'services/html-service-get-label.php';
+require 'services/html-service-view-additional-package.php';
+require 'services/html-service-additional-package.php';

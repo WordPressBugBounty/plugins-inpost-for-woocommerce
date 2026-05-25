@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var WP_Post|WC_Order $post - The post or order object
  * @var int $order_id - The ID of the order
@@ -35,7 +36,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <?php
-$status_service = EasyPack()->get_shipment_status_service();
+$status_service    = EasyPack()->get_shipment_status_service();
+$parcel_machine_id = Easypack_Helper()->get_locker_id_from_meta( $order_id );
 ?>
 
 <?php if ( true === $wrong_api_env ) : ?>
@@ -51,22 +53,31 @@ $status_service = EasyPack()->get_shipment_status_service();
 
 	<?php
 	if ( $internal_data->getApiVersion()
-		=== $internal_data::API_VERSION_PRODUCTION
+				=== $internal_data::API_VERSION_PRODUCTION
 	) :
 		?>
 		<span style="font-weight: bold; color: #a00">
-			<?php esc_html_e( 'This shipment was created in production API. Change API environment to production to process this shipment', 'inpost-for-woocommerce' ); ?>
+			<?php
+			esc_html_e(
+				'This shipment was created in production API. Change API environment to production to process this shipment',
+				'inpost-for-woocommerce'
+			)
+			?>
 		</span>
-
 	<?php endif; ?>
 
 	<?php
 	if ( $internal_data->getApiVersion()
-		=== $internal_data::API_VERSION_SANDBOX
+				=== $internal_data::API_VERSION_SANDBOX
 	) :
 		?>
 		<span style="font-weight: bold; color: #a00">
-			<?php esc_html_e( 'This shipment was created in sandbox API. Change API environment to sandbox to process this shipment', 'inpost-for-woocommerce' ); ?>
+			<?php
+			esc_html_e(
+				'This shipment was created in sandbox API. Change API environment to sandbox to process this shipment',
+				'inpost-for-woocommerce'
+			)
+			?>
 		</span>
 	<?php endif; ?>
 	<?php return; ?>
@@ -86,6 +97,19 @@ if ( $disabled ) {
 }
 ?>
 
+<p>
+	<label for="parcel_machine_id"><?php esc_html_e( 'Selected parcel locker', 'inpost-for-woocommerce' ); ?></label>
+	<input value="<?php echo esc_attr( $parcel_machine_id ); ?>" type="text"
+			class="settings-geowidget" id="parcel_machine_id"
+			name="parcel_machine_id"
+			data-geowidget_config="<?php echo esc_attr( $geowidget_config ); ?>"
+			<?php echo $disabled ? ' disabled ' : ''; ?>
+	>
+</p>
+
+<?php /** @var ShipX_Shipment_Model $shipment */ ?>
+<?php /** @var WC_Order $order */ ?>
+
 <span class="easypack_pre_select_service_title" style="font-weight: bold">
 	<?php esc_html_e( 'Service:', 'inpost-for-woocommerce' ); ?>
 </span>
@@ -97,8 +121,11 @@ if ( $disabled ) {
 		<?php $status_title = $shipment->getInternalData()->getStatusTitle(); ?>
 		<?php $status_desc = $shipment->getInternalData()->getStatusDescription(); ?>
 	<span title="<?php echo esc_attr( $status_desc ); ?>"><?php echo esc_html( $status_title ); ?>
-		(<?php echo esc_html( $status ); ?>)</span>
+		(<?php echo esc_html( $status ); ?>)
+	</span>
 </p>
+
+
 <?php else : ?>
 	<?php esc_html_e( 'Not created yet (new)', 'inpost-for-woocommerce' ); ?>
 <?php endif ?>
@@ -106,14 +133,13 @@ if ( $disabled ) {
 <?php
 if ( ! empty(
 	$shipment instanceof ShipX_Shipment_Model
-	&& $shipment->getInternalData()->getTrackingNumber()
+					&& $shipment->getInternalData()->getTrackingNumber()
 ) && ! $additional_package
 ) :
 	?>
 	<span style="font-weight: bold">
 			<?php esc_html_e( 'Tracking number:', 'inpost-for-woocommerce' ); ?>
 	</span>
-
 	<a target="_blank"
 		href="<?php echo esc_url( $shipment_service->getTrackingUrl( $shipment ) ); ?>">
 		<?php echo esc_html( $shipment->getInternalData()->getTrackingNumber() ); ?>
@@ -148,7 +174,16 @@ if ( ! empty(
 
 				woocommerce_form_field( 'parcel[]', $params, $saved_package_size );
 
+				$cod_amount = isset( $saved_meta_data[0]['cod_amount'] )
+					? $saved_meta_data[0]['cod_amount']
+					: $order->get_total();
+
 				?>
+				<?php esc_html_e( 'COD amount: ', 'inpost-for-woocommerce' ); ?>
+				<input class="easypack_cod_amount" type="number" style=""
+						value="<?php echo esc_attr( $cod_amount ); ?>"
+						placeholder="0.00" step="any" min="0"
+						name="cod_amount[]">
 				<?php if ( $status == 'new' && ! $first_parcel ) : ?>
 					<button class="button easypack_remove_parcel"><?php esc_html_e( 'Remove', 'inpost-for-woocommerce' ); ?></button>
 				<?php endif; ?>
@@ -157,6 +192,8 @@ if ( ! empty(
 				<?php echo '<span style="font-size: 16px">'; ?>
 				<?php echo esc_html( EasyPack_Helper()->convert_size_to_symbol( $parcel->getTemplate() ) ); ?>
 				<?php echo '</span>'; ?>
+				<br>
+				<?php esc_html_e( 'COD amount', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $shipment->getCod()->getAmount() ); ?>
 			<?php endif; ?>
 		</li>
 		<?php $first_parcel = false; ?>
@@ -164,7 +201,6 @@ if ( ! empty(
 </ul>
 
 </p>
-
 
 <?php require 'services/html-service-insurance.php'; ?>
 <?php require 'html-field-reference.php'; ?>
@@ -178,9 +214,10 @@ if ( ! empty(
 
 	<?php require 'html-no-funds-alert.php'; ?>
 
+
 	<?php
 	if ( $shipment instanceof ShipX_Shipment_Model
-		&& ! empty( $shipment->getInternalData()->getTrackingNumber() ) && ! $additional_package ) :
+				&& ! empty( $shipment->getInternalData()->getTrackingNumber() ) && ! $additional_package ) :
 		?>
 		<input id="get_stickers" type="submit" class="button button-primary"
 				value="<?php esc_html_e( 'Get sticker', 'inpost-for-woocommerce' ); ?>">
@@ -198,31 +235,8 @@ if ( ! empty(
 <a href="#" download id="easypack_download" target="_blank" hidden></a>
 
 <script type="text/javascript">
-	jQuery(document).ready(function() {
-		if(jQuery('select.easypack_parcel').val() === 'xlarge') {
-			jQuery('#easypack_send_method option').each(function(ind, elem) {                
-				if(jQuery(elem).val() === 'parcel_machine') {                    
-					jQuery(elem).prop('disabled', 'disabled');
-				}
-			});
-		}        
-	});
-	
-	jQuery('select.easypack_parcel').on('change', function () {
-		if(jQuery(this).val() === 'xlarge') {            
-			jQuery('#easypack_send_method option').each(function(ind, elem) {                
-				if(jQuery(elem).val() === 'parcel_machine') {                    
-					jQuery(elem).prop('disabled', 'disabled');
-				}
-			});
-		} else {            
-			jQuery('#easypack_send_method option').each(function(ind, elem) {                
-				jQuery(elem).prop('disabled', false);                
-			});
-		}
-	});
 
-	jQuery('#easypack_send_parcels').click(function (e) {
+	jQuery('#easypack_send_parcels').click(function () {
 
 		var metabox = jQuery(this).closest('.postbox');
 		var is_additional_package = '<?php echo esc_html( $additional_package ); ?>';
@@ -240,11 +254,16 @@ if ( ! empty(
 			parcels.push(alternate_parcels_find);
 		}
 
+		var cod_amounts = [];
+		jQuery(metabox).find('input.easypack_cod_amount').each(function (i) {
+			cod_amounts[i] = jQuery(this).val();
+		});
+
 		var insurance_amounts = [];
 		jQuery(metabox).find('input.insurance_amount').each(function (i) {
 			insurance_amounts[i] = jQuery(this).val();
 		});
-
+		
 		var order_id = '<?php echo esc_attr( $order_id ); ?>';
 
 		let shipping_method_changed = false;
@@ -252,14 +271,15 @@ if ( ! empty(
 		if('easypack_shipment_changed' ===  metabox_id ) {
 			shipping_method_changed = true;
 		}
-		
+
 		var data = {
 			action: 'easypack',
-			easypack_action: 'courier_c2c_create_package',
+			easypack_action: 'parcel_machines_cod_create_package',
 			security: easypack_nonce,
 			order_id: order_id,
 			parcel_machine_id: jQuery(metabox).find('#parcel_machine_id').val(),
 			parcels: parcels,
+			cod_amounts: cod_amounts,
 			send_method: jQuery(metabox).find('#easypack_send_method').val(),
 			insurance_amounts: insurance_amounts,
 			reference_number: jQuery(metabox).find('#reference_number').val(),
@@ -269,11 +289,11 @@ if ( ! empty(
 		};
 
 		jQuery.post(ajaxurl, data, function (response) {
+			//console.log(response);
 			if (response !== 0) {
 				response = JSON.parse(response);
-				//console.log(response.status);
+				//console.log(response);
 				if (response.status === 'ok') {
-
 					if( is_additional_package ) {
 						let additional_package_data = '';
 						if(typeof response.tracking_number != 'undefined' && response.tracking_number !== null) {
@@ -283,7 +303,7 @@ if ( ! empty(
 
 
 							additional_package_data += '<p><span style="font-weight: bold">Status: </span>\n' +
-							'<span title="">'+ response.api_status +'</span></p>';
+								'<span title="">'+ response.api_status +'</span></p>';
 
 							additional_package_data += '<p><span style="font-weight: bold">Ref. number: </span>\n' +
 								'<span title="">'+ response.ref_number +'</span></p>';
@@ -334,6 +354,7 @@ if ( ! empty(
 		return false;
 
 	});
+
 </script>
 
 <?php require 'services/html-service-get-label.php'; ?>

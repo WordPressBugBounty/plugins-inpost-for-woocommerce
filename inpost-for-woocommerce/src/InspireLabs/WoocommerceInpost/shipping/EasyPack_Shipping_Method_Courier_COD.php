@@ -37,8 +37,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 		 */
 		public function __construct( $instance_id = 0 ) {
 			$this->init_form_fields();
-			$this->instance_id  = absint( $instance_id );
-			$this->supports     = array(
+			$this->instance_id        = absint( $instance_id );
+			$this->supports           = array(
 				'shipping-zones',
 				'instance-settings',
 			);
@@ -446,6 +446,14 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 				);
 
 			} catch ( Exception $e ) {
+
+				if ( function_exists( 'wc_get_logger' ) ) {
+					\wc_get_logger()->debug( 'INPOST create shipment Exception: ', array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $order_id, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+				}
+
 				$ret['status']  = 'error';
 				$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' ) . EasyPack_API()->translate_error( $e->getMessage() );
 			}

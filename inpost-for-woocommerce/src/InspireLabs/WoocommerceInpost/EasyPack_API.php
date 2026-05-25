@@ -191,8 +191,16 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 
 		public function translate_error( $error ) {
+
+			$error = trim( $error );
+
 			$errors = array(
+				'custom attributes sending method unavailable for service' => __( 'Chosen send method is not available for this service', 'inpost-for-woocommerce' ),
+				'custom attributes target point required' => __( 'Parcel locker ID code is required', 'inpost-for-woocommerce' ),
 				'end of week collection invalid end of week collection' => __( 'You are creating a Weekend Package service, which is available from Thursday 20:00 to Friday 18:00 - currently this is not a dedicated time slot', 'inpost-for-woocommerce' ),
+				'invalid target point for end of week collection' => __( 'Parcel locker ID for the Weekend Package service is wrong. It should be available 24/7', 'inpost-for-woocommerce' ),
+				'insurance should be greater or equal than cod' => __( 'Insurance amount should be greater or equal than COD', 'inpost-for-woocommerce' ),
+				'custom attributes target point required end of week collection invalid target point for end of week collection' => __( 'Parcel locker ID code is required', 'inpost-for-woocommerce' ),
 				'receiver_email'                       => __( 'Recipient e-mail', 'inpost-for-woocommerce' ),
 				'forbidden'                            => __( 'forbidden', 'inpost-for-woocommerce' ),
 				'receiver_phone'                       => __( 'Recipient phone', 'inpost-for-woocommerce' ),
@@ -237,12 +245,20 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				),
 			);
 
-			if ( isset( $errors[ $error ] ) ) {
-				return $errors[ $error ];
+			if ( strpos( $error, 'custom attributes target point required' ) !== false ) {
+				return __( 'Parcel locker ID code is required', 'inpost-for-woocommerce' );
+			}
+
+			if ( strpos( $error, 'point for end of week collection' ) !== false ) {
+				return __( 'Parcel locker ID for the Weekend Package service is wrong. It should be available 24/7', 'inpost-for-woocommerce' );
 			}
 
 			if ( strpos( $error, 'invalid end of week collection' ) !== false ) {
 				return __( 'You are creating a Weekend Package service, which is available from Thursday 20:00 to Friday 18:00 - currently this is not a dedicated time slot', 'inpost-for-woocommerce' );
+			}
+
+			if ( isset( $errors[ $error ] ) ) {
+				return $errors[ $error ];
 			}
 
 			return $error;
@@ -325,7 +341,11 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 			$response = wp_remote_post( $url, $request_args );
 
 			if ( is_wp_error( $response ) ) {
-
+				if ( function_exists( 'wc_get_logger' ) ) {
+					\wc_get_logger()->debug( 'Get is_wp_error error:', array( 'source' => 'inpost-pl-exception' ) );
+					\wc_get_logger()->debug( print_r( $response->get_error_message(), true ), array( 'source' => 'inpost-pl-exception' ) );
+					\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-pl-exception' ) );
+				}
 				throw new Exception( esc_html( $response->get_error_message() ) );
 
 			} else {
@@ -340,6 +360,10 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				$ret = json_decode( $response['body'], true );
 
 				if ( ! is_array( $ret ) ) {
+					if ( function_exists( 'wc_get_logger' ) ) {
+						\wc_get_logger()->debug( 'Get response body error:', array( 'source' => 'inpost-pl-exception' ) );
+						\wc_get_logger()->debug( print_r( $response['body'], true ), array( 'source' => 'inpost-pl-exception' ) );
+					}
 					throw new Exception( esc_html__( 'Bad API response. Check API URL', 'inpost-for-woocommerce' ), 503 );
 
 				} elseif ( isset( $ret['status'] ) ) {
@@ -769,18 +793,23 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 			return $response;
 		}
 
-		public function customer_parcel_pay( $parcel_id ) {
-			$args     = array();
-			$response = $this->post( '/parcels/' . $parcel_id . '/pay', $args );
 
-			return $response;
-		}
-
-
+		/**
+		 * Retrieves customer parcel sticker/label from the API.
+		 *
+		 * Determines label format (A4 or A6) based on EasyPack settings and requests
+		 * the PDF label for the specified parcel from the shipments endpoint.
+		 *
+		 * @param string $parcel_id The parcel/shipment identifier.
+		 *
+		 * @return mixed API response containing the PDF label data.
+		 */
 		public function customer_parcel_sticker( $parcel_id ) {
-			$labelFormat = get_option( 'easypack_label_format' );
-			$type        = 'A6';
-			$type        = $labelFormat === 'A4' ? 'normal' : 'A6';
+
+			$label_format = get_option( 'easypack_label_format' );
+
+			$type = 'A4' === $label_format ? 'normal' : 'A6';
+
 			return $this->get( '/shipments/' . $parcel_id . '/label?format=Pdf&type=' . $type );
 		}
 

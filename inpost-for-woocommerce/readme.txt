@@ -2,9 +2,9 @@
 Contributors: inspirelabs
 Tags: inpost, paczkomaty, etykiety, przesyłki
 Requires at least: 5.3
-Tested up to: 6.9
-Requires PHP: 7.2
-Stable tag: 1.8.8
+Tested up to: 7.0
+Requires PHP: 7.4
+Stable tag: 1.8.9
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
  
@@ -42,6 +42,12 @@ Po zainstalowaniu wtyczki skonfiguruj sposób dostawy InPost oraz ceny poszczeg�
 
 
 == Changelog ==
+
+= 1.8.9 =
+* Feat: change shipping method for even 1st shipment creation
+* Feat: new setting, add InPost shipment creation metabox to any order
+* Fix: PHP warnings
+* Fix: PWW mode
 
 = 1.8.8 =
 * Fix: webhook initial  status

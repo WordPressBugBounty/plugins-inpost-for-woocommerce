@@ -162,6 +162,8 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 
 			$shipment_data = array();
 
+			$shipment_array = EasyPack_Helper()->maybe_set_pww_param( $order_id, $shipment_array );
+
 			try {
 
 				$response = EasyPack_API()->customer_parcel_create( $shipment_array );
@@ -176,6 +178,14 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 				);
 
 			} catch ( Exception $e ) {
+
+				if ( function_exists( 'wc_get_logger' ) ) {
+					\wc_get_logger()->debug( 'INPOST create shipment Exception: ', array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $order_id, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+				}
+
 				$ret['status']  = 'error';
 				$ret['message'] = esc_html__( 'There are some errors. Please fix it:', 'inpost-for-woocommerce' )
 					. PHP_EOL
@@ -192,7 +202,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 
 				EasyPack_Helper()->set_order_status_completed( $order_id );
 
-				if ( isset( $_POST['action'] ) && $_POST['action'] === 'easypack_bulk_create_shipments' ) {
+				if ( isset( $_POST['action'] ) && 'easypack_bulk_create_shipments' === $_POST['action'] ) {
 					if ( isset( $shipment_data['tracking'] ) && ! empty( $shipment_data['tracking'] ) ) {
 						$ret['tracking_number'] = $shipment_data['tracking'];
 					} else {
@@ -249,7 +259,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 			) {
 				wp_nonce_field( static::NONCE_ACTION, 'wp_nonce' );
 				$wrong_api_env = true;
-				include 'views/html-order-matabox-parcel-machines_cod.php';
+				include 'views/html-order-metabox-parcel-machines_cod.php';
 				if ( ! $output ) {
 					$out = ob_get_clean();
 
@@ -304,7 +314,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines_COD' ) ) {
 			);
 
 			$selected_service = $shipment_service->get_customer_service_name_by_id( static::SERVICE_ID );
-			include 'views/html-order-matabox-parcel-machines_cod.php';
+			include 'views/html-order-metabox-parcel-machines_cod.php';
 
 			wp_nonce_field( static::NONCE_ACTION, 'wp_nonce' );
 			if ( ! $output ) {

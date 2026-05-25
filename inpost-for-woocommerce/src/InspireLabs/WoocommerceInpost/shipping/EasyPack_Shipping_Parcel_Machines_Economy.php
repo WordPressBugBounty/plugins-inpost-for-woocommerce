@@ -41,8 +41,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Economy' ) ) {
 		 */
 		public function __construct( $instance_id = 0 ) {
 			$this->init_form_fields();
-			$this->instance_id  = absint( $instance_id );
-			$this->supports     = array(
+			$this->instance_id        = absint( $instance_id );
+			$this->supports           = array(
 				'shipping-zones',
 				'instance-settings',
 			);
@@ -67,7 +67,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Economy' ) ) {
 		}
 
 		protected static function get_order_metabox_template(): string {
-			return 'views/html-order-matabox-parcel-machines-economy.php';
+			return 'views/html-order-metabox-parcel-machines-economy.php';
 		}
 
 		protected static function get_geowidget_method_id(): string {
@@ -444,6 +444,14 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Economy' ) ) {
 				);
 
 			} catch ( Exception $e ) {
+
+				if ( function_exists( 'wc_get_logger' ) ) {
+					\wc_get_logger()->debug( 'INPOST create shipment Exception: ', array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $order_id, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+				}
+
 				$ret['status']  = 'error';
 				$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' ) . EasyPack_API()->translate_error( $e->getMessage() );
 			}

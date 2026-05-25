@@ -3,114 +3,148 @@
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 } // Exit if accessed directly.
 
 ?>
 
-<?php if ($shipment instanceof ShipX_Shipment_Model
-    &&
-    !empty($shipment->getInternalData()->getTrackingNumber()) ) : ?>
-    <script type="text/javascript">
-        document.addEventListener('click', function (e) {
-            e = e || window.event;
-            var target = e.target || e.srcElement;
-            if (target.hasAttribute('id') && target.getAttribute('id') === 'get_stickers') {
-                e.preventDefault();
-                e.stopPropagation();
+<?php
+if ( $shipment instanceof ShipX_Shipment_Model
+			&&
+			! empty( $shipment->getInternalData()->getTrackingNumber() ) ) :
+	?>
+	<script type="text/javascript">
+		document.addEventListener('click', function (e) {
+			e = e || window.event;
+			var target = e.target || e.srcElement;
+			if (target.hasAttribute('id') && target.getAttribute('id') === 'get_stickers') {
+				e.preventDefault();
+				e.stopPropagation();
 
-                var metabox = jQuery(target).closest('.postbox');
-                jQuery(metabox).find('#easypack_error').html('');
+				if (window.__easypackGetLabelXHRRunning) {
+					return;
+				}
+				window.__easypackGetLabelXHRRunning = true;
 
-                var beforeSend = function () {
-                    jQuery(metabox).find("#easypack_spinner").addClass("is-active");
-                    jQuery(metabox).find('#easypack_send_parcels').attr('disabled', true);
-                };
+				var metabox = jQuery(target).closest('.postbox');
+				jQuery(metabox).find('#easypack_error').html('');
 
-                var action = 'easypack';
-                var easypack_action = 'easypack_create_bulk_labels';
-                var order_ids = <?php echo esc_attr($order_id); ?>;
-                beforeSend();
-                var request = new XMLHttpRequest();
-                request.open('POST', ajaxurl, true);
-                request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-                request.responseType = 'blob';
+				var beforeSend = function () {
+					jQuery(metabox).find("#easypack_spinner").addClass("is-active");
+					jQuery(metabox).find('#easypack_send_parcels').attr('disabled', true);
+				};
 
-                request.onload = function () {
-                    // Only handle status code 200
-                    if (request.status === 200 && request.response.size > 0) {
+				var action = 'easypack';
+				var easypack_action = 'easypack_create_bulk_labels';
+				var order_ids = <?php echo esc_attr( $order_id ); ?>;
+				beforeSend();
+				var request = new XMLHttpRequest();
+				request.addEventListener('loadend', function () {
+					window.__easypackGetLabelXHRRunning = false;
+				});
+				request.open('POST', ajaxurl, true);
+				request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+				request.responseType = 'blob';
 
-                        var content_type = request.getResponseHeader("content-type");
-                        if (content_type === 'application/pdf') {
+				request.onload = function () {
+					// Only handle status code 200
+					if (request.status === 200 && request.response.size > 0) {
 
-                            var filename = 'inpost_zamowenie_' + order_ids + '.pdf';
+						var raw_ct = request.getResponseHeader("content-type") || '';
+						var content_type = raw_ct.split(';')[0].trim().toLowerCase();
 
-                            // download file
-                            var blob = new Blob([request.response], {type: 'application/pdf'});
-                            var link = document.createElement('a');
-                            link.href = window.URL.createObjectURL(blob);
-                            link.download = filename;
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                        } else {
-                            // some error occured
-                            let text_from_blob = new Blob([request.response], {type: 'text/html'});
-                            var reader = new FileReader();
-                            reader.onload = function () {
-                                let textResponse = JSON.parse(reader.result);
-                                console.log(textResponse);
-                                if (textResponse.details.key == 'ParcelLabelExpired') {
-                                    jQuery(metabox).find('#easypack_error').html('Etykieta wygasła');
-                                    jQuery(metabox).find('#easypack_error').css('color', '#f00');
-                                } else {
-                                    //alert(reader.result);
-                                    console.log(reader.result);
-                                    console.log(textResponse);
-                                    let status = '';
-                                    let message = '';
-                                    let details = '';
-                                    if(textResponse.hasOwnProperty('status')){
-                                        status = textResponse.status;
-                                    }
-                                    if(textResponse.hasOwnProperty('message')){
-                                        message = textResponse.message;
-                                    }
-                                    if(textResponse.hasOwnProperty('details')){
-                                        details = textResponse.details;
-                                        if(details.hasOwnProperty('shipment_ids')){
-                                            details = details.shipment_ids[0];
-                                        }
-                                    }
-                                    let error_details = '<b><span>Status: '+ status +'</span></b>' +
-                                        '<br><b><span>'+ details +'</span></b>' +
-                                        '<br><b><span>'+ message +'</span></b>';
-                                    jQuery(metabox).find('#easypack_error').html(error_details);
-                                    jQuery(metabox).find('#easypack_error').css('color', '#f00');
-                                    console.log('Inpost API get label status: ' + status);
-                                    console.log(message);
-                                    console.log(details);
-                                }
-                            };
-                            reader.readAsText(text_from_blob);
-                            jQuery(metabox).find("#easypack_spinner").removeClass("is-active");
-                            jQuery(metabox).find('#easypack_send_parcels').attr('disabled', false);
-                            return;
-                        }
+						// API may return ZIP when there are multiple labels (e.g. additional packages), not only PDF.
+						if (content_type === 'application/pdf') {
 
-                        jQuery(metabox).find("#easypack_spinner").removeClass("is-active");
-                        jQuery(metabox).find('#easypack_send_parcels').attr('disabled', false);
-                    } else {
-                        jQuery(metabox).find('#easypack_error').html('Wystąpił błąd');
-                        jQuery(metabox).find('#easypack_error').css('color', '#f00');
-                    }
+							var filename = 'inpost_zamowenie_' + order_ids + '.pdf';
 
-                    jQuery(metabox).find("#easypack_spinner").removeClass("is-active");
-                    jQuery(metabox).find('#easypack_send_parcels').attr('disabled', false);
-                };
+							// download file
+							var blob = new Blob([request.response], {type: 'application/pdf'});
+							var link = document.createElement('a');
+							link.href = window.URL.createObjectURL(blob);
+							link.download = filename;
+							document.body.appendChild(link);
+							link.click();
+							document.body.removeChild(link);
+						} else if (content_type === 'application/zip') {
 
-                request.send('action=' + action + '&easypack_action=' + easypack_action + '&security=' + easypack_nonce + '&order_ids=' + JSON.stringify([order_ids]));
-            }
-        });
-    </script>
+							var zipName = 'inpost_zamowenie_' + order_ids + '.zip';
+							var zipBlob = new Blob([request.response], {type: 'application/zip'});
+							var zipLink = document.createElement('a');
+							zipLink.href = window.URL.createObjectURL(zipBlob);
+							zipLink.download = zipName;
+							document.body.appendChild(zipLink);
+							zipLink.click();
+							document.body.removeChild(zipLink);
+						} else {
+							// JSON error from server (or wrong content-type on binary — try/catch below).
+							let text_from_blob = new Blob([request.response], {type: 'text/html'});
+							var reader = new FileReader();
+							reader.onload = function () {
+								var raw = reader.result;
+								var textResponse = null;
+								try {
+									textResponse = typeof raw === 'string' ? JSON.parse(raw) : null;
+								} catch (parseErr) {
+									console.log(parseErr);
+									jQuery(metabox).find('#easypack_error').html('Wystąpił błąd (nieprawidłowa odpowiedź serwera).');
+									jQuery(metabox).find('#easypack_error').css('color', '#f00');
+									jQuery(metabox).find("#easypack_spinner").removeClass("is-active");
+									jQuery(metabox).find('#easypack_send_parcels').attr('disabled', false);
+									return;
+								}
+								console.log(textResponse);
+								if (textResponse && textResponse.details && textResponse.details.key == 'ParcelLabelExpired') {
+									jQuery(metabox).find('#easypack_error').html('Etykieta wygasła');
+									jQuery(metabox).find('#easypack_error').css('color', '#f00');
+								} else {
+									//alert(reader.result);
+									console.log(reader.result);
+									console.log(textResponse);
+									let status = '';
+									let message = '';
+									let details = '';
+									if(textResponse.hasOwnProperty('status')){
+										status = textResponse.status;
+									}
+									if(textResponse.hasOwnProperty('message')){
+										message = textResponse.message;
+									}
+									if(textResponse.hasOwnProperty('details')){
+										details = textResponse.details;
+										if (details && typeof details === 'object' && details.shipment_ids && details.shipment_ids[0] !== undefined) {
+											details = details.shipment_ids[0];
+										}
+									}
+									let error_details = '<b><span>Status: '+ status +'</span></b>' +
+										'<br><b><span>'+ details +'</span></b>' +
+										'<br><b><span>'+ message +'</span></b>';
+									jQuery(metabox).find('#easypack_error').html(error_details);
+									jQuery(metabox).find('#easypack_error').css('color', '#f00');
+									console.log('Inpost API get label status: ' + status);
+									console.log(message);
+									console.log(details);
+								}
+							};
+							reader.readAsText(text_from_blob);
+							jQuery(metabox).find("#easypack_spinner").removeClass("is-active");
+							jQuery(metabox).find('#easypack_send_parcels').attr('disabled', false);
+							return;
+						}
+
+						jQuery(metabox).find("#easypack_spinner").removeClass("is-active");
+						jQuery(metabox).find('#easypack_send_parcels').attr('disabled', false);
+					} else {
+						jQuery(metabox).find('#easypack_error').html('Wystąpił błąd');
+						jQuery(metabox).find('#easypack_error').css('color', '#f00');
+					}
+
+					jQuery(metabox).find("#easypack_spinner").removeClass("is-active");
+					jQuery(metabox).find('#easypack_send_parcels').attr('disabled', false);
+				};
+
+				request.send('action=' + action + '&easypack_action=' + easypack_action + '&security=' + easypack_nonce + '&order_ids=' + JSON.stringify([order_ids]));
+			}
+		});
+	</script>
 <?php endif ?>

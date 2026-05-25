@@ -160,14 +160,14 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 				}
 
 				if ( ! isset( $results['headers'] ) ) {
-					if ( isset( $_POST['easypack_action'] ) && $_POST['easypack_action'] === 'easypack_create_bulk_labels' ) {
+					if ( isset( $_POST['easypack_action'] ) && 'easypack_create_bulk_labels' === $_POST['easypack_action'] ) {
 
 						\wc_get_logger()->debug( 'Inpost IDs for labels: ', array( 'source' => 'inpost-label-log' ) );
 						\wc_get_logger()->debug( print_r( $selected_shipments_ids, true ), array( 'source' => 'inpost-label-log' ) );
 						\wc_get_logger()->debug( 'API response: ', array( 'source' => 'inpost-label-log' ) );
 						\wc_get_logger()->debug( print_r( $results, true ), array( 'source' => 'inpost-label-log' ) );
 
-						echo json_encode(
+						echo wp_json_encode(
 							array(
 								'status'  => isset( $results['status'] ) ? $results['status'] : 'Błąd',
 								'details' => isset( $results['details'] ) ? $results['details'] : 'Opóźnienie odpowiedzi API - odśwież stronę i spróbuj ponownie (lub później)',
@@ -223,9 +223,9 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 				} else {
 
-					\wc_get_logger()->debug( 'Inpost post_confirmation_pdf: ', array( 'source' => 'inpost-debug-log' ) );
-					\wc_get_logger()->debug( print_r( $shipment_ids, true ), array( 'source' => 'inpost-debug-log' ) );
-					\wc_get_logger()->debug( print_r( $results, true ), array( 'source' => 'inpost-debug-log' ) );
+					\wc_get_logger()->debug( 'Inpost post_confirmation_pdf: ', array( 'source' => 'inpost-pl-confirmation-pdf-log' ) );
+					\wc_get_logger()->debug( print_r( $shipment_ids, true ), array( 'source' => 'inpost-pl-confirmation-pdf-log' ) );
+					\wc_get_logger()->debug( print_r( $results, true ), array( 'source' => 'inpost-pl-confirmation-pdf-log' ) );
 
 					if ( isset( $results['error'] ) ) {
 						$error_message = '';
@@ -263,35 +263,30 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		 * @return string
 		 */
 		public function get_tracking_url( $country = null ) {
-			if ( null === $country ) {
-				if ( EasyPack_API()->is_pl() ) {
-					return 'https://inpost.pl/sledzenie-przesylek?number=';
-				}
-
-				return 'https://tracking.inpost.co.uk/';
-			}
-
-			if ( EasyPack_API()->normalize_country_code_for_inpost( $country )
-				=== EasyPack_API::COUNTRY_PL
-			) {
-				return 'https://inpost.pl/sledzenie-przesylek?number=';
-			}
-
-			return 'https://tracking.inpost.co.uk/';
+			return 'https://inpost.pl/sledzenie-przesylek?number=';
 		}
 
 
 
-		function woocommerce_before_my_account() {
+		/**
+		 * Displays returns page link before WooCommerce My Account content.
+		 *
+		 * Checks if a returns page is configured in EasyPack settings and retrieves
+		 * the page object. If found, renders a template with the returns page link,
+		 * title, and EasyPack logo image using WooCommerce template system.
+		 *
+		 * @return void Returns early if returns page option is empty or page doesn't exist.
+		 */
+		public function woocommerce_before_my_account() {
 			if ( get_option( 'easypack_returns_page' )
 				&& trim( get_option( 'easypack_returns_page' ) ) !== ''
 			) {
-				$page = get_page( get_option( 'easypack_returns_page' ) );
+				$returns_page_id = (int) get_option( 'easypack_returns_page' );
+				$page            = get_post( $returns_page_id );
 				if ( $page ) {
-					$img_src = EasyPack()->getPluginImages()
-								. 'logo/small/white.png';
+					$img_src = EasyPack()->getPluginImages() . 'logo/small/white.png';
 					$args    = array(
-						'returns_page'       => get_page_link( get_option( 'easypack_returns_page' ) ),
+						'returns_page'       => get_page_link( $returns_page_id ),
 						'returns_page_title' => $page->post_title,
 						'img_src'            => $img_src,
 					);
@@ -306,7 +301,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			}
 		}
 
-		function woocommerce_screen_ids( $screen_ids ) {
+		public function woocommerce_screen_ids( $screen_ids ) {
 			$screen_ids[] = 'inpost_page_easypack_shipment';
 
 			return $screen_ids;
@@ -453,12 +448,18 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		/**
 		 * Integration with plugin "Flexible shipping" (get shipping method linked in FS settings)
 		 *
-		 * @param string $instance_id $instance_id.
+		 * @param mixed $instance_id $instance_id.
 		 *
 		 * @return string
 		 */
 		public function get_method_linked_to_fs_by_instance_id( $instance_id ) {
-			$method_linked_to_fs      = '';
+
+			$method_linked_to_fs = '';
+
+			if ( empty( $instance_id ) ) {
+				return $method_linked_to_fs;
+			}
+
 			$shipping_method_settings = get_option( 'woocommerce_flexible_shipping_single_' . $instance_id . '_settings' );
 
 			if ( isset( $shipping_method_settings['fs_inpost_pl_method'] ) && ! empty( $shipping_method_settings['fs_inpost_pl_method'] ) ) {
@@ -754,6 +755,11 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 							$configured_shipping_methods[ $configured_method->instance_id ]['method_title']         = $configured_method->id;
 							$configured_shipping_methods[ $configured_method->instance_id ]['method_title_with_id'] = $configured_method->id . ':' . $configured_method->instance_id;
 							$configured_shipping_methods[ $configured_method->instance_id ]['inpost_title']         = $configured_method->id;
+							if ( property_exists( $configured_method, 'enabled' ) && 'yes' === $configured_method->enabled ) {
+								$configured_shipping_methods[ $configured_method->instance_id ]['active'] = 'yes';
+							} else {
+								$configured_shipping_methods[ $configured_method->instance_id ]['active'] = 'no';
+							}
 
 							$logo_src = $this->get_shipping_method_logo_src( $configured_method->id, $configured_method->instance_id );
 							$configured_shipping_methods[ $configured_method->instance_id ]['inpost_icon']    = ! empty( $logo_src ) ? $logo_src : false;
@@ -770,6 +776,11 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 								$configured_shipping_methods[ $configured_method->instance_id ]['method_title']         = $configured_method->id;
 								$configured_shipping_methods[ $configured_method->instance_id ]['method_title_with_id'] = $configured_method->id . ':' . $configured_method->instance_id;
 								$configured_shipping_methods[ $configured_method->instance_id ]['inpost_title']         = $linked_method;
+								if ( property_exists( $configured_method, 'enabled' ) && 'yes' === $configured_method->enabled ) {
+									$configured_shipping_methods[ $configured_method->instance_id ]['active'] = 'yes';
+								} else {
+									$configured_shipping_methods[ $configured_method->instance_id ]['active'] = 'no';
+								}
 
 								$configured_shipping_methods[ $configured_method->instance_id ]['inpost_icon'] = EasyPack()->getPluginImages() . 'logo/small/white.png';
 
@@ -885,43 +896,6 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 
 		/**
-		 * Gets all active InPost shipping methods from WooCommerce zones.
-		 *
-		 * @return array Array of active shipping methods with instance IDs as keys and titles as values.
-		 *
-		 * @since 1.0.0
-		 * @access public
-		 */
-		public function get_active_shipping_methods(): array {
-
-			$configured_shipping_methods = array();
-			$delivery_zones              = \WC_Shipping_Zones::get_zones();
-			foreach ( (array) $delivery_zones as $key => $the_zone ) {
-				// only for zone "PL".
-				if ( is_array( $the_zone['shipping_methods'] ) ) {
-					foreach ( $the_zone['shipping_methods'] as $configured_method ) {
-						// only active methods.
-						if ( isset( $configured_method->enabled ) && 'yes' === $configured_method->enabled ) {
-							if ( 0 === strpos( $configured_method->id, 'easypack_' ) ) {
-								$configured_shipping_methods[ $configured_method->instance_id ] = $configured_method->title;
-
-							} elseif ( 0 === strpos( $configured_method->id, 'flexible_shipping' ) ) {
-								// Integration with Flexible Shipping.
-								$linked_method = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $configured_method->instance_id );
-								if ( 0 === strpos( $linked_method, 'easypack_' ) ) {
-									$configured_shipping_methods[ $configured_method->instance_id ] = $configured_method->title;
-								}
-							}
-						}
-					}
-				}
-			}
-
-			return $configured_shipping_methods;
-		}
-
-
-		/**
 		 * Retrieves saved additional packages for an order.
 		 *
 		 * @param int $order_id The order ID.
@@ -931,7 +905,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		 */
 		public function get_saved_additional_packages( $order_id ) {
 
-			$additional_packages = get_post_meta( $order_id, '_easypack_additional_packages', true );
+			$additional_packages = EasyPack_Helper()->get_woo_order_meta( $order_id, '_easypack_additional_packages' );
 
 			if ( empty( $additional_packages ) ) {
 				return array();
@@ -1016,37 +990,12 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			$validated_ids = array();
 
 			foreach ( $arr as $order_id ) {
-
-				$is_tracking_exists = get_post_meta( $order_id, '_easypack_parcel_tracking', true );
-				if ( ! $is_tracking_exists ) {
-					$order = wc_get_order( $order_id );
-					if ( $order && ! is_wp_error( $order ) ) {
-						$is_tracking_exists = $order->get_meta( '_easypack_parcel_tracking' );
-					}
-				}
-
+				$is_tracking_exists = $this->get_tracking_number_from_meta( $order_id );
 				if ( ! empty( $is_tracking_exists ) ) {
 					$validated_ids[] = $order_id;
 				} else {
 
 					$shipment = $this->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
-
-					if ( ! $shipment instanceof ShipX_Shipment_Model ) {
-						if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
-							$from_order_meta_raw = isset( get_post_meta( $order_id )['_shipx_shipment_object'][0] )
-								? get_post_meta( $order_id )['_shipx_shipment_object'][0]
-								: '';
-
-							if ( ! empty( $from_order_meta_raw ) ) {
-								$shipment = unserialize(
-									$from_order_meta_raw,
-									array(
-										'allowed_classes' => array( ShipX_Shipment_Model::class ),
-									)
-								);
-							}
-						}
-					}
 
 					if ( is_object( $shipment ) && $shipment instanceof ShipX_Shipment_Model ) {
 						$inpost_id = $shipment->getInternalData()->getInpostId();
@@ -1143,11 +1092,11 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		public function is_admin_orders_or_plugin_settings_related_page() {
 
 			if ( ! is_admin() ) {
-				return;
+				return false;
 			}
 
 			if ( ! function_exists( 'get_current_screen' ) ) {
-				return;
+				return false;
 			}
 
 			global $pagenow, $post_type, $post;
@@ -1168,9 +1117,12 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			if ( $order_id ) {
 				$order = wc_get_order( $order_id );
 				if ( $order && is_a( $order, 'WC_Order' ) ) {
-
-					if ( ! empty( $this->get_woo_order_meta( $order_id, '_parcel_machine_id' ) ) ) {
+					if ( 'yes' === get_option( 'easypack_enable_metabox_for_all_orders' ) ) {
 						return true;
+					} else {
+						if ( ! empty( $this->get_woo_order_meta( $order_id, '_parcel_machine_id' ) ) ) {
+							return true;
+						}
 					}
 				}
 			}
@@ -1997,17 +1949,18 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 			$point_data = array();
 
-			$api = new EasyPack_API();
 			if ( 'production' === get_option( 'easypack_api_environment' ) ) {
 				$api_url = 'https://api.inpost.pl/v1/points?name=' . $point_name;
+				$token   = trim( get_option( 'easypack_geowidget_production_token' ) );
 			} else {
 				$api_url = 'https://sandbox-api-gateway-pl.easypack24.net/v1/points?name=' . $point_name;
+				$token   = trim( get_option( 'easypack_geowidget_sandbox_token' ) );
 			}
 
 			$args = array(
 				'method'  => 'GET',
 				'headers' => array(
-					'Authorization' => 'Bearer ' . get_option( 'easypack_token' ),
+					'Authorization' => 'Bearer ' . $token,
 					'Content-Type'  => 'application/json',
 				),
 			);
@@ -2073,6 +2026,48 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			}
 
 			return false;
+		}
+
+
+		public function get_couriers_methods_ids() {
+			return array(
+				'easypack_shipping_courier',
+				'easypack_shipping_courier_local_express',
+				'easypack_shipping_courier_c2c',
+				'easypack_shipping_courier_c2c_cod',
+				'easypack_cod_shipping_courier',
+				'easypack_shipping_courier_le_cod',
+				'easypack_shipping_courier_local_standard',
+				'easypack_shipping_courier_local_standard_cod',
+				'easypack_shipping_courier_lse',
+				'easypack_shipping_courier_lse_cod',
+				'easypack_shipping_courier_palette',
+				'easypack_shipping_courier_palette_cod',
+				'easypack_shipping_esmartmix',
+			);
+		}
+
+
+
+		public function get_tracking_number_from_meta( $order_id ) {
+
+			$tracking_number = '';
+
+			if( ! $order_id ) {
+				return $tracking_number;
+			}
+
+			$tracking_number = $this->get_woo_order_meta( $order_id, '_easypack_parcel_tracking' );
+
+			if( empty( $tracking_number ) ) {
+				$shipment = $this->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
+				if( ! empty( $shipment ) && $shipment instanceof ShipX_Shipment_Model ) {
+					$internal_tracking = $shipment->getInternalData()->getTrackingNumber();
+					$tracking_number = ! empty( $internal_tracking ) ? $internal_tracking : '';
+				}
+			}
+
+			return $tracking_number;
 		}
 	}
 

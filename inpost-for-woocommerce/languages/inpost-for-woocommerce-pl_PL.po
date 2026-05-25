@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: InPost for WooCommerce 1.5.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/inpost-for-woocommerce\n"
 "POT-Creation-Date: 2018-08-24 13:01:34+00:00\n"
-"PO-Revision-Date: 2026-04-21 10:03+0200\n"
+"PO-Revision-Date: 2026-05-22 16:04+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -743,12 +743,12 @@ msgstr "Koszt powiadomienia:"
 msgid "Reference number: "
 msgstr "Numer referencyjny: "
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:54
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:54
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:47
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:55
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:55
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:56
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:54
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:54
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:47
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend.php:55
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines.php:55
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:56
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:52
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:51
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:51
@@ -757,12 +757,12 @@ msgstr "Numer referencyjny: "
 msgid "This shipment was created in production API. Change API environment to production to process this shipment"
 msgstr "Przesyłka stworzona w produkcyjnym API. Zmień API na środowisko prodykcyjne, aby móc przetwarzać przesyłkę"
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:64
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:64
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:60
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:65
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:65
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:65
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:64
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:64
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:60
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend.php:65
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines.php:65
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:65
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:60
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:59
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:59
@@ -771,21 +771,21 @@ msgstr "Przesyłka stworzona w produkcyjnym API. Zmień API na środowisko prody
 msgid "This shipment was created in sandbox API. Change API environment to sandbox to process this shipment"
 msgstr "Przesyłka stworzona w sandbox API. Zmień API na środowisko sandbox"
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:86
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:86
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:86
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:87
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:88
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:87
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:86
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:86
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:86
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend.php:87
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines.php:88
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:87
 msgid "Selected parcel locker"
 msgstr "Wybrany punkt odbioru"
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:97
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:97
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:97
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:98
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:99
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:100
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:97
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:97
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:97
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend.php:98
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines.php:99
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:100
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:83
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:79
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:82
@@ -795,12 +795,12 @@ msgstr "Wybrany punkt odbioru"
 msgid "Service:"
 msgstr "Usługa:"
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:105
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:105
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:108
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:106
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:107
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:108
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:105
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:105
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:108
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend.php:106
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines.php:107
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:108
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:88
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:84
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:87
@@ -809,12 +809,12 @@ msgstr "Usługa:"
 msgid "Status:"
 msgstr "Status:"
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:116
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:116
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:123
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:117
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:118
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:120
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:116
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:116
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:123
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend.php:117
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines.php:118
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:120
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:97
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:93
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:96
@@ -823,12 +823,12 @@ msgstr "Status:"
 msgid "Not created yet (new)"
 msgstr "Nie utworzono jeszcze (nowy)"
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:123
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:123
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:130
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:124
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:125
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:127
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:123
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:123
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:130
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend.php:124
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines.php:125
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:127
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:106
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:102
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:105
@@ -838,12 +838,12 @@ msgstr "Nie utworzono jeszcze (nowy)"
 msgid "Tracking number:"
 msgstr "Numer przesyłki:"
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:136
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:136
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:143
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:136
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:137
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:138
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:136
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:136
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:143
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend.php:136
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines.php:137
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:138
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:120
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:116
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:119
@@ -852,12 +852,12 @@ msgstr "Numer przesyłki:"
 msgid "Attributes:"
 msgstr "Atrybuty:"
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:176
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:167
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:175
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:163
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:164
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:174
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:176
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:167
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:175
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend.php:163
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines.php:164
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:174
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:202
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:154
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:189
@@ -866,25 +866,25 @@ msgstr "Atrybuty:"
 msgid "Remove"
 msgstr "Usuń"
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:153
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:179
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:153
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:170
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:179
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:166
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:167
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:177
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:153
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:179
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:153
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:170
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:179
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend.php:166
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines.php:167
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:177
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:148
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:165
 msgid "Size"
 msgstr "Rozmiar"
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:201
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:190
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:200
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:186
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:187
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:198
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:201
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:190
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:200
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend.php:186
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines.php:187
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:198
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:240
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:185
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:225
@@ -893,12 +893,12 @@ msgstr "Rozmiar"
 msgid "Send parcel"
 msgstr "Utwórz przesyłkę"
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:211
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:200
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:214
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:196
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:198
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:207
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:211
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:200
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:214
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend.php:196
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines.php:198
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:207
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:248
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:193
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:233
@@ -907,17 +907,17 @@ msgstr "Utwórz przesyłkę"
 msgid "Get sticker"
 msgstr "Pobierz etykietę"
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:169
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:166
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:168
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:169
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:166
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:168
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:190
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:152
 msgid "COD amount: "
 msgstr "Wartość pobrania: "
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:184
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:184
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:182
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:184
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:184
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:182
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:221
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:175
 msgid "COD amount"
@@ -1905,12 +1905,12 @@ msgstr "Występują błędy. Popraw je:"
 msgid "Additional package:"
 msgstr "Dodatkowa paczka:"
 
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy-cod.php:293
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-economy.php:276
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend-cod.php:301
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines-weekend.php:272
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines.php:273
-#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-matabox-parcel-machines_cod.php:287
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:293
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:276
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:301
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend.php:272
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines.php:273
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines_cod.php:287
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:440
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:269
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:420
@@ -2486,4 +2486,22 @@ msgstr "Dodaje przycisk mapy i dodaje pole do zapisywania danych o punkcie dosta
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:37
 msgid "InPost Parcel Locker COD. Allow customers to pick up orders themselves."
-msgstr ""
+msgstr "Paczkomat InPost z opcją odbioru osobistego. Pozwól klientom na samodzielny odbiór zamówień."
+
+msgid "Enable InPost metabox to create shipments for all orders in your shop"
+msgstr "Włącz metabox InPost dla wszystkich zamówień w Twoim sklepie"
+
+msgid "Enable this setting if you want to enable output of InPost shipment creation metabox for each order in your store."
+msgstr "Włącz to ustawienie, jeśli chcesz włączyć wyjście metaboxu tworzenia przesyłki InPost dla każdego zamówienia w swoim sklepie."
+
+msgid "Parcel locker ID code is required"
+msgstr "Kod Paczkomatu jest wymagany"
+
+msgid "Parcel locker ID for the Weekend Package service is wrong. It should be available 24/7"
+msgstr "ID paczkomatu dla usługi Paczka w Weekend jest błędny. Paczkomat powinien być dostępny 24/7"
+
+msgid "Insurance amount should be greater or equal than COD"
+msgstr "Kwota ubezpieczenia powinna być większa lub równa kwocie pobrania"
+
+msgid "Chosen send method is not available for this service"
+msgstr "Wybrany sposób nadania nie jest dostępny dla tej usługi"

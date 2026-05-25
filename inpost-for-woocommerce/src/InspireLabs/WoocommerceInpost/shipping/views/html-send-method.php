@@ -32,7 +32,10 @@ $params = array(
     'custom_attributes' => $custom_attributes,
     'label' => esc_html__( 'Send method', 'inpost-for-woocommerce' ),
 );
-if( 'parcel_locker' === $send_method ) {
-    $send_method = 'parcel_machine';
+if ( 'parcel_locker' === $send_method ) {
+	$send_method = 'parcel_machine';
+}
+if ( 'dispatch_order' === $send_method ) {
+	$send_method = 'courier';
 }
 woocommerce_form_field( 'easypack_send_method', $params, $send_method );

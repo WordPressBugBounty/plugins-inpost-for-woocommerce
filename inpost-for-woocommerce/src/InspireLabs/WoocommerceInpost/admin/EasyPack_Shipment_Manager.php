@@ -33,6 +33,21 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 		}
 
 		public static function print_stickers() {
+			$is_label_or_confirmation_request =
+				true === self::is_stickers_request()
+				|| true === self::is_stickers_return_request()
+				|| true === self::is_sticker_single_request()
+				|| true === self::is_sticker_single_ret_request()
+				|| true === self::is_posting_confirmation_request();
+
+			if ( $is_label_or_confirmation_request && ! current_user_can( 'view_woocommerce_reports' ) ) {
+				wp_die(
+					esc_html__( 'Sorry, you are not allowed to download InPost labels.', 'inpost-for-woocommerce' ),
+					esc_html__( 'Forbidden', 'inpost-for-woocommerce' ),
+					array( 'response' => 403 )
+				);
+			}
+
 			if ( true === self::is_stickers_request() ) {
 				EasyPack_Helper::EasyPack_Helper()->print_stickers();
 			}
@@ -112,7 +127,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 			}
 
 			if ( true === self::is_cancel() ) {
-				self::cancel_courier();
+				return false;
 			}
 
 			$send_method = 'all';
@@ -164,46 +179,6 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 			}
 		}
 
-		private static function cancel_courier() {
-			return false;
-
-			// cance courier.
-			$shipment_service       = EasyPack()->get_shipment_service();
-			$courier_pickup_service = EasyPack()->get_courier_pickup_service();
-
-			$selected_data = null;
-
-			if ( isset( $_POST['easypack_parcel'] ) ) {
-				if ( is_array( $_POST['easypack_parcel'] ) ) {
-					$selected_data = array_map( 'sanitize_text_field', $_POST['easypack_parcel'] );
-				}
-			}
-
-			$selected_shipments = $selected_data;
-
-			$shipments_to_pick_up = array();
-
-			foreach ( $selected_shipments as $order_id ) {
-				$shipments_to_pick_up[] = $shipment_service->get_shipment_by_order_id( $order_id );
-			}
-
-			$dispatch_point_arr = $courier_pickup_service->get_dispatch_order( $points[ (int) $dispatch_point ] );
-
-			try {
-				$courier_pickup_service->createDispatchOrder(
-					$dispatch_point_arr,
-					$shipments_to_pick_up
-				);
-
-				$message = __( 'Shipments dispathed ', 'inpost-for-woocommerce' );
-				printf( '<div class="updated"><p>%s</p></div>', esc_html( $message ) );
-
-			} catch ( Exception $e ) {
-				$class   = 'error';
-				$message = __( 'Error while creating manifest: ', 'inpost-for-woocommerce' ) . $e->getMessage();
-				printf( '<div class="%s"><p>%s</p></div>', esc_attr( $class ), wp_kses_post( $message ) );
-			}
-		}
 
 		/**
 		 * @param string $api_country
@@ -211,7 +186,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 		 * @return array
 		 */
 		private static function get_send_methods_for_country( $api_country ) {
-			if ( $api_country === EasyPack_API::COUNTRY_PL ) {
+			if ( EasyPack_API::COUNTRY_PL === $api_country ) {
 				return array(
 					'any'            => __( 'All', 'inpost-for-woocommerce' ),
 					'parcel_locker'  => __( 'Parcel Locker', 'inpost-for-woocommerce' ),
@@ -220,11 +195,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 				);
 			}
 
-			if ( $api_country === EasyPack_API::COUNTRY_UK ) {
-				return array(
-					'parcel_locker' => __( 'Parcel Locker', 'inpost-for-woocommerce' ),
-				);
-			}
+			return array();
 		}
 
 		/**
@@ -242,7 +213,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 		 */
 		private static function is_posting_confirmation_request() {
 			return isset( $_POST['easypack_posting_confirmation_request'] )
-				&& $_POST['easypack_posting_confirmation_request'] === '1';
+					&& '1' === $_POST['easypack_posting_confirmation_request'];
 		}
 
 		/**
@@ -250,7 +221,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 		 */
 		private static function is_stickers_request() {
 			return isset( $_POST['easypack_get_stickers_request'] )
-					&& $_POST['easypack_get_stickers_request'] === '1';
+					&& '1' === $_POST['easypack_get_stickers_request'];
 		}
 
 		/**
@@ -258,12 +229,12 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 		 */
 		private static function is_sticker_single_request() {
 			return isset( $_POST['easypack_get_sticker_single_request'] )
-					&& $_POST['easypack_get_sticker_single_request'] === '1';
+					&& '1' === $_POST['easypack_get_sticker_single_request'];
 		}
 
 		private static function is_sticker_single_ret_request() {
 			return isset( $_POST['easypack_get_sticker_single_request_ret'] )
-					&& $_POST['easypack_get_sticker_single_request_ret'] === '1';
+					&& '1' === $_POST['easypack_get_sticker_single_request_ret'];
 		}
 
 		/**
@@ -271,7 +242,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 		 */
 		private static function is_stickers_return_request() {
 			return isset( $_POST['easypack_get_stickers_ret_request'] )
-					&& $_POST['easypack_get_stickers_ret_request'] === '1';
+					&& '1' === $_POST['easypack_get_stickers_ret_request'];
 		}
 
 		/**
@@ -279,7 +250,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 		 */
 		private static function is_pickup() {
 			return isset( $_POST['easypack_create_manifest_input'] )
-					&& $_POST['easypack_create_manifest_input'] == 1;
+					&& 1 == $_POST['easypack_create_manifest_input'];
 		}
 
 		/**
@@ -287,7 +258,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 		 */
 		private static function is_cancel() {
 			return isset( $_POST['easypack_cancel_courier'] )
-					&& $_POST['easypack_cancel_courier'] == 1;
+					&& 1 == $_POST['easypack_cancel_courier'];
 		}
 
 		public static function getSendingMethodFilterFromRequest() {

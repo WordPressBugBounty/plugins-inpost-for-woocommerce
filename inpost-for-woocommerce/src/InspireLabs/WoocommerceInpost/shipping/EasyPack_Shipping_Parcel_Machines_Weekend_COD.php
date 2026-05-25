@@ -38,7 +38,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 		}
 
 		protected static function get_order_metabox_template(): string {
-			return 'views/html-order-matabox-parcel-machines-weekend-cod.php';
+			return 'views/html-order-metabox-parcel-machines-weekend-cod.php';
 		}
 
 		protected static function get_geowidget_method_id(): string {
@@ -166,15 +166,9 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 
 			$shipment_data = array();
 
-			\wc_get_logger()->debug( 'PWW COD TO API: ', array( 'source' => 'pww-cod-log' ) );
-			\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'pww-cod-log' ) );
-
 			try {
 
 				$response = EasyPack_API()->customer_parcel_create( $shipment_array );
-
-				\wc_get_logger()->debug( 'PWW COD API RESP: ', array( 'source' => 'pww-cod-log' ) );
-				\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'pww-cod-log' ) );
 
 				$shipment_data = static::save_to_order_meta(
 					$order_id,
@@ -186,6 +180,13 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend_COD' ) ) {
 				);
 
 			} catch ( Exception $e ) {
+				if ( function_exists( 'wc_get_logger' ) ) {
+					\wc_get_logger()->debug( 'INPOST create shipment Exception: ', array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $order_id, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+				}
+
 				$ret['status']  = 'error';
 				$ret['message'] = esc_html__( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' ) . EasyPack_API()->translate_error( $e->getMessage() );
 			}

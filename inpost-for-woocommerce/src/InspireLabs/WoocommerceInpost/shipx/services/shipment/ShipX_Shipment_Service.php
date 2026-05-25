@@ -46,14 +46,14 @@ class ShipX_Shipment_Service {
 			$shipment->getInternalData()->putStatusHistoryItem( $statusHistoryItem );
 		}
 
-		update_post_meta( $shipment->getInternalData()->getOrderId(), '_shipx_shipment_object', $shipment );
+		//update_post_meta( $shipment->getInternalData()->getOrderId(), '_shipx_shipment_object', $shipment );
 
-		if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
-			$order = wc_get_order( $shipment->getInternalData()->getOrderId() );
-			if ( $order && ! is_wp_error( $order ) ) {
-				$order->update_meta_data( '_shipx_shipment_object', $shipment );
-				$order->save();
-			}
+		$order = wc_get_order( $shipment->getInternalData()->getOrderId() );
+		if ( $order && ! is_wp_error( $order ) ) {
+			$order->update_meta_data( '_shipx_shipment_object', $shipment );
+			$tracking_number = $shipment->getInternalData()->getTrackingNumber();
+			$order->update_meta_data( '_easypack_parcel_tracking', $tracking_number );
+			$order->save();
 		}
 	}
 

@@ -120,175 +120,177 @@ class EasyPackBulkOrders {
 	 * Manage columns
 	 *
 	 * @param string $column $column.
-	 * @param mixed  $post_id   $post_id.
+	 * @param mixed  $order_id   $order_id.
 	 *
 	 * @return void
 	 */
-	public function manage_shop_order_posts_custom_column( string $column, $post_id ) {
+	public function manage_shop_order_posts_custom_column( string $column, $order_id ) {
+
 		if ( 'easypack_shipping_statuses' !== $column ) {
 			return;
 		}
 
-		$inpost_status = '';
-
-		$order = wc_get_order( $post_id );
+		// HPOS list table passes WC_Order; legacy screen passes post ID.
+		if ( $order_id instanceof WC_Order ) {
+			$order    = $order_id;
+			$order_id = $order->get_id();
+		} else {
+			$order_id = absint( $order_id );
+			$order    = wc_get_order( $order_id );
+		}
 
 		if ( ! $order || is_wp_error( $order ) ) {
 			return;
 		}
 
+		// if order was made via Flexible Shipping.
+		$fs_method_name = '';
+
+		$inpost_status         = null;
+		$shipping_instance_id  = '';
+		$shipping_method_id    = '';
+		$shipping_method_title = '';
+		$status_line           = '';
+		$inpost_status         = '';
+		$tracking_number       = '';
+
+		$status = EasyPack_Helper()->get_woo_order_meta( $order_id, '_easypack_status' );
+
 		foreach ( $order->get_shipping_methods() as $shipping_method ) {
-			// if order was made via Flexible Shipping.
-			$fs_method_name = '';
+			$shipping_instance_id  = $shipping_method->get_instance_id();
+			$shipping_method_id    = $shipping_method->get_method_id();
+			$shipping_method_title = $shipping_method->get_method_title();
+		}
 
-			$shipping_instance_id = $shipping_method->get_instance_id();
-			$fs_method_name       = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $shipping_instance_id );
+		$fs_method_name          = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $shipping_instance_id );
+		$shipping_method_changed = EasyPack_Helper()->get_woo_order_meta( $order_id, '_inpost_pl_metabox_shipping_method' );
 
-			if ( 0 === strpos( $shipping_method->get_method_id(), 'easypack_' )
-				|| 0 === strpos( $fs_method_name, 'easypack_' )
-			) {
+		if ( 0 !== strpos( $shipping_method_id, 'easypack_' )
+			&& 0 !== strpos( $fs_method_name, 'easypack_' ) && empty( $shipping_method_changed )
+		) {
+			return;
+		}
 
-				$status = get_post_meta( $post_id, '_easypack_status', true );
+		$status = EasyPack_Helper()->get_woo_order_meta( $order_id, '_easypack_status' );
 
-				if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
-					// HPOS usage is enabled.
-					if ( is_a( $post_id, 'WC_Order' ) ) {
-						$post_id = $post_id->get_id();
-						$status  = isset( get_post_meta( $post_id )['_easypack_status'][0] )
-							? get_post_meta( $post_id )['_easypack_status'][0]
-							: null;
-					}
+		if ( empty( $status ) ) {
+
+			if ( EasyPack_Helper()->is_courier_service_by_id( $shipping_method_id ) ) {
+
+				$courier_parcel_source = EasyPack_Helper()->get_source_of_courier_dimensions( $order_id );
+				$dimensions            = EasyPack_Helper()->get_courier_parcel_dimensions( $order_id, $courier_parcel_source );
+
+				if ( empty( $dimensions['weight'] ) ) {
+					$inpost_status = '<div class="inpost-status-inside-td easypack-alert-status">'
+									. esc_html__( 'Adding of dimensions is required', 'inpost-for-woocommerce' )
+									. ' ('
+									. $shipping_method_title
+									. ')'
+									. '</div>';
+				} else {
+					$inpost_status = '<div class="inpost-status-inside-td">'
+									. esc_html__( 'Not created yet', 'inpost-for-woocommerce' )
+									. ' ('
+									. $shipping_method_title
+									. ')'
+									. '</div>';
+				}
+			} else {
+
+				if ( ! $shipping_method_changed ) {
+					$inpost_status = '<div class="inpost-status-inside-td">'
+									. esc_html__( 'Not created yet', 'inpost-for-woocommerce' )
+									. ' ('
+									. $shipping_method_title
+									. ')'
+									. '</div>';
+				}
+			}
+		} else {
+
+			if ( ! empty( $shipping_method_changed ) ) {
+				$shipping_method_id                  = $shipping_method_changed;
+				$shipping_method_instance_id_changed = EasyPack_Helper()->get_woo_order_meta( $order_id, '_inpost_pl_metabox_shipping_method_instance_id' );
+				if ( ! empty( $shipping_method_instance_id_changed ) ) {
+					$shipping_instance_id = (int) $shipping_method_instance_id_changed;
 				}
 
-				if ( ! empty( $status ) ) {
+				$inpost_methods = EasyPack_Helper()->get_inpost_methods();
 
-					$tracking_url    = EasyPack_Helper()->get_tracking_url();
-					$tracking_number = get_post_meta( $post_id, '_easypack_parcel_tracking', true );
+				foreach ( $inpost_methods as $instance_id => $method ) {
+					if ( $instance_id === $shipping_instance_id ) {
+						$shipping_method_title = $method['user_title'];
+					}
+				}
+			}
 
-					if ( empty( $tracking_number ) ) {
-						$shipment = $order->get_meta( '_shipx_shipment_object' );
+			$tracking_url    = EasyPack_Helper()->get_tracking_url();
+			$tracking_number = EasyPack_Helper()->get_tracking_number_from_meta( $order_id );
 
-						if ( ! $shipment && 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
-							$from_order_meta_raw = isset( get_post_meta( $post_id )['_shipx_shipment_object'][0] )
-								? get_post_meta( $post_id )['_shipx_shipment_object'][0]
-								: '';
+			if ( empty( $tracking_number ) ) {
+				$this->check_tracking_number( $order_id );
+			}
 
-							if ( ! empty( $from_order_meta_raw ) ) {
-								$shipment = unserialize(
-									$from_order_meta_raw,
-									array(
-										'allowed_classes' => array( ShipX_Shipment_Model::class ),
-									)
-								);
-							}
-						}
+			if ( ! empty( $tracking_number ) ) {
+				$print_label_order_id = (string) $order_id;
+				$print_label_icon     = sprintf(
+					'<a href="#" target="_blank" data-id="%1$s" class="get_sticker_action_orders">'
+					. '<span title="%2$s" data-id="%1$s" class="dashicons dashicons-media-spreadsheet"></span>'
+					. '</a>',
+					esc_attr( $print_label_order_id ),
+					esc_attr__( 'Print sticker', 'inpost-for-woocommerce' )
+				);
 
-						if ( is_object( $shipment ) && $shipment instanceof ShipX_Shipment_Model ) {
-							$tracking_number = $shipment->getInternalData()->getTrackingNumber();
-							if ( ! empty( $tracking_number ) ) {
-								update_post_meta( $post_id, '_easypack_parcel_tracking', sanitize_text_field( $tracking_number ) );
-								$order->update_meta_data( '_easypack_parcel_tracking', sanitize_text_field( $tracking_number ) );
-								$order->save();
-							}
+				$link_to_tracking = sprintf(
+					'<a target="_blank" href="%s">%s</a>',
+					$tracking_url . $tracking_number,
+					$tracking_number
+				);
+
+				$additional_packages_notice = '';
+
+				$existed_additional_packages = EasyPack_Helper()->get_saved_additional_packages( $order_id );
+				if ( is_array( $existed_additional_packages ) && ! empty( $existed_additional_packages ) ) {
+					$additional_packages_notice .= esc_html__( 'An additional packages exists', 'inpost-for-woocommerce' );
+					$additional_packages_notice .= ' (' . esc_attr( count( $existed_additional_packages ) ) . ')';
+				}
+
+				$inpost_status = '<div class="inpost-status-inside-td">'
+								. $print_label_icon . ' ' . $shipping_method_title . ' ' . $link_to_tracking
+								. '<br>'
+								. $additional_packages_notice
+								. '</div>';
+
+			} else {
+
+				$shipment_service = EasyPack::EasyPack()->get_shipment_service();
+				if ( is_object( $shipment_service ) ) {
+					$shipment = $shipment_service->get_shipment_by_order_id( $order_id );
+					if ( is_object( $shipment ) && is_object( $shipment->getInternalData() ) ) {
+
+						if ( 'offer_selected' === $shipment->getInternalData()->getStatus() ) {
+
+							$inpost_status = '<div class="inpost-status-inside-td">'
+											. esc_html__( 'The package has not been created! You do not have funds in your Parcel Manager account or a contract for InPost services.', 'inpost-for-woocommerce' )
+											. ' ('
+											. $shipping_method_title
+											. ')'
+											. '</div>';
+
+						} else {
+							$status_desc = $shipment->getInternalData()->getStatusDescription();
+
+							$inpost_status = '<div class="inpost-status-inside-td">'
+											. $status_desc
+											. ' ('
+											. $shipping_method_title
+											. ')'
+											. '</div>';
 						}
 					}
-
-					if ( ! empty( $tracking_number ) ) {
-						$print_label_icon = sprintf(
-							'<a href="#" target="_blank" data-id="%s" class="get_sticker_action_orders">
-                                            <span 
-                                            title="%s" 
-                                            data-id="%s"
-                                            class="dashicons dashicons-media-spreadsheet%s"></span>
-                                            </a>',
-							$post_id,
-							esc_html__( 'Print sticker', 'inpost-for-woocommerce' ),
-							$post_id,
-							''
-						);
-
-						$link_to_tracking = sprintf(
-							'<a target="_blank" href="%s">%s</a>',
-							$tracking_url . $tracking_number,
-							$tracking_number
-						);
-
-						$additional_packages_notice = '';
-
-						$existed_additional_packages = EasyPack_Helper()->get_saved_additional_packages( $post_id );
-						if ( is_array( $existed_additional_packages ) && ! empty( $existed_additional_packages ) ) {
-							$additional_packages_notice .= esc_html__( 'An additional packages exists', 'inpost-for-woocommerce' );
-							$additional_packages_notice .= ' (' . esc_attr( count( $existed_additional_packages ) ) . ')';
-						}
-
-						$inpost_status = '<div class="inpost-status-inside-td">'
-										. $print_label_icon . ' ' . $shipping_method->get_method_title() . ' ' . $link_to_tracking
-										. '<br>'
-										. $additional_packages_notice
-										. '</div>';
-
-					} else {
-
-						$shipment_service = EasyPack::EasyPack()->get_shipment_service();
-						if ( is_object( $shipment_service ) ) {
-							$shipment = $shipment_service->get_shipment_by_order_id( $post_id );
-							if ( is_object( $shipment ) && is_object( $shipment->getInternalData() ) ) {
-
-								if ( 'offer_selected' === $shipment->getInternalData()->getStatus() ) {
-
-									$inpost_status = '<div class="inpost-status-inside-td">'
-										. esc_html_e( 'The package has not been created! You do not have funds in your Parcel Manager account or a contract for InPost services.', 'inpost-for-woocommerce' )
-										. ' ('
-										. $shipping_method->get_method_title()
-										. ')'
-										. '</div>';
-
-								} else {
-									$status_desc = $shipment->getInternalData()->getStatusDescription();
-
-									$inpost_status = '<div class="inpost-status-inside-td">'
-										. $status_desc
-										. ' ('
-										. $shipping_method->get_method_title()
-										. ')'
-										. '</div>';
-								}
-							}
-						}
-					}
-				} elseif ( EasyPack_Helper()->is_courier_service_by_id( $shipping_method->get_method_id() ) ) {
-
-					$courier_parcel_source = EasyPack_Helper()->get_source_of_courier_dimensions( $post_id );
-					$dimensions            = EasyPack_Helper()->get_courier_parcel_dimensions( $post_id, $courier_parcel_source );
-
-					if ( empty( $dimensions['weight'] ) ) {
-						$inpost_status = '<div class="inpost-status-inside-td easypack-alert-status">'
-							. esc_html__( 'Adding of dimensions is required', 'inpost-for-woocommerce' )
-							. ' ('
-							. $shipping_method->get_method_title()
-							. ')'
-							. '</div>';
-					} else {
-
-						$inpost_status = '<div class="inpost-status-inside-td">'
-						. esc_html__( 'Not created yet', 'inpost-for-woocommerce' )
-						. ' ('
-						. $shipping_method->get_method_title()
-						. ')'
-						. '</div>';
-					}
-				} else {
-						$inpost_status = '<div class="inpost-status-inside-td">'
-							. esc_html__( 'Not created yet', 'inpost-for-woocommerce' )
-							. ' ('
-							. $shipping_method->get_method_title()
-							. ')'
-							. '</div>';
 				}
 			}
 		}
-
-		$status_line = '';
 
 		if ( ! empty( $tracking_number ) && 'yes' === get_option( 'easypack_enable_webhooks' ) ) {
 
@@ -379,6 +381,7 @@ class EasyPackBulkOrders {
 	 * @return void
 	 */
 	public function easypack_bulk_create_shipments_callback() {
+
 		if ( ! is_admin() ) {
 			exit;
 		}
@@ -402,79 +405,75 @@ class EasyPackBulkOrders {
 			echo wp_json_encode( $return_content );
 			exit;
 
-		} else {
+		}
 
-			$order_id = sanitize_text_field( $_POST['order_id'] );
+		$order_id = sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
+		$status   = EasyPack_Helper()->get_woo_order_meta( $order_id, '_easypack_status' );
 
-			$status = get_post_meta( $order_id, '_easypack_status', true );
+		if ( ! empty( $status ) ) {
+			$return_content = array(
+				'status'  => 'already_created',
+				'message' => esc_html__( 'Shipment already created', 'inpost-for-woocommerce' ),
+			);
+			echo wp_json_encode( $return_content );
+			exit;
 
-			if ( ! empty( $status ) ) {
+		}
+
+		// detect InPost shipping class we need for each order.
+		$service = '';
+		$order   = wc_get_order( $order_id );
+		foreach ( $order->get_items( 'shipping' ) as $item_id => $item ) {
+			$item_data = $item->get_data();
+			$service   = $item_data['method_id'];
+		}
+
+		$fs_method_name = EasyPack_Helper()->get_woo_order_meta( $order_id, '_fs_easypack_method_name' );
+
+		$is_any_inpost_method                          = ! empty( $service ) && 0 === strpos( $service, 'easypack_' );
+		$is_inpost_method_linked_via_flexible_shipping = ! empty( $service ) && 0 === strpos( $fs_method_name, 'easypack_' );
+		if ( $is_inpost_method_linked_via_flexible_shipping ) {
+			// use InPost method name linked to FS from metadata.
+			$service = $fs_method_name;
+		}
+
+		if ( ! $is_any_inpost_method && ! $is_inpost_method_linked_via_flexible_shipping ) {
+			$return_content = array(
+				'status'  => 'bad',
+				'message' => esc_html__( 'Order was placed with not InPost shipping method', 'inpost-for-woocommerce' ),
+			);
+			echo wp_json_encode( $return_content );
+			exit;
+		}
+
+		if ( 'yes' === get_option( 'easypack_add_order_note' ) ) {
+			$order_note = $order->get_customer_note();
+			if ( ! empty( $order_note ) && ( strlen( $order_note ) > 95 ) ) {
 				$return_content = array(
-					'status'  => 'already_created',
-					'message' => esc_html__( 'Shipment already created', 'inpost-for-woocommerce' ),
+					'status'  => 'bad',
+					'message' => esc_html__( 'Order has too long note, please check it and create shipment from order page.', 'inpost-for-woocommerce' ),
 				);
 				echo wp_json_encode( $return_content );
 				exit;
-
-			} else {
-
-				// detect InPost shipping class we need for each order.
-				$service = '';
-				$order   = wc_get_order( $order_id );
-				foreach ( $order->get_items( 'shipping' ) as $item_id => $item ) {
-					$item_data = $item->get_data();
-					$service   = $item_data['method_id'];
-				}
-
-				$fs_method_name = get_post_meta( $order_id, '_fs_easypack_method_name', true );
-
-				$is_any_inpost_method                          = ! empty( $service ) && 0 === strpos( $service, 'easypack_' );
-				$is_inpost_method_linked_via_flexible_shipping = ! empty( $service ) && 0 === strpos( $fs_method_name, 'easypack_' );
-				if ( $is_inpost_method_linked_via_flexible_shipping ) {
-					// use InPost method name linked to FS from metadata.
-					$service = $fs_method_name;
-				}
-
-				if ( $is_any_inpost_method || $is_inpost_method_linked_via_flexible_shipping ) {
-
-					if ( 'yes' === get_option( 'easypack_add_order_note' ) ) {
-						$order_note = $order->get_customer_note();
-						if ( ! empty( $order_note ) && ( strlen( $order_note ) > 95 ) ) {
-							$return_content = array(
-								'status'  => 'bad',
-								'message' => esc_html__( 'Order has too long note, please check it and create shipment from order page.', 'inpost-for-woocommerce' ),
-							);
-							echo wp_json_encode( $return_content );
-							exit;
-						}
-					}
-
-					$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $service );
-
-					$class_with_namespace = 'InspireLabs\WoocommerceInpost\shipping\\' . $shipping_method_class_name;
-
-					if ( class_exists( $class_with_namespace ) ) {
-						$class_instance = new $class_with_namespace();
-						$class_instance::ajax_create_package();
-
-					} else {
-						$return_content = array(
-							'status'  => 'bad',
-							'message' => esc_html__( 'Order was placed with not InPost shipping method', 'inpost-for-woocommerce' ),
-						);
-						echo wp_json_encode( $return_content );
-						exit;
-					}
-				} else {
-					$return_content = array(
-						'status'  => 'bad',
-						'message' => esc_html__( 'Order was placed with not InPost shipping method', 'inpost-for-woocommerce' ),
-					);
-					echo wp_json_encode( $return_content );
-					exit;
-				}
 			}
 		}
+
+		$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $service );
+
+		$class_with_namespace = 'InspireLabs\WoocommerceInpost\shipping\\' . $shipping_method_class_name;
+
+		if ( ! class_exists( $class_with_namespace ) ) {
+			$return_content = array(
+				'status'  => 'bad',
+				'message' => esc_html__( 'Order was placed with not InPost shipping method', 'inpost-for-woocommerce' ),
+			);
+			echo wp_json_encode( $return_content );
+			exit;
+
+		}
+
+		$class_instance = new $class_with_namespace();
+		$class_instance::ajax_create_package();
 	}
 
 
@@ -513,6 +512,34 @@ class EasyPackBulkOrders {
 					'nonce'   => wp_create_nonce( 'easypack-bulk-actions' ),
 				)
 			);
+		}
+	}
+
+
+	/**
+	 * Checks and saves tracking number from ShipX shipment object to order metadata.
+	 *
+	 * Retrieves the ShipX shipment object from order metadata, extracts the tracking
+	 * number if available, and stores it in the WooCommerce order meta as
+	 * '_easypack_parcel_tracking'. Sanitizes the tracking number before saving.
+	 *
+	 * @param int $order_id The WooCommerce order ID.
+	 *
+	 * @return void Returns early if shipment object is invalid or tracking number is empty.
+	 */
+	public function check_tracking_number( $order_id ) {
+
+		$shipment = EasyPack_Helper()->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
+
+		if ( is_object( $shipment ) && $shipment instanceof ShipX_Shipment_Model ) {
+			$tracking_number = $shipment->getInternalData()->getTrackingNumber();
+			if ( ! empty( $tracking_number ) ) {
+				$wc_order = wc_get_order( $order_id );
+				if ( $wc_order && ! is_wp_error( $wc_order ) ) {
+					$wc_order->update_meta_data( '_easypack_parcel_tracking', sanitize_text_field( $tracking_number ) );
+					$wc_order->save();
+				}
+			}
 		}
 	}
 }

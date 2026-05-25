@@ -80,6 +80,14 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 					self::create_additional_package();
 				}
 
+				if ( 'change_first_package' === $action ) {
+					self::change_first_package();
+				}
+
+				if ( 'inpost_pl_metabox_paczkomat' === $action ) {
+					self::save_order_metabox_paczkomat();
+				}
+
 				if ( 'dispatch_point' === $action ) {
 					self::dispatch_point();
 				}
@@ -206,12 +214,18 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 		 * @return void
 		 */
 		public static function dispatch_point() {
-			$dispatch_point_name = sanitize_text_field( $_POST['dispatch_point_name'] );
-			try {
-				$dispatch_point = EasyPack_API()->dispatch_point( $dispatch_point_name );
-				echo wp_json_encode( $dispatch_point );
-			} catch ( Exception $e ) {
-				echo 0;
+
+			$dispatch_point_name = isset( $_POST['dispatch_point_name'] )
+					? sanitize_text_field( wp_unslash( $_POST['dispatch_point_name'] ) )
+					: '';
+
+			if ( ! empty( $dispatch_point_name ) ) {
+				try {
+					$dispatch_point = EasyPack_API()->dispatch_point( $dispatch_point_name );
+					echo wp_json_encode( $dispatch_point );
+				} catch ( Exception $e ) {
+					echo 0;
+				}
 			}
 			wp_die();
 		}
@@ -419,8 +433,23 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 		 * @return void
 		 */
 		public static function create_additional_package() {
-			$shipping_method = sanitize_text_field( $_POST['easypack_additional_package_method_id'] );
-			$order_id        = sanitize_text_field( $_POST['order_id'] );
+
+			$shipping_method = isset( $_POST['easypack_additional_package_method_id'] )
+					? sanitize_text_field( wp_unslash( $_POST['easypack_additional_package_method_id'] ) )
+					: '';
+			$order_id        = isset( $_POST['order_id'] )
+					? sanitize_text_field( wp_unslash( $_POST['order_id'] ) )
+					: '';
+
+			if ( empty( $shipping_method ) || empty( $order_id ) ) {
+				$return_content = array(
+					'status'  => 'bad',
+					'message' => esc_html__( 'Empty shipping method or order_id', 'inpost-for-woocommerce' ),
+				);
+				echo wp_json_encode( $return_content );
+				wp_die();
+			}
+
 			try {
 
 				$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $shipping_method );
@@ -446,6 +475,87 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 
 					$ret['content'] = $class_instance::order_metabox_content( get_post( $order_id ), false, null, true );
 					$ret['status']  = 'ok';
+
+					echo wp_json_encode( $ret );
+					wp_die();
+
+				} else {
+					$return_content = array(
+						'status'  => 'bad',
+						'message' => esc_html__( 'Error occured', 'inpost-for-woocommerce' ),
+					);
+					echo wp_json_encode( $return_content );
+					wp_die();
+				}
+			} catch ( Exception $e ) {
+				echo 0;
+			}
+			wp_die();
+		}
+
+
+		/**
+		 * Change metabox output for order metabox
+		 *
+		 * @return void
+		 */
+		public static function change_first_package() {
+
+			$shipping_method_instance_id = sanitize_text_field( wp_unslash( $_POST['easypack_change_first_shipment_method_id'] ) );
+			$order_id                    = sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
+
+			if ( empty( $shipping_method_instance_id ) || empty( $order_id ) ) {
+				$return_content = array(
+					'status'  => 'bad',
+					'message' => esc_html__( 'Empty order_id or selected InPost method', 'inpost-for-woocommerce' ),
+				);
+				echo wp_json_encode( $return_content );
+				wp_die();
+			}
+
+			try {
+
+				$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $shipping_method_instance_id );
+
+				$inpost_method_name = null;
+
+				if ( empty( $shipping_method_class_name ) ) {
+					$inpost_method_name         = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $shipping_method_instance_id );
+					$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $inpost_method_name );
+				}
+
+				if ( empty( $shipping_method_class_name ) ) {
+					$return_content = array(
+						'status'  => 'bad',
+						'message' => esc_html__( 'Shipping method not found', 'inpost-for-woocommerce' ),
+					);
+					echo wp_json_encode( $return_content );
+					wp_die();
+				}
+
+				$class_with_namespace = 'InspireLabs\WoocommerceInpost\shipping\\' . $shipping_method_class_name;
+
+				if ( class_exists( $class_with_namespace ) ) {
+					$class_instance = new $class_with_namespace();
+
+					$ret['content'] = $class_instance::order_metabox_content( get_post( $order_id ), false, null );
+					$ret['status']  = 'ok';
+
+					if ( is_numeric( $shipping_method_instance_id ) ) {
+						if ( class_exists( 'WC_Shipping_Zones' ) ) {
+							$shipping_method = \WC_Shipping_Zones::get_shipping_method( $shipping_method_instance_id );
+							// Get the shipping method ID from the instance object.
+							if ( $shipping_method ) {
+								$shipping_method_id = $shipping_method->id;
+								$order              = wc_get_order( $order_id );
+								if ( $order ) {
+									$order->update_meta_data( '_inpost_pl_metabox_shipping_method_instance_id', $shipping_method_instance_id );
+									$order->update_meta_data( '_inpost_pl_metabox_shipping_method', $shipping_method_id );
+									$order->save();
+								}
+							}
+						}
+					}
 
 					echo wp_json_encode( $ret );
 					wp_die();
@@ -582,6 +692,49 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 				}
 				$order->save();
 				wp_send_json_success( 'locker_updated' );
+			}
+
+			wp_send_json_error();
+		}
+
+
+		/**
+		 * Saves selected InPost parcel locker code to order metadata via AJAX.
+		 *
+		 * Validates nonce and user permissions before processing. Retrieves parcel locker
+		 * code and order ID from POST data, sanitizes inputs, and updates order metadata.
+		 * Sends JSON success response on successful save, error response otherwise.
+		 *
+		 * @return void Outputs JSON response and terminates execution. Returns early if validation fails or required data is missing.
+		 */
+		public static function save_order_metabox_paczkomat() {
+
+			check_ajax_referer( 'easypack_nonce', 'security' );
+
+			$can_update_services = is_admin() && ( current_user_can( 'manage_woocommerce' ) || current_user_can( 'manage_options' ) );
+
+			if ( ! $can_update_services ) {
+				wp_send_json_error();
+			}
+
+			if ( empty( $_POST['point_code'] ) || empty( $_POST['order_id'] ) ) {
+				return;
+			}
+
+			$order_id = sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
+
+			$order = wc_get_order( $order_id );
+
+			if ( ! $order || is_wp_error( $order ) ) {
+				return;
+			}
+
+			$paczkomat_id = sanitize_text_field( wp_unslash( $_POST['point_code'] ) );
+
+			if ( ! empty( $paczkomat_id ) ) {
+				$order->update_meta_data( '_parcel_machine_id', $paczkomat_id );
+				$order->save();
+				wp_send_json_success( 'point locker code saved' );
 			}
 
 			wp_send_json_error();
