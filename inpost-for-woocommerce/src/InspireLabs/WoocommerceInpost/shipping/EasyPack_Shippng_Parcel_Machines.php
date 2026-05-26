@@ -38,6 +38,8 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		const SERVICE_ID = ShipX_Shipment_Model::SERVICE_INPOST_LOCKER_STANDARD;
 
 		const NONCE_ACTION = self::SERVICE_ID;
+		
+		const SHIPPING_METHOD_ID = 'easypack_parcel_machines';
 
 		static $prevent_duplicate = array();
 
@@ -1017,7 +1019,12 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				}
 			} else {
 
-				if ( $order->has_shipping_method( $this->id ) || $fs_method_name === $this->id ) {
+				$shipping_method_used_in_order = 'easypack_parcel_machines';
+                foreach (  $order->get_shipping_methods() as $shipping_method ) {
+                    $shipping_method_used_in_order = $shipping_method->get_method_id();
+                }
+
+				if ( $shipping_method_used_in_order === $class_obj->id || $fs_method_name === $class_obj->id ) {
 					$is_inpost_order = true;
 					$class_obj       = $this;
 					$metabox_logo    = $this->get_logo();
