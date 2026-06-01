@@ -648,9 +648,18 @@ jQuery( document ).ready(
 
 						let nearest_point_selected = jQuery( this_btn ).attr( 'data-id' );
 
+						let order_key = '';
+						try {
+							let params = new URLSearchParams( window.location.search );
+							order_key = params.get( 'key' ) || '';
+						} catch (e) {
+							order_key = '';
+						}
+
 						let data = {
 							action: 'update_locker_from_typ_page',
 							order_id: jQuery( '#inpost-pl-related-data-order' ).val(),
+							order_key: order_key,
 							inpost_pl_locker: nearest_point_selected,
 							inpost_pl_locker_desc: jQuery( this_btn ).attr( 'data-address-id' ),
 							security: easypack_front_map.security

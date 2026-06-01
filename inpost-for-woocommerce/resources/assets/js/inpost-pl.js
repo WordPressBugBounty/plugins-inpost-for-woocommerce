@@ -191,12 +191,21 @@ function inpost_pl_select_point_callback(point) {
 
 	if( is_need_write_missed_locker ) {
 
+		let order_key = '';
+		try {
+			let params = new URLSearchParams( window.location.search );
+			order_key = params.get( 'key' ) || '';
+		} catch (e) {
+			order_key = '';
+		}
+
 		let preloader_gif = inpost_pl_map.preloader;
 		let preloader = '<span class="inpost-pl-typ-preloader"><img src="' + preloader_gif + '" alt="inpost-pl-typ-preloader"></span>';
 
 		let data = {
 			action: 'update_locker_from_typ_page',
 			order_id: jQuery('#inpost-pl-typ-map-data').attr('data-id'),
+			order_key: order_key,
 			inpost_pl_locker: point_name,
 			inpost_pl_locker_desc: parcelMachineAddressDesc,
 			security: inpost_pl_map.security

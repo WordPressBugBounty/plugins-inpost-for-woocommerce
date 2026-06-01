@@ -661,29 +661,30 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 
 			check_ajax_referer( 'easypack_nonce', 'security' );
 
-			$order_id               = null;
-			$full_point_description = array();
-			$new_locker             = null;
-			$locker_desc            = null;
-			$locker_data            = array();
-
-			if ( empty( $_POST['inpost_pl_locker'] ) || empty( $_POST['order_id'] ) ) {
-				return;
+			if ( empty( $_POST['inpost_pl_locker'] ) || empty( $_POST['order_id'] ) || empty( $_POST['order_key'] ) ) {
+				wp_send_json_error( 'missing_params' );
 			}
 
-			$order_id = sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
-
-			$order = wc_get_order( $order_id );
+			$order_id  = (int) wp_unslash( $_POST['order_id'] );
+			$order_key = sanitize_text_field( wp_unslash( $_POST['order_key'] ) );
+			$order     = wc_get_order( $order_id );
 
 			if ( ! $order || is_wp_error( $order ) ) {
-				return;
+				wp_send_json_error( 'invalid_order' );
+			}
+
+			if ( ! hash_equals( (string) $order->get_order_key(), (string) $order_key ) ) {
+				wp_send_json_error( 'forbidden' );
+			}
+
+			if ( ! in_array( $order->get_status(), array( 'pending', 'processing', 'on-hold' ), true ) ) {
+				wp_send_json_error( 'order_finalised' );
 			}
 
 			$new_locker = sanitize_text_field( wp_unslash( $_POST['inpost_pl_locker'] ) );
-
-			if ( ! empty( $_POST['inpost_pl_locker_desc'] ) ) {
-				$locker_desc = sanitize_text_field( wp_unslash( $_POST['inpost_pl_locker_desc'] ) );
-			}
+			$locker_desc = ! empty( $_POST['inpost_pl_locker_desc'] )
+				? sanitize_text_field( wp_unslash( $_POST['inpost_pl_locker_desc'] ) )
+				: null;
 
 			if ( ! empty( $new_locker ) ) {
 				$order->update_meta_data( '_parcel_machine_id', $new_locker );
@@ -694,7 +695,7 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 				wp_send_json_success( 'locker_updated' );
 			}
 
-			wp_send_json_error();
+			wp_send_json_error( 'invalid_locker' );
 		}
 
 
