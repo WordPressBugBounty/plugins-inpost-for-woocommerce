@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: InPost for WooCommerce 1.5.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/inpost-for-woocommerce\n"
 "POT-Creation-Date: 2018-08-24 13:01:34+00:00\n"
-"PO-Revision-Date: 2026-05-22 16:04+0200\n"
+"PO-Revision-Date: 2026-06-08 10:06+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -2505,3 +2505,134 @@ msgstr "Kwota ubezpieczenia powinna być większa lub równa kwocie pobrania"
 
 msgid "Chosen send method is not available for this service"
 msgstr "Wybrany sposób nadania nie jest dostępny dla tej usługi"
+
+msgid "Recipient phone is required"
+msgstr "Numer telefonu odbiorcy wymagany"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "InPost labels"
+msgstr "Etykiety InPost"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Selected %d orders."
+msgstr "Zaznaczono %d zamówień."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Labels downloaded for %d orders."
+msgstr "Etykiety pobrane dla %d zamówień."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "An error occurred for orders %s (see details in the table)."
+msgstr "Dla zamówień %s wystąpił błąd (szczegóły w tabeli)."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Labels were not downloaded."
+msgstr "Etykiety nie zostały pobrane."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Order %1$s returned an error: %2$s"
+msgstr "Zamówienie %1$s zwróciło błąd: %2$s"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Remove this order from selection and try again without it."
+msgstr "Usuń to zamówienie z zaznaczonych i spróbuj ponownie bez niego."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Download labels archive"
+msgstr "Pobierz archiwum z etykietami"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Download PDF"
+msgstr "Pobierz PDF"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Close"
+msgstr "Zamknij"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "No orders selected."
+msgstr "Nie wybrano żadnych zamówień."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "No orders ready for label download."
+msgstr "Brak zamówień gotowych do pobrania etykiet."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Unknown API error."
+msgstr "Nieznany błąd API."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Orders %s were placed without InPost shipping method."
+msgstr "Zamówienia %s zostały złożone z pominięciem metody wysyłki InPost."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Orders %s are not ready for label download yet (see details in the table)."
+msgstr "Zamówienia %s nie są jeszcze gotowe do pobrania etykiet (szczegóły w tabeli)."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Label availability period has expired."
+msgstr "Termin dostępności etykiety wygasł."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Error key: %s"
+msgstr "Kod błędu: %s"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Order %1$s – %2$s"
+msgstr "Zamówienie %1$s – %2$s"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Shipment %1$s – %2$s"
+msgstr "Przesyłka %1$s – %2$s"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
+msgid "Height is too small"
+msgstr "Wysokość jest zbyt mała"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
+msgid "Length is too small"
+msgstr "Długość jest zbyt mała"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
+msgid "Width is too small"
+msgstr "Szerokość jest zbyt mała"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
+msgid "Weight is too small"
+msgstr "Waga jest zbyt mała"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
+msgid "Height is required"
+msgstr "Wysokość jest wymagana"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
+msgid "Length is required"
+msgstr "Długość jest wymagana"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
+msgid "Width is required"
+msgstr "Szerokość jest wymagana"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
+msgid "Weight is required"
+msgstr "Waga jest wymagana"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
+msgid "Height is too large"
+msgstr "Wysokość jest zbyt duża"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
+msgid "Length is too large"
+msgstr "Długość jest zbyt duża"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
+msgid "Width is too large"
+msgstr "Szerokość jest zbyt duża"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
+msgid "Weight is too large"
+msgstr "Waga jest zbyt duża"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
+msgid "Parcel dimensions: %s"
+msgstr "Wymiary paczki: %s"

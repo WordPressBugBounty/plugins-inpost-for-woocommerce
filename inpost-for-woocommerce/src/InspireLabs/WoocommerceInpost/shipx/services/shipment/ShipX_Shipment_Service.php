@@ -63,7 +63,13 @@ class ShipX_Shipment_Service {
 	 * @return ShipX_Shipment_Model|null
 	 */
 	public function get_shipment_by_order_id( $order_id ) {
+		
 		$order           = wc_get_order( $order_id );
+		
+		if ( ! $order ) {
+			return null;
+		}
+		
 		$from_order_meta = null;
 
 		$from_order_meta = $order->get_meta( '_shipx_shipment_object' );

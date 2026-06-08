@@ -190,6 +190,138 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 		}
 
 
+		/**
+		 * Known parcel dimension validation fragments from ShipX API.
+		 *
+		 * @param string $fragment Error fragment, e.g. "length too small".
+		 *
+		 * @return string|null Translated fragment or null if unknown.
+		 */
+		private function translate_dimension_error_fragment( $fragment ) {
+			$fragment = strtolower( trim( $fragment ) );
+
+			$fragments = array(
+				'height too small'        => __( 'Height is too small', 'inpost-for-woocommerce' ),
+				'length too small'        => __( 'Length is too small', 'inpost-for-woocommerce' ),
+				'width too small'         => __( 'Width is too small', 'inpost-for-woocommerce' ),
+				'weight amount too small' => __( 'Weight is too small', 'inpost-for-woocommerce' ),
+				'height required'         => __( 'Height is required', 'inpost-for-woocommerce' ),
+				'length required'         => __( 'Length is required', 'inpost-for-woocommerce' ),
+				'width required'          => __( 'Width is required', 'inpost-for-woocommerce' ),
+				'weight amount required'  => __( 'Weight is required', 'inpost-for-woocommerce' ),
+				'height too large'        => __( 'Height is too large', 'inpost-for-woocommerce' ),
+				'length too large'        => __( 'Length is too large', 'inpost-for-woocommerce' ),
+				'width too large'         => __( 'Width is too large', 'inpost-for-woocommerce' ),
+				'weight amount too large' => __( 'Weight is too large', 'inpost-for-woocommerce' ),
+			);
+
+			if ( isset( $fragments[ $fragment ] ) ) {
+				return $fragments[ $fragment ];
+			}
+
+			foreach ( $fragments as $needle => $translation ) {
+				if ( false !== strpos( $fragment, $needle ) ) {
+					return $translation;
+				}
+			}
+
+			return null;
+		}
+
+		/**
+		 * Translate a single API line about parcel dimensions.
+		 *
+		 * @param string $line Raw API error line.
+		 *
+		 * @return string
+		 */
+		private function translate_dimension_error_line( $line ) {
+			$line = trim( $line );
+
+			if ( '' === $line ) {
+				return '';
+			}
+
+			if ( preg_match( '/^parcels\s+\S+\s+\S+\s+dimensions\s+(.+)$/i', $line, $matches ) ) {
+				$fragment = $this->translate_dimension_error_fragment( $matches[1] );
+
+				if ( null !== $fragment ) {
+					return sprintf(
+						/* translators: %s: dimension validation error. */
+						__( 'Parcel dimensions: %s', 'inpost-for-woocommerce' ),
+						$fragment
+					);
+				}
+			}
+
+			$fragment = $this->translate_dimension_error_fragment( $line );
+
+			if ( null !== $fragment ) {
+				return $fragment;
+			}
+
+			return $line;
+		}
+
+		/**
+		 * Translate multiline parcel dimension errors from ShipX API.
+		 *
+		 * @param string $error Raw API error message.
+		 *
+		 * @return string|null Translated message or null when not a dimension error.
+		 */
+		private function translate_multiline_dimension_errors( $error ) {
+			$markers = array(
+				'too small',
+				'too large',
+				'dimensions',
+				'height required',
+				'length required',
+				'width required',
+				'weight amount',
+			);
+
+			$is_dimension_error = false;
+
+			foreach ( $markers as $marker ) {
+				if ( false !== stripos( $error, $marker ) ) {
+					$is_dimension_error = true;
+					break;
+				}
+			}
+
+			if ( ! $is_dimension_error ) {
+				return null;
+			}
+
+			$lines            = preg_split( '/\R/', $error );
+			$translated_lines = array();
+			$translated_any   = false;
+
+			foreach ( $lines as $line ) {
+				$line = trim( $line );
+
+				if ( '' === $line ) {
+					continue;
+				}
+
+				$translated_line = $this->translate_dimension_error_line( $line );
+
+				if ( $translated_line !== $line ) {
+					$translated_any = true;
+				}
+
+				$translated_lines[] = $translated_line;
+			}
+
+			if ( ! $translated_any || empty( $translated_lines ) ) {
+				return null;
+			}
+
+			return implode( PHP_EOL, $translated_lines );
+		}
+
+
 		public function translate_error( $error ) {
 
 			$error = trim( $error );
@@ -204,6 +336,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				'receiver_email'                       => __( 'Recipient e-mail', 'inpost-for-woocommerce' ),
 				'forbidden'                            => __( 'forbidden', 'inpost-for-woocommerce' ),
 				'receiver_phone'                       => __( 'Recipient phone', 'inpost-for-woocommerce' ),
+				'receiver phone required'              => __( 'Recipient phone is required', 'inpost-for-woocommerce' ),
 				'address'                              => __( 'Address', 'inpost-for-woocommerce' ),
 				'phone'                                => __( 'Phone', 'inpost-for-woocommerce' ),
 				'email'                                => __( 'Email', 'inpost-for-woocommerce' ),
@@ -259,6 +392,12 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 			if ( isset( $errors[ $error ] ) ) {
 				return $errors[ $error ];
+			}
+
+			$dimension_error = $this->translate_multiline_dimension_errors( $error );
+
+			if ( null !== $dimension_error ) {
+				return $dimension_error;
 			}
 
 			return $error;

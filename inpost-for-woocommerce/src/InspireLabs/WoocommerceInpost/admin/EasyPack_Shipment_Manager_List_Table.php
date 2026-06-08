@@ -107,6 +107,25 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) {
 		 *
 		 * @return bool
 		 */
+		/**
+		 * Refresh shipment status from API when local copy may be stale.
+		 * Must run before filter matching so status filters (e.g. confirmed) work.
+		 *
+		 * @param ShipX_Shipment_Model           $shipment        Shipment.
+		 * @param ShipX_Shipment_Status_Service $status_service Status service.
+		 */
+		private function refresh_shipment_status_if_needed( ShipX_Shipment_Model $shipment, ShipX_Shipment_Status_Service $status_service ) {
+			$maybe_update_statuses = array(
+				'created',
+				'offers_prepared',
+				'offer_selected',
+			);
+
+			if ( in_array( $shipment->getInternalData()->getStatus(), $maybe_update_statuses, true ) ) {
+				$status_service->refreshStatus( $shipment );
+			}
+		}
+
 		private function isShipmentMatchedToFilters( ShipX_Shipment_Model $shipment ) {
 			$send_method = EasyPack_Shipment_Manager::getSendingMethodFilterFromRequest();
 
@@ -426,6 +445,8 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) {
 					$status_service->refreshStatus( $shipment );
 				}
 
+				$this->refresh_shipment_status_if_needed( $shipment, $status_service );
+
 				if ( false === $this->isShipmentMatchedToFilters( $shipment ) ) {
 					continue;
 				}
@@ -468,16 +489,6 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) {
 						);
 
 						$current_inpost_api_status = $shipment->getInternalData()->getStatus();
-
-						$maybe_update_statuses = array(
-							'created',
-							'offers_prepared',
-							'offer_selected',
-						);
-						if ( in_array( $current_inpost_api_status, $maybe_update_statuses, true ) ) {
-							$status_service->refreshStatus( $shipment );
-							$current_inpost_api_status = $shipment->getInternalData()->getStatus();
-						}
 
 						$data['status'] = $shipment->getInternalData()->getStatusTitle() . ' (' . $current_inpost_api_status . ')';
 						/*
@@ -637,6 +648,8 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) {
 						$status_service->refreshStatus( $shipment );
 					}
 
+					$this->refresh_shipment_status_if_needed( $shipment, $status_service );
+
 					if ( false === $this->isShipmentMatchedToFilters( $shipment ) ) {
 						continue;
 					}
@@ -680,16 +693,6 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) {
 							);
 
 							$current_inpost_api_status = $shipment->getInternalData()->getStatus();
-
-							$maybe_update_statuses = array(
-								'created',
-								'offers_prepared',
-								'offer_selected',
-							);
-							if ( in_array( $current_inpost_api_status, $maybe_update_statuses, true ) ) {
-								$status_service->refreshStatus( $shipment );
-								$current_inpost_api_status = $shipment->getInternalData()->getStatus();
-							}
 
 							$data['status'] = $shipment->getInternalData()->getStatusTitle() . ' (' . $current_inpost_api_status . ')';
 

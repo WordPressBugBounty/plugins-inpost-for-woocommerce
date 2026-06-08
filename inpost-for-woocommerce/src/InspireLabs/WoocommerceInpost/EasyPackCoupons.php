@@ -110,7 +110,7 @@ class EasyPackCoupons
 
         // only on edit coupon page.
         if ( is_a( $current_screen, 'WP_Screen' ) && 'shop_coupon' === $current_screen->id ) {
-            $plugin_data = new EasyPack();
+            $plugin_data = EasyPack::EasyPack();
 
             $coupons_js_path     =WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/easypack-coupons.js';
             $coupons_js_path_ver = file_exists( $coupons_js_path ) ? filemtime( $coupons_js_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;

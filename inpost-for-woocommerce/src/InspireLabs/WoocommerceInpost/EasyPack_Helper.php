@@ -167,12 +167,32 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 						\wc_get_logger()->debug( 'API response: ', array( 'source' => 'inpost-label-log' ) );
 						\wc_get_logger()->debug( print_r( $results, true ), array( 'source' => 'inpost-label-log' ) );
 
-						echo wp_json_encode(
-							array(
-								'status'  => isset( $results['status'] ) ? $results['status'] : 'Błąd',
-								'details' => isset( $results['details'] ) ? $results['details'] : 'Opóźnienie odpowiedzi API - odśwież stronę i spróbuj ponownie (lub później)',
-							)
+						$error_payload = array(
+							'status'  => isset( $results['status'] ) ? $results['status'] : 'Błąd',
+							'details' => isset( $results['details'] ) ? $results['details'] : 'Opóźnienie odpowiedzi API - odśwież stronę i spróbuj ponownie (lub później)',
 						);
+
+						if ( isset( $results['message'] ) ) {
+							$error_payload['message'] = $results['message'];
+						}
+
+						if ( isset( $results['error'] ) ) {
+							$error_payload['error'] = $results['error'];
+						}
+
+						$shipment_id = null;
+						if ( isset( $results['details'] ) && is_array( $results['details'] ) && isset( $results['details']['shipment_id'] ) ) {
+							$shipment_id = $results['details']['shipment_id'];
+						}
+
+						if ( null !== $shipment_id && is_array( $orders ) ) {
+							$resolved_order_id = $this->resolve_order_id_by_inpost_shipment_id( $shipment_id, $orders );
+							if ( $resolved_order_id ) {
+								$error_payload['order_id'] = $resolved_order_id;
+							}
+						}
+
+						echo wp_json_encode( $error_payload );
 					}
 					return;
 
@@ -985,6 +1005,51 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		 * @param array $arr $arr.
 		 * @return array
 		 */
+		/**
+		 * Resolve WooCommerce order ID by InPost shipment ID.
+		 *
+		 * @param int|string $shipment_id InPost shipment ID from API error/details.
+		 * @param array      $order_ids   Order IDs included in the bulk labels request.
+		 *
+		 * @return int|null
+		 */
+		public function resolve_order_id_by_inpost_shipment_id( $shipment_id, array $order_ids ) {
+			$shipment_id      = (string) $shipment_id;
+			$shipment_service = EasyPack()->get_shipment_service();
+
+			foreach ( $order_ids as $order_id ) {
+				$order_id = absint( $order_id );
+				if ( ! $order_id ) {
+					continue;
+				}
+
+				$inpost_internal_data = $shipment_service->get_shipment_by_order_id( $order_id );
+				if ( $inpost_internal_data && is_object( $inpost_internal_data ) ) {
+					$inpost_id = $inpost_internal_data->getInternalData()->getInpostId();
+					if ( ! empty( $inpost_id ) && (string) $inpost_id === $shipment_id ) {
+						return $order_id;
+					}
+				}
+
+				$additional_packages = $this->get_saved_additional_packages( $order_id );
+				if ( is_array( $additional_packages ) && ! empty( $additional_packages ) ) {
+					foreach ( $additional_packages as $additional_package ) {
+						if ( ! is_array( $additional_package ) ) {
+							continue;
+						}
+						foreach ( $additional_package as $data ) {
+							if ( isset( $data['inpost_id'] ) && (string) $data['inpost_id'] === $shipment_id ) {
+								return $order_id;
+							}
+						}
+					}
+				}
+			}
+
+			return null;
+		}
+
+
 		public function validate_order_ids_before_get_labels_from_api( array $arr ): array {
 			// we need validate chosen orders if they already has status which is allowing to get labels.
 			$validated_ids = array();

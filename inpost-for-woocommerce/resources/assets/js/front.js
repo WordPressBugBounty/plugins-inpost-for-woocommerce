@@ -296,8 +296,8 @@ jQuery( document ).ready(
 					function (index, input) {
 						if ( selector === jQuery( input ).val() ) {
 							shipping_option_input = input;
-							console.log( "Inpost PL: shipping option input" );
-							console.log( shipping_option_input );
+							//console.log( "Inpost PL: shipping option input" );
+							//console.log( shipping_option_input );
 						}
 					}
 				);
@@ -307,8 +307,8 @@ jQuery( document ).ready(
 				easypack_front_map.button_text1 + '</div>';
 			if ( shipping_option_input ) {
 				li_parent = jQuery( shipping_option_input ).closest( 'li' );
-				console.log( "Inpost PL: li_parent" );
-				console.log( li_parent );
+				//console.log( "Inpost PL: li_parent" );
+				//console.log( li_parent );
 			}
 
 			if ( method.indexOf( 'easypack_parcel_machines' ) !== -1 ) {
@@ -590,6 +590,21 @@ jQuery( document ).ready(
 					if (target.getAttribute( 'name' ) === 'shipping_method[0]') {
 						localStorage.setItem( 'EasyPackPointObject', null );
 						console.log( 'reset local storage value' );
+						jQuery('input[name=parcel_machine_desc]').each(
+							function (ind, elem) {
+								jQuery(elem).val('');
+							}
+						);
+						jQuery('input[name=parcel_machine_id]').each(
+							function (ind, elem) {
+								jQuery(elem).val('');
+							}
+						);
+						jQuery('*[id*=selected-parcel-machine-id]').each(
+							function (ind, elem) {
+								jQuery(elem).html('');
+							}
+						);
 					}
 				}
 			}

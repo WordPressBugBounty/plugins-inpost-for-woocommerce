@@ -37,21 +37,34 @@ class EasyPackWooBlocks implements IntegrationInterface {
 	 */
 	public function initialize() {
 
-		$plugin_data = new EasyPack();
+		$plugin_data = EasyPack::EasyPack();
 		$script_url  = $plugin_data->getPluginJs() . 'build/inpostpl-block-frontend.js';
+		$script_path = WOOCOMMERCE_INPOST_PLUGIN_DIR . 'resources/assets/js/build/inpostpl-block-frontend.js';
+		$asset_path  = WOOCOMMERCE_INPOST_PLUGIN_DIR . 'resources/assets/js/build/inpostpl-block-frontend.asset.php';
 
-		$dep = array(
-			'dependencies' => array( 'wc-settings', 'wp-data', 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n', 'wp-primitives' ),
-			'version'      => WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
+		$script_asset = array(
+			'dependencies' => array(
+				'react',
+				'wc-blocks-checkout',
+				'wp-data',
+				'wp-element',
+				'wp-i18n',
+			),
+			'version'        => WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
 		);
 
-		$script_asset = $dep;
+		if ( is_readable( $asset_path ) ) {
+			$asset = require $asset_path;
+			if ( is_array( $asset ) ) {
+				$script_asset = wp_parse_args( $asset, $script_asset );
+			}
+		}
 
 		wp_register_script(
 			'inpost-pl-wc-blocks-integration',
 			$script_url,
 			$script_asset['dependencies'],
-			$script_asset['version'],
+			$this->get_file_version( $script_path ),
 			true
 		);
 

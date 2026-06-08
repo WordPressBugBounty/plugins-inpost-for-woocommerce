@@ -73,6 +73,10 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 		public static function ajax_easypack(): void {
 			check_ajax_referer( 'easypack_nonce', 'security' );
 
+			if ( ! self::user_can_manage_inpost_admin_actions() ) {
+				wp_send_json_error( 'forbidden', 403 );
+			}
+
 			if ( isset( $_POST['easypack_action'] ) ) {
 				$action = sanitize_text_field( wp_unslash( $_POST['easypack_action'] ) );
 
@@ -625,6 +629,10 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 
 			check_ajax_referer( 'easypack-shipment-manager', 'nonce' );
 
+			if ( ! self::user_can_manage_inpost_admin_actions() ) {
+				wp_die( esc_html__( 'Sorry, you are not allowed to do that.', 'inpost-for-woocommerce' ), 403 );
+			}
+
 			$orders = isset( $_POST['parcels'] ) ? (array) $_POST['parcels'] : array();
 			$orders = array_map( 'sanitize_text_field', $orders );
 
@@ -739,6 +747,19 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 			}
 
 			wp_send_json_error();
+		}
+
+		/**
+		 * Whether the current user may run admin-only InPost AJAX (orders, shipments, labels).
+		 *
+		 * Not used for nopriv handlers (e.g. update_locker_from_typ_page, save_to_wc_session).
+		 *
+		 * @return bool
+		 */
+		private static function user_can_manage_inpost_admin_actions(): bool {
+			return current_user_can( 'manage_woocommerce' )
+				|| current_user_can( 'edit_shop_orders' )
+				|| current_user_can( 'manage_options' );
 		}
 	}
 

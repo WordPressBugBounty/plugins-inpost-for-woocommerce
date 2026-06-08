@@ -101,7 +101,7 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 		$args = array(
 			'post_type'      => 'product',
 			'post_status'    => 'publish',
-			'posts_per_page' => -1,
+			'posts_per_page' => 1,
 			'fields'         => 'ids',
 		);
 
@@ -425,7 +425,7 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 		<div class="wrap">
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 			<?php
-			$plugin_data = new EasyPack();
+			$plugin_data = EasyPack::EasyPack();
 			$img         = $plugin_data->getPluginImages() . '/gabarytABC.jpg';
 			?>
 

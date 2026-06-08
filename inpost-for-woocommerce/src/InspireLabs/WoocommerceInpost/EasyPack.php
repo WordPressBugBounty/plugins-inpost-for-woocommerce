@@ -1173,7 +1173,7 @@ class EasyPack extends inspire_Plugin4 {
 
 		if ( is_a( $current_screen, 'WP_Screen' ) && 'inpost_page_easypack_product_settings' === $current_screen->id ) {
 
-			$plugin_data            = new EasyPack();
+			$plugin_data            = EasyPack::EasyPack();
 			$product_table_css_path = dirname( WOOCOMMERCE_INPOST_PLUGIN_FILE ) . '/resources/assets/css/product-table.css';
 
 			$product_table_script     = dirname( WOOCOMMERCE_INPOST_PLUGIN_FILE ) . '/resources/js/product-table.js';

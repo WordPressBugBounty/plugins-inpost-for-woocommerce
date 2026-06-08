@@ -67,3 +67,106 @@
     border-top: 5px solid #333;
 }
 /* End status bar */
+
+/* Bulk action: highlight order rows where shipment creation failed */
+tr.inpost-pl-bulk-row-error > th,
+tr.inpost-pl-bulk-row-error > td {
+    background-color: #f5c4c4 !important;
+}
+
+/* Labels result popup */
+.inpost-pl-bulk-labels-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 100100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.inpost-pl-bulk-labels-popup__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.inpost-pl-bulk-labels-popup__dialog {
+    position: relative;
+    z-index: 1;
+    width: min(520px, calc(100vw - 40px));
+    max-height: calc(100vh - 40px);
+    overflow: auto;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    padding: 20px 24px;
+}
+
+.inpost-pl-bulk-labels-popup__title {
+    margin: 0 0 14px;
+    font-size: 18px;
+    line-height: 1.3;
+}
+
+.inpost-pl-bulk-labels-popup__body {
+    margin: 0 0 18px;
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.inpost-pl-bulk-labels-popup__body p {
+    margin: 0 0 10px;
+}
+
+.inpost-pl-bulk-labels-popup__body p:last-child {
+    margin-bottom: 0;
+}
+
+.inpost-pl-bulk-labels-popup__summary {
+    margin-bottom: 14px;
+    font-size: 32px;
+    line-height: 1.35;
+}
+
+.inpost-pl-bulk-labels-popup__summary-line {
+    margin: 0 0 6px;
+    font-weight: 500;
+}
+
+.inpost-pl-bulk-labels-popup__summary-line:last-child {
+    margin-bottom: 0;
+}
+
+.inpost-pl-bulk-labels-popup__count {
+    font-size: 1.375em;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.inpost-pl-bulk-labels-popup__summary--mismatch .inpost-pl-bulk-labels-popup__count--selected {
+    color: #00a32a;
+}
+
+.inpost-pl-bulk-labels-popup__summary--mismatch .inpost-pl-bulk-labels-popup__count--downloaded {
+    color: #d63638;
+}
+
+.inpost-pl-bulk-labels-popup__order-links a {
+    font-weight: 600;
+}
+
+.inpost-pl-bulk-labels-popup__hint {
+    color: #646970;
+}
+
+.inpost-pl-bulk-labels-popup__error {
+    color: #b32d2e;
+}
+
+.inpost-pl-bulk-labels-popup__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+}

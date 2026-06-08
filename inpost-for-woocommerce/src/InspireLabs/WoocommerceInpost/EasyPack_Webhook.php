@@ -331,17 +331,34 @@ class EasyPack_Webhook {
 			$order_ids = $wpdb->get_col(
 				$wpdb->prepare(
 					"
-                    SELECT DISTINCT pm.post_id
-                    FROM {$wpdb->prefix}postmeta AS pm
-                    WHERE pm.meta_key = %s
-                    AND pm.meta_value = %s
+                    SELECT DISTINCT om.order_id
+                    FROM {$wpdb->prefix}wc_orders_meta AS om
+                    WHERE om.meta_key = %s
+                    AND om.meta_value = %s
                 ",
-					array(
-						$meta_key,
-						$meta_value,
-					)
+					$meta_key,
+					$meta_value
 				)
 			);
+
+			if ( empty( $order_ids ) ) {
+				// try to get order id from post meta table.
+				$order_ids = $wpdb->get_col(
+					$wpdb->prepare(
+						"
+						SELECT DISTINCT pm.post_id
+						FROM {$wpdb->prefix}postmeta AS pm
+						WHERE pm.meta_key = %s
+						AND pm.meta_value = %s
+					",
+						array(
+							$meta_key,
+							$meta_value,
+						)
+					)
+				);
+			}
+
 
 		} else {
 

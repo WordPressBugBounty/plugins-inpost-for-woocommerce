@@ -417,6 +417,21 @@ jQuery( document ).ready(
 					if (target.getAttribute('name') === 'shipping_method[0]') {
 						localStorage.setItem( 'EasyPackPointObject', null );
 						console.log('reset local storage value');
+						jQuery('input[name=parcel_machine_desc]').each(
+							function (ind, elem) {
+								jQuery(elem).val('');
+							}
+						);
+						jQuery('input[name=parcel_machine_id]').each(
+							function (ind, elem) {
+								jQuery(elem).val('');
+							}
+						);
+						jQuery('*[id*=selected-parcel-machine-id]').each(
+							function (ind, elem) {
+								jQuery(elem).html('');
+							}
+						);
 					}
 				}
 			}
@@ -439,12 +454,21 @@ jQuery( document ).ready(
 				);
 
 				let nearest_point_selected = jQuery(this_btn).attr('data-id');
+				
+				let order_key = '';
+				try {
+					let params = new URLSearchParams( window.location.search );
+					order_key = params.get( 'key' ) || '';
+				} catch (e) {
+					order_key = '';
+				}
 
 				let data = {
 					action: 'update_locker_from_typ_page',
 					order_id: jQuery('#inpost-pl-related-data-order').val(),
 					inpost_pl_locker: nearest_point_selected,
 					inpost_pl_locker_desc: jQuery(this_btn).attr('data-address-id'),
+					order_key : order_key,
 					security: inpost_pl_map.security
 				};
 

@@ -396,6 +396,17 @@ class EasyPackBulkOrders {
 			exit;
 		}
 
+		if ( ! current_user_can( 'manage_woocommerce' )
+		     && ! current_user_can( 'edit_shop_orders' )
+		     && ! current_user_can( 'manage_options' ) ) {
+			$return_content = array(
+				'status'  => 'bad',
+				'message' => esc_html__( 'Insufficient permissions', 'inpost-for-woocommerce' ),
+			);
+			echo wp_json_encode( $return_content );
+			exit;
+		}
+
 		if ( ! isset( $_POST['order_id'] ) ) {
 
 			$return_content = array(
@@ -488,7 +499,7 @@ class EasyPackBulkOrders {
 		// only on order's list page.
 		if ( ( is_a( $current_screen, 'WP_Screen' ) && 'edit-shop_order' === $current_screen->id )
 			|| 'woocommerce_page_wc-orders' === $current_screen->id ) {
-			$plugin_data = new EasyPack();
+			$plugin_data = EasyPack::EasyPack();
 
 			wp_enqueue_style(
 				'easypack-bulk-actions',
@@ -508,8 +519,38 @@ class EasyPackBulkOrders {
 				'easypack-bulk-actions',
 				'easypack_bulk',
 				array(
-					'ajaxurl' => admin_url( 'admin-ajax.php' ),
-					'nonce'   => wp_create_nonce( 'easypack-bulk-actions' ),
+					'ajaxurl'     => admin_url( 'admin-ajax.php' ),
+					'nonce'       => wp_create_nonce( 'easypack-bulk-actions' ),
+					'popup_texts' => array(
+						'title' => esc_html__( 'InPost labels', 'inpost-for-woocommerce' ),
+						/* translators: %d: number of selected orders. */
+						'selected_count' => esc_html__( 'Selected %d orders.', 'inpost-for-woocommerce' ),
+						/* translators: %d: number of orders with downloaded labels. */
+						'labels_ok_count' => esc_html__( 'Labels downloaded for %d orders.', 'inpost-for-woocommerce' ),
+						/* translators: %s: list of order links. */
+						'labels_partial_failed' => esc_html__( 'An error occurred for orders %s (see details in the table).', 'inpost-for-woocommerce' ),
+						'labels_blocked_intro' => esc_html__( 'Labels were not downloaded.', 'inpost-for-woocommerce' ),
+						/* translators: %1$s: order link, %2$s: error message. */
+						'labels_blocked_order' => esc_html__( 'Order %1$s returned an error: %2$s', 'inpost-for-woocommerce' ),
+						'labels_blocked_hint' => esc_html__( 'Remove this order from selection and try again without it.', 'inpost-for-woocommerce' ),
+						'download_zip' => esc_html__( 'Download labels archive', 'inpost-for-woocommerce' ),
+						'download_pdf' => esc_html__( 'Download PDF', 'inpost-for-woocommerce' ),
+						'close' => esc_html__( 'Close', 'inpost-for-woocommerce' ),
+						'no_orders_selected' => esc_html__( 'No orders selected.', 'inpost-for-woocommerce' ),
+						'no_orders_ready_for_labels' => esc_html__( 'No orders ready for label download.', 'inpost-for-woocommerce' ),
+						'unknown_api_error' => esc_html__( 'Unknown API error.', 'inpost-for-woocommerce' ),
+						/* translators: %s: list of order links. */
+						'labels_not_inpost' => esc_html__( 'Orders %s were placed without InPost shipping method.', 'inpost-for-woocommerce' ),
+						/* translators: %s: list of order links. */
+						'labels_not_ready' => esc_html__( 'Orders %s are not ready for label download yet (see details in the table).', 'inpost-for-woocommerce' ),
+						'label_error_parcel_expired' => esc_html__( 'Label availability period has expired.', 'inpost-for-woocommerce' ),
+						/* translators: %s: API error key. */
+						'label_error_key_fallback' => esc_html__( 'Error key: %s', 'inpost-for-woocommerce' ),
+						/* translators: %1$s: order link, %2$s: error description. */
+						'label_detail_order_key' => esc_html__( 'Order %1$s – %2$s', 'inpost-for-woocommerce' ),
+						/* translators: %1$s: shipment tracking number, %2$s: error description. */
+						'label_detail_tracking_key' => esc_html__( 'Shipment %1$s – %2$s', 'inpost-for-woocommerce' ),
+					),
 				)
 			);
 		}
