@@ -169,13 +169,20 @@ if ( $disabled ) {
 							<?php esc_html_e( 'Remove', 'inpost-for-woocommerce' ); ?>
 						</button>
 					<?php } ?>
-				<?php } else { ?>
+					<?php
+				} else {
+					$cod_amount = '<b style="color:#c51313">N/A</b>';
+					if ( is_object( $shipment ) && is_object( $shipment->getCod() ) ) {
+						$cod_amount = $shipment->getCod()->getAmount();
+						$cod_amount = '<b style="color:#42b809">' . $cod_amount . '</b>';
+					}
+					?>
 					<?php esc_html_e( 'Size', 'inpost-for-woocommerce' ); ?>:
 					<?php echo '<span style="font-size: 16px">'; ?>
 					<?php echo esc_html( EasyPack_Helper()->convert_size_to_symbol( $parcel->getTemplate() ) ); ?>
 					<?php echo '</span>'; ?>
 					<br>
-					<?php esc_html_e( 'COD amount', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $shipment->getCod()->getAmount() ); ?>
+					<b><?php esc_html_e( 'COD amount', 'inpost-for-woocommerce' ); ?>:</b> <?php echo wp_kses_post( $cod_amount ); ?>
 				<?php } ?>
 			</li>
 			<?php $first_parcel = false; ?>
@@ -271,7 +278,7 @@ if ( $disabled ) {
 			reference_number: jQuery(metabox).find('#reference_number').val(),
 			easypack_additional_package: jQuery(metabox).find('#easypack_additional_package').val(),
 			shipping_method_changed: shipping_method_changed,
-            selected_inpost_method: jQuery(metabox).find('#easypack_change_first_parcel').val(),
+			selected_inpost_method: jQuery(metabox).find('#easypack_change_first_parcel').val(),
 		};
 
 		console.log('PWW COD data');

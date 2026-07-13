@@ -279,7 +279,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Weekend' ) ) {
 					'class'       => 'wc-enhanced-select easypack_based_on',
 					'options'     => array(
 						'price'       => esc_html__( 'Price', 'inpost-for-woocommerce' ),
-						'weight'      => esc_html__( 'Weight', 'inpost-for-woocommerce' ),
+						'weight'      => esc_html__( 'Weight (kg)', 'inpost-for-woocommerce' ),
 						'product_qty' => esc_html__( 'Products qty', 'inpost-for-woocommerce' ),
 						'size'        => esc_html__( 'Size (A, B, C)', 'inpost-for-woocommerce' ),
 					),

@@ -233,14 +233,14 @@ class EasyPack_Product_Shipping_Method_Selector {
 				$variant = wc_get_product( $cart_item['variation_id'] );
 				if ( ! $variant->is_virtual() /* && ! $variant->is_downloadable() */ ) {
 					$physical_goods_ids[] = $cart_item['product_id'];
-					$total_weight        += floatval( $variant->get_weight() ) * $cart_item['quantity'];
+					$total_weight        += EasyPack_Helper()->convert_weight_to_kg( $variant->get_weight() ) * $cart_item['quantity'];
 				}
 			} else {
 
 				$_product = wc_get_product( $cart_item['product_id'] );
 				if ( ! $_product->is_virtual() /* && ! $_product->is_downloadable() */ ) {
 					$physical_goods_ids[] = $cart_item['product_id'];
-					$total_weight        += floatval( $_product->get_weight() ) * $cart_item['quantity'];
+					$total_weight        += EasyPack_Helper()->convert_weight_to_kg( $_product->get_weight() ) * $cart_item['quantity'];
 				}
 			}
 		}
@@ -336,6 +336,8 @@ class EasyPack_Product_Shipping_Method_Selector {
 								|| 'easypack_shipping_courier_c2c' === $method_name
 								|| 'easypack_shipping_courier_c2c_cod' === $method_name
 								|| 'easypack_shipping_esmartmix' === $method_name
+								|| 'easypack_parcel_machines_weekend' === $method_name
+							    || 'easypack_parcel_machines_weekend_cod' === $method_name
 								|| 'easypack_parcel_machines_economy' === $method_name
 								|| 'easypack_parcel_machines_economy_cod' === $method_name ) {
 								unset( $config_by_product[ $key ] );
@@ -353,6 +355,8 @@ class EasyPack_Product_Shipping_Method_Selector {
 									|| 'easypack_shipping_courier_c2c' === $linked_method
 									|| 'easypack_shipping_courier_c2c_cod' === $linked_method
 									|| 'easypack_shipping_esmartmix' === $linked_method
+									|| 'easypack_parcel_machines_weekend' === $linked_method
+							        || 'easypack_parcel_machines_weekend_cod' === $linked_method
 									|| 'easypack_parcel_machines_economy' === $linked_method
 									|| 'easypack_parcel_machines_economy_cod' === $linked_method ) {
 									unset( $config_by_product[ $key ] );

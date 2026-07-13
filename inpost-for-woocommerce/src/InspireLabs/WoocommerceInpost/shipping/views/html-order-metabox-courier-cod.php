@@ -205,7 +205,14 @@ require 'costs/html-order-metabox-costs.php';
 						?>
 					</li>
 				</ul>
-			<?php } else { ?>
+				<?php
+			} else {
+				$cod_amount = '<b style="color:#c51313">N/A</b>';
+				if ( is_object( $shipment ) && is_object( $shipment->getCod() ) ) {
+					$cod_amount = $shipment->getCod()->getAmount();
+					$cod_amount = '<b style="color:#42b809">' . $cod_amount . '</b>';
+				}
+				?>
 				<ul id="easypack_parcels" class="easypack_courier_std" style="list-style:none">
 					<li>
 						<?php esc_html_e( 'Length', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $parcel->getDimensions()->getLength() ); ?> <?php echo esc_html( $parcel->getDimensions()->getUnit() ); ?>
@@ -218,7 +225,7 @@ require 'costs/html-order-metabox-costs.php';
 						<br>
 						<?php esc_html_e( 'Weight', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $parcel->getWeight()->getAmount() ); ?> <?php echo esc_html( $parcel->getWeight()->getUnit() ); ?>
 						<br>
-						<?php esc_html_e( 'COD amount', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $shipment->getCod()->getAmount() ); ?>
+						<b><?php esc_html_e( 'COD amount', 'inpost-for-woocommerce' ); ?>:</b> <?php echo wp_kses_post( $cod_amount ); ?>
 					</li>
 				</ul>
 				<?php
@@ -402,7 +409,7 @@ require 'html-send-method.php';
 					easypack_additional_package: jQuery(metabox).find('#easypack_additional_package').val(),
 					cod_amounts: cod_amounts,
 					shipping_method_changed: shipping_method_changed,
-                    selected_inpost_method: jQuery(metabox).find('#easypack_change_first_parcel').val(),
+					selected_inpost_method: jQuery(metabox).find('#easypack_change_first_parcel').val(),
 				};
 			} else {
 				data = {

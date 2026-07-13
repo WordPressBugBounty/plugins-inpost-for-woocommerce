@@ -153,6 +153,7 @@ class EasyPackBulkOrders {
 		$status_line           = '';
 		$inpost_status         = '';
 		$tracking_number       = '';
+		$inpost_methods        = EasyPack_Helper()->get_inpost_methods();
 
 		$status = EasyPack_Helper()->get_woo_order_meta( $order_id, '_easypack_status' );
 
@@ -175,31 +176,28 @@ class EasyPackBulkOrders {
 
 		if ( empty( $status ) ) {
 
-			if ( EasyPack_Helper()->is_courier_service_by_id( $shipping_method_id ) ) {
+			$inpost_status = '<div class="inpost-status-inside-td">'
+							. esc_html__( 'Not created yet', 'inpost-for-woocommerce' )
+							. ' ('
+							. $shipping_method_title
+							. ')'
+							. '</div>';
 
+			if ( ! empty( $shipping_method_changed ) ) {
+				$inpost_status = '<div class="inpost-status-inside-td">'
+								. esc_html__( 'Not created yet', 'inpost-for-woocommerce' )
+								. ' ('
+								. '<b style="color:#c51313">' . $shipping_method_title . '</b>'
+								. ')'
+								. '</div>';
+			}
+
+			if ( EasyPack_Helper()->is_courier_service_by_id( $shipping_method_id ) ) {
 				$courier_parcel_source = EasyPack_Helper()->get_source_of_courier_dimensions( $order_id );
 				$dimensions            = EasyPack_Helper()->get_courier_parcel_dimensions( $order_id, $courier_parcel_source );
-
 				if ( empty( $dimensions['weight'] ) ) {
 					$inpost_status = '<div class="inpost-status-inside-td easypack-alert-status">'
 									. esc_html__( 'Adding of dimensions is required', 'inpost-for-woocommerce' )
-									. ' ('
-									. $shipping_method_title
-									. ')'
-									. '</div>';
-				} else {
-					$inpost_status = '<div class="inpost-status-inside-td">'
-									. esc_html__( 'Not created yet', 'inpost-for-woocommerce' )
-									. ' ('
-									. $shipping_method_title
-									. ')'
-									. '</div>';
-				}
-			} else {
-
-				if ( ! $shipping_method_changed ) {
-					$inpost_status = '<div class="inpost-status-inside-td">'
-									. esc_html__( 'Not created yet', 'inpost-for-woocommerce' )
 									. ' ('
 									. $shipping_method_title
 									. ')'
@@ -209,17 +207,17 @@ class EasyPackBulkOrders {
 		} else {
 
 			if ( ! empty( $shipping_method_changed ) ) {
-				$shipping_method_id                  = $shipping_method_changed;
-				$shipping_method_instance_id_changed = EasyPack_Helper()->get_woo_order_meta( $order_id, '_inpost_pl_metabox_shipping_method_instance_id' );
-				if ( ! empty( $shipping_method_instance_id_changed ) ) {
-					$shipping_instance_id = (int) $shipping_method_instance_id_changed;
-				}
 
-				$inpost_methods = EasyPack_Helper()->get_inpost_methods();
-
-				foreach ( $inpost_methods as $instance_id => $method ) {
-					if ( $instance_id === $shipping_instance_id ) {
-						$shipping_method_title = $method['user_title'];
+				$shipping_created = EasyPack_Helper()->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
+				if ( is_object( $shipping_created ) && $shipping_created instanceof ShipX_Shipment_Model && property_exists( $shipping_created, 'service' ) ) {
+					$service_created = $shipping_created->getService();
+					$cod             = false;
+					if ( property_exists( $shipping_created, 'cod' ) && ! empty( $shipping_created->getCod() ) ) {
+						$cod = true;
+					}
+					$shipping_method_title = str_replace( '_', ' ', $service_created );
+					if ( $cod ) {
+						$shipping_method_title . ' ' . esc_html__( 'COD', 'inpost-for-woocommerce' );
 					}
 				}
 			}
@@ -238,7 +236,7 @@ class EasyPackBulkOrders {
 					. '<span title="%2$s" data-id="%1$s" class="dashicons dashicons-media-spreadsheet"></span>'
 					. '</a>',
 					esc_attr( $print_label_order_id ),
-					esc_attr__( 'Print sticker', 'inpost-for-woocommerce' )
+					esc_html__( 'Print sticker', 'inpost-for-woocommerce' )
 				);
 
 				$link_to_tracking = sprintf(
@@ -397,8 +395,8 @@ class EasyPackBulkOrders {
 		}
 
 		if ( ! current_user_can( 'manage_woocommerce' )
-		     && ! current_user_can( 'edit_shop_orders' )
-		     && ! current_user_can( 'manage_options' ) ) {
+			&& ! current_user_can( 'edit_shop_orders' )
+			&& ! current_user_can( 'manage_options' ) ) {
 			$return_content = array(
 				'status'  => 'bad',
 				'message' => esc_html__( 'Insufficient permissions', 'inpost-for-woocommerce' ),
@@ -522,34 +520,34 @@ class EasyPackBulkOrders {
 					'ajaxurl'     => admin_url( 'admin-ajax.php' ),
 					'nonce'       => wp_create_nonce( 'easypack-bulk-actions' ),
 					'popup_texts' => array(
-						'title' => esc_html__( 'InPost labels', 'inpost-for-woocommerce' ),
+						'title'                      => esc_html__( 'InPost labels', 'inpost-for-woocommerce' ),
 						/* translators: %d: number of selected orders. */
-						'selected_count' => esc_html__( 'Selected %d orders.', 'inpost-for-woocommerce' ),
+						'selected_count'             => esc_html__( 'Selected %d orders.', 'inpost-for-woocommerce' ),
 						/* translators: %d: number of orders with downloaded labels. */
-						'labels_ok_count' => esc_html__( 'Labels downloaded for %d orders.', 'inpost-for-woocommerce' ),
+						'labels_ok_count'            => esc_html__( 'Labels downloaded for %d orders.', 'inpost-for-woocommerce' ),
 						/* translators: %s: list of order links. */
-						'labels_partial_failed' => esc_html__( 'An error occurred for orders %s (see details in the table).', 'inpost-for-woocommerce' ),
-						'labels_blocked_intro' => esc_html__( 'Labels were not downloaded.', 'inpost-for-woocommerce' ),
+						'labels_partial_failed'      => esc_html__( 'An error occurred for orders %s (see details in the table).', 'inpost-for-woocommerce' ),
+						'labels_blocked_intro'       => esc_html__( 'Labels were not downloaded.', 'inpost-for-woocommerce' ),
 						/* translators: %1$s: order link, %2$s: error message. */
-						'labels_blocked_order' => esc_html__( 'Order %1$s returned an error: %2$s', 'inpost-for-woocommerce' ),
-						'labels_blocked_hint' => esc_html__( 'Remove this order from selection and try again without it.', 'inpost-for-woocommerce' ),
-						'download_zip' => esc_html__( 'Download labels archive', 'inpost-for-woocommerce' ),
-						'download_pdf' => esc_html__( 'Download PDF', 'inpost-for-woocommerce' ),
-						'close' => esc_html__( 'Close', 'inpost-for-woocommerce' ),
-						'no_orders_selected' => esc_html__( 'No orders selected.', 'inpost-for-woocommerce' ),
+						'labels_blocked_order'       => esc_html__( 'Order %1$s returned an error: %2$s', 'inpost-for-woocommerce' ),
+						'labels_blocked_hint'        => esc_html__( 'Remove this order from selection and try again without it.', 'inpost-for-woocommerce' ),
+						'download_zip'               => esc_html__( 'Download labels archive', 'inpost-for-woocommerce' ),
+						'download_pdf'               => esc_html__( 'Download PDF', 'inpost-for-woocommerce' ),
+						'close'                      => esc_html__( 'Close', 'inpost-for-woocommerce' ),
+						'no_orders_selected'         => esc_html__( 'No orders selected.', 'inpost-for-woocommerce' ),
 						'no_orders_ready_for_labels' => esc_html__( 'No orders ready for label download.', 'inpost-for-woocommerce' ),
-						'unknown_api_error' => esc_html__( 'Unknown API error.', 'inpost-for-woocommerce' ),
+						'unknown_api_error'          => esc_html__( 'Unknown API error.', 'inpost-for-woocommerce' ),
 						/* translators: %s: list of order links. */
-						'labels_not_inpost' => esc_html__( 'Orders %s were placed without InPost shipping method.', 'inpost-for-woocommerce' ),
+						'labels_not_inpost'          => esc_html__( 'Orders %s were placed without InPost shipping method.', 'inpost-for-woocommerce' ),
 						/* translators: %s: list of order links. */
-						'labels_not_ready' => esc_html__( 'Orders %s are not ready for label download yet (see details in the table).', 'inpost-for-woocommerce' ),
+						'labels_not_ready'           => esc_html__( 'Orders %s are not ready for label download yet (see details in the table).', 'inpost-for-woocommerce' ),
 						'label_error_parcel_expired' => esc_html__( 'Label availability period has expired.', 'inpost-for-woocommerce' ),
 						/* translators: %s: API error key. */
-						'label_error_key_fallback' => esc_html__( 'Error key: %s', 'inpost-for-woocommerce' ),
+						'label_error_key_fallback'   => esc_html__( 'Error key: %s', 'inpost-for-woocommerce' ),
 						/* translators: %1$s: order link, %2$s: error description. */
-						'label_detail_order_key' => esc_html__( 'Order %1$s – %2$s', 'inpost-for-woocommerce' ),
+						'label_detail_order_key'     => esc_html__( 'Order %1$s – %2$s', 'inpost-for-woocommerce' ),
 						/* translators: %1$s: shipment tracking number, %2$s: error description. */
-						'label_detail_tracking_key' => esc_html__( 'Shipment %1$s – %2$s', 'inpost-for-woocommerce' ),
+						'label_detail_tracking_key'  => esc_html__( 'Shipment %1$s – %2$s', 'inpost-for-woocommerce' ),
 					),
 				)
 			);

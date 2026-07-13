@@ -38,7 +38,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		const SERVICE_ID = ShipX_Shipment_Model::SERVICE_INPOST_LOCKER_STANDARD;
 
 		const NONCE_ACTION = self::SERVICE_ID;
-		
+
 		const SHIPPING_METHOD_ID = 'easypack_parcel_machines';
 
 		static $prevent_duplicate = array();
@@ -330,7 +330,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 					'class'       => 'wc-enhanced-select easypack_based_on',
 					'options'     => array(
 						'price'       => esc_html__( 'Price', 'inpost-for-woocommerce' ),
-						'weight'      => esc_html__( 'Weight', 'inpost-for-woocommerce' ),
+						'weight'      => esc_html__( 'Weight (kg)', 'inpost-for-woocommerce' ),
 						'product_qty' => esc_html__( 'Products qty', 'inpost-for-woocommerce' ),
 						'size'        => esc_html__( 'Size (A, B, C)', 'inpost-for-woocommerce' ),
 					),
@@ -998,16 +998,29 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				return;
 			}
 
+			$shipment_created                  = EasyPack_Helper()->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
 			$fs_method_name                    = Easypack_Helper()->get_woo_order_meta( $order_id, '_fs_easypack_method_name' );
 			$inpost_pl_metabox_shipping_method = Easypack_Helper()->get_woo_order_meta( $order_id, '_inpost_pl_metabox_shipping_method' );
 
 			if ( ! empty( $inpost_pl_metabox_shipping_method ) ) {
-				$is_inpost_order            = true;
-				$metabox_id                 = 'easypack_shipment_changed';
-				$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $inpost_pl_metabox_shipping_method );
-				if ( empty( $shipping_method_class_name ) ) {
-					$inpost_method_name         = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $inpost_pl_metabox_shipping_method );
-					$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $inpost_method_name );
+				$metabox_id = 'easypack_shipment_changed';
+
+				if ( is_object( $shipment_created ) && $shipment_created instanceof ShipX_Shipment_Model && property_exists( $shipment_created, 'service' ) ) {
+					$service_created = $shipment_created->getService();
+					$cod             = false;
+					if ( property_exists( $shipment_created, 'cod' ) && ! empty( $shipment_created->getCod() ) ) {
+						$cod = true;
+					}
+
+					$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_api_service_id( $service_created, $cod );
+
+				} else {
+
+					$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $inpost_pl_metabox_shipping_method );
+					if ( empty( $shipping_method_class_name ) ) {
+						$inpost_method_name         = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $inpost_pl_metabox_shipping_method );
+						$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $inpost_method_name );
+					}
 				}
 
 				$class_with_namespace = 'InspireLabs\WoocommerceInpost\shipping\\' . $shipping_method_class_name;
@@ -1020,9 +1033,9 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			} else {
 
 				$shipping_method_used_in_order = 'easypack_parcel_machines';
-                foreach (  $order->get_shipping_methods() as $shipping_method ) {
-                    $shipping_method_used_in_order = $shipping_method->get_method_id();
-                }
+				foreach ( $order->get_shipping_methods() as $shipping_method ) {
+					$shipping_method_used_in_order = $shipping_method->get_method_id();
+				}
 
 				if ( $shipping_method_used_in_order === $class_obj->id || $fs_method_name === $class_obj->id ) {
 					$is_inpost_order = true;
@@ -1561,59 +1574,6 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 					|| 'easypack_shipping_courier_palette_cod' === $this->id;
 		}
 
-		/**
-		 * Get single product dimensions
-		 *
-		 * @param int $wc_order_id
-		 *
-		 * @return ShipX_Shipment_Parcel_Dimensions_Model
-		 */
-		protected static function get_single_product_dimensions( int $wc_order_id ): ShipX_Shipment_Parcel_Dimensions_Model {
-			$order = wc_get_order( $wc_order_id );
-
-			$items = $order->get_items();
-
-			if ( count( $items ) > 1 ) {
-				return new ShipX_Shipment_Parcel_Dimensions_Model();
-			}
-
-			foreach ( $order->get_items() as $item_id => $item ) {
-				$product_id = $item->get_product_id();
-				$product    = wc_get_product( $product_id );
-
-				if ( $item->get_quantity() > 1 ) {
-					return new ShipX_Shipment_Parcel_Dimensions_Model();
-				}
-
-				if ( ! $product || is_wp_error( $product ) ) {
-					continue;
-				}
-
-				$height = (float) $product->get_height();
-				$width  = (float) $product->get_width();
-				$length = (float) $product->get_length();
-
-				if ( $height > 0 || $width > 0 || $length > 0 ) {
-					$dims = new ShipX_Shipment_Parcel_Dimensions_Model();
-					$dims->setHeight(
-						$height * 10
-					);
-					$dims->setWidth(
-						$width * 10
-					);
-					$dims->setLength(
-						$length * 10
-					);
-					$dims->setUnit( 'mm' );
-
-					return $dims;
-				}
-			}
-
-			return new ShipX_Shipment_Parcel_Dimensions_Model();
-		}
-
-
 
 		/**
 		 * Inline CSS for buttons in My Orders section
@@ -1824,6 +1784,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			}
 
 			if ( ! $is_additional_package_processing ) {
+
 				$order->update_meta_data( '_easypack_parcel_create_args', $shipment_array );
 
 			} else {

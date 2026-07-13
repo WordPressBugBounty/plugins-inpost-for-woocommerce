@@ -315,13 +315,15 @@ jQuery( document ).ready(
 
 		inpostplGeowidgetModal = new jBox(
 			'Modal',
-			{
-				width: 800,
-				height: wH,
-				attach: '#easypack_show_geowidget',
-				title: 'Wybierz paczkomat',
-				content: '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback" token="' + inpostplMapToken + '" language="pl" config="' + inpostplMapConfig + '"></inpost-geowidget>'
-			}
+			window.EasypackGeowidgetModalA11y.getOptions(
+				{
+					width: 800,
+					height: wH,
+					attach: '#easypack_show_geowidget',
+					title: 'Wybierz paczkomat',
+					content: '<inpost-geowidget id="inpost-geowidget" onpoint="inpost_pl_select_point_callback" token="' + inpostplMapToken + '" language="pl" config="' + inpostplMapConfig + '"></inpost-geowidget>'
+				}
+			)
 		);
 
 		jQuery( '#easypack_show_geowidget' ).on(

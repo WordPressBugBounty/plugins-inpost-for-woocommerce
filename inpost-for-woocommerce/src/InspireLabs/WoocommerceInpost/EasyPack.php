@@ -227,6 +227,7 @@ class EasyPack extends inspire_Plugin4 {
 			);
 
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_block_script' ), 100 );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_typ_related_points_script' ), 101 );
 
 			add_action( 'woocommerce_store_api_checkout_update_order_from_request', array( $this, 'block_checkout_save_parcel_locker_in_order_meta' ), 10, 2 );
 			// integration with Woocommerce blocks end.
@@ -647,9 +648,46 @@ class EasyPack extends inspire_Plugin4 {
 	}
 
 
+	/**
+	 * Enqueue shared WCAG helpers for geowidget jBox modals.
+	 *
+	 * @return void
+	 */
+	public function enqueue_geowidget_modal_a11y_script() {
+		static $enqueued = false;
+
+		if ( $enqueued ) {
+			return;
+		}
+
+		$enqueued              = true;
+		$a11y_js_path          = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/easypack-geowidget-modal-a11y.js';
+		$a11y_js_path_version  = file_exists( $a11y_js_path ) ? filemtime( $a11y_js_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;
+
+		wp_enqueue_script(
+			'easypack-geowidget-modal-a11y',
+			$this->getPluginJs() . 'easypack-geowidget-modal-a11y.js',
+			array( 'jquery', 'easypack-jquery-modal' ),
+			$a11y_js_path_version,
+			array( 'in_footer' => true )
+		);
+
+		wp_localize_script(
+			'easypack-geowidget-modal-a11y',
+			'easypack_geowidget_modal_a11y',
+			array(
+				'close_label'  => esc_html__( 'Close', 'inpost-for-woocommerce' ),
+				'dialog_label' => esc_html__( 'Select parcel locker', 'inpost-for-woocommerce' ),
+			)
+		);
+	}
+
+
 	public function enqueue_scripts() {
 		if ( is_cart() || is_checkout() || has_block( 'woocommerce/checkout' ) || 'yes' === get_option( 'easypack_debug_mode_enqueue_scripts' ) ) {
-			wp_enqueue_style( 'easypack-front', $this->getPluginCss() . 'front.css', array(), WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION );
+			$front_css_path    = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/css/front.css';
+			$front_css_version = file_exists( $front_css_path ) ? filemtime( $front_css_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;
+			wp_enqueue_style( 'easypack-front', $this->getPluginCss() . 'front.css', array(), $front_css_version );
 		}
 
 		if ( is_checkout() || has_block( 'woocommerce/checkout' ) || get_option( 'easypack_debug_mode_enqueue_scripts' ) === 'yes' ) {
@@ -661,12 +699,13 @@ class EasyPack extends inspire_Plugin4 {
 				WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
 				array( 'in_footer' => true )
 			);
+			$this->enqueue_geowidget_modal_a11y_script();
 
 			if ( get_option( 'easypack_js_map_button' ) === 'yes' && ! has_block( 'woocommerce/checkout' ) ) {
 				wp_enqueue_script(
 					'easypack-front-js',
 					$this->getPluginJs() . 'front.js',
-					array( 'jquery' ),
+					array( 'jquery', 'easypack-jquery-modal', 'easypack-geowidget-modal-a11y', 'geowidget-inpost' ),
 					WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
 					array( 'in_footer' => true )
 				);
@@ -958,12 +997,13 @@ class EasyPack extends inspire_Plugin4 {
 	 */
 	public function enqueue_block_script() {
 		if ( ( is_checkout() && has_block( 'woocommerce/checkout' ) ) || has_block( 'woocommerce/checkout' ) || 'yes' === get_option( 'easypack_debug_mode_enqueue_scripts' ) ) {
+			$this->enqueue_geowidget_modal_a11y_script();
 
 			$front_blocks_js_path = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/front-blocks.js';
 			wp_enqueue_script(
 				'easypack-front-blocks-js',
 				$this->getPluginJs() . 'front-blocks.js',
-				array( 'jquery' ),
+				array( 'jquery', 'easypack-jquery-modal', 'easypack-geowidget-modal-a11y', 'geowidget-inpost' ),
 				file_exists( $front_blocks_js_path ) ? filemtime( $front_blocks_js_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
 				array( 'in_footer' => true )
 			);
@@ -984,6 +1024,57 @@ class EasyPack extends inspire_Plugin4 {
 			);
 
 		}
+	}
+
+	/**
+	 * Enqueues thank-you page handlers for Blocks checkout + JS map button mode.
+	 *
+	 * In that configuration front.js is skipped (has_block) and inpost-pl.js is skipped
+	 * (easypack_js_map_button). This script covers nearest-point buttons and TYP map fallback.
+	 *
+	 * @return void
+	 */
+	public function enqueue_typ_related_points_script() {
+		$is_debug = 'yes' === get_option( 'easypack_debug_mode_enqueue_scripts' );
+
+		if ( ! is_checkout() && ! $is_debug ) {
+			return;
+		}
+
+		if ( 'yes' !== get_option( 'easypack_js_map_button' ) && ! $is_debug ) {
+			return;
+		}
+
+		if ( ! has_block( 'woocommerce/checkout' ) && ! $is_debug ) {
+			return;
+		}
+
+		$typ_js_path = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/typ-related-points.js';
+
+		$this->enqueue_geowidget_modal_a11y_script();
+
+		wp_enqueue_script(
+			'easypack-typ-related-points-js',
+			$this->getPluginJs() . 'typ-related-points.js',
+			array( 'jquery', 'easypack-jquery-modal', 'easypack-geowidget-modal-a11y', 'geowidget-inpost' ),
+			file_exists( $typ_js_path ) ? filemtime( $typ_js_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
+			array( 'in_footer' => true )
+		);
+
+		wp_localize_script(
+			'easypack-typ-related-points-js',
+			'easypack_typ_map',
+			array(
+				'ajaxurl'            => admin_url( 'admin-ajax.php' ),
+				'security'           => wp_create_nonce( 'easypack_nonce' ),
+				'error_text'         => esc_html__( 'Some error is occured', 'inpost-for-woocommerce' ),
+				'updated_text'       => esc_html__( 'Pick up point has been successfuly written', 'inpost-for-woocommerce' ),
+				'geowidget_v5_token' => self::ENVIRONMENT_SANDBOX === self::get_environment()
+					? get_option( 'easypack_geowidget_sandbox_token' )
+					: get_option( 'easypack_geowidget_production_token' ),
+				'preloader'          => esc_url( $this->getPluginImages() . 'inpost-pl-loader.gif' ),
+			)
+		);
 	}
 
 

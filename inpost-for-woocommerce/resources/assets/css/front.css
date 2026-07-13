@@ -144,6 +144,34 @@
     cursor:pointer;
 }
 
+/* Geowidget modal: keep close control in the title bar (right-aligned). */
+.jBox-Modal.jBox-closeButton-title .jBox-title {
+    position: relative;
+    padding-right: 50px;
+}
+
+.jBox-Modal.jBox-closeButton-title .jBox-closeButton {
+    top: 50%;
+    right: 8px;
+    bottom: auto;
+    width: 32px;
+    height: 32px;
+    transform: translateY(-50%);
+    border: 2px solid #999;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.jBox-Modal.jBox-closeButton-title .jBox-closeButton:hover {
+    border-color: #666;
+}
+
+.jBox-Modal.jBox-closeButton-title .jBox-closeButton:focus {
+    border-color: rgb(23, 103, 232);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(23, 103, 232, 0.4);
+}
+
 #easypack_selected_point_data {
     border: 2px solid #FCC905;
     border-radius: 5px;

@@ -246,7 +246,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 					'class'    => 'wc-enhanced-select easypack_based_on',
 					'options'  => array(
 						'price'       => esc_html__( 'Price', 'inpost-for-woocommerce' ),
-						'weight'      => esc_html__( 'Weight', 'inpost-for-woocommerce' ),
+						'weight'      => esc_html__( 'Weight (kg)', 'inpost-for-woocommerce' ),
 						'product_qty' => esc_html__( 'Products qty', 'inpost-for-woocommerce' ),
 					),
 				),
@@ -538,7 +538,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 				$package_sizes_display = EasyPack()->get_package_sizes_display();
 				$parcels               = array();
 				$parcel                = new ShipX_Shipment_Parcel_Model();
-				$dimensions            = self::get_single_product_dimensions( $order_id );
+				$dimensions = new ShipX_Shipment_Parcel_Dimensions_Model();
 
 				$parcel->setDimensions( $dimensions );
 				$weight = new ShipX_Shipment_Parcel_Weight_Model();

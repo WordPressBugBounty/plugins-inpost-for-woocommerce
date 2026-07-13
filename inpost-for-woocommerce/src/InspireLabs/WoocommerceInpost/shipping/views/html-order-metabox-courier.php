@@ -346,7 +346,7 @@ require 'html-send-method.php';
 
 			let shipping_method_changed = false;
 			let metabox_id = jQuery(metabox).attr('id');
-			if('easypack_shipment_changed' ===  metabox_id ) {
+			if( 'easypack_shipment_changed' ===  metabox_id ) {
 				shipping_method_changed = true;
 			}
 

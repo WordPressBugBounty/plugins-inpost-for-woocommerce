@@ -589,6 +589,12 @@ msgid "Height (mm)"
 msgstr ""
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:1047
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:249
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:225
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:233
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:233
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:282
+#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:333
 msgid "Weight (kg)"
 msgstr ""
 
@@ -1697,12 +1703,6 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:249
-#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:225
-#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:233
-#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:233
-#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:282
-#: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:330
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:219
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-esmartmix.php:165
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:206

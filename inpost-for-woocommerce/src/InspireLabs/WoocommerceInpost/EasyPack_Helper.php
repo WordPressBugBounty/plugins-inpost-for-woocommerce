@@ -580,6 +580,73 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 
 		/**
+		 * Gets the class name for a shipping method by its API service ID.
+		 *
+		 * @param string $api_service_id ShipX service ID (e.g. inpost_courier_standard).
+		 * @param bool   $cod            Whether the shipment uses COD.
+		 * @return string The class name for the shipping method.
+		 *
+		 * @since 1.7.6
+		 * @access public
+		 */
+		public function get_class_name_by_api_service_id( $api_service_id, $cod = false ) {
+
+			$class_name = '';
+
+			switch ( $api_service_id ) {
+				case ShipX_Shipment_Model::SERVICE_INPOST_LOCKER_ECONOMY:
+					$class_name = $cod
+						? 'EasyPack_Shipping_Parcel_Machines_Economy_COD'
+						: 'EasyPack_Shipping_Parcel_Machines_Economy';
+					break;
+				case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_C2C_COD:
+					$class_name = 'EasyPack_Shipping_Method_Courier_C2C_COD';
+					break;
+				case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_C2C:
+					$class_name = $cod
+						? 'EasyPack_Shipping_Method_Courier_C2C_COD'
+						: 'EasyPack_Shipping_Method_Courier_C2C';
+					break;
+				case ShipX_Shipment_Model::SERVICE_INPOST_LOCKER_STANDARD:
+					$class_name = $cod
+						? 'EasyPack_Shippng_Parcel_Machines_COD'
+						: 'EasyPack_Shippng_Parcel_Machines';
+					break;
+				case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_STANDARD:
+					$class_name = $cod
+						? 'EasyPack_Shipping_Method_Courier_COD'
+						: 'EasyPack_Shipping_Method_Courier';
+					break;
+				case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_LOCAL_EXPRESS:
+					$class_name = $cod
+						? 'EasyPack_Shipping_Method_Courier_Local_Express_COD'
+						: 'EasyPack_Shipping_Method_Courier_Local_Express';
+					break;
+				case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_LOCAL_STANDARD:
+					$class_name = $cod
+						? 'EasyPack_Shipping_Method_Courier_Local_Standard_COD'
+						: 'EasyPack_Shipping_Method_Courier_Local_Standard';
+					break;
+				case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_LOCAL_SUPER_EXPRESS:
+					$class_name = $cod
+						? 'EasyPack_Shipping_Method_Courier_LSE_COD'
+						: 'EasyPack_Shipping_Method_Courier_LSE';
+					break;
+				case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_PALETTE:
+					$class_name = $cod
+						? 'EasyPack_Shipping_Method_Courier_Palette_COD'
+						: 'EasyPack_Shipping_Method_Courier_Palette';
+					break;
+				case ShipX_Shipment_Model::SERVICE_INPOST_COURIER_ESMARTMIX:
+					$class_name = 'EasyPack_Shipping_Method_EsmartMix';
+					break;
+			}
+
+			return $class_name;
+		}
+
+
+		/**
 		 * Inline CSS for button
 		 *
 		 * @return void
@@ -677,6 +744,28 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 
 		/**
+		 * Converts a weight value from the store unit to kilograms.
+		 *
+		 * @param mixed $value Weight value in WooCommerce store units.
+		 * @return float Converted value in kg.
+		 *
+		 * @since 1.7.6
+		 * @access public
+		 */
+		public function convert_weight_to_kg( $value ) {
+			if ( '' === $value || null === $value ) {
+				return 0;
+			}
+
+			if ( ! function_exists( 'wc_get_weight' ) ) {
+				return (float) $value;
+			}
+
+			return (float) wc_get_weight( (float) $value, 'kg' );
+		}
+
+
+		/**
 		 * Calculates the total weight of an order.
 		 *
 		 * @param int $order_id The order id.
@@ -701,7 +790,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 						if ( is_object( $item ) ) {
 							$_product = $item->get_product();
 							if ( ! $_product->is_virtual() ) {
-								$weight += (float) $_product->get_weight() * (int) $item['qty'];
+								$weight += $this->convert_weight_to_kg( $_product->get_weight() ) * (int) $item['qty'];
 							}
 						}
 					}
@@ -1509,7 +1598,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			$weight = 0;
 			foreach ( $items as $item ) {
 				if ( ! empty( $item['data']->get_weight() ) ) {
-					$weight += floatval( $item['data']->get_weight() ) * $item['quantity'];
+					$weight += $this->convert_weight_to_kg( $item['data']->get_weight() ) * $item['quantity'];
 				}
 			}
 
@@ -1808,11 +1897,10 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			if ( is_object( $product ) ) {
 				$quantity = (int) $item->get_quantity();
 
-				// Get weight in kg.
-				$weight       = $product->get_weight();
-				$total_weight = ( $weight && is_numeric( $weight ) ) ? floatval( $weight ) * $quantity : 0;
+				// Get weight and convert to kg using shop unit (woocommerce_weight_unit).
+				$total_weight = $this->convert_weight_to_kg( $product->get_weight() ) * $quantity;
 
-				// Get dimensions in cm (WooCommerce default) and validate.
+				// Get dimensions and convert to mm using shop unit (woocommerce_dimension_unit).
 				$length = $product->get_length();
 				$width  = $product->get_width();
 				$height = $product->get_height();
@@ -1821,10 +1909,9 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 				$width  = ( $width && is_numeric( $width ) ) ? floatval( $width ) : 0;
 				$height = ( $height && is_numeric( $height ) ) ? floatval( $height ) : 0;
 
-				// Convert cm to mm.
-				$length_mm = $length * 10;
-				$width_mm  = $width * 10;
-				$height_mm = $height * 10;
+				$length_mm = $length > 0 ? wc_get_dimension( $length, 'mm' ) : 0;
+				$width_mm  = $width > 0 ? wc_get_dimension( $width, 'mm' ) : 0;
+				$height_mm = $height > 0 ? wc_get_dimension( $height, 'mm' ) : 0;
 
 				// For multiple quantities, arrange in most compact way.
 				if ( $quantity > 1 && $length_mm > 0 && $width_mm > 0 && $height_mm > 0 ) {
@@ -1880,12 +1967,13 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 				if ( is_object( $product ) ) {
 					$quantity = (int) $item->get_quantity();
 
-					// Get weight.
-					$weight        = $product->get_weight();
-					$weight        = ( $weight && is_numeric( $weight ) ) ? floatval( $weight ) : 0;
-					$total_weight += $weight * $quantity;
+					// Get weight and convert to kg using shop unit (woocommerce_weight_unit).
+					$product_weight = $this->convert_weight_to_kg( $product->get_weight() );
+					if ( $product_weight > 0 ) {
+						$total_weight += $product_weight * $quantity;
+					}
 
-					// Get dimensions and validate.
+					// Get dimensions and convert to mm using shop unit (woocommerce_dimension_unit).
 					$length = $product->get_length();
 					$width  = $product->get_width();
 					$height = $product->get_height();
@@ -1894,13 +1982,17 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 					$width  = ( $width && is_numeric( $width ) ) ? floatval( $width ) : 0;
 					$height = ( $height && is_numeric( $height ) ) ? floatval( $height ) : 0;
 
+					$length_mm = $length > 0 ? wc_get_dimension( $length, 'mm' ) : 0;
+					$width_mm  = $width > 0 ? wc_get_dimension( $width, 'mm' ) : 0;
+					$height_mm = $height > 0 ? wc_get_dimension( $height, 'mm' ) : 0;
+
 					// Calculate volume only if all dimensions are present.
-					if ( $length > 0 && $width > 0 && $height > 0 ) {
-						$item_volume   = $length * $width * $height * $quantity;
+					if ( $length_mm > 0 && $width_mm > 0 && $height_mm > 0 ) {
+						$item_volume   = $length_mm * $width_mm * $height_mm * $quantity;
 						$total_volume += $item_volume;
 
-						$max_length = max( $max_length, $length );
-						$max_width  = max( $max_width, $width );
+						$max_length = max( $max_length, $length_mm );
+						$max_width  = max( $max_width, $width_mm );
 					}
 				}
 			}
@@ -1918,11 +2010,6 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 					$calculated_height = $temp;
 				}
 			}
-
-			// Convert from cm to mm.
-			$calculated_length = $calculated_length * 10;
-			$calculated_width  = $calculated_width * 10;
-			$calculated_height = $calculated_height * 10;
 
 			return array(
 				'length' => round( $calculated_length, 1 ),
