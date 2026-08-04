@@ -242,6 +242,7 @@ class EasyPack extends inspire_Plugin4 {
 			( new EasyPack_Product_Shipping_Method_Selector() )->handle_product_edit_hooks();
 		} catch ( Exception $exception ) {
 			\wc_get_logger()->debug( 'INPOST Exception: ', array( 'source' => 'inpost-log' ) );
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 			\wc_get_logger()->debug( print_r( $exception->getMessage(), true ), array( 'source' => 'inpost-log' ) );
 
 		}
@@ -307,7 +308,7 @@ class EasyPack extends inspire_Plugin4 {
 			'easypack_parcel_machines_weekend_cod',
 		);
 
-		$fs_method_name = get_post_meta( $wc_order->get_id(), '_fs_easypack_method_name', true );
+		$fs_method_name = $wc_order->get_meta( '_fs_easypack_method_name' );
 
 		$shipping_method_id = '';
 
@@ -321,11 +322,11 @@ class EasyPack extends inspire_Plugin4 {
 			if ( isset( $items['shipping'] ) && ! empty( $parcel_machine_id ) ) {
 				$items['shipping']['value']
 					.= sprintf(
-						'<br>%1s:<br><span class="ep-chosen-parcel-machine">%1s</span><br><span class="italic">%3s</span>',
-						esc_html__( 'Selected parcel machine', 'inpost-for-woocommerce' ),
-						esc_attr( $parcel_machine_id ),
-						esc_html( $parcel_desc )
-					);
+					'<br>%1s:<br><span style="border-radius:3px; padding: 4px; background: #aaf8de" class="ep-chosen-parcel-machine">%1s</span><br><span class="italic">%3s</span>',
+					esc_html__( 'Selected parcel machine', 'inpost-for-woocommerce' ),
+					esc_attr( $parcel_machine_id ),
+					esc_html( $parcel_desc )
+				);
 			}
 		}
 
@@ -744,7 +745,9 @@ class EasyPack extends inspire_Plugin4 {
 
 		if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
 			// HPOS usage is enabled.
-			$post_id = isset( $_GET['id'] ) ? sanitize_text_field( $_GET['id'] ) : null;
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin screen detection for asset enqueue; read-only.
+			$post_id = isset( $_GET['id'] ) ? sanitize_text_field( wp_unslash( $_GET['id'] ) ) : null;
+			// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 			if ( $post_id ) {
 				$post_type = get_post_type( $post_id );
@@ -758,7 +761,9 @@ class EasyPack extends inspire_Plugin4 {
 			}
 		} else {
 
-			$post_id = isset( $_GET['post'] ) ? sanitize_text_field( $_GET['post'] ) : null;
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin screen detection for asset enqueue; read-only.
+			$post_id = isset( $_GET['post'] ) ? sanitize_text_field( wp_unslash( $_GET['post'] ) ) : null;
+			// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 			if ( $post_id ) {
 				$post_type = get_post_type( $post_id );
@@ -794,7 +799,9 @@ class EasyPack extends inspire_Plugin4 {
 		}
 
 		if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin settings screen detection for asset enqueue; read-only.
 			if ( isset( $_GET['tab'] ) && 'easypack_general' === $_GET['tab'] ) {
+				// phpcs:enable WordPress.Security.NonceVerification.Recommended
 				wp_register_script(
 					'easypack-admin-settings-page',
 					$this->getPluginJs() . 'admin-settings-page.js',
@@ -824,7 +831,9 @@ class EasyPack extends inspire_Plugin4 {
 		}
 
 		if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin settings screen detection for asset enqueue; read-only.
 			if ( isset( $_GET['tab'] ) && 'shipping' === $_GET['tab'] && isset( $_GET['instance_id'] ) ) {
+				// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 				wp_enqueue_media(); // logo upload dependency.
 
@@ -1128,9 +1137,12 @@ class EasyPack extends inspire_Plugin4 {
 				$parcel_machine_id = substr( $parcel_machine_id, 3 );
 			}
 
-			update_post_meta( $order_id, '_parcel_machine_id', $parcel_machine_id );
 			$order->update_meta_data( '_parcel_machine_id', $parcel_machine_id );
 
+			if ( ! empty( $request_body['extensions']['inpost']['inpost-parcel-locker-description'] ) ) {
+				$parcel_machine_description = sanitize_text_field( $request_body['extensions']['inpost']['inpost-parcel-locker-description'] );
+				$order->update_meta_data( '_parcel_machine_desc', $parcel_machine_description );
+			}
 		} else {
 
 			// additional check if used Google Pay payment method - we extract paczkomat number from WC session.
@@ -1145,7 +1157,6 @@ class EasyPack extends inspire_Plugin4 {
 							$inpost_pl_paczkomat = substr( $inpost_pl_paczkomat, 3 );
 						}
 
-						update_post_meta( $order_id, '_parcel_machine_id', $inpost_pl_paczkomat );
 						$order->update_meta_data( '_parcel_machine_id', $inpost_pl_paczkomat );
 					}
 					// Clear session data.
@@ -1248,8 +1259,8 @@ class EasyPack extends inspire_Plugin4 {
 			}
 		}
 
-		if ( isset( $_POST['all_data'] ) ) {
-			$data_return = $_POST['all_data'];
+		if ( isset( $_POST['all_data'] ) && is_array( $_POST['all_data'] ) ) {
+			$data_return = map_deep( wp_unslash( $_POST['all_data'] ), 'sanitize_text_field' );
 		} else {
 			wp_send_json( array( 'error' => esc_html__( 'Error in data', 'inpost-for-woocommerce' ) ) );
 		}
@@ -1513,6 +1524,7 @@ class EasyPack extends inspire_Plugin4 {
 	 * @return void
 	 */
 	public function load_plugin_textdomain() {
+		// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- Required for WordPress + Bedrock where automatic textdomain loading may not apply.
 		load_plugin_textdomain(
 			'inpost-for-woocommerce',
 			false,
@@ -1709,6 +1721,7 @@ class EasyPack extends inspire_Plugin4 {
 
 		$fs_instance_id = '';
 
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified by WooCommerce checkout before woocommerce_checkout_update_order_meta.
 		if ( ! empty( $_POST['parcel_machine_id'] ) ) {
 			$paczkomat_id = sanitize_text_field( wp_unslash( $_POST['parcel_machine_id'] ) );
 			if ( 'PL_' === substr( $paczkomat_id, 0, 3 ) ) {
@@ -1721,6 +1734,7 @@ class EasyPack extends inspire_Plugin4 {
 			$paczkomat_desc = sanitize_text_field( wp_unslash( $_POST['parcel_machine_desc'] ) );
 			$order->update_meta_data( '_parcel_machine_desc', $paczkomat_desc );
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		// save easypack method name in metadata to show later required metabox in order details.
 		if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
@@ -1789,7 +1803,9 @@ class EasyPack extends inspire_Plugin4 {
 			);
 
 			if ( in_array( $selected_shipping_method_name, $locker_require_methods, true ) || in_array( $fs_method_name, $locker_require_methods, true ) ) {
+				// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified by WooCommerce checkout before woocommerce_checkout_process.
 				if ( empty( $_POST['parcel_machine_id'] ) ) {
+					// phpcs:enable WordPress.Security.NonceVerification.Missing
 					if ( ! $alert_shown ) {
 						$alert_shown = true;
 						if ( 'pl-PL' === get_bloginfo( 'language' ) ) {
@@ -2105,15 +2121,20 @@ class EasyPack extends inspire_Plugin4 {
 				if ( function_exists( 'wc_get_logger' ) ) {
 					\wc_get_logger()->debug( 'INPOST create_package automatically: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
 					\wc_get_logger()->debug( 'DATA to API: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
 					\wc_get_logger()->debug( 'RESPONSE from API: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
 				}
 			} catch ( Exception $e ) {
 				if ( function_exists( 'wc_get_logger' ) ) {
 					\wc_get_logger()->debug( 'INPOST create_package automatically Exception: ', array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $order_id, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-auto-order-' . $order_id ) );
 				}
 			}

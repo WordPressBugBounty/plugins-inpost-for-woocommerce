@@ -385,7 +385,7 @@ class EasyPackBulkOrders {
 		}
 
 		// Verify that the nonce is valid.
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( wp_unslash( $_POST['nonce'] ), 'easypack-bulk-actions' ) ) {
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'easypack-bulk-actions' ) ) {
 			$return_content = array(
 				'status'  => 'bad',
 				'message' => esc_html__( 'Bad nonce', 'inpost-for-woocommerce' ),

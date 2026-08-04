@@ -136,6 +136,7 @@ class Geowidget_v5 {
 
 		// only on settings page.
 		if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin settings tab routing; read-only.
 			if ( isset( $_GET['tab'] ) && 'easypack_general' === $_GET['tab'] ) {
 				// color picker on settings page.
 				wp_enqueue_style( 'wp-color-picker' );
@@ -143,6 +144,7 @@ class Geowidget_v5 {
 				add_action( 'admin_footer', array( $this, 'easypack_color_picker_script' ), 99 );
 
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		}
 
 		if ( EasyPack_Helper()->is_admin_orders_or_plugin_settings_related_page() ) {

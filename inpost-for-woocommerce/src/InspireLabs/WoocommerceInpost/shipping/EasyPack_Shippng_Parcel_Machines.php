@@ -487,16 +487,19 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		public function process_admin_options() {
 			parent::process_admin_options();
 
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified by WooCommerce shipping settings save before woocommerce_update_options_shipping_{id}.
 			if ( isset( $_POST['rates'] ) && is_array( $_POST['rates'] ) ) {
 
 				$save_rates = array();
+				$rates      = map_deep( wp_unslash( $_POST['rates'] ), 'sanitize_text_field' );
 
-				foreach ( $_POST['rates'] as $key => $rate ) {
-					$save_rates[ (int) $key ] = array_map( 'sanitize_text_field', $rate );
+				foreach ( $rates as $key => $rate ) {
+					$save_rates[ (int) $key ] = $rate;
 				}
 
 				update_option( 'woocommerce_' . $this->id . '_' . $this->instance_id . '_rates', $save_rates, false );
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 		}
 
 		public function calculate_shipping_free_shipping( $package ) {
@@ -825,6 +828,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 					if ( false === $this->is_method_courier() && $at_least_one_physical_product ) {
 
+						// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified by WooCommerce checkout before woocommerce_after_checkout_validation.
 						if ( empty( $_POST['parcel_machine_id'] ) ) {
 
 							if ( ! $alert_shown ) {
@@ -836,6 +840,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 								}
 							}
 						}
+						// phpcs:enable WordPress.Security.NonceVerification.Missing
 					}
 				}
 			}
@@ -1112,8 +1117,11 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 				if ( function_exists( 'wc_get_logger' ) ) {
 					\wc_get_logger()->debug( 'INPOST create shipment Exception: ', array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+                    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $order_id, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+                    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+                    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
 				}
 
@@ -1134,6 +1142,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 				EasyPack_Helper()->set_order_status_completed( $order_id );
 
+				// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in EasyPack_AJAX::ajax_easypack() (easypack_nonce) or EasyPackBulkOrders (easypack-bulk-actions).
 				if ( isset( $_POST['action'] ) && $_POST['action'] === 'easypack_bulk_create_shipments' ) {
 					if ( isset( $shipment_data['tracking'] ) && ! empty( $shipment_data['tracking'] ) ) {
 						$ret['tracking_number'] = $shipment_data['tracking'];
@@ -1150,6 +1159,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 					$ret['ref_number'] = $shipment_array['reference'];
 					$ret['service']    = $shipment_data['service'];
 				}
+				// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 				if ( 'yes' === get_option( 'easypack_delivery_notice' ) ) {
 					wp_schedule_single_event(
@@ -1291,7 +1301,8 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 		 */
 		public static function ajax_create_shipment_model() {
 
-			$order_id = (int) sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in EasyPack_AJAX::ajax_easypack() (easypack_nonce) or EasyPackBulkOrders (easypack-bulk-actions).
+			$order_id = isset( $_POST['order_id'] ) ? (int) sanitize_text_field( wp_unslash( $_POST['order_id'] ) ) : 0;
 
 			$order = wc_get_order( $order_id );
 			if ( ! $order || is_wp_error( $order ) || ! is_object( $order ) ) {
@@ -1307,16 +1318,16 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 			// if Bulk create shipments.
 			if ( isset( $_POST['action'] ) && 'easypack_bulk_create_shipments' === $_POST['action'] ) {
+				$locker_size = isset( $_POST['locker_size'] ) ? sanitize_text_field( wp_unslash( $_POST['locker_size'] ) ) : '';
 
-				if ( 'easypack_bulk_create_shipments_A' === $_POST['locker_size'] ) {
+				if ( 'easypack_bulk_create_shipments_A' === $locker_size ) {
 					$parcels = array( 'small' );
-				} elseif ( 'easypack_bulk_create_shipments_B' === $_POST['locker_size'] ) {
+				} elseif ( 'easypack_bulk_create_shipments_B' === $locker_size ) {
 					$parcels = array( 'medium' );
-				} elseif ( 'easypack_bulk_create_shipments_C' === $_POST['locker_size'] ) {
+				} elseif ( 'easypack_bulk_create_shipments_C' === $locker_size ) {
 					$parcels = array( 'large' );
 				} else {
-					$parcels = Easypack_Helper()->get_woo_order_meta( $order_id, '_easypack_parcels' );
-					$parcels = ! empty( $parcels ) ? $parcels : array( Easypack_Helper()->get_parcel_size_from_settings( $order_id ) );
+					$parcels = array( Easypack_Helper()->get_parcel_size_from_settings( $order_id ) );
 				}
 
 				$parcel_machine_id = Easypack_Helper()->get_woo_order_meta( $order_id, '_parcel_machine_id' );
@@ -1339,7 +1350,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 						: '';
 
 				if ( isset( $_POST['insurance_amounts'] ) && is_array( $_POST['insurance_amounts'] ) ) {
-					$insurance_amounts = array_map( 'sanitize_text_field', $_POST['insurance_amounts'] );
+					$insurance_amounts = array_map( 'sanitize_text_field', wp_unslash( $_POST['insurance_amounts'] ) );
 
 					if ( isset( $insurance_amounts[0] ) && is_numeric( $insurance_amounts[0] ) && floatval( $insurance_amounts[0] ) > 0 ) {
 						$insurance_amount = $insurance_amounts[0];
@@ -1355,9 +1366,10 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 						: $order_id;
 
 				$parcels = isset( $_POST['parcels'] )
-						? array_map( 'sanitize_text_field', $_POST['parcels'] )
+						? array_map( 'sanitize_text_field', wp_unslash( $_POST['parcels'] ) )
 						: array( get_option( 'easypack_default_package_size' ) );
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			$shipment = $shipmentService->create_shipment_object_by_shiping_data(
 				$parcels,
@@ -1384,7 +1396,9 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				'status'  => 'ok',
 				'message' => '',
 			);
-			$order_id         = sanitize_text_field( $_POST['order_id'] );
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in EasyPack_AJAX::ajax_easypack() (easypack_nonce) before cancel callback.
+			$order_id         = isset( $_POST['order_id'] ) ? sanitize_text_field( wp_unslash( $_POST['order_id'] ) ) : '';
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 			$order            = wc_get_order( $order_id );
 			$post             = get_post( $order_id );
 			$shipment_service = EasyPack::EasyPack()->get_shipment_service();
@@ -1762,6 +1776,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 				return $shipment_data;
 			}
 
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in EasyPack_AJAX::ajax_easypack() (easypack_nonce) or EasyPackBulkOrders (easypack-bulk-actions) before save_to_order_meta.
 			if ( isset( $_POST['shipping_method_changed'] ) && 'true' === $_POST['shipping_method_changed'] ) {
 				$selected_inpost_method = '';
 				if ( ! empty( $_POST['selected_inpost_method'] ) ) {
@@ -1782,6 +1797,7 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 			if ( isset( $_POST['easypack_additional_package'] ) && 'true' === $_POST['easypack_additional_package'] ) {
 				$is_additional_package_processing = true;
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			if ( ! $is_additional_package_processing ) {
 

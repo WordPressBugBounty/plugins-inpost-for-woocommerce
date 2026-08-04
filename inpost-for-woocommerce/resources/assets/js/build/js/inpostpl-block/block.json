@@ -1,7 +1,7 @@
 {
   "apiVersion": 3,
   "name": "inpost-pl/block",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "title": "Inpost PL Shipping Options Block",
   "category": "woocommerce",
   "description": "Adds map button and add input to save delivery point data.",

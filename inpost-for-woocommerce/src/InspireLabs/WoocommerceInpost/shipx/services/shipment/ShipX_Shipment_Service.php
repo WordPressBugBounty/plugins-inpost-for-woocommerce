@@ -341,6 +341,7 @@ class ShipX_Shipment_Service {
 
 		if ( true === $is_service_courier_type ) {
 
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in AJAX (easypack_nonce) or bulk (easypack-bulk-actions) before create_shipment_object_by_shiping_data.
 			if ( isset( $_POST['easypack_sms'] ) && $_POST['easypack_sms'] === 'true' ) {
 				$additional_services[] = $shipment::ADDITIONAL_SERVICES_SMS;
 			}
@@ -418,6 +419,7 @@ class ShipX_Shipment_Service {
 				$parcel->setIsNonstandard( $non_standard );
 				$parcelsCollection[] = $parcel;
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 		} else {
 
 			foreach ( $parcels as $counter_id => $p ) {

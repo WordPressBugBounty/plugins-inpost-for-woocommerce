@@ -53,6 +53,7 @@ class TrackingInfoEmail {
 					}
 				} catch ( Exception $e ) {
 					\wc_get_logger()->debug( 'Exception when trying to get package data for order_id: ' . $order_id, array( 'source' => 'inpost-pl-log' ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-log' ) );
 				}
 

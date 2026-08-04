@@ -43,7 +43,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Economy_COD' ) ) {
 
 		public static function ajax_create_shipment_model() {
 
-			$order_id = (int) sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in EasyPack_AJAX::ajax_easypack() (easypack_nonce) or EasyPackBulkOrders (easypack-bulk-actions).
+			$order_id = isset( $_POST['order_id'] ) ? (int) sanitize_text_field( wp_unslash( $_POST['order_id'] ) ) : 0;
 
 			$order = wc_get_order( $order_id );
 			if ( ! $order || is_wp_error( $order ) || ! is_object( $order ) ) {
@@ -61,28 +62,25 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Economy_COD' ) ) {
 
 			// if Bulk create shipments.
 			if ( isset( $_POST['action'] ) && 'easypack_bulk_create_shipments' === $_POST['action'] ) {
+				$locker_size = isset( $_POST['locker_size'] ) ? sanitize_text_field( wp_unslash( $_POST['locker_size'] ) ) : '';
 
 				$parcels = array();
 
-				if ( 'easypack_bulk_create_shipments_A' === $_POST['locker_size'] ) {
+				if ( 'easypack_bulk_create_shipments_A' === $locker_size ) {
 					$parcels = array( 'small' );
-				} elseif ( 'easypack_bulk_create_shipments_B' === $_POST['locker_size'] ) {
+				} elseif ( 'easypack_bulk_create_shipments_B' === $locker_size ) {
 					$parcels = array( 'medium' );
-				} elseif ( 'easypack_bulk_create_shipments_C' === $_POST['locker_size'] ) {
+				} elseif ( 'easypack_bulk_create_shipments_C' === $locker_size ) {
 					$parcels = array( 'large' );
 				} else {
-
-					$parcels = Easypack_Helper()->get_woo_order_meta( $order_id, '_easypack_parcels' );
-					$parcels = ! empty( $parcels ) ? $parcels : array( Easypack_Helper()->get_parcel_size_from_settings( $order_id ) );
+					$parcels = array( Easypack_Helper()->get_parcel_size_from_settings( $order_id ) );
 				}
 
 				$commercial_product_identifier = static::$instance->get_option( 'commercial_product_identifier' );
 
 				$insurance_amount = EasyPack_Helper()->get_insurance_amount( $order_id );
 
-				$cod_amount = isset( $parcels[0]['cod_amount'] )
-					? $parcels[0]['cod_amount']
-					: $order_amount;
+				$cod_amount = $order_amount;
 
 				$reference_number = EasyPack_Helper()->get_maybe_custom_reference_number( $order_id );
 
@@ -98,19 +96,19 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Economy_COD' ) ) {
 			} else {
 
 				$commercial_product_identifier = isset( $_POST['commercial_product_identifier'] )
-					? sanitize_text_field( $_POST['commercial_product_identifier'] )
+					? sanitize_text_field( wp_unslash( $_POST['commercial_product_identifier'] ) )
 					: '';
 
 				$parcel_machine_id = isset( $_POST['parcel_machine_id'] )
-					? sanitize_text_field( $_POST['parcel_machine_id'] ) : '';
+					? sanitize_text_field( wp_unslash( $_POST['parcel_machine_id'] ) ) : '';
 
 				$cod_amounts = isset( $_POST['cod_amounts'] )
-					? array_map( 'sanitize_text_field', $_POST['cod_amounts'] )
+					? array_map( 'sanitize_text_field', wp_unslash( $_POST['cod_amounts'] ) )
 					: null;
 				$cod_amount  = isset( $cod_amounts[0] ) ? $cod_amounts[0] : $order_amount;
 
 				if ( isset( $_POST['insurance_amounts'] ) && is_array( $_POST['insurance_amounts'] ) ) {
-					$insurance_amounts = array_map( 'sanitize_text_field', $_POST['insurance_amounts'] );
+					$insurance_amounts = array_map( 'sanitize_text_field', wp_unslash( $_POST['insurance_amounts'] ) );
 
 					if ( isset( $insurance_amounts[0] ) && is_numeric( $insurance_amounts[0] ) && floatval( $insurance_amounts[0] ) > 0 ) {
 						$insurance_amount = $insurance_amounts[0];
@@ -118,17 +116,18 @@ if ( ! class_exists( 'EasyPack_Shipping_Parcel_Machines_Economy_COD' ) ) {
 				}
 
 				$send_method = isset( $_POST['send_method'] )
-					? sanitize_text_field( $_POST['send_method'] )
+					? sanitize_text_field( wp_unslash( $_POST['send_method'] ) )
 					: 'parcel_machine';
 
 				$reference_number = isset( $_POST['reference_number'] )
-					? sanitize_text_field( $_POST['reference_number'] )
+					? sanitize_text_field( wp_unslash( $_POST['reference_number'] ) )
 					: $order_id;
 
 				$parcels = isset( $_POST['parcels'] )
-					? array_map( 'sanitize_text_field', $_POST['parcels'] )
+					? array_map( 'sanitize_text_field', wp_unslash( $_POST['parcels'] ) )
 					: array( get_option( 'easypack_default_package_size' ) );
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			$shipment = $shipmentService->create_shipment_object_by_shiping_data(
 				$parcels,

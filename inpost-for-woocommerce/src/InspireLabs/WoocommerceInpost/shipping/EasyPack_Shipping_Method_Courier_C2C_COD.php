@@ -40,7 +40,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C_COD' ) ) {
 
 		public static function ajax_create_shipment_model() {
 
-			$order_id = (int) sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in EasyPack_AJAX::ajax_easypack() (easypack_nonce) or EasyPackBulkOrders (easypack-bulk-actions).
+			$order_id = isset( $_POST['order_id'] ) ? (int) sanitize_text_field( wp_unslash( $_POST['order_id'] ) ) : 0;
 
 			$order = wc_get_order( $order_id );
 			if ( ! $order || is_wp_error( $order ) || ! is_object( $order ) ) {
@@ -58,20 +59,18 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C_COD' ) ) {
 
 			// if Bulk create shipments.
 			if ( isset( $_POST['action'] ) && 'easypack_bulk_create_shipments' === $_POST['action'] ) {
-				if ( 'easypack_bulk_create_shipments_A' === $_POST['locker_size'] ) {
+				$locker_size = isset( $_POST['locker_size'] ) ? sanitize_text_field( wp_unslash( $_POST['locker_size'] ) ) : '';
+				if ( 'easypack_bulk_create_shipments_A' === $locker_size ) {
 					$parcels = array( 'small' );
-				} elseif ( 'easypack_bulk_create_shipments_B' === $_POST['locker_size'] ) {
+				} elseif ( 'easypack_bulk_create_shipments_B' === $locker_size ) {
 					$parcels = array( 'medium' );
-				} elseif ( 'easypack_bulk_create_shipments_C' === $_POST['locker_size'] ) {
+				} elseif ( 'easypack_bulk_create_shipments_C' === $locker_size ) {
 					$parcels = array( 'large' );
 				} else {
-					$parcels = Easypack_Helper()->get_woo_order_meta( $order_id, '_easypack_parcels' );
-					$parcels = ! empty( $parcels ) ? $parcels : array( Easypack_Helper()->get_parcel_size_from_settings( $order_id ) );
+					$parcels = array( Easypack_Helper()->get_parcel_size_from_settings( $order_id ) );
 				}
 
-				$cod_amount = isset( $parcels[0]['cod_amount'] )
-					? $parcels[0]['cod_amount']
-					: $order_amount;
+				$cod_amount = $order_amount;
 
 				$insurance_amount = EasyPack_Helper()->get_insurance_amount( $order_id );
 
@@ -87,12 +86,12 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C_COD' ) ) {
 			} else {
 
 				$cod_amounts = isset( $_POST['cod_amounts'] )
-					? array_map( 'sanitize_text_field', $_POST['cod_amounts'] )
+					? array_map( 'sanitize_text_field', wp_unslash( $_POST['cod_amounts'] ) )
 					: null;
 				$cod_amount  = isset( $cod_amounts[0] ) ? $cod_amounts[0] : $order_amount;
 
 				if ( isset( $_POST['insurance_amounts'] ) && is_array( $_POST['insurance_amounts'] ) ) {
-					$insurance_amounts = array_map( 'sanitize_text_field', $_POST['insurance_amounts'] );
+					$insurance_amounts = array_map( 'sanitize_text_field', wp_unslash( $_POST['insurance_amounts'] ) );
 
 					if ( isset( $insurance_amounts[0] ) && is_numeric( $insurance_amounts[0] ) && floatval( $insurance_amounts[0] ) > 0 ) {
 						$insurance_amount = $insurance_amounts[0];
@@ -100,17 +99,18 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_C2C_COD' ) ) {
 				}
 
 				$send_method = isset( $_POST['send_method'] )
-					? sanitize_text_field( $_POST['send_method'] )
+					? sanitize_text_field( wp_unslash( $_POST['send_method'] ) )
 					: 'parcel_machine';
 
 				$reference_number = isset( $_POST['reference_number'] )
-					? sanitize_text_field( $_POST['reference_number'] )
+					? sanitize_text_field( wp_unslash( $_POST['reference_number'] ) )
 					: $order_id;
 
 				$parcels = isset( $_POST['parcels'] )
-					? array_map( 'sanitize_text_field', $_POST['parcels'] )
+					? array_map( 'sanitize_text_field', wp_unslash( $_POST['parcels'] ) )
 					: array( EasyPack_Helper()->get_default_size_c2c( $order_id ) );
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			$shipment = $shipmentService->create_shipment_object_by_shiping_data(
 				$parcels,

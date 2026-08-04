@@ -1,4 +1,11 @@
-<?php /** @var ShipX_Shipment_Model $shipment */
+<?php
+/**
+ * Get label button script for order metabox.
+ *
+ * @var ShipX_Shipment_Model $shipment
+ * @var int                  $order_id
+ * @var WC_Order             $order The order object.
+ */
 
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 
@@ -6,13 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly.
 
+if ( ! $shipment instanceof ShipX_Shipment_Model
+	|| empty( $shipment->getInternalData()->getTrackingNumber() ) ) {
+	return;
+}
 ?>
-
-<?php
-if ( $shipment instanceof ShipX_Shipment_Model
-			&&
-			! empty( $shipment->getInternalData()->getTrackingNumber() ) ) :
-	?>
 	<script type="text/javascript">
 		document.addEventListener('click', function (e) {
 			e = e || window.event;
@@ -147,4 +152,3 @@ if ( $shipment instanceof ShipX_Shipment_Model
 			}
 		});
 	</script>
-<?php endif ?>

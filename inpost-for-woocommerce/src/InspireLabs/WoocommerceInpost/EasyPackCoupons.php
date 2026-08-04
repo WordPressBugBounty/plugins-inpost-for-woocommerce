@@ -65,6 +65,7 @@ class EasyPackCoupons
     function easypack_save_coupon_allowed_methods( $post_id, $coupon ) {
 
         $allowed_methods = [];
+        // phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified by WooCommerce coupon save before woocommerce_coupon_options_save.
         foreach ( $_POST as $key => $value ) {
 
             if ( 0 === strpos( $key, 'easypack_') && $value === 'yes') {
@@ -73,12 +74,13 @@ class EasyPackCoupons
             }
         }
 
-        if( ! empty( $allowed_methods) && $_POST['discount_type'] === 'easypack_inpost_discount' ) {
+        if ( ! empty( $allowed_methods ) && isset( $_POST['discount_type'] ) && 'easypack_inpost_discount' === $_POST['discount_type'] ) {
             //clear shipping cache
             \WC_Cache_Helper::get_transient_version( 'shipping', true );
 
             update_post_meta($post_id, self::META_ID, $allowed_methods );
         }
+        // phpcs:enable WordPress.Security.NonceVerification.Missing
     }
 
 

@@ -100,14 +100,14 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 					$response
 				);
 
-				if ( isset( $response['service'] ) && $response['service'] === 'unavailable' ) {
+				if ( isset( $response['service'] ) && 'unavailable' === $response['service'] ) {
 					$ret['status']  = 'error';
 					$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' )
 						. __( 'The organization does not have an available service on its account', 'inpost-for-woocommerce' );
 				}
 
 				if ( isset( $response['selected_offer']['carrier'] )
-					&& $response['selected_offer']['carrier'] === 'carrier_inpost_courier_unavailable'
+					&& 'carrier_inpost_courier_unavailable' === $response['selected_offer']['carrier']
 				) {
 					$ret['status']  = 'error';
 					$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' )
@@ -115,7 +115,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 				}
 
 				if ( isset( $response['parcels']['dimensions'] )
-					&& $response['parcels']['dimensions'] === 'invalid'
+					&& 'invalid' === $response['parcels']['dimensions']
 				) {
 					$ret['status']  = 'error';
 					$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' )
@@ -123,7 +123,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 				}
 
 				if ( isset( $response['parcels']['weight'] )
-					&& $response['parcels']['weight'] === 'invalid'
+					&& 'invalid' === $response['parcels']['weight']
 				) {
 					$ret['status']  = 'error';
 					$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' )
@@ -131,7 +131,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 				}
 
 				if ( isset( $response['transactions']['details'] )
-					&& $response['transactions']['details'] !== null
+					&& null !== $response['transactions']['details']
 				) {
 					$ret['message'] = __( 'There are some transaction details: ', 'inpost-for-woocommerce' )
 						. esc_html( $response['transactions']['details'] );
@@ -140,8 +140,11 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 
 				if ( function_exists( 'wc_get_logger' ) ) {
 					\wc_get_logger()->debug( 'INPOST create shipment Exception: ', array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $order_id, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
 				}
 
@@ -149,7 +152,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 				$ret['message'] = __( 'There are some errors. Please fix it: <br>', 'inpost-for-woocommerce' ) . EasyPack_API()->translate_error( $e->getMessage() );
 			}
 
-			if ( $ret['status'] == 'ok' ) {
+			if ( 'ok' === $ret['status'] ) {
 				$order = wc_get_order( $order_id );
 
 				$order->add_order_note(
@@ -159,7 +162,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 
 				EasyPack_Helper()->set_order_status_completed( $order_id );
 
-				if ( isset( $_POST['action'] ) && $_POST['action'] === 'easypack_bulk_create_shipments' ) {
+				// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in EasyPack_AJAX::ajax_easypack() (easypack_nonce) or EasyPackBulkOrders (easypack-bulk-actions).
+				if ( isset( $_POST['action'] ) && 'easypack_bulk_create_shipments' === $_POST['action'] ) {
 					if ( isset( $shipment_data['tracking'] ) && ! empty( $shipment_data['tracking'] ) ) {
 						$ret['tracking_number'] = $shipment_data['tracking'];
 					} else {
@@ -175,6 +179,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 					$ret['ref_number'] = $shipment_array['reference'];
 					$ret['service']    = $shipment_data['service'];
 				}
+				// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 				if ( 'yes' === get_option( 'easypack_delivery_notice' ) ) {
 					wp_schedule_single_event(

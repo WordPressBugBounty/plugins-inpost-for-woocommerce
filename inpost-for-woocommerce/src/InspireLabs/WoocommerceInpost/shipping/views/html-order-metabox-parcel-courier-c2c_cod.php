@@ -153,18 +153,12 @@ if ( ! empty(
 						'label'       => '',
 					);
 
-					$saved_meta_data = get_post_meta( $order_id, '_easypack_parcels', true );
-
-					$saved_package_size = isset( $saved_meta_data[0]['package_size'] )
-							? $saved_meta_data[0]['package_size']
-							: Easypack_Helper()->get_parcel_size_from_settings( $order_id );
+					$saved_package_size = Easypack_Helper()->get_parcel_size_from_settings( $order_id );
 
 					woocommerce_form_field( 'parcel[]', $params, $saved_package_size );
 
 
-					$cod_amount = isset( $saved_meta_data[0]['cod_amount'] )
-							? $saved_meta_data[0]['cod_amount']
-							: $order->get_total();
+					$cod_amount = $order->get_total();
 
 					?>
 					<?php esc_html_e( 'COD amount: ', 'inpost-for-woocommerce' ); ?>

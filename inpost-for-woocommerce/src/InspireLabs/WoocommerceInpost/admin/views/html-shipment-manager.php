@@ -255,6 +255,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	</form>
 	<form id="easypack_shipment_form" method="post">
+		<?php wp_nonce_field( 'easypack_shipment_manager', 'easypack_shipment_nonce' ); ?>
 		<input type="hidden" id="easypack_posting_confirmation_request"
 				name="easypack_posting_confirmation_request" value="0"/>
 		<input type="hidden" id="easypack_create_manifest_input"
@@ -280,7 +281,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		?>
 		<?php
 		$total_pagination_pages = $view_var_shipment_manager_list_table->custom_pagination;
-		$current_page           = isset( $_GET['shipments_page'] ) ? (int) sanitize_text_field( $_GET['shipments_page'] ) : 1;
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin shipment list UI pagination; read-only.
+		$current_page           = isset( $_GET['shipments_page'] ) ? (int) sanitize_text_field( wp_unslash( $_GET['shipments_page'] ) ) : 1;
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		$next_page              = ( $current_page + 1 ) <= $total_pagination_pages ? $current_page + 1 : $total_pagination_pages;
 		$previous_page          = ( $current_page - 1 ) >= $total_pagination_pages ? $current_page - 1 : 1;
 		$is_disabled_first      = $current_page === 1 ? 'disabled' : null;

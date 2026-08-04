@@ -76,6 +76,7 @@ class EasyPack_Webhook {
 		if ( ! $request->is_json_content_type() ) {
 			if ( function_exists( 'wc_get_logger' ) ) {
 				\wc_get_logger()->debug( 'Not JSON', array( 'source' => 'inpost-pl-webhook' ) );
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 				\wc_get_logger()->debug( print_r( $request->get_body(), true ), array( 'source' => 'inpost-pl-webhook' ) );
 			}
 		}
@@ -94,6 +95,7 @@ class EasyPack_Webhook {
 
 			if ( function_exists( 'wc_get_logger' ) ) {
 				\wc_get_logger()->debug( 'Error:', array( 'source' => 'inpost-pl-webhook' ) );
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 				\wc_get_logger()->debug( print_r( $exception_data, true ), array( 'source' => 'inpost-pl-webhook' ) );
 			}
 
@@ -124,6 +126,7 @@ class EasyPack_Webhook {
 
 			if ( function_exists( 'wc_get_logger' ) ) {
 				\wc_get_logger()->debug( 'Organisation ID does not match:', array( 'source' => 'inpost-pl-webhook' ) );
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 				\wc_get_logger()->debug( print_r( $webhook_body, true ), array( 'source' => 'inpost-pl-webhook' ) );
 			}
 
@@ -143,6 +146,7 @@ class EasyPack_Webhook {
 		} elseif ( function_exists( 'wc_get_logger' ) ) {
 
 				\wc_get_logger()->debug( 'Tracking number not found:', array( 'source' => 'inpost-pl-webhook' ) );
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 				\wc_get_logger()->debug( print_r( $webhook_body, true ), array( 'source' => 'inpost-pl-webhook' ) );
 		}
 
@@ -155,6 +159,7 @@ class EasyPack_Webhook {
 
 			if ( function_exists( 'wc_get_logger' ) ) {
 				\wc_get_logger()->debug( 'Woo order ID not found:', array( 'source' => 'inpost-pl-webhook' ) );
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 				\wc_get_logger()->debug( print_r( $webhook_body, true ), array( 'source' => 'inpost-pl-webhook' ) );
 			}
 
@@ -163,6 +168,7 @@ class EasyPack_Webhook {
 
 		if ( function_exists( 'wc_get_logger' ) ) {
 			\wc_get_logger()->debug( 'Webhook received:', array( 'source' => 'inpost-pl-webhook-order-' . $this->debud_order_id ) );
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 			\wc_get_logger()->debug( print_r( $webhook_body, true ), array( 'source' => 'inpost-pl-webhook-order-' . $this->debud_order_id ) );
 		}
 
@@ -181,6 +187,7 @@ class EasyPack_Webhook {
 
 			if ( function_exists( 'wc_get_logger' ) ) {
 				\wc_get_logger()->debug( 'Webhook status not found:', array( 'source' => 'inpost-pl-webhook-order-' . $this->debud_order_id ) );
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 				\wc_get_logger()->debug( print_r( $webhook_body, true ), array( 'source' => 'inpost-pl-webhook-order-' . $this->debud_order_id ) );
 			}
 
@@ -197,6 +204,7 @@ class EasyPack_Webhook {
 
 			if ( function_exists( 'wc_get_logger' ) ) {
 				\wc_get_logger()->debug( 'WC Order not found for order_id: ' . $this->debud_order_id, array( 'source' => 'inpost-pl-webhook-order-' . $this->debud_order_id ) );
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 				\wc_get_logger()->debug( print_r( $wc_order, true ), array( 'source' => 'inpost-pl-webhook-order-' . $this->debud_order_id ) );
 			}
 
@@ -326,6 +334,7 @@ class EasyPack_Webhook {
 		$meta_key   = '_easypack_parcel_tracking';
 		$meta_value = $tracking_number;
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One-off webhook order lookup by tracking meta; caching not applicable.
 		if ( 'yes' === get_option( 'woocommerce_custom_orders_table_enabled' ) ) {
 
 			$order_ids = $wpdb->get_col(
@@ -381,6 +390,7 @@ class EasyPack_Webhook {
 				)
 			);
 		}
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( ! empty( $order_ids ) && isset( $order_ids[0] ) ) {
 			$order_id = $order_ids[0];

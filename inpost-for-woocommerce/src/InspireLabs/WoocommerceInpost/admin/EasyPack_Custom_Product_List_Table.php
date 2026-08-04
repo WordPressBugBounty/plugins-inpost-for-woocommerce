@@ -3,7 +3,7 @@
 namespace InspireLabs\WoocommerceInpost\admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 } // Exit if accessed directly.
 
 use InspireLabs\WoocommerceInpost\EasyPack;
@@ -42,9 +42,11 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 
 		$per_page = 20;
 
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin product list UI filters; read-only.
 		if ( isset( $_REQUEST['per_page'] ) && is_numeric( $_REQUEST['per_page'] ) ) {
 			$per_page = intval( $_REQUEST['per_page'] );
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$current_page = $this->get_pagenum();
 		$total_items  = $this->get_total_products();
@@ -112,12 +114,13 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 			$args['lang'] = is_array( $langs ) && ! empty( $langs ) ? implode( ',', $langs ) : '';
 		}
 
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin product list UI filters; read-only.
 		if ( ! empty( $_REQUEST['s'] ) ) {
-			$args['s'] = $_REQUEST['s'];
+			$args['s'] = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
 		}
 
 		if ( ! empty( $_REQUEST['product_cat'] ) ) {
-
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			$args['tax_query'][] = array(
 				'taxonomy' => 'product_cat',
 				'field'    => 'name',
@@ -126,23 +129,26 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 		}
 
 		if ( ! empty( $_REQUEST['product_type'] ) ) {
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			$args['tax_query'][] = array(
 				'taxonomy' => 'product_type',
 				'field'    => 'slug',
 				'terms'    => sanitize_text_field( wp_unslash( $_REQUEST['product_type'] ) ),
 			);
 		}
-		
+
 		if ( ! empty( $_REQUEST['product_shipping_class'] ) ) {
-            $shipping_class_slug = sanitize_text_field( wp_unslash( $_REQUEST['product_shipping_class'] ) );
-            $args['tax_query'] = array(
-                array(
-                    'taxonomy' => 'product_shipping_class',
-                    'field'    => 'slug',
-                    'terms'    => $shipping_class_slug,
-                ),
-            );
-        }
+			$shipping_class_slug = sanitize_text_field( wp_unslash( $_REQUEST['product_shipping_class'] ) );
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			$args['tax_query'] = array(
+				array(
+					'taxonomy' => 'product_shipping_class',
+					'field'    => 'slug',
+					'terms'    => $shipping_class_slug,
+				),
+			);
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$query = new WP_Query( $args );
 		return $query->found_posts;
@@ -157,8 +163,9 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 	 */
 	private function get_products( int $per_page = 20, int $page_number = 1 ) {
 
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin product list UI filters; read-only.
 		if ( ! empty( $_REQUEST['product_qty'] ) ) {
-			$per_page = sanitize_text_field( $_REQUEST['product_qty'] );
+			$per_page = sanitize_text_field( wp_unslash( $_REQUEST['product_qty'] ) );
 		}
 
 		$orderby = 'date';
@@ -171,7 +178,7 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 			'post_status'    => 'publish',
 			'posts_per_page' => $per_page,
 			'orderby'        => $orderby,
-			'order'          => isset( $_REQUEST['order'] ) ? sanitize_text_field( $_REQUEST['order'] ) : 'DESC',
+			'order'          => isset( $_REQUEST['order'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['order'] ) ) : 'DESC',
 			'paged'          => $page_number,
 		);
 
@@ -183,36 +190,39 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 		}
 
 		if ( ! empty( $_REQUEST['s'] ) ) {
-			$args['s'] = sanitize_text_field( $_REQUEST['s'] );
+			$args['s'] = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
 		}
 
 		if ( ! empty( $_REQUEST['product_cat'] ) ) {
-
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			$args['tax_query'][] = array(
 				'taxonomy' => 'product_cat',
 				'field'    => 'name',
-				'terms'    => sanitize_text_field( $_REQUEST['product_cat'] ),
+				'terms'    => sanitize_text_field( wp_unslash( $_REQUEST['product_cat'] ) ),
 			);
 		}
 
 		if ( ! empty( $_REQUEST['product_type'] ) ) {
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			$args['tax_query'][] = array(
 				'taxonomy' => 'product_type',
 				'field'    => 'slug',
-				'terms'    => sanitize_text_field( $_REQUEST['product_type'] ),
+				'terms'    => sanitize_text_field( wp_unslash( $_REQUEST['product_type'] ) ),
 			);
 		}
-		
+
 		if ( ! empty( $_REQUEST['product_shipping_class'] ) ) {
-            $shipping_class_slug = sanitize_text_field( wp_unslash( $_REQUEST['product_shipping_class'] ) );
-            $args['tax_query'] = array(
-                array(
-                    'taxonomy' => 'product_shipping_class',
-                    'field'    => 'slug',
-                    'terms'    => $shipping_class_slug,
-                ),
-            );
-        }
+			$shipping_class_slug = sanitize_text_field( wp_unslash( $_REQUEST['product_shipping_class'] ) );
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			$args['tax_query'] = array(
+				array(
+					'taxonomy' => 'product_shipping_class',
+					'field'    => 'slug',
+					'terms'    => $shipping_class_slug,
+				),
+			);
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$product_query = new WP_Query( $args );
 		return array_map( 'wc_get_product', $product_query->posts );
@@ -499,7 +509,11 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 				</div>
 
 			<form method="get">
-				<input type="hidden" name="page" value="<?php echo esc_attr( $_REQUEST['page'] ); ?>" />
+				<?php
+				// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin product list UI filters; read-only.
+				$page_number = isset( $_REQUEST['page'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) : '';
+				?>
+				<input type="hidden" name="page" value="<?php echo esc_attr( $page_number ); ?>" />
 				<?php
 				$product_table->search_box( 'Szukaj produktów', 'search_id' );
 
@@ -510,7 +524,7 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 						'hierarchical'       => 1,
 						'show_uncategorized' => 0,
 						'name'               => 'product_cat',
-						'selected'           => isset( $_GET['product_cat'] ) ? sanitize_text_field( $_GET['product_cat'] ) : '',
+						'selected'           => isset( $_GET['product_cat'] ) ? sanitize_text_field( wp_unslash( $_GET['product_cat'] ) ) : '',
 						'menu_order'         => false,
 					)
 				);
@@ -537,30 +551,29 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 					'200' => '200',
 					'500' => '500',
 				);
-				
-				// Get all shipping classes.
-                $shipping_classes = array();
-                if( is_object( WC()->shipping() ) ) {
-                    $all_shipping_classes = WC()->shipping()->get_shipping_classes();
-                    foreach ($all_shipping_classes as $shipping_class) {
-                        $shipping_classes[$shipping_class->slug] = $shipping_class->name;
-                    }
-                }
 
-                echo '<select name="product_shipping_class" id="dropdown_shipping_classes">';
-                echo '<option value="">' . esc_html__( 'Per shipping class', 'inpost-for-woocommerce' ) . '</option>';
-                if( ! empty( $shipping_classes ) && is_array( $shipping_classes ) ) {
-                    foreach ( $shipping_classes as $value => $label ) {
-                        echo '<option value="' . esc_attr($value) . '"';
-                        if ( isset( $_GET['product_shipping_class'] ) && $_GET['product_shipping_class'] === $value ) {
-                            echo ' selected="selected"';
-                        }
-                        echo '>' . esc_html( $label ) . '</option>';
-                    }
-                }
-                echo '</select>';
-				
-				
+				// Get all shipping classes.
+				$shipping_classes = array();
+				if ( is_object( WC()->shipping() ) ) {
+					$all_shipping_classes = WC()->shipping()->get_shipping_classes();
+					foreach ( $all_shipping_classes as $shipping_class ) {
+						$shipping_classes[ $shipping_class->slug ] = $shipping_class->name;
+					}
+				}
+
+				echo '<select name="product_shipping_class" id="dropdown_shipping_classes">';
+				echo '<option value="">' . esc_html__( 'Per shipping class', 'inpost-for-woocommerce' ) . '</option>';
+				if ( ! empty( $shipping_classes ) && is_array( $shipping_classes ) ) {
+					foreach ( $shipping_classes as $value => $label ) {
+						echo '<option value="' . esc_attr( $value ) . '"';
+						if ( isset( $_GET['product_shipping_class'] ) && $_GET['product_shipping_class'] === $value ) {
+							echo ' selected="selected"';
+						}
+						echo '>' . esc_html( $label ) . '</option>';
+					}
+				}
+				echo '</select>';
+
 				echo '<select name="per_page" id="dropdown_product_qty">';
 				echo '<option value="">' . esc_html__( 'Per page', 'inpost-for-woocommerce' ) . '</option>';
 				foreach ( $product_qtys as $value => $label ) {
@@ -571,6 +584,7 @@ class EasyPack_Custom_Product_List_Table extends WP_List_Table {
 					echo '>' . esc_html( $label ) . '</option>';
 				}
 				echo '</select>';
+				// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 				submit_button( 'Filter', 'secondary', 'filter_action', false );
 				?>

@@ -92,6 +92,59 @@ function inpost_pl_set_bulk_ui_busy( is_busy ) {
 	}
 }
 
+/** @type {boolean} */
+let inpost_pl_bulk_action_in_progress = false;
+
+/**
+ * Block duplicate bulk Apply clicks while a bulk run is active.
+ *
+ * @return {boolean} True when bulk action may start.
+ */
+function inpost_pl_try_begin_bulk_action() {
+	if ( inpost_pl_bulk_action_in_progress ) {
+		return false;
+	}
+
+	inpost_pl_bulk_action_in_progress = true;
+	inpost_pl_set_bulk_ui_busy( true );
+	jQuery( '#doaction, #doaction2' ).prop( 'disabled', true );
+
+	return true;
+}
+
+/**
+ * @return {void}
+ */
+function inpost_pl_end_bulk_action() {
+	inpost_pl_bulk_action_in_progress = false;
+	inpost_pl_set_bulk_ui_busy( false );
+	jQuery( '#doaction, #doaction2' ).prop( 'disabled', false );
+}
+
+/**
+ * Run bulk callback after validating selection and acquiring the bulk guard.
+ *
+ * @param {function(object): void} callback Receives selected_data from inpost_table_processing().
+ * @return {void}
+ */
+function inpost_pl_run_bulk_with_selection( callback ) {
+	const selected_data = inpost_table_processing();
+
+	if ( typeof selected_data === 'undefined' || selected_data === null ) {
+		return;
+	}
+
+	if ( ! Object.keys( selected_data.orders ).length ) {
+		return;
+	}
+
+	if ( ! inpost_pl_try_begin_bulk_action() ) {
+		return;
+	}
+
+	callback( selected_data );
+}
+
 /**
  * Show shipment error in the InPost status column.
  *
@@ -1103,12 +1156,9 @@ function inpost_pl_handle_bulk_apply_click( e ) {
 	e.stopImmediatePropagation();
 
 	if ( action === 'easypack_bulk_create_shipments_then_labels' ) {
-		const selected_data = inpost_table_processing();
-		if ( typeof selected_data != 'undefined' && selected_data !== null ) {
-			if ( Object.keys( selected_data.orders ).length ) {
-				inpost_process_selected_item( selected_data.orders, 1, selected_data.selected_row_count, form, 0, 1 );
-			}
-		}
+		inpost_pl_run_bulk_with_selection( function ( selected_data ) {
+			inpost_process_selected_item( selected_data.orders, 1, selected_data.selected_row_count, form, 0, 1 );
+		} );
 		return;
 	}
 
@@ -1116,42 +1166,34 @@ function inpost_pl_handle_bulk_apply_click( e ) {
 		|| action === 'easypack_bulk_create_shipments_A'
 		|| action === 'easypack_bulk_create_shipments_B'
 		|| action === 'easypack_bulk_create_shipments_C' ) {
-		const selected_data = inpost_table_processing();
-
-		if ( typeof selected_data != 'undefined' && selected_data !== null ) {
-			if ( Object.keys( selected_data.orders ).length ) {
-				let locker_size = false;
-				if ( action === 'easypack_bulk_create_shipments_A' ) {
-					locker_size = 'easypack_bulk_create_shipments_A';
-				} else if ( action === 'easypack_bulk_create_shipments_B' ) {
-					locker_size = 'easypack_bulk_create_shipments_B';
-				} else if ( action === 'easypack_bulk_create_shipments_C' ) {
-					locker_size = 'easypack_bulk_create_shipments_C';
-				}
-				inpost_process_selected_item( selected_data.orders, 1, selected_data.selected_row_count, form, 0, 0, locker_size );
+		inpost_pl_run_bulk_with_selection( function ( selected_data ) {
+			let locker_size = false;
+			if ( action === 'easypack_bulk_create_shipments_A' ) {
+				locker_size = 'easypack_bulk_create_shipments_A';
+			} else if ( action === 'easypack_bulk_create_shipments_B' ) {
+				locker_size = 'easypack_bulk_create_shipments_B';
+			} else if ( action === 'easypack_bulk_create_shipments_C' ) {
+				locker_size = 'easypack_bulk_create_shipments_C';
 			}
-		}
+			inpost_process_selected_item( selected_data.orders, 1, selected_data.selected_row_count, form, 0, 0, locker_size );
+		} );
 		return;
 	}
 
 	if ( action === 'easypack_bulk_create_labels' ) {
-		const selected_data = inpost_table_processing();
-
-		if ( typeof selected_data != 'undefined' && selected_data !== null ) {
-			if ( Object.keys( selected_data.orders ).length ) {
-				const all_selected = inpost_pl_normalize_order_ids( selected_data.orders );
-				print_labels_bulk(
-					selected_data.orders,
-					{
-						source: 'labels_only',
-						totalSelected: selected_data.selected_row_count,
-						allSelectedOrderIds: all_selected,
-						labelOrderIds: all_selected,
-						shipmentFailedOrderIds: [],
-					}
-				);
-			}
-		}
+		inpost_pl_run_bulk_with_selection( function ( selected_data ) {
+			const all_selected = inpost_pl_normalize_order_ids( selected_data.orders );
+			print_labels_bulk(
+				selected_data.orders,
+				{
+					source: 'labels_only',
+					totalSelected: selected_data.selected_row_count,
+					allSelectedOrderIds: all_selected,
+					labelOrderIds: all_selected,
+					shipmentFailedOrderIds: [],
+				}
+			);
+		} );
 	}
 }
 
@@ -1255,15 +1297,15 @@ function print_labels_bulk( orders, context ) {
 	context.labelOrderIds = inpost_pl_normalize_order_ids( orders );
 	context.totalSelected = context.totalSelected || context.labelOrderIds.length;
 
-	const beforeSend = function () {
-		inpost_pl_set_bulk_ui_busy( true );
-	};
+	if ( ! inpost_pl_bulk_action_in_progress ) {
+		if ( ! inpost_pl_try_begin_bulk_action() ) {
+			return;
+		}
+	}
 
 	const general_action = 'easypack';
 	const easy_action    = 'easypack_create_bulk_labels';
 	const order_ids      = JSON.stringify( orders );
-
-	beforeSend();
 
 	const request = new XMLHttpRequest();
 	request.open( 'POST', easypack_bulk.ajaxurl, true );
@@ -1274,7 +1316,7 @@ function print_labels_bulk( orders, context ) {
 		inpost_pl_restore_label_cells_ui( orders );
 
 		const finishUi = function () {
-			inpost_pl_set_bulk_ui_busy( false );
+			inpost_pl_end_bulk_action();
 		};
 
 		if ( request.status === 200 && request.response && request.response.size > 0 ) {
@@ -1303,7 +1345,7 @@ function print_labels_bulk( orders, context ) {
 	request.onerror = function () {
 		inpost_pl_restore_label_cells_ui( orders );
 		inpost_pl_handle_label_download_error( context, inpost_pl_popup_text( 'unknown_api_error' ) );
-		inpost_pl_set_bulk_ui_busy( false );
+		inpost_pl_end_bulk_action();
 	};
 
 	request.send( 'action=' + general_action + '&easypack_action=' + easy_action + '&security=' + easypack_nonce + '&order_ids=' + order_ids );
@@ -1335,9 +1377,6 @@ function inpost_process_selected_item(orders, index, total, form, failed, need_l
 
 	jQuery.ajax(
 		{
-			beforeSend: function () {
-				inpost_pl_set_bulk_ui_busy( true );
-			},
 			type: 'POST',
 			url: easypack_bulk.ajaxurl,
 			data: ajaxdata_process_item,
@@ -1433,13 +1472,13 @@ function inpost_process_selected_item(orders, index, total, form, failed, need_l
 				}
 
 				if ( ! need_labels ) {
-					inpost_pl_set_bulk_ui_busy( false );
+					inpost_pl_end_bulk_action();
 					return;
 				}
 
 				const label_order_ids = inpost_pl_normalize_order_ids( successful_ids );
 				if ( ! label_order_ids.length ) {
-					inpost_pl_set_bulk_ui_busy( false );
+					inpost_pl_end_bulk_action();
 				}
 			}
 		}

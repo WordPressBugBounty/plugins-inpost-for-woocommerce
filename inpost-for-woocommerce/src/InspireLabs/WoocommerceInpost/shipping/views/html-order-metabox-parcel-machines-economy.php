@@ -168,11 +168,7 @@ if ( ! empty(
 					'required'    => true,
 				);
 
-				$saved_meta_data = get_post_meta( $order_id, '_easypack_parcels', true );
-
-				$saved_package_size = isset( $saved_meta_data[0]['package_size'] )
-					? $saved_meta_data[0]['package_size']
-					: Easypack_Helper()->get_parcel_size_from_settings( $order_id );
+				$saved_package_size = Easypack_Helper()->get_parcel_size_from_settings( $order_id );
 
 				woocommerce_form_field( 'parcel[]', $params, $saved_package_size );
 

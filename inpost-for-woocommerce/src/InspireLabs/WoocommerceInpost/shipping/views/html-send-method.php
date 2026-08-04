@@ -18,19 +18,19 @@ use InspireLabs\WoocommerceInpost\EasyPack;
 use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 } // Exit if accessed directly.
 
-$custom_attributes = array('style' => 'width:100%;');
+$custom_attributes = array( 'style' => 'width:100%;' );
 if ( $disabled || $send_method_disabled ) {
-    $custom_attributes[ 'disabled' ] = 'disabled';
+	$custom_attributes['disabled'] = 'disabled';
 }
 $params = array(
-    'type' => 'select',
-    'options' => $send_methods,
-    'class' => array('wc-enhanced-select'),
-    'custom_attributes' => $custom_attributes,
-    'label' => esc_html__( 'Send method', 'inpost-for-woocommerce' ),
+	'type'              => 'select',
+	'options'           => $send_methods,
+	'class'             => array( 'wc-enhanced-select' ),
+	'custom_attributes' => $custom_attributes,
+	'label'             => esc_html__( 'Send method', 'inpost-for-woocommerce' ),
 );
 if ( 'parcel_locker' === $send_method ) {
 	$send_method = 'parcel_machine';

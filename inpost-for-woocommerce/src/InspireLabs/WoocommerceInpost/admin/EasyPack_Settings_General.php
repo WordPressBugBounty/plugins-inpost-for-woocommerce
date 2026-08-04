@@ -791,29 +791,11 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 			WC_Admin_Settings::save_fields( $settings );
 			EasyPack_API()->clear_cache();
 
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- WC settings save; nonce handled by WooCommerce settings API.
 			if ( ! empty( $_REQUEST['easypack_organization_id'] ) && ! empty( $_REQUEST['easypack_token'] ) ) {
+				// phpcs:enable WordPress.Security.NonceVerification.Recommended
 				$ping = EasyPack_API()->ping();
 				EasyPack()->get_merchant_services( true );
-			}
-
-			$easypack_api_change = sanitize_text_field( $_REQUEST['easypack_api_change'] );
-
-			if ( $easypack_api_change == '0' ) {
-				$args                       = array();
-				$args['first_name']         = get_option( 'easypack_sender_first_name' );
-				$args['last_name']          = get_option( 'easypack_sender_last_name' );
-				$args['company_name']       = get_option( 'easypack_sender_company_name' );
-				$args['phone']              = get_option( 'easypack_sender_phone' );
-				$args['email']              = get_option( 'easypack_sender_email' );
-				$args['default_machine_id'] = get_option( 'easypack_default_machine_id' );
-				$args['address']            = array();
-
-				if ( EasyPack_API()->api_country() !== EasyPack_API::COUNTRY_PL ) {
-					unset( $args['default_machine_id'] );
-				}
-				if ( isset( $args['default_machine_id'] ) && $args['default_machine_id'] == '' ) {
-					unset( $args['default_machine_id'] );
-				}
 			}
 		}
 

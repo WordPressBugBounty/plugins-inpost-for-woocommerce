@@ -482,7 +482,9 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 			if ( is_wp_error( $response ) ) {
 				if ( function_exists( 'wc_get_logger' ) ) {
 					\wc_get_logger()->debug( 'Get is_wp_error error:', array( 'source' => 'inpost-pl-exception' ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $response->get_error_message(), true ), array( 'source' => 'inpost-pl-exception' ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-pl-exception' ) );
 				}
 				throw new Exception( esc_html( $response->get_error_message() ) );
@@ -501,6 +503,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				if ( ! is_array( $ret ) ) {
 					if ( function_exists( 'wc_get_logger' ) ) {
 						\wc_get_logger()->debug( 'Get response body error:', array( 'source' => 'inpost-pl-exception' ) );
+						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 						\wc_get_logger()->debug( print_r( $response['body'], true ), array( 'source' => 'inpost-pl-exception' ) );
 					}
 					throw new Exception( esc_html__( 'Bad API response. Check API URL', 'inpost-for-woocommerce' ), 503 );
@@ -775,6 +778,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 					if ( function_exists( 'wc_get_logger' ) ) {
 						\wc_get_logger()->debug( 'Error:', array( 'source' => 'inpost-pl-services-error' ) );
+						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 						\wc_get_logger()->debug( print_r( $res, true ), array( 'source' => 'inpost-pl-services-error' ) );
 					}
 

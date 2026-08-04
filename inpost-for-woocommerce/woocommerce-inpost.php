@@ -3,7 +3,7 @@
 	Plugin Name: InPost PL
 	Plugin URI: https://wordpress.org/plugins/inpost-for-woocommerce/
 	Description: InPost for WooCommerce is a dedicated integration plugin, designed for small and medium-sized businesses that want to quickly and conveniently integrate with InPost services.
-	Version: 1.9.3
+	Version: 1.9.4
 	Author: iLabs.dev
 	Author URI: https://ilabs.dev/
 	Text Domain: inpost-for-woocommerce
@@ -40,7 +40,7 @@ use InspireLabs\WoocommerceInpost\EasyPack_Helper;
 
 define( 'WOOCOMMERCE_INPOST_PLUGIN_FILE', __FILE__ );
 define( 'WOOCOMMERCE_INPOST_PLUGIN_DIR', __DIR__ );
-define( 'WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION', '1.9.3' );
+define( 'WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION', '1.9.4' );
 
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -70,22 +70,25 @@ add_action(
 	'plugins_loaded',
 	function () {
 		if ( easypack_is_woocommerce_activated() ) {
-            if ( easypack_integrity_verified() ) {
-                EasyPack_Shipment_Manager::init();
-                EasyPack_Helper();
-                EasyPack_AJAX::init();
-                $_GLOBALS['EasyPack'] = EasyPack();
+			if ( easypack_integrity_verified() ) {
+				EasyPack_Shipment_Manager::init();
+				EasyPack_Helper();
+				EasyPack_AJAX::init();
+				$_GLOBALS['EasyPack'] = EasyPack();
 
-                add_action(
-                    'before_woocommerce_init',
-                    function () {
-                        if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
-                            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables',
-                                __FILE__, true);
-                        }
-                    }
-                );
-            }
+				add_action(
+					'before_woocommerce_init',
+					function () {
+						if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+							\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
+								'custom_order_tables',
+								__FILE__,
+								true
+							);
+						}
+					}
+				);
+			}
 		}
 	}
 );
@@ -120,6 +123,7 @@ if ( ! function_exists( 'easypack_is_woocommerce_activated' ) ) {
 			}
 		}
 
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core/community filter used by plugins to adjust the active plugins list; not a plugin-owned hook.
 		if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 			return true;
 		}
@@ -135,14 +139,14 @@ if ( ! function_exists( 'easypack_is_woocommerce_activated' ) ) {
 }
 
 if ( ! function_exists( 'easypack_integrity_verified' ) ) {
-    function easypack_integrity_verified() {
-        if (class_exists('InspireLabs\WoocommerceInpost\admin\EasyPack_Shipment_Manager')
-        && class_exists('InspireLabs\WoocommerceInpost\EasyPack_Helper')
-        && class_exists('InspireLabs\WoocommerceInpost\EasyPack_AJAX')
-        && class_exists('InspireLabs\WoocommerceInpost\EasyPack')
-        ) {
-            return true;
-        }
-        return false;
-    }
+	function easypack_integrity_verified() {
+		if ( class_exists( 'InspireLabs\WoocommerceInpost\admin\EasyPack_Shipment_Manager' )
+		&& class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_Helper' )
+		&& class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_AJAX' )
+		&& class_exists( 'InspireLabs\WoocommerceInpost\EasyPack' )
+		) {
+			return true;
+		}
+		return false;
+	}
 }

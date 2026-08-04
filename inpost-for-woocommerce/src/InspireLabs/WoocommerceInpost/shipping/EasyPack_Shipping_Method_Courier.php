@@ -294,7 +294,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 		 */
 		public static function ajax_create_shipment_model() {
 
-			$order_id = (int) sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in EasyPack_AJAX::ajax_easypack() (easypack_nonce) or EasyPackBulkOrders (easypack-bulk-actions).
+			$order_id = isset( $_POST['order_id'] ) ? (int) sanitize_text_field( wp_unslash( $_POST['order_id'] ) ) : 0;
 
 			$order = wc_get_order( $order_id );
 			if ( ! $order || is_wp_error( $order ) || ! is_object( $order ) ) {
@@ -330,15 +331,15 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 			} else {
 
 				$courier_parcel_data = array(
-					'length'       => isset( $_POST['parcel_length'] ) ? sanitize_text_field( $_POST['parcel_length'] ) : '',
-					'width'        => isset( $_POST['parcel_width'] ) ? sanitize_text_field( $_POST['parcel_width'] ) : '',
-					'height'       => isset( $_POST['parcel_height'] ) ? sanitize_text_field( $_POST['parcel_height'] ) : '',
-					'weight'       => isset( $_POST['parcel_weight'] ) ? sanitize_text_field( $_POST['parcel_weight'] ) : '',
-					'non_standard' => isset( $_POST['parcel_non_standard'] ) ? sanitize_text_field( $_POST['parcel_non_standard'] ) : '',
+					'length'       => isset( $_POST['parcel_length'] ) ? sanitize_text_field( wp_unslash( $_POST['parcel_length'] ) ) : '',
+					'width'        => isset( $_POST['parcel_width'] ) ? sanitize_text_field( wp_unslash( $_POST['parcel_width'] ) ) : '',
+					'height'       => isset( $_POST['parcel_height'] ) ? sanitize_text_field( wp_unslash( $_POST['parcel_height'] ) ) : '',
+					'weight'       => isset( $_POST['parcel_weight'] ) ? sanitize_text_field( wp_unslash( $_POST['parcel_weight'] ) ) : '',
+					'non_standard' => isset( $_POST['parcel_non_standard'] ) ? sanitize_text_field( wp_unslash( $_POST['parcel_non_standard'] ) ) : '',
 				);
 
 				if ( isset( $_POST['insurance_amounts'] ) && is_array( $_POST['insurance_amounts'] ) ) {
-					$insurance_amounts = array_map( 'sanitize_text_field', $_POST['insurance_amounts'] );
+					$insurance_amounts = array_map( 'sanitize_text_field', wp_unslash( $_POST['insurance_amounts'] ) );
 
 					if ( isset( $insurance_amounts[0] ) && is_numeric( $insurance_amounts[0] ) && floatval( $insurance_amounts[0] ) > 0 ) {
 						$insurance_amount = $insurance_amounts[0];
@@ -346,27 +347,29 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 				}
 
 				$send_method = isset( $_POST['send_method'] )
-					? sanitize_text_field( $_POST['send_method'] )
+					? sanitize_text_field( wp_unslash( $_POST['send_method'] ) )
 					: 'courier';
 
 				$reference_number = isset( $_POST['reference_number'] )
-					? sanitize_text_field( $_POST['reference_number'] )
+					? sanitize_text_field( wp_unslash( $_POST['reference_number'] ) )
 					: $order_id;
 
 				$parcels = array();
 				if ( isset( $_POST['parcel_mode'] ) && $_POST['parcel_mode'] === 'wielopaki' ) {
 					if ( isset( $_POST['parcels'] ) && is_array( $_POST['parcels'] ) ) {
-						foreach ( $_POST['parcels'] as $i => $p ) {
-							$parcels[ $i ]['id']                   = isset( $p['id'] ) ? sanitize_text_field( $p['id'] ) : '';
-							$parcels[ $i ]['is_non_standard']      = isset( $p['is_non_standard'] ) ? sanitize_text_field( $p['is_non_standard'] ) : '';
-							$parcels[ $i ]['weight']['amount']     = isset( $p['weight']['amount'] ) ? sanitize_text_field( $p['weight']['amount'] ) : '';
-							$parcels[ $i ]['dimensions']['length'] = isset( $p['dimensions']['length'] ) ? sanitize_text_field( $p['dimensions']['length'] ) : '';
-							$parcels[ $i ]['dimensions']['width']  = isset( $p['dimensions']['width'] ) ? sanitize_text_field( $p['dimensions']['width'] ) : '';
-							$parcels[ $i ]['dimensions']['height'] = isset( $p['dimensions']['height'] ) ? sanitize_text_field( $p['dimensions']['height'] ) : '';
+						$parcels_post = map_deep( wp_unslash( $_POST['parcels'] ), 'sanitize_text_field' );
+						foreach ( $parcels_post as $i => $p ) {
+							$parcels[ $i ]['id']                   = isset( $p['id'] ) ? $p['id'] : '';
+							$parcels[ $i ]['is_non_standard']      = isset( $p['is_non_standard'] ) ? $p['is_non_standard'] : '';
+							$parcels[ $i ]['weight']['amount']     = isset( $p['weight']['amount'] ) ? $p['weight']['amount'] : '';
+							$parcels[ $i ]['dimensions']['length'] = isset( $p['dimensions']['length'] ) ? $p['dimensions']['length'] : '';
+							$parcels[ $i ]['dimensions']['width']  = isset( $p['dimensions']['width'] ) ? $p['dimensions']['width'] : '';
+							$parcels[ $i ]['dimensions']['height'] = isset( $p['dimensions']['height'] ) ? $p['dimensions']['height'] : '';
 						}
 					}
 				}
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			$shipment = $shipmentService->create_shipment_object_by_shiping_data(
 				$parcels,
@@ -421,8 +424,11 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 
 				if ( function_exists( 'wc_get_logger' ) ) {
 					\wc_get_logger()->debug( 'INPOST create shipment Exception: ', array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $order_id, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $shipment_array, true ), array( 'source' => 'inpost-pl-create-shipment-exception-for-order-' . $order_id ) );
 				}
 
@@ -441,6 +447,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 
 				EasyPack_Helper()->set_order_status_completed( $order_id );
 
+				// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in EasyPack_AJAX::ajax_easypack() (easypack_nonce) or EasyPackBulkOrders (easypack-bulk-actions).
 				if ( isset( $_POST['action'] ) && $_POST['action'] === 'easypack_bulk_create_shipments' ) {
 					if ( isset( $shipment_data['tracking'] ) && ! empty( $shipment_data['tracking'] ) ) {
 						$ret['tracking_number'] = $shipment_data['tracking'];
@@ -457,6 +464,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 					$ret['ref_number'] = $shipment_array['reference'];
 					$ret['service']    = $shipment_data['service'];
 				}
+				// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 				if ( 'yes' === get_option( 'easypack_delivery_notice' ) ) {
 					wp_schedule_single_event(

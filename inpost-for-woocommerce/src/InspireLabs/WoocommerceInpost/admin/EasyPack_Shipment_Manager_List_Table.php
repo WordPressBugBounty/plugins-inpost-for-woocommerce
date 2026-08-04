@@ -391,13 +391,22 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) {
 			global $post;
 			$posts_per_page = 150;
 
-			$paged = isset( $_GET['shipments_page'] ) ? sanitize_text_field( $_GET['shipments_page'] ) : 1;
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin shipment list UI pagination; read-only.
+			$paged = isset( $_GET['shipments_page'] ) ? sanitize_text_field( wp_unslash( $_GET['shipments_page'] ) ) : 1;
+			// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+			$refresh_statuses = false;
+			if ( isset( $_POST['refresh_statuses'] ) && '1' === $_POST['refresh_statuses'] ) {
+				check_admin_referer( EasyPack_Shipment_Manager::NONCE_ACTION, EasyPack_Shipment_Manager::NONCE_FIELD );
+				$refresh_statuses = true;
+			}
 
 			$args = array(
 				'post_type'      => 'shop_order',
 				'post_status'    => 'any',
 				'posts_per_page' => $posts_per_page,
 				'paged'          => $paged,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'meta_query'     => array(
 					array(
 						'key'     => '_easypack_status',
@@ -441,7 +450,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) {
 					continue;
 				}
 
-				if ( isset( $_POST['refresh_statuses'] ) && '1' === $_POST['refresh_statuses'] ) {
+				if ( $refresh_statuses ) {
 					$status_service->refreshStatus( $shipment );
 				}
 
@@ -570,15 +579,24 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) {
 		public function get_data_wc_orders() {
 
 			$posts_per_page = 150;
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin shipment list UI pagination; read-only.
 			$paged          = isset( $_GET['shipments_page'] )
 				? max( 1, (int) sanitize_text_field( wp_unslash( $_GET['shipments_page'] ) ) )
 				: 1;
+			// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+			$refresh_statuses = false;
+			if ( isset( $_POST['refresh_statuses'] ) && '1' === $_POST['refresh_statuses'] ) {
+				check_admin_referer( EasyPack_Shipment_Manager::NONCE_ACTION, EasyPack_Shipment_Manager::NONCE_FIELD );
+				$refresh_statuses = true;
+			}
 
 			$query_args = array(
 				'limit'      => $posts_per_page,
 				'page'       => $paged,
 				'paginate'   => true,
 				'status'     => 'any',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				'meta_query' => array(
 					array(
 						'key'     => '_easypack_status',
@@ -644,7 +662,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) {
 						continue;
 					}
 
-					if ( isset( $_POST['refresh_statuses'] ) && '1' === $_POST['refresh_statuses'] ) {
+					if ( $refresh_statuses ) {
 						$status_service->refreshStatus( $shipment );
 					}
 

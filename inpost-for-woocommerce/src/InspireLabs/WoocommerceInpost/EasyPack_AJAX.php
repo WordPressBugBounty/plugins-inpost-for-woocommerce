@@ -219,9 +219,11 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 		 */
 		public static function dispatch_point() {
 
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in ajax_easypack() before this callback.
 			$dispatch_point_name = isset( $_POST['dispatch_point_name'] )
 					? sanitize_text_field( wp_unslash( $_POST['dispatch_point_name'] ) )
 					: '';
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			if ( ! empty( $dispatch_point_name ) ) {
 				try {
@@ -438,12 +440,14 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 		 */
 		public static function create_additional_package() {
 
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in ajax_easypack() before this callback.
 			$shipping_method = isset( $_POST['easypack_additional_package_method_id'] )
 					? sanitize_text_field( wp_unslash( $_POST['easypack_additional_package_method_id'] ) )
 					: '';
 			$order_id        = isset( $_POST['order_id'] )
 					? sanitize_text_field( wp_unslash( $_POST['order_id'] ) )
 					: '';
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			if ( empty( $shipping_method ) || empty( $order_id ) ) {
 				$return_content = array(
@@ -505,8 +509,10 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 		 */
 		public static function change_first_package() {
 
-			$shipping_method_instance_id = sanitize_text_field( wp_unslash( $_POST['easypack_change_first_shipment_method_id'] ) );
-			$order_id                    = sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in ajax_easypack() before this callback.
+			$shipping_method_instance_id = isset( $_POST['easypack_change_first_shipment_method_id'] ) ? sanitize_text_field( wp_unslash( $_POST['easypack_change_first_shipment_method_id'] ) ) : '';
+			$order_id                    = isset( $_POST['order_id'] ) ? sanitize_text_field( wp_unslash( $_POST['order_id'] ) ) : '';
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			if ( empty( $shipping_method_instance_id ) || empty( $order_id ) ) {
 				$return_content = array(
@@ -633,8 +639,9 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 				wp_die( esc_html__( 'Sorry, you are not allowed to do that.', 'inpost-for-woocommerce' ), 403 );
 			}
 
-			$orders = isset( $_POST['parcels'] ) ? (array) $_POST['parcels'] : array();
-			$orders = array_map( 'sanitize_text_field', $orders );
+			$orders = isset( $_POST['parcels'] )
+				? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['parcels'] ) )
+				: array();
 
 			if ( empty( $orders ) ) {
 				return;
@@ -673,7 +680,7 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 				wp_send_json_error( 'missing_params' );
 			}
 
-			$order_id  = (int) wp_unslash( $_POST['order_id'] );
+			$order_id  = (int) sanitize_text_field( wp_unslash( $_POST['order_id'] ) );
 			$order_key = sanitize_text_field( wp_unslash( $_POST['order_key'] ) );
 			$order     = wc_get_order( $order_id );
 

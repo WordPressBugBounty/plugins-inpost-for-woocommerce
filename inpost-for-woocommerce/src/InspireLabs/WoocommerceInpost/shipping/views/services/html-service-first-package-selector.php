@@ -64,27 +64,28 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
 	$order  = wc_get_order( $order_id );
 
 
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in EasyPack_AJAX::ajax_easypack() before metabox HTML re-render.
 	if ( isset( $_POST['easypack_change_first_shipment_method_id'] ) ) {
 		$selected_option = sanitize_text_field( wp_unslash( $_POST['easypack_change_first_shipment_method_id'] ) );
+	}
 
-	} if ( isset( $_POST['easypack_additional_package_method_id'] ) ) {
+	if ( isset( $_POST['easypack_additional_package_method_id'] ) ) {
 		$selected_option = sanitize_text_field( wp_unslash( $_POST['easypack_additional_package_method_id'] ) );
+	}
+	// phpcs:enable WordPress.Security.NonceVerification.Missing
 
-	} else {
-
-		if ( ! $selected_option ) {
-			$shipping_methods = $order->get_shipping_methods();
-			if ( ! empty( $shipping_methods ) && is_array( $shipping_methods ) ) {
-				foreach ( $shipping_methods as $method ) {
-					if ( is_object( $method ) ) {
-						$selected_option = $method->get_instance_id();
-					}
+	if ( ! $selected_option ) {
+		$shipping_methods = $order->get_shipping_methods();
+		if ( ! empty( $shipping_methods ) && is_array( $shipping_methods ) ) {
+			foreach ( $shipping_methods as $method ) {
+				if ( is_object( $method ) ) {
+					$selected_option = $method->get_instance_id();
 				}
 			}
+		}
 
-			if ( ! key_exists( $selected_option, $inpost_methods ) ) {
-				$selected_option = $paczkomat_standard_option;
-			}
+		if ( ! key_exists( $selected_option, $inpost_methods ) ) {
+			$selected_option = $paczkomat_standard_option;
 		}
 	}
 

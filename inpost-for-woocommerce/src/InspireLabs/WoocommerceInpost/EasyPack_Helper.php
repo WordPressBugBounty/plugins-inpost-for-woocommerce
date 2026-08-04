@@ -93,8 +93,11 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			$ret = array( 'status' => 'ok' );
 
 			if ( null === $orders ) {
-				$orders = isset( $_POST['easypack_parcel'] ) ? (array) $_POST['easypack_parcel'] : array();
-				$orders = array_map( 'sanitize_text_field', $orders );
+				// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in EasyPack_Shipment_Manager::print_stickers() (check_admin_referer) or EasyPack_AJAX::ajax_easypack() (easypack_nonce) before call.
+				$orders = isset( $_POST['easypack_parcel'] )
+					? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['easypack_parcel'] ) )
+					: array();
+				// phpcs:enable WordPress.Security.NonceVerification.Missing
 			}
 
 			$selected_shipments_ids = array();
@@ -160,11 +163,16 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 				}
 
 				if ( ! isset( $results['headers'] ) ) {
-					if ( isset( $_POST['easypack_action'] ) && 'easypack_create_bulk_labels' === $_POST['easypack_action'] ) {
+					// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in EasyPack_Shipment_Manager::print_stickers() or EasyPack_AJAX::ajax_easypack() before print_stickers() runs.
+					$is_bulk_labels_request = isset( $_POST['easypack_action'] ) && 'easypack_create_bulk_labels' === $_POST['easypack_action'];
+					// phpcs:enable WordPress.Security.NonceVerification.Missing
+					if ( $is_bulk_labels_request ) {
 
 						\wc_get_logger()->debug( 'Inpost IDs for labels: ', array( 'source' => 'inpost-label-log' ) );
+						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 						\wc_get_logger()->debug( print_r( $selected_shipments_ids, true ), array( 'source' => 'inpost-label-log' ) );
 						\wc_get_logger()->debug( 'API response: ', array( 'source' => 'inpost-label-log' ) );
+						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 						\wc_get_logger()->debug( print_r( $results, true ), array( 'source' => 'inpost-label-log' ) );
 
 						$error_payload = array(
@@ -244,7 +252,9 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 				} else {
 
 					\wc_get_logger()->debug( 'Inpost post_confirmation_pdf: ', array( 'source' => 'inpost-pl-confirmation-pdf-log' ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $shipment_ids, true ), array( 'source' => 'inpost-pl-confirmation-pdf-log' ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $results, true ), array( 'source' => 'inpost-pl-confirmation-pdf-log' ) );
 
 					if ( isset( $results['error'] ) ) {
@@ -836,9 +846,11 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			}
 
 			if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
+				// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin settings tab routing for modal scripts; read-only.
 				if ( isset( $_GET['tab'] ) && 'easypack_general' === $_GET['tab'] ) {
 					return true;
 				}
+				// phpcs:enable WordPress.Security.NonceVerification.Recommended
 			}
 
 			return false;
@@ -1043,8 +1055,11 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		 * @access public
 		 */
 		public function print_posting_confirmation() {
-			$orders = isset( $_POST['easypack_parcel'] ) ? (array) $_POST['easypack_parcel'] : array();
-			$orders = array_map( 'sanitize_text_field', $orders );
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified in EasyPack_Shipment_Manager::print_stickers() (check_admin_referer) before print_posting_confirmation() runs.
+			$orders = isset( $_POST['easypack_parcel'] )
+				? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['easypack_parcel'] ) )
+				: array();
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			if ( empty( $orders ) ) {
 				return;
@@ -1258,15 +1273,17 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 			$order_id = null;
 
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin order/settings page routing for assets/metabox; read-only.
 			if ( 'shop_order' === $post_type || 'shop_order_placehold' === $post_type || 'shop_order' === $current_screen->post_type ) {
-				if ( isset( $_GET['action'] ) && 'edit' === $_GET['action'] ) {
-					if ( isset( $_GET['page'] ) && 'wc-orders' === $_GET['page'] ) {
-						$order_id = $_GET['id'] ? $_GET['id'] : null;
-					} elseif ( isset( $_GET['post'] ) && is_numeric( $_GET['post'] ) ) {
-						$order_id = $_GET['post'];
+				if ( isset( $_GET['action'] ) && 'edit' === sanitize_text_field( wp_unslash( $_GET['action'] ) ) ) {
+					if ( isset( $_GET['page'] ) && 'wc-orders' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
+						$order_id = isset( $_GET['id'] ) ? absint( wp_unslash( $_GET['id'] ) ) : null;
+					} elseif ( isset( $_GET['post'] ) ) {
+						$order_id = absint( wp_unslash( $_GET['post'] ) );
 					}
 				}
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 			if ( $order_id ) {
 				$order = wc_get_order( $order_id );
@@ -1282,9 +1299,11 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			}
 
 			if ( is_a( $current_screen, 'WP_Screen' ) && 'woocommerce_page_wc-settings' === $current_screen->id ) {
+				// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin settings tab routing; read-only.
 				if ( isset( $_GET['tab'] ) && 'easypack_general' === $_GET['tab'] ) {
 					return true;
 				}
+				// phpcs:enable WordPress.Security.NonceVerification.Recommended
 			}
 
 			return false;
@@ -2063,16 +2082,17 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 				return $shipment_array;
 			}
 
+			if ( ! $this->is_pww_time() ) {
+				return $shipment_array;
+			}
+
 			$point = $shipment_array['custom_attributes']['target_point'];
 			// $point = 'POP-RYP8'; example - not 24/7 point.
 
 			if ( ! empty( $point ) ) {
 				$point_data = $this->get_point_data( $point );
-				if ( ! empty( $point_data['items'][0]['opening_hours'] ) ) {
-					$opening_hours = $point_data['items'][0]['opening_hours'];
-					if ( strpos( $opening_hours, '24/7' ) !== false ) {
-						$is_pww_point = true;
-					}
+				if ( ! empty( $point_data['items'][0]['location_247'] ) ) {
+					$is_pww_point = true;
 				}
 			}
 
@@ -2080,9 +2100,7 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 				return $shipment_array;
 			}
 
-			if ( $this->is_pww_time() ) {
-				$shipment_array['end_of_week_collection'] = true;
-			}
+			$shipment_array['end_of_week_collection'] = true;
 
 			return $shipment_array;
 		}
@@ -2132,12 +2150,14 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 					if ( function_exists( 'wc_get_logger' ) ) {
 						\wc_get_logger()->debug( 'Error when get point data:', array( 'source' => 'inpost-pl-get-point' ) );
 						\wc_get_logger()->debug( 'Point :' . $point_name, array( 'source' => 'inpost-pl-get-point' ) );
+						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 						\wc_get_logger()->debug( print_r( $e->getMessage(), true ), array( 'source' => 'inpost-pl-get-point' ) );
 					}
 				}
 			} elseif ( function_exists( 'wc_get_logger' ) ) {
 					\wc_get_logger()->debug( 'Error when get point data:', array( 'source' => 'inpost-pl-get-point' ) );
 					\wc_get_logger()->debug( 'Response code :' . $code, array( 'source' => 'inpost-pl-get-point' ) );
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 					\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-pl-get-point' ) );
 			}
 

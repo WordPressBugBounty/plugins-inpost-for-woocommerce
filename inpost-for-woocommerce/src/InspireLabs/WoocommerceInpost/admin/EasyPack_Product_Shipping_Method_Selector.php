@@ -196,6 +196,7 @@ class EasyPack_Product_Shipping_Method_Selector {
 	 */
 	public function action_woocommerce_admin_process_product_object( $product ): void {
 		$allowed_methods = array();
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified by WooCommerce product save before woocommerce_admin_process_product_object.
 		foreach ( EasyPack_Helper()->get_inpost_methods() as $method ) {
 			$post_key = $this->get_post_key_from_method_id( $method['method_title_with_id'] );
 			if ( isset( $_POST[ $post_key ] ) && $_POST[ $post_key ] === 'yes' ) {
@@ -206,8 +207,9 @@ class EasyPack_Product_Shipping_Method_Selector {
 		$product->update_meta_data( self::META_ID, $allowed_methods );
 
 		if ( isset( $_POST['easypack_parcel_dimensions'] ) && ! empty( $_POST['easypack_parcel_dimensions'] ) ) {
-			$product->update_meta_data( self::META_ID_SIZE, sanitize_text_field( $_POST['easypack_parcel_dimensions'] ) );
+			$product->update_meta_data( self::META_ID_SIZE, sanitize_text_field( wp_unslash( $_POST['easypack_parcel_dimensions'] ) ) );
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 		// clear shipping methods cache.
 		\WC_Cache_Helper::get_transient_version( 'shipping', true );
 	}

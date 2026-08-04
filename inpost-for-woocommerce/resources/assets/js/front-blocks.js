@@ -68,10 +68,10 @@ function inpost_pl_change_react_input_value(input,value) {
 
 function inpost_pl_select_point_callback_blocks(point) {
 
-	let selected_point_data = '';
-	let parcelMachineAddressDesc;
-	let address_line1 = '';
-	let address_line2 = '';
+	let selected_point_data         = '';
+	let parcel_machine_address_desc = '';
+	let address_line1               = '';
+	let address_line2               = '';
 
 	let point_name = '';
 
@@ -92,9 +92,6 @@ function inpost_pl_select_point_callback_blocks(point) {
 
 		inpost_pl_change_react_input_value( document.getElementById( 'inpost-parcel-locker-id' ), point_name );
 
-		if ( typeof point.location_description != 'undefined' && point.location_description !== null ) {
-			parcelMachineAddressDesc = point.location_description;
-		}
 		if ( typeof point.address.line2 != 'undefined' && point.address.line2 !== null ) {
 			address_line2 = point.address.line2;
 		}
@@ -103,17 +100,20 @@ function inpost_pl_select_point_callback_blocks(point) {
 		}
 
 		if (point.location_description) {
-
-			selected_point_data = '<div class="easypack_selected_point_data" id="easypack_selected_point_data">\n'
+			parcel_machine_address_desc = point.location_description;
+			selected_point_data         = '<div class="easypack_selected_point_data" id="easypack_selected_point_data">\n'
 				+ '<div id="selected-parcel-machine-id">' + point_name + '</div>\n'
 				+ '<span id="selected-parcel-machine-desc">' + address_line1 + '<br>' + address_line2 + '</span><br>'
 				+ '<span id="selected-parcel-machine-desc1">(' + point.location_description + ')</span></div>';
 
 		} else {
-			selected_point_data = '<div class="easypack_selected_point_data" id="easypack_selected_point_data">\n'
+			selected_point_data         = '<div class="easypack_selected_point_data" id="easypack_selected_point_data">\n'
 				+ '<div id="selected-parcel-machine-id">' + point_name + '</div>\n'
 				+ '<span id="selected-parcel-machine-desc">' + address_line1 + '<br>' + address_line2 + '</span></div>';
+			parcel_machine_address_desc = address_line1 + ' ' + address_line2;
 		}
+
+		inpost_pl_change_react_input_value( document.getElementById( 'inpost-parcel-locker-description' ), parcel_machine_address_desc );
 
 		jQuery( '#inpost_pl_selected_point_data_wrap' ).html( selected_point_data );
 		jQuery( '#inpost_pl_selected_point_data_wrap' ).show();
@@ -330,6 +330,7 @@ jQuery( document ).ready(
 							if ( parent && parent.contains( this ) ) {
 								jQuery( '#inpost_pl_selected_point_data_wrap' ).hide();
 								inpost_pl_change_react_input_value( document.getElementById( 'inpost-parcel-locker-id' ), '' );
+								inpost_pl_change_react_input_value( document.getElementById( 'inpost-parcel-locker-description' ), '' );
 
 								let config = 'parcelCollect';
 

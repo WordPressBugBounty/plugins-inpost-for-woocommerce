@@ -268,6 +268,7 @@ class ShipX_Courier_Pickup_Service {
 
 		if ( function_exists( 'wc_get_logger' ) ) {
 			\wc_get_logger()->debug( 'DATA to API', array( 'source' => 'inpost-pl-dispatch_order' ) );
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 			\wc_get_logger()->debug( print_r( $data_to_api, true ), array( 'source' => 'inpost-pl-dispatch_order' ) );
 		}
 
@@ -277,6 +278,7 @@ class ShipX_Courier_Pickup_Service {
 
 		if ( function_exists( 'wc_get_logger' ) ) {
 			\wc_get_logger()->debug( 'API result', array( 'source' => 'inpost-pl-dispatch_order' ) );
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
 			\wc_get_logger()->debug( print_r( $result, true ), array( 'source' => 'inpost-pl-dispatch_order' ) );
 		}
 
