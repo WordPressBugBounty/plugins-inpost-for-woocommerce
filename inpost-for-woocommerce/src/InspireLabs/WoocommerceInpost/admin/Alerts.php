@@ -3,7 +3,7 @@
 namespace InspireLabs\WoocommerceInpost\admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 } // Exit if accessed directly.
 
 
@@ -12,17 +12,17 @@ class Alerts {
 	/**
 	 * @var array
 	 */
-	static $notice = [];
+	static $notice = array();
 
 	/**
 	 * @var array
 	 */
-	static $error = [];
+	static $error = array();
 
 	/**
 	 * @var array
 	 */
-	static $success = [];
+	static $success = array();
 
 	/**
 	 * @var bool
@@ -82,12 +82,11 @@ class Alerts {
 	public function print_alerts_once() {
 		if ( ! self::$alerts_rendered ) {
 			add_action(
-				"admin_notices",
+				'admin_notices',
 				function () {
 					$this->print_alerts();
 					self::$alerts_rendered = true;
 				}
-
 			);
 		}
 	}
@@ -101,16 +100,18 @@ class Alerts {
 		foreach ( self::$success as $k => $v ) {
 			if ( ! empty( $v ) ) {
 
-				$output = sprintf( "<div class='notice notice-success'><p>%s</p></div>",
-					$v );
+				$output = sprintf(
+					"<div class='notice notice-success'><p>%s</p></div>",
+					$v
+				);
 				echo wp_kses(
 					$output,
-					[
-						"div" => [ "class" => [] ],
-						"p"   => [],
-						"b"   => [],
-						"br"   => [],
-					]
+					array(
+						'div' => array( 'class' => array() ),
+						'p'   => array(),
+						'b'   => array(),
+						'br'  => array(),
+					)
 				);
 			}
 		}
@@ -118,16 +119,18 @@ class Alerts {
 		foreach ( self::$notice as $k => $v ) {
 			if ( ! empty( $v ) ) {
 
-				$output = sprintf( "<div class='notice notice-info'><p>%s</p></div>",
-					$v );
+				$output = sprintf(
+					"<div class='notice notice-info'><p>%s</p></div>",
+					$v
+				);
 				echo wp_kses(
 					$output,
-					[
-						"div" => [ "class" => [] ],
-						"p"   => [],
-						"b"   => [],
-                        "br"   => [],
-					]
+					array(
+						'div' => array( 'class' => array() ),
+						'p'   => array(),
+						'b'   => array(),
+						'br'  => array(),
+					)
 				);
 			}
 		}
@@ -135,26 +138,28 @@ class Alerts {
 		foreach ( self::$error as $k => $v ) {
 			if ( ! empty( $v ) ) {
 
-				$output = sprintf( "<div class='notice notice-error'><p>%s</p></div>",
-					$v );
+				$output = sprintf(
+					"<div class='notice notice-error'><p>%s</p></div>",
+					$v
+				);
 				echo wp_kses(
 					$output,
-					[
-						"div" => [ "class" => [] ],
-						"p"   => [],
-						"b"   => [],
-                        "br"   => [],
-                        "a"     => array(
-                            "href" => array(),
-                            "target" => array()
-                        )
-					]
+					array(
+						'div' => array( 'class' => array() ),
+						'p'   => array(),
+						'b'   => array(),
+						'br'  => array(),
+						'a'   => array(
+							'href'   => array(),
+							'target' => array(),
+						),
+					)
 				);
 			}
 		}
 
-		self::$error   = [];
-		self::$success = [];
-		self::$notice  = [];
+		self::$error   = array();
+		self::$success = array();
+		self::$notice  = array();
 	}
 }

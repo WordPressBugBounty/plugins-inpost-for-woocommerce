@@ -1129,7 +1129,12 @@ class EasyPack extends inspire_Plugin4 {
 
 		$request_body = json_decode( $request->get_body(), true );
 
-		if ( ! empty( $request_body['extensions']['inpost']['inpost-parcel-locker-id'] ) ) {
+		$needs_parcel_locker = (
+			( is_string( $shipping_method_id ) && 0 === strpos( $shipping_method_id, 'easypack_parcel_machines' ) )
+			|| ( is_string( $fs_method_name ) && 0 === strpos( $fs_method_name, 'easypack_parcel_machines' ) )
+		);
+
+		if ( $needs_parcel_locker && ! empty( $request_body['extensions']['inpost']['inpost-parcel-locker-id'] ) ) {
 
 			$parcel_machine_id = sanitize_text_field( $request_body['extensions']['inpost']['inpost-parcel-locker-id'] );
 
@@ -1143,26 +1148,26 @@ class EasyPack extends inspire_Plugin4 {
 				$parcel_machine_description = sanitize_text_field( $request_body['extensions']['inpost']['inpost-parcel-locker-description'] );
 				$order->update_meta_data( '_parcel_machine_desc', $parcel_machine_description );
 			}
-		} else {
+		} elseif ( $needs_parcel_locker ) {
 
 			// additional check if used Google Pay payment method - we extract paczkomat number from WC session.
-			if ( 0 === strpos( $shipping_method_id, 'easypack_parcel_machines' ) || 0 === strpos( $fs_method_name, 'easypack_parcel_machines' ) ) {
+			if ( is_object( WC() ) && property_exists( WC(), 'session' ) ) {
+				$inpost_pl_paczkomat = WC()->session->get( 'inpost_pl_wc_paczkomat' );
 
-				if ( is_object( WC() ) && property_exists( WC(), 'session' ) ) {
-					$inpost_pl_paczkomat = WC()->session->get( 'inpost_pl_wc_paczkomat' );
+				if ( $inpost_pl_paczkomat ) {
 
-					if ( $inpost_pl_paczkomat ) {
-
-						if ( 'PL_' === substr( $inpost_pl_paczkomat, 0, 3 ) ) {
-							$inpost_pl_paczkomat = substr( $inpost_pl_paczkomat, 3 );
-						}
-
-						$order->update_meta_data( '_parcel_machine_id', $inpost_pl_paczkomat );
+					if ( 'PL_' === substr( $inpost_pl_paczkomat, 0, 3 ) ) {
+						$inpost_pl_paczkomat = substr( $inpost_pl_paczkomat, 3 );
 					}
-					// Clear session data.
-					WC()->session->__unset( 'inpost_pl_wc_paczkomat' );
+
+					$order->update_meta_data( '_parcel_machine_id', $inpost_pl_paczkomat );
 				}
+				// Clear session data.
+				WC()->session->__unset( 'inpost_pl_wc_paczkomat' );
 			}
+		} elseif ( is_object( WC() ) && property_exists( WC(), 'session' ) ) {
+			// Clear locker data.
+			WC()->session->__unset( 'inpost_pl_wc_paczkomat' );
 		}
 
 		$order->save();

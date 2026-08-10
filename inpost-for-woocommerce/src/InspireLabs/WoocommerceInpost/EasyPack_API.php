@@ -23,17 +23,11 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 		const API_URL_SANDBOX_PL = 'https://sandbox-api-shipx-pl.easypack24.net';
 
-		const API_URL_PRODUCTION_UK = 'https://api-shipx-uk.easypack24.net/v1/';
-
-		const API_URL_SANDBOX_UK = 'https://sandbox-api-shipx-uk.easypack24.net/v1/';
-
 		const ENVIRONMENT_PRODUCTION = 'production';
 
 		const ENVIRONMENT_SANDBOX = 'sandbox';
 
 		const COUNTRY_PL = 'PL';
-
-		const COUNTRY_UK = 'GB';
 
 		/**
 		 * @var self
@@ -111,19 +105,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 			return self::ENVIRONMENT_PRODUCTION === $this->environment;
 		}
 
-		/**
-		 * @return bool
-		 */
-		public function is_uk() {
-			return self::COUNTRY_UK === $this->country;
-		}
 
-		/**
-		 * @return bool
-		 */
-		public function is_pl() {
-			return self::COUNTRY_PL === $this->country;
-		}
 
 		public static function EasyPack_API() {
 			if ( self::$instance === null ) {
@@ -141,31 +123,14 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 		public function make_api_url( $url = null ) {
 
 			if ( self::ENVIRONMENT_SANDBOX === $this->environment ) {
-				if ( self::COUNTRY_PL === $this->country ) {
-					$url                      = self::API_URL_SANDBOX_PL;
-					$this->geo_widget_api_url
-						= 'https://sandbox-api-pl-points.easypack24.net/v1';
-				}
-
-				if ( self::COUNTRY_UK === $this->country ) {
-					$url                      = self::API_URL_SANDBOX_UK;
-					$this->geo_widget_api_url
-						= 'https://sandbox-api-uk-points.easypack24.net/v1';
-				}
+				$url                      = self::API_URL_SANDBOX_PL;
+				$this->geo_widget_api_url = 'https://sandbox-api-pl-points.easypack24.net/v1';
 			}
 
 			if ( self::ENVIRONMENT_PRODUCTION === $this->environment ) {
-				if ( self::COUNTRY_PL === $this->country ) {
-					$url                      = self::API_URL_PRODUCTION_PL;
-					$this->geo_widget_api_url
-						= 'https://api-pl-points.easypack24.net/v1';
-				}
+				$url                      = self::API_URL_PRODUCTION_PL;
+				$this->geo_widget_api_url = 'https://api-pl-points.easypack24.net/v1';
 
-				if ( self::COUNTRY_UK === $this->country ) {
-					$url                      = self::API_URL_PRODUCTION_UK;
-					$this->geo_widget_api_url
-						= 'https://api-uk-points.easypack24.net/v1';
-				}
 			}
 
 			$url        = untrailingslashit( $url );
@@ -333,33 +298,33 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				'invalid target point for end of week collection' => __( 'Parcel locker ID for the Weekend Package service is wrong. It should be available 24/7', 'inpost-for-woocommerce' ),
 				'insurance should be greater or equal than cod' => __( 'Insurance amount should be greater or equal than COD', 'inpost-for-woocommerce' ),
 				'custom attributes target point required end of week collection invalid target point for end of week collection' => __( 'Parcel locker ID code is required', 'inpost-for-woocommerce' ),
-				'receiver_email'                       => __( 'Recipient e-mail', 'inpost-for-woocommerce' ),
-				'forbidden'                            => __( 'forbidden', 'inpost-for-woocommerce' ),
-				'receiver_phone'                       => __( 'Recipient phone', 'inpost-for-woocommerce' ),
-				'receiver phone required'              => __( 'Recipient phone is required', 'inpost-for-woocommerce' ),
-				'address'                              => __( 'Address', 'inpost-for-woocommerce' ),
-				'phone'                                => __( 'Phone', 'inpost-for-woocommerce' ),
-				'email'                                => __( 'Email', 'inpost-for-woocommerce' ),
-				'post_code'                            => __( 'Post code', 'inpost-for-woocommerce' ),
-				'postal_code'                          => __( 'Post code', 'inpost-for-woocommerce' ),
-				'default_machine_id'                   => __( 'Default parcel locker', 'inpost-for-woocommerce' ),
+				'receiver_email'                          => __( 'Recipient e-mail', 'inpost-for-woocommerce' ),
+				'forbidden'                               => __( 'forbidden', 'inpost-for-woocommerce' ),
+				'receiver_phone'                          => __( 'Recipient phone', 'inpost-for-woocommerce' ),
+				'receiver phone required'                 => __( 'Recipient phone is required', 'inpost-for-woocommerce' ),
+				'address'                                 => __( 'Address', 'inpost-for-woocommerce' ),
+				'phone'                                   => __( 'Phone', 'inpost-for-woocommerce' ),
+				'email'                                   => __( 'Email', 'inpost-for-woocommerce' ),
+				'post_code'                               => __( 'Post code', 'inpost-for-woocommerce' ),
+				'postal_code'                             => __( 'Post code', 'inpost-for-woocommerce' ),
+				'default_machine_id'                      => __( 'Default parcel locker', 'inpost-for-woocommerce' ),
 
-				'not_an_email'                         => __( 'not valid', 'inpost-for-woocommerce' ),
-				'invalid'                              => __( 'invalid', 'inpost-for-woocommerce' ),
-				'not_found'                            => __( 'not found', 'inpost-for-woocommerce' ),
-				'invalid_format'                       => __( 'invalid format', 'inpost-for-woocommerce' ),
-				'required, invalid_format'             => __( 'required', 'inpost-for-woocommerce' ),
-				'too_many_characters'                  => __( 'too many characters', 'inpost-for-woocommerce' ),
+				'not_an_email'                            => __( 'not valid', 'inpost-for-woocommerce' ),
+				'invalid'                                 => __( 'invalid', 'inpost-for-woocommerce' ),
+				'not_found'                               => __( 'not found', 'inpost-for-woocommerce' ),
+				'invalid_format'                          => __( 'invalid format', 'inpost-for-woocommerce' ),
+				'required, invalid_format'                => __( 'required', 'inpost-for-woocommerce' ),
+				'too_many_characters'                     => __( 'too many characters', 'inpost-for-woocommerce' ),
 				'Action (cancel) can not be taken on shipment with status (confirmed).'
 											=> __( 'Action (cancel) can not be taken on shipment with status (confirmed).', 'inpost-for-woocommerce' ),
 				'There are some validation errors. Check details object for more info.'
 											=> __( 'There are some validation errors.', 'inpost-for-woocommerce' ),
 
-				'Access to this resource is forbidden' => __( 'Invalid login or token', 'inpost-for-woocommerce' ),
+				'Access to this resource is forbidden'    => __( 'Invalid login or token', 'inpost-for-woocommerce' ),
 				'Sorry, access to this resource is forbidden' => __( 'Invalid login', 'inpost-for-woocommerce' ),
-				'Token is missing or invalid.'         => __( 'Token is missing or invalid. Or service works on server, try later.', 'inpost-for-woocommerce' ),
-				'Box machine name cannot be empty'     => __( 'Parcel Locker is empty. Please fill in this field.', 'inpost-for-woocommerce' ),
-				'Default parcel machine'               => __( 'Default send parcel locker: ', 'inpost-for-woocommerce' ),
+				'Token is missing or invalid.'            => __( 'Token is missing or invalid. Or service works on server, try later.', 'inpost-for-woocommerce' ),
+				'Box machine name cannot be empty'        => __( 'Parcel Locker is empty. Please fill in this field.', 'inpost-for-woocommerce' ),
+				'Default parcel machine'                  => __( 'Default send parcel locker: ', 'inpost-for-woocommerce' ),
 				'The transaction can not be completed due to the balance of your account' => __(
 					'The transaction can not be completed due to the balance of your account',
 					'inpost-for-woocommerce'
@@ -368,14 +333,15 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 					'Can not create sticker. You have not enough funds to pay for this parcel',
 					'inpost-for-woocommerce'
 				),
-				'company_data_missing'                 => __(
+				'company_data_missing'                    => __(
 					'The organization does not have agreement about service SmartCourier',
 					'inpost-for-woocommerce'
 				),
-				'validation_failed'                    => __(
+				'validation_failed'                       => __(
 					'The organization does not have agreement about service SmartCourier',
 					'inpost-for-woocommerce'
 				),
+				'shipments already dispatched'                      => __( 'Shipments already dispatched', 'inpost-for-woocommerce' ),
 			);
 
 			if ( strpos( $error, 'custom attributes target point required' ) !== false ) {
@@ -408,14 +374,14 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 		}
 
 		/**
-		 * @param      $array
+		 * @param      $arr_data
 		 * @param int   $level
 		 * @param null  $key_recursive
 		 *
 		 * @return string
 		 */
 		private function get_error_recursive(
-			$array,
+			$arr_data,
 			$level = 1,
 			$key_recursive = null
 		) {
@@ -426,7 +392,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 			) {
 				$output .= $key_recursive . ' ';
 			}
-			foreach ( $array as $key => $value ) {
+			foreach ( $arr_data as $key => $value ) {
 
 				if ( is_array( $value ) ) {
 
@@ -459,7 +425,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 			$headers = $response['headers'];
 			$data    = $headers->getAll();
 
-			return $data['content-transfer-encoding'] === 'binary';
+			return 'binary' === $data['content-transfer-encoding'];
 		}
 
 
@@ -582,6 +548,11 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 			$response = wp_remote_post( $url, $request_args );
 			if ( is_wp_error( $response ) ) {
+				if ( function_exists( 'wc_get_logger' ) ) {
+					\wc_get_logger()->debug( 'Response is WP Error:', array( 'source' => 'inpost-pl-exception' ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
+					\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-pl-exception' ) );
+				}
 				throw new Exception( esc_html( $response->get_error_message() ) );
 			} else {
 
@@ -594,6 +565,12 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 				$ret = json_decode( $response['body'], true );
 				if ( ! is_array( $ret ) ) {
+
+					if ( function_exists( 'wc_get_logger' ) ) {
+						\wc_get_logger()->debug( 'Response is not array:', array( 'source' => 'inpost-pl-exception' ) );
+						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
+						\wc_get_logger()->debug( print_r( $ret, true ), array( 'source' => 'inpost-pl-exception' ) );
+					}
 					throw new Exception( esc_html__( 'Bad API response. Check API URL', 'inpost-for-woocommerce' ), 503 );
 				} elseif ( isset( $ret['status'] ) ) {
 						$errors = '';
@@ -654,61 +631,73 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				}
 			}
 
-			if ( ! empty( $this->token ) ) {
+			if ( empty( $this->token ) ) {
+				$alerts = new Alerts();
+				$alerts->add_error( 'InPost PL: ' . esc_html__( 'Empty API token', 'inpost-for-woocommerce' ) );
+				$alerts->print_alerts_once();
+				return $ret;
+			}
 
-				$request_args = array( 'timeout' => 30 );
+			$request_args = array( 'timeout' => 30 );
 
-				$request_args['headers'] = array(
-					'Authorization' => 'Bearer ' . $this->token,
-					'Content-Type'  => 'application/json',
-				);
+			$request_args['headers'] = array(
+				'Authorization' => 'Bearer ' . $this->token,
+				'Content-Type'  => 'application/json',
+			);
 
-				$response = wp_remote_get( $url, $request_args );
+			$response = wp_remote_get( $url, $request_args );
 
-				if ( is_wp_error( $response ) ) {
-					$this->authorizationError( $response->get_error_message() . ' ( Endpoint: ' . $url . ' )', $response->get_error_code() );
-				} else {
+			if ( is_wp_error( $response ) ) {
+				if ( function_exists( 'wc_get_logger' ) ) {
+					\wc_get_logger()->debug( 'Response is WP Error:', array( 'source' => 'inpost-pl-exception' ) );
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
+					\wc_get_logger()->debug( print_r( $response, true ), array( 'source' => 'inpost-pl-exception' ) );
+				}
+				$this->authorizationError( $response->get_error_message() . ' ( Endpoint: ' . $url . ' )', $response->get_error_code() );
+			} else {
 
-					if ( $this->is_binary_response( $response ) ) {
-						return array(
-							'headers' => $response['headers'],
-							'body'    => $response['body'],
-						);
+				if ( $this->is_binary_response( $response ) ) {
+					return array(
+						'headers' => $response['headers'],
+						'body'    => $response['body'],
+					);
+				}
+
+				$ret = json_decode( $response['body'], true );
+				if ( ! is_array( $ret ) ) {
+					if ( function_exists( 'wc_get_logger' ) ) {
+						\wc_get_logger()->debug( 'Bad API response (get)', array( 'source' => 'inpost-pl-api-error' ) );
+						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
+						\wc_get_logger()->debug( print_r( $ret, true ), array( 'source' => 'inpost-pl-api-error' ) );
 					}
+					$alerts = new Alerts();
+					$alerts->add_error( 'InPost PL: ' . esc_html__( 'Bad API response', 'inpost-for-woocommerce' ) );
 
-					$ret = json_decode( $response['body'], true );
-					if ( ! is_array( $ret ) ) {
-						// throw new Exception(__( 'Bad API response. Check API URL', 'inpost-for-woocommerce' ), 503 );.
-
-						$alerts = new Alerts();
-						$alerts->add_error( 'InPost PL: ' . __( 'Bad API response', 'inpost-for-woocommerce' ) );
-
-					} elseif ( isset( $ret['status'] ) ) {
-							$errors = '';
-						if ( isset( $ret['error'] ) && ! empty( $ret['error'] ) ) {
-							if ( is_array( $ret['details'] ) ) {
-								if ( count( $ret['details'] ) ) {
-									$errors = $this->get_error( $ret['details'] );
-								}
-							} else {
-								if ( ! empty( $ret['details'] ) ) {
-									$errors = ': ' . $ret['details'];
-								}
-
-								if ( ! empty( $ret['message'] ) ) {
-									$errors = ': ' . $ret['message'];
-								}
+				} elseif ( isset( $ret['status'] ) ) {
+					$errors = '';
+					if ( isset( $ret['error'] ) && ! empty( $ret['error'] ) ) {
+						if ( is_array( $ret['details'] ) ) {
+							if ( count( $ret['details'] ) ) {
+								$errors = $this->get_error( $ret['details'] );
 							}
-						} elseif ( isset( $ret['message'] ) ) {
-								$errors = $this->translate_error( $ret['message'] );
-						}
-						if ( isset( $ret['errors'] ) || isset( $ret['error'] ) ) {
-							if ( empty( $errors ) ) {
-								$errors = $ret['message'];
+						} else {
+							if ( ! empty( $ret['details'] ) ) {
+								$errors = ': ' . $ret['details'];
 							}
 
-							$this->authorizationError( $errors, $ret['status'] );
+							if ( ! empty( $ret['message'] ) ) {
+								$errors = ': ' . $ret['message'];
+							}
 						}
+					} elseif ( isset( $ret['message'] ) ) {
+							$errors = $this->translate_error( $ret['message'] );
+					}
+					if ( isset( $ret['errors'] ) || isset( $ret['error'] ) ) {
+						if ( empty( $errors ) ) {
+							$errors = $ret['message'];
+						}
+
+						$this->authorizationError( $errors, $ret['status'] );
 					}
 				}
 			}
@@ -730,7 +719,7 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 				if ( $res && ! isset( $res['error'] ) ) {
 					$alerts = new Alerts();
-					$alerts->add_success( 'Inpost PL: ' . __( 'New API settings connection test passed.', 'inpost-for-woocommerce' ) );
+					$alerts->add_success( 'Inpost PL: ' . esc_html__( 'New API settings connection test passed.', 'inpost-for-woocommerce' ) );
 
 					update_option( 'easypack_api_login_error', '0' );
 				} else {
@@ -1038,52 +1027,9 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 
 		/**
-		 * @return mixed
-		 * @deprecated
-		 */
-		public function api_country() {
-			return $this->getCountry();
-		}
-
-		public function validate_phone( $phone ) {
-
-			if ( $this->getCountry() == self::COUNTRY_UK ) {
-				if ( preg_match( '/\A\d{10}\z/', $phone ) ) {
-					return true;
-				} else {
-					return __( 'Invalid phone number. Valid phone number must contains 10 digits.', 'inpost-for-woocommerce' );
-				}
-			}
-			if ( $this->getCountry() == self::COUNTRY_PL ) {
-				if ( preg_match( '/\A[1-9]\d{8}\z/', $phone ) ) {
-					return true;
-				} else {
-					return __(
-						'Invalid phone number. Valid phone number must contains 9 digits and must not begins with 0.',
-						'inpost-for-woocommerce'
-					);
-				}
-			}
-
-			return __( 'Invalid phone number.', 'inpost-for-woocommerce' );
-		}
-
-		/**
-		 * @param $shipments
+		 * Get country
 		 *
-		 * @return array|mixed|object
-		 * @throws Exception
-		 */
-		public function calculate_shipments( $shipments ) {
-			$organizationId = get_option( 'easypack_organization_id' );
-			$response       = $this->post( sprintf( '/organizations/%d/shipments/calculate', $organizationId ), $shipments );
-
-			return $response;
-		}
-
-
-		/**
-		 * @return mixed
+		 * @return string
 		 */
 		public function getCountry() {
 			return $this->country;

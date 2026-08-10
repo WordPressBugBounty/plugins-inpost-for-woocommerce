@@ -50,6 +50,8 @@ class ShipX_Shipment_Service {
 
 		$order = wc_get_order( $shipment->getInternalData()->getOrderId() );
 		if ( $order && ! is_wp_error( $order ) ) {
+			// Re-read meta.
+			$order->read_meta_data( true );
 			$order->update_meta_data( '_shipx_shipment_object', $shipment );
 			$tracking_number = $shipment->getInternalData()->getTrackingNumber();
 			$order->update_meta_data( '_easypack_parcel_tracking', $tracking_number );
@@ -299,7 +301,7 @@ class ShipX_Shipment_Service {
 		$sender->setPhone( get_option( 'easypack_sender_phone' ) );
 		$sender->setCompanyName( get_option( 'easypack_sender_company_name' ) );
 		$senderAddress = new ShipX_Shipment_Sender_Address_Model();
-		$senderAddress->setCountryCode( EasyPack_API()->api_country() );
+		$senderAddress->setCountryCode( 'PL' );
 		$senderAddress->setCity( get_option( 'easypack_sender_city' ) );
 		$senderAddress->setStreet( get_option( 'easypack_sender_street' ) );
 		$senderAddress->setBuildingNumber( get_option( 'easypack_sender_building_no' ) );

@@ -184,11 +184,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<div style="float:left;">
 			<p>
-				<?php if ( EasyPack_API()->is_pl() ) : ?>
 				<span>
-				<?php else : ?>
-					<span class="tips" data-tip="">
-				<?php endif; ?>
 					<button class="button button-primary" id="get_stickers" name="get_stickers">
 						<?php esc_html_e( 'Get stickers', 'inpost-for-woocommerce' ); ?>
 					</button>
@@ -198,11 +194,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div style="width: 10px; display: block"></div>
 		<div style="float:left; padding-left: 10px;">
 			<p>
-				<?php if ( EasyPack_API()->is_pl() && true === $is_courier_context ) : ?>
-				<span>
-				<?php else : ?>
+				<?php if ( true === $is_courier_context ) { ?>
+					<span>
+				<?php } else { ?>
 					<span class="tips" data-tip="">
-				<?php endif; ?>
+				<?php } ?>
 					<button class="button button-primary" id="get_return_stickers" name="get_return_stickers">
 						<?php esc_html_e( 'Get return stickers', 'inpost-for-woocommerce' ); ?>
 					</button>
@@ -232,18 +228,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<div style="float:left;">
 			<p>
-				<?php if ( EasyPack_API()->api_country() == EasyPack_API()::COUNTRY_PL ) : ?>
 				<span>
-				<?php else : ?>
-					<span class="tips" data-tip="
-					<?php
-					esc_html_e(
-						'From the list, select the packages that you want to be collected to be sent. If Courier has been chosen, the collection of your packages by a courier will be arranged.',
-						'inpost-for-woocommerce'
-					);
-					?>
-						">
-				<?php endif; ?>&nbsp;
+				&nbsp;
 				</span>
 			</p>
 		</div>
@@ -282,12 +268,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php
 		$total_pagination_pages = $view_var_shipment_manager_list_table->custom_pagination;
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin shipment list UI pagination; read-only.
-		$current_page           = isset( $_GET['shipments_page'] ) ? (int) sanitize_text_field( wp_unslash( $_GET['shipments_page'] ) ) : 1;
+		$current_page = isset( $_GET['shipments_page'] ) ? (int) sanitize_text_field( wp_unslash( $_GET['shipments_page'] ) ) : 1;
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-		$next_page              = ( $current_page + 1 ) <= $total_pagination_pages ? $current_page + 1 : $total_pagination_pages;
-		$previous_page          = ( $current_page - 1 ) >= $total_pagination_pages ? $current_page - 1 : 1;
-		$is_disabled_first      = $current_page === 1 ? 'disabled' : null;
-		$is_disabled_last       = $current_page == $total_pagination_pages ? 'disabled' : null;
+		$next_page         = ( $current_page + 1 ) <= $total_pagination_pages ? $current_page + 1 : $total_pagination_pages;
+		$previous_page     = ( $current_page - 1 ) >= $total_pagination_pages ? $current_page - 1 : 1;
+		$is_disabled_first = $current_page === 1 ? 'disabled' : null;
+		$is_disabled_last  = $current_page == $total_pagination_pages ? 'disabled' : null;
 		if ( $total_pagination_pages ) {
 			$current_rel_uri = add_query_arg( null, null );
 			?>
@@ -473,6 +459,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	jQuery('#easypack_create_posting_confirmation').click(function (e) {
 		e.preventDefault();
+
+		let $btn = jQuery(this);
+		let $spinner = jQuery('#easypack_spinner_posting_confirmation');
+
+		if ( $btn.hasClass( 'disabled' ) || $btn.attr( 'disabled' ) ) {
+			return false;
+		}
+
 		let parcels = [];
 		let count_parcels = 0;
 		let first_order = '';
@@ -487,10 +481,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 		});
 		if (count_parcels === 0) {
 			alert('<?php esc_html_e( 'No parcels selected to create manifest.', 'inpost-for-woocommerce' ); ?>');
-			jQuery('#easypack_spinner_posting_confirmation').removeClass("is-active");
+			$spinner.removeClass( 'is-active' );
 			return false;
 		}
 
+		$btn.attr( 'disabled', true ).addClass( 'disabled' ).css( 'pointer-events', 'none' );
+		$spinner.addClass( 'is-active' );
 		jQuery('#inpost_confirmation_error_response').html('');
 
 		let data = {
@@ -537,6 +533,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 					console.log( "Error response posting_confirmation" );
 					console.log( textStatus );
 					console.log( 'Error: ' + errorThrown + ' ' + jqXHR.responseText );
+				},
+				complete: function () {
+					$btn.attr( 'disabled', false ).removeClass( 'disabled' ).css( 'pointer-events', '' );
+					$spinner.removeClass( 'is-active' );
 				}
 			}
 		);

@@ -128,7 +128,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 			$view_var_points        = $courier_pickup_service->getDispatchPointsStrArray();
 			$dispatch_point         = (int) get_option( EasyPack::ATTRIBUTE_PREFIX . '_dpoint_selected' );
 
-			$view_var_send_methods = self::get_send_methods_for_country( EasyPack_API()->api_country() );
+			$view_var_send_methods = self::get_send_methods_for_country();
 			$view_var_statuses     = $status_service->get_statuses_key_value();
 			$view_var_services     = $shipment_service->get_services_key_value();
 
@@ -157,10 +157,12 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 
 
 		private static function pickup() {
+
 			check_admin_referer( self::NONCE_ACTION, self::NONCE_FIELD );
 
 			$shipment_service       = EasyPack()->get_shipment_service();
 			$courier_pickup_service = EasyPack()->get_courier_pickup_service();
+			$alerts                 = new Alerts();
 
 			$selected_data = null;
 
@@ -176,10 +178,6 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 			$selected_shipments = $selected_data;
 			$dispatch_point     = isset( $_POST['easypack_dispatch_point'] ) ? sanitize_text_field( wp_unslash( $_POST['easypack_dispatch_point'] ) ) : null;
 
-			if ( empty( $dispatch_point ) ) {
-				return;
-			}
-
 			$shipments_to_pick_up = array();
 			if ( ! empty( $selected_shipments ) ) {
 				foreach ( $selected_shipments as $order_id ) {
@@ -188,11 +186,16 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 			}
 
 			$dispatch_point_arr = $courier_pickup_service->getDispatchPoint( (int) $dispatch_point );
+			if ( empty( $dispatch_point_arr ) ) {
+				$alerts->add_error( esc_html__( 'Error: no pickup point data', 'inpost-for-woocommerce' ) );
+				$alerts->print_alerts();
+				return;
+			}
 
 			try {
 				$courier_pickup_service->createDispatchOrder( $dispatch_point_arr, $shipments_to_pick_up );
 				$message = esc_html__( 'Shipments dispathed ', 'inpost-for-woocommerce' );
-				printf( '<div class="updated"><p>%s</p></div>', esc_html( $message ) );
+				printf( '<div class="updated"><p>%s</p></div>', wp_kses_post( $message ) );
 
 			} catch ( Exception $e ) {
 				$class   = 'error';
@@ -203,21 +206,17 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 
 
 		/**
-		 * @param string $api_country
+		 * Get send methods for PL
 		 *
 		 * @return array
 		 */
-		private static function get_send_methods_for_country( $api_country ) {
-			if ( EasyPack_API::COUNTRY_PL === $api_country ) {
-				return array(
-					'any'            => __( 'All', 'inpost-for-woocommerce' ),
-					'parcel_locker'  => __( 'Parcel Locker', 'inpost-for-woocommerce' ),
-					'dispatch_order' => __( 'Courier', 'inpost-for-woocommerce' ),
-					'pop'            => __( 'POP', 'inpost-for-woocommerce' ),
-				);
-			}
-
-			return array();
+		private static function get_send_methods_for_country() {
+			return array(
+				'any'            => esc_html__( 'All', 'inpost-for-woocommerce' ),
+				'parcel_locker'  => esc_html__( 'Parcel Locker', 'inpost-for-woocommerce' ),
+				'dispatch_order' => esc_html__( 'Courier', 'inpost-for-woocommerce' ),
+				'pop'            => esc_html__( 'POP', 'inpost-for-woocommerce' ),
+			);
 		}
 
 		/**
@@ -249,9 +248,7 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager' ) ) :
 		 */
 		public static function is_courier_context() {
 			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Admin shipment list UI filters; read-only.
-			return EasyPack_API()->api_country() == EasyPack_API::COUNTRY_PL
-					&& isset( $_GET['send_method'] )
-					&& 'dispatch_order' === $_GET['send_method'];
+			return isset( $_GET['send_method'] ) && 'dispatch_order' === $_GET['send_method'];
 			// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		}
 
