@@ -322,11 +322,11 @@ class EasyPack extends inspire_Plugin4 {
 			if ( isset( $items['shipping'] ) && ! empty( $parcel_machine_id ) ) {
 				$items['shipping']['value']
 					.= sprintf(
-					'<br>%1s:<br><span style="border-radius:3px; padding: 4px; background: #aaf8de" class="ep-chosen-parcel-machine">%1s</span><br><span class="italic">%3s</span>',
-					esc_html__( 'Selected parcel machine', 'inpost-for-woocommerce' ),
-					esc_attr( $parcel_machine_id ),
-					esc_html( $parcel_desc )
-				);
+						'<br>%1s:<br><span style="border-radius:3px; padding: 4px; background: #aaf8de" class="ep-chosen-parcel-machine">%1s</span><br><span class="italic">%3s</span>',
+						esc_html__( 'Selected parcel machine', 'inpost-for-woocommerce' ),
+						esc_attr( $parcel_machine_id ),
+						esc_html( $parcel_desc )
+					);
 			}
 		}
 
@@ -661,9 +661,9 @@ class EasyPack extends inspire_Plugin4 {
 			return;
 		}
 
-		$enqueued              = true;
-		$a11y_js_path          = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/easypack-geowidget-modal-a11y.js';
-		$a11y_js_path_version  = file_exists( $a11y_js_path ) ? filemtime( $a11y_js_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;
+		$enqueued             = true;
+		$a11y_js_path         = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/easypack-geowidget-modal-a11y.js';
+		$a11y_js_path_version = file_exists( $a11y_js_path ) ? filemtime( $a11y_js_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;
 
 		wp_enqueue_script(
 			'easypack-geowidget-modal-a11y',
@@ -1724,34 +1724,45 @@ class EasyPack extends inspire_Plugin4 {
 			return;
 		}
 
-		$fs_instance_id = '';
+		$shipping_method_id = null;
+		$fs_instance_id     = '';
+		$fs_method_name     = '';
 
-		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified by WooCommerce checkout before woocommerce_checkout_update_order_meta.
-		if ( ! empty( $_POST['parcel_machine_id'] ) ) {
-			$paczkomat_id = sanitize_text_field( wp_unslash( $_POST['parcel_machine_id'] ) );
-			if ( 'PL_' === substr( $paczkomat_id, 0, 3 ) ) {
-				$paczkomat_id = substr( $paczkomat_id, 3 );
-			}
-			$order->update_meta_data( '_parcel_machine_id', $paczkomat_id );
+		foreach ( $order->get_shipping_methods() as $shipping_method ) {
+			$shipping_method_id = $shipping_method->get_method_id();
+			$fs_instance_id     = $shipping_method->get_instance_id();
 		}
-
-		if ( ! empty( $_POST['parcel_machine_desc'] ) ) {
-			$paczkomat_desc = sanitize_text_field( wp_unslash( $_POST['parcel_machine_desc'] ) );
-			$order->update_meta_data( '_parcel_machine_desc', $paczkomat_desc );
-		}
-		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		// save easypack method name in metadata to show later required metabox in order details.
 		if ( EasyPack_Helper()->is_flexible_shipping_activated() ) {
-			foreach ( $order->get_shipping_methods() as $shipping_method ) {
-				$fs_instance_id = $shipping_method->get_instance_id();
-			}
-
 			$fs_method_name = EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $fs_instance_id );
 			if ( ! empty( $fs_method_name ) ) {
 				$order->update_meta_data( '_fs_easypack_method_name', $fs_method_name );
 			}
 		}
+
+		$needs_parcel_locker = (
+			( is_string( $shipping_method_id ) && 0 === strpos( $shipping_method_id, 'easypack_parcel_machines' ) )
+			|| ( is_string( $fs_method_name ) && 0 === strpos( $fs_method_name, 'easypack_parcel_machines' ) )
+		);
+
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified by WooCommerce checkout before woocommerce_checkout_update_order_meta.
+		if ( $needs_parcel_locker && ! empty( $_POST['parcel_machine_id'] ) ) {
+			$paczkomat_id = sanitize_text_field( wp_unslash( $_POST['parcel_machine_id'] ) );
+			if ( 'PL_' === substr( $paczkomat_id, 0, 3 ) ) {
+				$paczkomat_id = substr( $paczkomat_id, 3 );
+			}
+			$order->update_meta_data( '_parcel_machine_id', $paczkomat_id );
+
+			if ( ! empty( $_POST['parcel_machine_desc'] ) ) {
+				$paczkomat_desc = sanitize_text_field( wp_unslash( $_POST['parcel_machine_desc'] ) );
+				$order->update_meta_data( '_parcel_machine_desc', $paczkomat_desc );
+			}
+		} elseif ( is_object( WC() ) && property_exists( WC(), 'session' ) ) {
+			// Clear locker data.
+			WC()->session->__unset( 'inpost_pl_wc_paczkomat' );
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		$order->save();
 	}

@@ -2,9 +2,9 @@
 Contributors: inspirelabs
 Tags: inpost, paczkomaty, etykiety, przesyłki
 Requires at least: 5.3
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.9.5
+Stable tag: 1.9.6
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
  
@@ -42,6 +42,9 @@ Po zainstalowaniu wtyczki skonfiguruj sposób dostawy InPost oraz ceny poszczeg�
 
 
 == Changelog ==
+
+= 1.9.6 =
+* Fix: selection of orders for bulk actions
 
 = 1.9.5 =
 * Fix: fix order meta for non-locker methods

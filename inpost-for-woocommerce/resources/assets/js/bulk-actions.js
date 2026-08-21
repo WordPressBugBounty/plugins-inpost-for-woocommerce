@@ -1497,7 +1497,8 @@ function inpost_table_processing() {
 		table = form.find( 'table' );
 	}
 
-	let all_rows = table.find( "th[class='check-column']" ).children( "input[type='checkbox']" );
+	// WP < 7.1: checkboxes in tbody th.check-column; WP 7.1+: td.check-column.
+	let all_rows = table.find( 'tbody .check-column input[type="checkbox"]' );
 
 	let result             = {};
 	let selected_row_count = 0;
