@@ -34,13 +34,13 @@ do_action( 'woocommerce_email_header', $email_heading, $email );
 
 if ( ! empty( $tracking_numbers ) ) {
 	if ( 1 === count( $tracking_numbers ) ) {
-		$tracking_number = reset( $tracking_numbers );
+		$inpost_for_woocommerce_tracking_number = reset( $tracking_numbers );
 		?>
 		<?php /* translators: %s: Customer first name */ ?>
 		<p><?php printf( esc_html__( 'Hi %s,', 'inpost-for-woocommerce' ), esc_html( $order->get_billing_first_name() ) ); ?></p>
 		<p><?php esc_html_e( 'A tracking number has been given for your order. It will soon move on its journey', 'inpost-for-woocommerce' ); ?></p>
 		<p><?php esc_html_e( 'Tracking link:', 'inpost-for-woocommerce' ); ?></p>
-		<p><a href="<?php echo esc_url( $tracking_link . $tracking_number ); ?>" target="_blank"><?php echo esc_html( $tracking_link . $tracking_number ); ?></a></p>
+		<p><a href="<?php echo esc_url( $tracking_link . $inpost_for_woocommerce_tracking_number ); ?>" target="_blank"><?php echo esc_html( $tracking_link . $inpost_for_woocommerce_tracking_number ); ?></a></p>
 		<br>
 		<?php
 	} elseif ( count( $tracking_numbers ) > 1 ) {
@@ -50,9 +50,9 @@ if ( ! empty( $tracking_numbers ) ) {
 		<p><?php esc_html_e( 'For your order was created multi-package. It will soon move on its journey', 'inpost-for-woocommerce' ); ?></p>
 		<p><?php esc_html_e( 'Tracking links:', 'inpost-for-woocommerce' ); ?></p>
 		<?php
-		foreach ( $tracking_numbers as $tracking_number ) {
+		foreach ( $tracking_numbers as $inpost_for_woocommerce_tracking_number ) {
 			?>
-			<p><a href="<?php echo esc_url( $tracking_link . $tracking_number ); ?>"><?php echo esc_html( $tracking_number ); ?></a></p>
+			<p><a href="<?php echo esc_url( $tracking_link . $inpost_for_woocommerce_tracking_number ); ?>"><?php echo esc_html( $inpost_for_woocommerce_tracking_number ); ?></a></p>
 			<?php
 		}
 	}

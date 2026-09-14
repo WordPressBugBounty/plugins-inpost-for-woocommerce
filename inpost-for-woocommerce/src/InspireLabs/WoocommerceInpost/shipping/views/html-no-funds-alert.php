@@ -26,37 +26,37 @@ if ( isset( $api_status_update_response ) && is_array( $api_status_update_respon
 		|| isset( $api_status_update_response['unavailability_reasons'] ) ) :
 
 
-		$unavailability_reasons = array();
+		$inpost_for_woocommerce_unavailability_reasons = array();
 
 		if ( isset( $api_status_update_response['offers'][0]['unavailability_reasons'] ) ) :
-			$unavailability_reasons = $api_status_update_response['offers'][0]['unavailability_reasons'];
+			$inpost_for_woocommerce_unavailability_reasons = $api_status_update_response['offers'][0]['unavailability_reasons'];
 		elseif ( isset( $api_status_update_response['selected_offer']['unavailability_reasons'] ) ) :
-			$unavailability_reasons = $api_status_update_response['selected_offer']['unavailability_reasons'];
+			$inpost_for_woocommerce_unavailability_reasons = $api_status_update_response['selected_offer']['unavailability_reasons'];
 		else :
 
-			$unavailability_reasons = $api_status_update_response['unavailability_reasons'] ?? array();
+			$inpost_for_woocommerce_unavailability_reasons = $api_status_update_response['unavailability_reasons'] ?? array();
 		endif;
 
-		if ( is_array( $unavailability_reasons ) && ! empty( $unavailability_reasons ) ) :
-			$details = '';
-			foreach ( $unavailability_reasons as $arr ) {
-				if ( is_array( $arr ) ) {
-					foreach ( $arr as $k => $v ) {
-						if ( 'sender' === $k && 'post_code_invalid' === $v ) {
-							$details .= esc_html__( 'Wrong sender postal code', 'inpost-for-woocommerce' );
-						} elseif ( 'receiver' === $k && 'post_code_invalid' === $v ) {
-							$details .= esc_html__( 'Wrong receiver postal code', 'inpost-for-woocommerce' );
+		if ( is_array( $inpost_for_woocommerce_unavailability_reasons ) && ! empty( $inpost_for_woocommerce_unavailability_reasons ) ) :
+			$inpost_for_woocommerce_details = '';
+			foreach ( $inpost_for_woocommerce_unavailability_reasons as $inpost_for_woocommerce_arr ) {
+				if ( is_array( $inpost_for_woocommerce_arr ) ) {
+					foreach ( $inpost_for_woocommerce_arr as $inpost_for_woocommerce_k => $inpost_for_woocommerce_v ) {
+						if ( 'sender' === $inpost_for_woocommerce_k && 'post_code_invalid' === $inpost_for_woocommerce_v ) {
+							$inpost_for_woocommerce_details .= esc_html__( 'Wrong sender postal code', 'inpost-for-woocommerce' );
+						} elseif ( 'receiver' === $inpost_for_woocommerce_k && 'post_code_invalid' === $inpost_for_woocommerce_v ) {
+							$inpost_for_woocommerce_details .= esc_html__( 'Wrong receiver postal code', 'inpost-for-woocommerce' );
 						} else {
-							$details .= $k . ': ' . $v . ' ';
+							$inpost_for_woocommerce_details .= $inpost_for_woocommerce_k . ': ' . $inpost_for_woocommerce_v . ' ';
 						}
 					}
 				}
 			}
 
-			if ( ! empty( $details ) ) :
+			if ( ! empty( $inpost_for_woocommerce_details ) ) :
 				?>
 				<p class="easypack_error" style="color:red; font-weight:bold;">
-					<?php echo esc_html( $details ); ?>
+					<?php echo esc_html( $inpost_for_woocommerce_details ); ?>
 				</p>
 			<?php endif;
 		endif;

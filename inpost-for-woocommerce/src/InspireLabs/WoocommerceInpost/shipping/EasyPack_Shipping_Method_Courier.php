@@ -128,6 +128,14 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 					'default'     => 'no',
 					'desc_tip'    => true,
 				),
+				'return_documents'                       => array(
+					'title'       => __( 'Return documents', 'inpost-for-woocommerce' ),
+					'label'       => '',
+					'type'        => 'checkbox',
+					'description' => '',
+					'default'     => 'no',
+					'desc_tip'    => true,
+				),
 				'insurance_inpost_pl'                    => array(
 					'title'       => __( 'Insurance', 'inpost-for-woocommerce' ),
 					'label'       => __( 'Set from order amount', 'inpost-for-woocommerce' ),

@@ -13,10 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$parcel_machine_selected = false;
-$selected                = '';
-
-
 // double fields for DIVI templates.
 add_action(
 	'woocommerce_review_order_before_submit',

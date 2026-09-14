@@ -389,3 +389,7 @@ input[name="easypack_insurance_amount_mode"] {
 select#easypack_change_first_parcel {
 	width: 100%;
 }
+
+label[for="easypack_email_enabled"] {
+    margin-bottom: 10px;
+}

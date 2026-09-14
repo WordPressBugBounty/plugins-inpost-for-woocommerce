@@ -1081,25 +1081,36 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 
 		/**
-		 * Check if used any Sequential Order Numbers
+		 * Get shipment reference number for an order.
 		 *
-		 * @param int $order_id $order_id.
+		 * @param int $order_id Order ID.
 		 * @return mixed
 		 */
 		public function get_maybe_custom_reference_number( $order_id ) {
 
 			$reference_number = $order_id;
+			$order            = wc_get_order( $order_id );
 
-			if ( class_exists( 'Wt_Advanced_Order_Number' ) || class_exists( 'WC_Seq_Order_Number' ) ) {
-				$order = wc_get_order( $order_id );
-				if ( $order && ! is_wp_error( $order ) ) {
-					if ( ! empty( $order->get_meta( '_order_number' ) ) ) {
-						$reference_number = $order->get_meta( '_order_number' );
-					}
-				}
+			if ( $order && ! is_wp_error( $order ) ) {
+				$reference_number = $order->get_order_number();
+			} else {
+				$order = null;
 			}
 
-			return $reference_number;
+			/**
+			 * Filter the shipment reference number (metabox, bulk create, auto-send).
+			 *
+			 * Default value is the WooCommerce order ID (or sequential `_order_number`
+			 * when a sequential order number plugin is active). Use this to append
+			 * customer name or other order data before the value is shown / sent to ShipX.
+			 *
+			 * Note: InPost reference field is limited (UI maxlength 100).
+			 *
+			 * @param string|int    $reference_number Default reference value.
+			 * @param int           $order_id         WooCommerce order ID.
+			 * @param WC_Order|null $order            Order object when available.
+			 */
+			return apply_filters( 'inpost_pl_modify_label_reference_info', $reference_number, $order_id, $order );
 		}
 
 
@@ -2225,17 +2236,17 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 			$tracking_number = '';
 
-			if( ! $order_id ) {
+			if ( ! $order_id ) {
 				return $tracking_number;
 			}
 
 			$tracking_number = $this->get_woo_order_meta( $order_id, '_easypack_parcel_tracking' );
 
-			if( empty( $tracking_number ) ) {
+			if ( empty( $tracking_number ) ) {
 				$shipment = $this->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
-				if( ! empty( $shipment ) && $shipment instanceof ShipX_Shipment_Model ) {
+				if ( ! empty( $shipment ) && $shipment instanceof ShipX_Shipment_Model ) {
 					$internal_tracking = $shipment->getInternalData()->getTrackingNumber();
-					$tracking_number = ! empty( $internal_tracking ) ? $internal_tracking : '';
+					$tracking_number   = ! empty( $internal_tracking ) ? $internal_tracking : '';
 				}
 			}
 

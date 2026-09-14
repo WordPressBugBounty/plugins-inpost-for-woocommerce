@@ -110,11 +110,12 @@ class EasyPack_Webhook {
 			);
 
 			if ( function_exists( 'wc_get_logger' ) ) {
-				//\wc_get_logger()->debug( 'IP Address does not match to InPost API:', array( 'source' => 'inpost-pl-webhook' ) );
-				//\wc_get_logger()->debug( print_r( $headers, true ), array( 'source' => 'inpost-pl-webhook' ) );
+				\wc_get_logger()->debug( 'IP Address does not match to InPost API:', array( 'source' => 'inpost-pl-webhook' ) );
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
+				\wc_get_logger()->debug( print_r( $headers, true ), array( 'source' => 'inpost-pl-webhook' ) );
 			}
 
-			//return new \WP_REST_Response( $resp, 403 );
+			return new \WP_REST_Response( $resp, 403 );
 		}
 
 		if ( ! $this->verify_organisation_id( $webhook_body ) ) {
@@ -145,9 +146,9 @@ class EasyPack_Webhook {
 			$this->debud_order_id = $wc_order_id;
 		} elseif ( function_exists( 'wc_get_logger' ) ) {
 
-				\wc_get_logger()->debug( 'Tracking number not found:', array( 'source' => 'inpost-pl-webhook' ) );
+			\wc_get_logger()->debug( 'Tracking number not found:', array( 'source' => 'inpost-pl-webhook' ) );
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
-				\wc_get_logger()->debug( print_r( $webhook_body, true ), array( 'source' => 'inpost-pl-webhook' ) );
+			\wc_get_logger()->debug( print_r( $webhook_body, true ), array( 'source' => 'inpost-pl-webhook' ) );
 		}
 
 		if ( empty( $wc_order_id ) ) {
@@ -260,32 +261,103 @@ class EasyPack_Webhook {
 	/**
 	 * Verifies that a webhook request comes from an authorized IP address.
 	 *
+	 * Allowed sources (InPost):
+	 * - 91.216.25.0/24
+	 * - 34.38.70.198
+	 * - 34.76.195.238
+	 *
 	 * @param array $headers The request headers.
 	 * @return bool True if the request is verified, false otherwise.
 	 *
-	 * @since 1.7.5
+	 * @since 1.9.7
 	 * @access private
 	 */
 	private function verify_request( $headers ) {
-		if ( empty( $headers ) || ! is_array( $headers ) ) {
+
+		if ( 'yes' !== get_option( 'easypack_enable_webhooks' ) ) {
 			return false;
 		}
 
-		if ( isset( $headers['cf_connecting_ip'][0] ) ) {
+		$source_ip = $this->get_webhook_source_ip( $headers );
+		if ( empty( $source_ip ) || ! filter_var( $source_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
+			return false;
+		}
 
-			$source_ip = $headers['cf_connecting_ip'][0];
+		return $this->is_allowed_inpost_webhook_ip( $source_ip );
+	}
 
-			// Parse the IP address.
-			$ip_parts = explode( '.', $source_ip );
+	/**
+	 * Resolves the client IP for webhook verification.
+	 *
+	 * Prefer CF-Connecting-IP (when behind Cloudflare), then REMOTE_ADDR.
+	 * X-Real-IP / X-Forwarded-For are fallbacks only.
+	 *
+	 * @param array $headers The request headers.
+	 * @return string
+	 */
+	private function get_webhook_source_ip( $headers ) {
+		$candidates = array();
 
-			// Check if it's a valid IPv4 address with 4 parts.
-			if ( 4 === count( $ip_parts ) ) {
-				// Check if the first three octets match 91.216.25.
-				if ( '91' === $ip_parts[0] && '216' === $ip_parts[1] && '25' === $ip_parts[2] ) {
-					// The IP is in the 91.216.25.XX range.
-					return true;
+		if ( is_array( $headers ) && ! empty( $headers['cf_connecting_ip'][0] ) ) {
+			$candidates[] = trim( (string) $headers['cf_connecting_ip'][0] );
+		}
+
+		if ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
+			$candidates[] = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+		}
+
+		if ( is_array( $headers ) ) {
+			foreach ( array( 'x_real_ip', 'x_forwarded_for' ) as $header_key ) {
+				if ( empty( $headers[ $header_key ][0] ) ) {
+					continue;
+				}
+				$value = trim( (string) $headers[ $header_key ][0] );
+				if ( false !== strpos( $value, ',' ) ) {
+					$parts = explode( ',', $value );
+					$value = trim( $parts[0] );
+				}
+				if ( '' !== $value ) {
+					$candidates[] = $value;
 				}
 			}
+		}
+
+		foreach ( $candidates as $ip ) {
+			if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
+				return $ip;
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Checks whether an IPv4 address is in the InPost webhook allowlist.
+	 *
+	 * @param string $ip IPv4 address.
+	 * @return bool
+	 */
+	private function is_allowed_inpost_webhook_ip( $ip ) {
+		$allowed_exact = array(
+			'34.38.70.198',
+			'34.76.195.238',
+		);
+
+		if ( in_array( $ip, $allowed_exact, true ) ) {
+			return true;
+		}
+
+		// 91.216.25.0/24
+		$ip_parts = explode( '.', $ip );
+		if ( 4 === count( $ip_parts )
+			&& '91' === $ip_parts[0]
+			&& '216' === $ip_parts[1]
+			&& '25' === $ip_parts[2]
+			&& ctype_digit( $ip_parts[3] )
+			&& (int) $ip_parts[3] >= 0
+			&& (int) $ip_parts[3] <= 255
+		) {
+			return true;
 		}
 
 		return false;
@@ -302,16 +374,32 @@ class EasyPack_Webhook {
 	 * @access private
 	 */
 	private function verify_organisation_id( $body ) {
-		if ( ! is_array( $body ) || empty( $body['organization_id'] ) ) {
+
+		if ( 'yes' !== get_option( 'easypack_enable_webhooks' ) ) {
 			return false;
 		}
 
-		$id_from_settings = trim( get_option( 'easypack_organization_id' ) );
-		if ( $body['organization_id'] == $id_from_settings ) {
-			return true;
+		if ( ! is_array( $body ) || ! isset( $body['organization_id'] ) ) {
+			return false;
 		}
 
-		return false;
+		if ( empty( $body['organization_id'] ) ) {
+			return false;
+		}
+
+		$incoming = $body['organization_id'];
+
+		// Reject non-scalar types (e.g. JSON boolean true must not match any org id).
+		if ( ! is_string( $incoming ) && ! is_int( $incoming ) ) {
+			return false;
+		}
+
+		$id_from_settings = trim( (string) get_option( 'easypack_organization_id' ) );
+		if ( '' === $id_from_settings ) {
+			return false;
+		}
+
+		return (string) $incoming === $id_from_settings;
 	}
 
 	/**
@@ -367,8 +455,6 @@ class EasyPack_Webhook {
 					)
 				);
 			}
-
-
 		} else {
 
 			$order_ids = $wpdb->get_col(

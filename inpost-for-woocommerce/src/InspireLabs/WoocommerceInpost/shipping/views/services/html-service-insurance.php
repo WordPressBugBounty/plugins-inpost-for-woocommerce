@@ -12,14 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 } // Exit if accessed directly.
 
 if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ) {
-	$input_disabled = ' disabled ';
+	$inpost_for_woocommerce_input_disabled = ' disabled ';
 	?>
 	<label disabled style="display: block" for="insurance_amounts" class="graytext">
 		<?php esc_html_e( 'Insurance amount: ', 'inpost-for-woocommerce' ); ?>
 	</label>
 	<?php
 } else {
-	$input_disabled = '';
+	$inpost_for_woocommerce_input_disabled = '';
 	?>
 	<label style="display: block" for="insurance_amounts">
 		<?php esc_html_e( 'Insurance amount: ', 'inpost-for-woocommerce' ); ?>
@@ -31,17 +31,17 @@ if ( $shipment instanceof ShipX_Shipment_Model ) {
 	?>
 	
 	<?php
-	$insurance = '0.00';
+	$inpost_for_woocommerce_insurance = '0.00';
 	if ( null !== $shipment->getInsurance() ) {
-		$insurance = $shipment->getInsurance()->getAmount();
+		$inpost_for_woocommerce_insurance = $shipment->getInsurance()->getAmount();
 	}
 	?>
 
-	<input <?php echo esc_attr( $input_disabled ); ?>
+	<input <?php echo esc_attr( $inpost_for_woocommerce_input_disabled ); ?>
 			class="insurance_amount var1"
 			type="number"
 			style=""
-			value="<?php echo esc_attr( $insurance ); ?>"
+			value="<?php echo esc_attr( $inpost_for_woocommerce_insurance ); ?>"
 			placeholder="0.00"
 			step="any"
 			min="0"
@@ -50,16 +50,16 @@ if ( $shipment instanceof ShipX_Shipment_Model ) {
 	<?php
 } else {
 
-	$insurance = EasyPack_Helper()->get_insurance_amount( $order_id );
+	$inpost_for_woocommerce_insurance = EasyPack_Helper()->get_insurance_amount( $order_id );
 	?>
-	<input <?php echo esc_attr( $input_disabled ); ?>
+	<input <?php echo esc_attr( $inpost_for_woocommerce_input_disabled ); ?>
 			class="insurance_amount"
 			type="number" style=""
-			value="<?php echo esc_attr( $insurance ); ?>"
+			value="<?php echo esc_attr( $inpost_for_woocommerce_insurance ); ?>"
 			placeholder="0.00"
 			step="any"
 			min="0"
 			id="insurance_amounts"
-			name="insurance_amounts[]<?php echo esc_attr( $input_disabled ); ?>">
+			name="insurance_amounts[]<?php echo esc_attr( $inpost_for_woocommerce_input_disabled ); ?>">
 	<?php
 }

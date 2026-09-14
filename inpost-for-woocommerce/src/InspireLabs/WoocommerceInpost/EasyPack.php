@@ -1986,8 +1986,9 @@ class EasyPack extends inspire_Plugin4 {
 		$service                 = '';
 		$ship_method_name        = '';
 		$ship_method_instance_id = '';
-		$sms_service             = false;
-		$email_service           = false;
+		$sms_service               = false;
+		$email_service             = false;
+		$return_documents_service  = false;
 
 		$order = wc_get_order( $order_id );
 		foreach ( $order->get_items( 'shipping' ) as $item_id => $item ) {
@@ -2006,6 +2007,11 @@ class EasyPack extends inspire_Plugin4 {
 		if ( isset( $shipping_method_settings['email'] ) ) {
 			if ( 'yes' === $shipping_method_settings['email'] ) {
 				$email_service = true;
+			}
+		}
+		if ( isset( $shipping_method_settings['return_documents'] ) ) {
+			if ( 'yes' === $shipping_method_settings['return_documents'] ) {
+				$return_documents_service = true;
 			}
 		}
 
@@ -2104,6 +2110,10 @@ class EasyPack extends inspire_Plugin4 {
 					if ( $email_service ) {
 						$additional_services[]                   = $shipment_model::ADDITIONAL_SERVICES_EMAIL;
 						$shipment_array['additional_services'][] = 'email';
+					}
+					if ( $return_documents_service ) {
+						$additional_services[]                   = $shipment_model::ADDITIONAL_SERVICES_ROD;
+						$shipment_array['additional_services'][] = 'rod';
 					}
 				} else {
 

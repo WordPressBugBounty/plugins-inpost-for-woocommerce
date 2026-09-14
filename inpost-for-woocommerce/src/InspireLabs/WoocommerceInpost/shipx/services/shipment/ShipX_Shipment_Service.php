@@ -352,6 +352,10 @@ class ShipX_Shipment_Service {
 				$additional_services[] = $shipment::ADDITIONAL_SERVICES_EMAIL;
 			}
 
+			if ( isset( $_POST['easypack_return_documents'] ) && $_POST['easypack_return_documents'] === 'true' ) {
+				$additional_services[] = $shipment::ADDITIONAL_SERVICES_ROD;
+			}
+
 			if ( isset( $_POST['action'] ) && $_POST['action'] === 'easypack_bulk_create_shipments' ) {
 				$ship_method_name        = '';
 				$ship_method_instance_id = '';
@@ -370,6 +374,11 @@ class ShipX_Shipment_Service {
 				if ( isset( $shipping_method_settings['email'] ) ) {
 					if ( 'yes' === $shipping_method_settings['email'] ) {
 						$additional_services[] = $shipment::ADDITIONAL_SERVICES_EMAIL;
+					}
+				}
+				if ( isset( $shipping_method_settings['return_documents'] ) ) {
+					if ( 'yes' === $shipping_method_settings['return_documents'] ) {
+						$additional_services[] = $shipment::ADDITIONAL_SERVICES_ROD;
 					}
 				}
 			}

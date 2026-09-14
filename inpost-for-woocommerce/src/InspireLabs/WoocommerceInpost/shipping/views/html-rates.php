@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$field = $this->get_field_key( $key );
+$inpost_for_woocommerce_field = $this->get_field_key( $key );
 
 ?>
 
@@ -15,7 +15,7 @@ $field = $this->get_field_key( $key );
 		<label for="woocommerce_easypack_parcel_machines_rates"><?php echo esc_html( $data['title'] ); ?></label>
 	</th>
 	<td class="forminp">
-		<table id="<?php echo esc_attr( $field ); ?>" class="easypack_rates wc_input_table sortable widefat">
+		<table id="<?php echo esc_attr( $inpost_for_woocommerce_field ); ?>" class="easypack_rates wc_input_table sortable widefat">
 			<thead>
 				<tr>
 					<th class="sort">&nbsp;</th>
@@ -26,23 +26,23 @@ $field = $this->get_field_key( $key );
 				</tr>
 			</thead>
 			<tbody>
-				<?php $count = 0; ?>
+				<?php $inpost_for_woocommerce_count = 0; ?>
 				<?php if( is_array( $rates ) ): ?>
-                    <?php foreach ( $rates as $key => $rate) : $count++; ?>
-                        <?php if( is_array( $rate ) ): ?>
+                    <?php foreach ( $rates as $inpost_for_woocommerce_rate_key => $inpost_for_woocommerce_rate) : $inpost_for_woocommerce_count++; ?>
+                        <?php if( is_array( $inpost_for_woocommerce_rate ) ): ?>
                             <tr>
                                 <td class="sort"></td>
                                 <td>
-                                    <input class="input-text regular-input" type="number" style="" value="<?php echo  esc_attr ($rate['min'] ); ?>" placeholder="0.00" step="any" min="0" name=rates[<?php echo esc_attr( $count ); ?>][min]>
+                                    <input class="input-text regular-input" type="number" style="" value="<?php echo  esc_attr ($inpost_for_woocommerce_rate['min'] ); ?>" placeholder="0.00" step="any" min="0" name=rates[<?php echo esc_attr( $inpost_for_woocommerce_count ); ?>][min]>
                                 </td>
                                 <td>
-                                    <input class="input-text regular-input" type="number" style="" value="<?php echo esc_attr( $rate['max'] ); ?>" placeholder="0.00" step="any" min="0" name=rates[<?php echo esc_attr( $count ); ?>][max]>
+                                    <input class="input-text regular-input" type="number" style="" value="<?php echo esc_attr( $inpost_for_woocommerce_rate['max'] ); ?>" placeholder="0.00" step="any" min="0" name=rates[<?php echo esc_attr( $inpost_for_woocommerce_count ); ?>][max]>
                                 </td>
                                 <td>
-                                    <input class="input-text regular-input" type="number" style="" value="<?php echo esc_attr( $rate['cost'] ); ?>" placeholder="0.00" step="any" min="0" name=rates[<?php echo esc_attr( $count ); ?>][cost]>
+                                    <input class="input-text regular-input" type="number" style="" value="<?php echo esc_attr( $inpost_for_woocommerce_rate['cost'] ); ?>" placeholder="0.00" step="any" min="0" name=rates[<?php echo esc_attr( $inpost_for_woocommerce_count ); ?>][cost]>
                                 </td>
                                 <td>
-                                    <a id="delete_rate_<?php echo esc_attr( $count ); ?>" href="#" class="button delete_rate" data-id="<?php echo esc_attr( $count ); ?>"><?php esc_html_e( 'Delete row', 'inpost-for-woocommerce' ); ?></a>
+                                    <a id="delete_rate_<?php echo esc_attr( $inpost_for_woocommerce_count ); ?>" href="#" class="button delete_rate" data-id="<?php echo esc_attr( $inpost_for_woocommerce_count ); ?>"><?php esc_html_e( 'Delete row', 'inpost-for-woocommerce' ); ?></a>
                                 </td>
                             </tr>
                         <?php endif; ?>

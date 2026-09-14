@@ -52,8 +52,8 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_EsmartMix' ) ) {
 
 		public function init_form_fields() {
 			parent::init_form_fields();
-			unset( $this->form_fields['sms'], $this->form_fields['email'] );
-			unset( $this->instance_form_fields['sms'], $this->instance_form_fields['email'] );
+			unset( $this->form_fields['sms'], $this->form_fields['email'], $this->form_fields['return_documents'] );
+			unset( $this->instance_form_fields['sms'], $this->instance_form_fields['email'], $this->instance_form_fields['return_documents'] );
 		}
 
 		/**

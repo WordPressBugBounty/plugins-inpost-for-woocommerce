@@ -405,6 +405,7 @@ require 'html-send-method.php';
 					insurance_amounts: insurance_amounts,
 					easypack_sms: jQuery(metabox).find('#easypack_sms_enabled').is(':checked'),
 					easypack_email: jQuery(metabox).find('#easypack_email_enabled').is(':checked'),
+					easypack_return_documents: jQuery(metabox).find('#easypack_return_documents_enabled').is(':checked'),
 					reference_number: jQuery(metabox).find('#reference_number').val(),
 					easypack_additional_package: jQuery(metabox).find('#easypack_additional_package').val(),
 					cod_amounts: cod_amounts,
@@ -427,6 +428,7 @@ require 'html-send-method.php';
 					insurance_amounts: insurance_amounts,
 					easypack_sms: jQuery(metabox).find('#easypack_sms_enabled').is(':checked'),
 					easypack_email: jQuery(metabox).find('#easypack_email_enabled').is(':checked'),
+					easypack_return_documents: jQuery(metabox).find('#easypack_return_documents_enabled').is(':checked'),
 					reference_number: jQuery(metabox).find('#reference_number').val(),
 					easypack_additional_package: jQuery(metabox).find('#easypack_additional_package').val(),
 					cod_amounts: cod_amounts

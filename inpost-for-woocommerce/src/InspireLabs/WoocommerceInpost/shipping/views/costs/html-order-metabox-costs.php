@@ -11,66 +11,66 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment_cost\ShipX_Shipment_Cost
 <?php
 
 
-$calculated_charge_amount
-    = $calculated_charge_amount_nc
-    = $cod_charge_amount
-    = $fuel_charge_amount
-    = $insurance_charge_amount
-    = $notification_charge_amount
+$inpost_for_woocommerce_calculated_charge_amount
+    = $inpost_for_woocommerce_calculated_charge_amount_nc
+    = $inpost_for_woocommerce_cod_charge_amount
+    = $inpost_for_woocommerce_fuel_charge_amount
+    = $inpost_for_woocommerce_insurance_charge_amount
+    = $inpost_for_woocommerce_notification_charge_amount
     = '';
 
 if ($shipment instanceof ShipX_Shipment_Model) {
-    $cost = $shipment->getInternalData()->getShipmentCost();
+    $inpost_for_woocommerce_cost = $shipment->getInternalData()->getShipmentCost();
 } else {
-    $cost = null;
+    $inpost_for_woocommerce_cost = null;
 }
 
-if ($cost instanceof ShipX_Shipment_Cost_Model) {
-    if (true !== $cost->isError()) {
-        $calculated_charge_amount    = $cost->getCalculatedChargeAmount();
-        $calculated_charge_amount_nc = $cost->getCalculatedChargeAmountNonCommission();
-        $cod_charge_amount           = $cost->getCodChargeAmount();
-        $fuel_charge_amount          = $cost->getFuelChargeAmount();
-        $insurance_charge_amount     = $cost->getInsuranceChargeAmount();
-        $notification_charge_amount  = $cost->getNotificationChargeAmount();
+if ($inpost_for_woocommerce_cost instanceof ShipX_Shipment_Cost_Model) {
+    if (true !== $inpost_for_woocommerce_cost->isError()) {
+        $inpost_for_woocommerce_calculated_charge_amount    = $inpost_for_woocommerce_cost->getCalculatedChargeAmount();
+        $inpost_for_woocommerce_calculated_charge_amount_nc = $inpost_for_woocommerce_cost->getCalculatedChargeAmountNonCommission();
+        $inpost_for_woocommerce_cod_charge_amount           = $inpost_for_woocommerce_cost->getCodChargeAmount();
+        $inpost_for_woocommerce_fuel_charge_amount          = $inpost_for_woocommerce_cost->getFuelChargeAmount();
+        $inpost_for_woocommerce_insurance_charge_amount     = $inpost_for_woocommerce_cost->getInsuranceChargeAmount();
+        $inpost_for_woocommerce_notification_charge_amount  = $inpost_for_woocommerce_cost->getNotificationChargeAmount();
     }
 }
 
 ?>
 
-<ul class="shipment_costs_wrapper<?php echo null === $cost ? ' hidden' : '' ?>">
+<ul class="shipment_costs_wrapper<?php echo null === $inpost_for_woocommerce_cost ? ' hidden' : '' ?>">
 
     <span style="font-weight: bold"><?php esc_html_e('Shipment costs:', 'inpost-for-woocommerce') ?> </span>
     <li>
         <ol style="list-style-type: none">
             <li>
                 <span><?php esc_html_e('Calculated charge amount:', 'inpost-for-woocommerce') ?></span>
-                <span id="calculated_charge_amount"> <?php echo esc_html( $calculated_charge_amount ); ?></span>
+                <span id="calculated_charge_amount"> <?php echo esc_html( $inpost_for_woocommerce_calculated_charge_amount ); ?></span>
             </li>
 
             <li>
                 <span><?php esc_html_e('Calculated charge amount (non commission):', 'inpost-for-woocommerce') ?></span>
-                <span id="calculated_charge_amount_nc"><?php echo esc_html( $calculated_charge_amount_nc ); ?></span>
+                <span id="calculated_charge_amount_nc"><?php echo esc_html( $inpost_for_woocommerce_calculated_charge_amount_nc ); ?></span>
             </li>
 
             <li>
                 <span><?php esc_html_e('COD charge amount:', 'inpost-for-woocommerce') ?></span>
-                <span id="cod_charge_amount"> <?php echo esc_html( $cod_charge_amount ); ?></span>
+                <span id="cod_charge_amount"> <?php echo esc_html( $inpost_for_woocommerce_cod_charge_amount ); ?></span>
             </li>
 
             <li>
                 <span><?php esc_html_e('Fuel charge amount:', 'inpost-for-woocommerce') ?></span>
-                <span id="fuel_charge_amount"> <?php echo esc_html( $fuel_charge_amount ); ?></span>
+                <span id="fuel_charge_amount"> <?php echo esc_html( $inpost_for_woocommerce_fuel_charge_amount ); ?></span>
             </li>
 
             <li>
                 <span><?php esc_html_e('Insurance charge amount:', 'inpost-for-woocommerce') ?></span>
-                <span id="insurance_charge_amount"> <?php echo esc_html( $insurance_charge_amount ); ?></span>
+                <span id="insurance_charge_amount"> <?php echo esc_html( $inpost_for_woocommerce_insurance_charge_amount ); ?></span>
             </li>
 
             <li>
                 <span><?php esc_html_e('Notification charge amount:', 'inpost-for-woocommerce') ?></span>
-                <span id="notification_charge_amount"> <?php echo esc_html( $notification_charge_amount ); ?></span>
+                <span id="notification_charge_amount"> <?php echo esc_html( $inpost_for_woocommerce_notification_charge_amount ); ?></span>
             </li>
         </ol>
     </li>

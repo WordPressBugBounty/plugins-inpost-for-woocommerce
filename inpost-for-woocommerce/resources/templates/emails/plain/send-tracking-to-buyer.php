@@ -26,15 +26,15 @@ if (!empty($tracking_numbers)) {
     echo sprintf(esc_html__('Hi %s,', 'inpost-for-woocommerce'), esc_html($order->get_billing_first_name())) . "\n\n";
 
     if (count($tracking_numbers) === 1) {
-        $tracking_number = reset($tracking_numbers);
+        $inpost_for_woocommerce_tracking_number = reset($tracking_numbers);
         echo esc_html__('A tracking number has been given for your order. It will soon move on its journey', 'inpost-for-woocommerce') . "\n\n";
         echo esc_html__('Tracking link:', 'inpost-for-woocommerce') . "\n";
-        echo esc_url($tracking_link . $tracking_number) . "\n\n";
+        echo esc_url($tracking_link . $inpost_for_woocommerce_tracking_number) . "\n\n";
     } elseif (count($tracking_numbers) > 1) {
         echo esc_html__('For your order was created multi-package. It will soon move on its journey', 'inpost-for-woocommerce') . "\n\n";
         echo esc_html__('Tracking links:', 'inpost-for-woocommerce') . "\n";
-        foreach ($tracking_numbers as $tracking_number) {
-            echo esc_url($tracking_link . $tracking_number) . "\n";
+        foreach ($tracking_numbers as $inpost_for_woocommerce_tracking_number) {
+            echo esc_url($tracking_link . $inpost_for_woocommerce_tracking_number) . "\n";
         }
         echo "\n";
     }

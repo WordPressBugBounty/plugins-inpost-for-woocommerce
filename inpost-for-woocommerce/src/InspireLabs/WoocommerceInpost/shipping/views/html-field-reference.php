@@ -1,7 +1,14 @@
 <?php /** @var ShipX_Shipment_Model $shipment */
 
+/**
+ * @var ShipX_Shipment_Model $shipment
+ * @var int $order_id
+ * @var bool $additional_package
+ * @var WC_Order $order - The order object
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 } // Exit if accessed directly.
 
 use InspireLabs\WoocommerceInpost\EasyPack;
@@ -9,56 +16,52 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 
 ?>
 <p>
-	<?php if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ) : ?>
+	<?php if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ) { ?>
 		<label disabled style="display: block" for="reference_number"
 				class="graytext">
 			<?php esc_html_e( 'Reference number: ', 'inpost-for-woocommerce' ); ?>
 		</label>
-	<?php else : ?>
+	<?php } else { ?>
 		<label disabled style="display: block" for="reference_number" class="">
 			<?php esc_html_e( 'Reference number: ', 'inpost-for-woocommerce' ); ?>
 		</label>
-	<?php endif ?>
+		<?php
+	}
 
-	<?php
 	if ( $shipment instanceof ShipX_Shipment_Model
 	&& null !== $shipment->getReference() && ! $additional_package
-	) :
+	) {
 		?>
 		<textarea disabled class="reference_number" rows="5" cols="27"
 					style=""
 					id="reference_number"
 					name="reference_number"><?php echo esc_html( $shipment->getReference() ); ?></textarea>
 		<?php
-	else :
+	} else {
 
-		$default_ref_number = EasyPack_Helper()->get_maybe_custom_reference_number( $order_id );
+		$inpost_for_woocommerce_ref_number = EasyPack_Helper()->get_maybe_custom_reference_number( $order_id );
 
-		$is_order_note_exists = false;
-
-		$ref_number = get_post_meta( $order_id, '_reference_number', true )
-		? get_post_meta( $order_id, '_reference_number', true )
-		: $default_ref_number;
+		$inpost_for_woocommerce_is_order_note_exists = false;
 
 		if ( 'yes' === get_option( 'easypack_add_order_note' ) ) {
-			$order_note = '';
+			$inpost_for_woocommerce_order_note = '';
 			$order      = wc_get_order( $order_id );
 			if ( $order && ! is_wp_error( $order ) && is_object( $order ) ) {
-				$order_note = $order->get_customer_note();
-				if ( ! empty( $order_note ) ) {
-					$is_order_note_exists = true;
+				$inpost_for_woocommerce_order_note = $order->get_customer_note();
+				if ( ! empty( $inpost_for_woocommerce_order_note ) ) {
+					$inpost_for_woocommerce_is_order_note_exists = true;
 				}
 			}
 
-			$ref_number = $ref_number . ' ' . $order_note;
+			$inpost_for_woocommerce_ref_number = $inpost_for_woocommerce_ref_number . ' ' . $inpost_for_woocommerce_order_note;
 		}
 		?>
 	<textarea class="reference_number inpost-pl-charcount" rows="5" cols="27"
 				style="max-width: 100%;"
 				id="reference_number"
-				data-id="<?php echo esc_attr( trim( $ref_number ) ); ?>"
+				data-id="<?php echo esc_attr( trim( $inpost_for_woocommerce_ref_number ) ); ?>"
 				maxlength="100"
-				name="reference_number"><?php echo esc_attr( trim( $ref_number ) ); ?></textarea>
+				name="reference_number"><?php echo esc_attr( trim( $inpost_for_woocommerce_ref_number ) ); ?></textarea>
 	<p class="i-pl-charcount-label">
 		<span class="label label-info" id="ipl-char-num">100 znaków do końca. Maksimum 100 znaków.</span><br>
 		<span class="label i-pl-charcount-limit-exceeded">Długość wiadomości przekracza już limit znaków.</span>
@@ -86,7 +89,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 				var textLength = 0;
 				var comment = "";
 				var outOfChars = 'Osiągnąłeś limit znaków: ' + maxChars;
-				let order_note = "<?php echo esc_html( $is_order_note_exists ); ?>";
+				let order_note = "<?php echo esc_html( $inpost_for_woocommerce_is_order_note_exists ); ?>";
 
 				textLength = $('.inpost-pl-charcount').val().length;
 
@@ -130,5 +133,5 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 			});
 		})(jQuery);
 	</script>
-<?php endif; ?>
+<?php } ?>
 </p>

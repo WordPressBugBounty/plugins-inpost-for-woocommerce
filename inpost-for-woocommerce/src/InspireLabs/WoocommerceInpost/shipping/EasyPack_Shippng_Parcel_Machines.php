@@ -19,6 +19,7 @@ use ReflectionException;
 use WC_Eval_Math;
 use WC_Shipping_Method;
 use InspireLabs\WoocommerceInpost\EmailFilters\TrackingInfoEmail;
+use Automattic\WooCommerce\Utilities\NumberUtil;
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
 
@@ -506,13 +507,16 @@ if ( ! class_exists( 'EasyPack_Shippng_Parcel_Machines' ) ) {
 
 			$total = WC()->cart->get_displayed_subtotal();
 
-			if ( WC()->cart->display_prices_including_tax() ) {
-				$total = $total - WC()->cart->get_discount_tax();
-			}
-
+			// Align with WooCommerce free shipping: only subtract coupon amounts when
+			// "Apply minimum order rule before coupon discount" is unchecked.
 			if ( 'no' === $this->ignore_discounts ) {
 				$total = $total - WC()->cart->get_discount_total();
+				if ( WC()->cart->display_prices_including_tax() ) {
+					$total = $total - WC()->cart->get_discount_tax();
+				}
 			}
+
+			$total = NumberUtil::round( $total, wc_get_price_decimals() );
 
 			if ( ! empty( $this->free_shipping_cost )
 				&& $this->free_shipping_cost <= $total
