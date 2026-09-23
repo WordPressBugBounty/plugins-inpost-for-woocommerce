@@ -15,6 +15,36 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class EasyPack_Webhook {
 
+	/**
+	 * Known Cloudflare IPv4 and IPv6 CIDR ranges.
+	 *
+	 * @var array
+	 */
+	private $cloudflare_ip_ranges = array(
+		// IPv4
+		'103.21.244.0/22',
+		'103.22.200.0/22',
+		'103.31.4.0/22',
+		'141.101.64.0/18',
+		'108.162.192.0/18',
+		'190.93.240.0/20',
+		'188.114.96.0/20',
+		'197.234.240.0/22',
+		'198.41.128.0/17',
+		'162.158.0.0/15',
+		'104.16.0.0/13',
+		'104.24.0.0/14',
+		'172.64.0.0/13',
+		'131.0.72.0/22',
+		// IPv6
+		'2400:cb00::/32',
+		'2606:4700::/32',
+		'2803:f800::/32',
+		'2405:b500::/32',
+		'2405:8100::/32',
+		'2a06:9880::/29',
+		'2c0f:f248::/32',
+	);
 
 	/**
 	 * $debud_order_id
@@ -240,8 +270,8 @@ class EasyPack_Webhook {
 				$shipment->getInternalData()->setStatusDescription( $status_description );
 			}
 
-			if ( isset( $body['event_ts'] ) && ! empty( $body['event_ts'] ) ) {
-				$date      = new DateTime( $body['event_ts'] );
+			if ( isset( $webhook_body['event_ts'] ) && ! empty( $webhook_body['event_ts'] ) ) {
+				$date      = new DateTime( $webhook_body['event_ts'] );
 				$timestamp = $date->getTimestamp();
 				$shipment->getInternalData()->setStatusChangedTimestamp( $timestamp );
 			}
@@ -279,7 +309,7 @@ class EasyPack_Webhook {
 		}
 
 		$source_ip = $this->get_webhook_source_ip( $headers );
-		if ( empty( $source_ip ) || ! filter_var( $source_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
+		if ( empty( $source_ip ) || ! filter_var( $source_ip, FILTER_VALIDATE_IP ) ) {
 			return false;
 		}
 
@@ -287,80 +317,146 @@ class EasyPack_Webhook {
 	}
 
 	/**
-	 * Resolves the client IP for webhook verification.
+	 * Resolves the true source IP for webhook verification safely.
 	 *
-	 * Prefer CF-Connecting-IP (when behind Cloudflare), then REMOTE_ADDR.
-	 * X-Real-IP / X-Forwarded-For are fallbacks only.
+	 * 1. Direct connection from InPost allowed IP -> Returns direct IP immediately.
+	 * 2. Direct connection from Cloudflare Edge -> Extracts and returns CF-Connecting-IP.
+	 * 3. Direct connection from spoofed/unknown IP -> Returns direct IP (which will fail validation).
 	 *
 	 * @param array $headers The request headers.
 	 * @return string
 	 */
 	private function get_webhook_source_ip( $headers ) {
-		$candidates = array();
 
-		if ( is_array( $headers ) && ! empty( $headers['cf_connecting_ip'][0] ) ) {
-			$candidates[] = trim( (string) $headers['cf_connecting_ip'][0] );
+		if ( empty( $_SERVER['REMOTE_ADDR'] ) ) {
+			return '';
 		}
 
-		if ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
-			$candidates[] = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+		$direct_ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+
+		if ( ! filter_var( $direct_ip, FILTER_VALIDATE_IP ) ) {
+			return '';
 		}
 
-		if ( is_array( $headers ) ) {
-			foreach ( array( 'x_real_ip', 'x_forwarded_for' ) as $header_key ) {
-				if ( empty( $headers[ $header_key ][0] ) ) {
-					continue;
-				}
-				$value = trim( (string) $headers[ $header_key ][0] );
-				if ( false !== strpos( $value, ',' ) ) {
-					$parts = explode( ',', $value );
-					$value = trim( $parts[0] );
-				}
-				if ( '' !== $value ) {
-					$candidates[] = $value;
+		// Optimization: If the direct socket IP is ALREADY an allowed InPost IP, trust it immediately.
+		// This handles direct non-Cloudflare connections and circumvents CF range checks.
+		if ( $this->is_allowed_inpost_webhook_ip( $direct_ip ) ) {
+			return $direct_ip;
+		}
+
+		// Only trust CF-Connecting-IP if the direct socket connection comes from Cloudflare Edge IPs.
+		if ( $this->is_cloudflare_ip( $direct_ip ) ) {
+			if ( is_array( $headers ) && ! empty( $headers['cf_connecting_ip'][0] ) ) {
+				$cf_ip = trim( (string) $headers['cf_connecting_ip'][0] );
+				if ( filter_var( $cf_ip, FILTER_VALIDATE_IP ) ) {
+					return $cf_ip;
 				}
 			}
 		}
 
-		foreach ( $candidates as $ip ) {
-			if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
-				return $ip;
-			}
-		}
-
-		return '';
+		return $direct_ip;
 	}
 
 	/**
-	 * Checks whether an IPv4 address is in the InPost webhook allowlist.
+	 * Checks whether an IP address belongs to Cloudflare's network.
+	 * Allows overriding/extending ranges via 'easypack_cloudflare_ip_ranges' WP filter.
 	 *
-	 * @param string $ip IPv4 address.
+	 * @param string $ip IP address to check.
 	 * @return bool
 	 */
-	private function is_allowed_inpost_webhook_ip( $ip ) {
-		$allowed_exact = array(
-			'34.38.70.198',
-			'34.76.195.238',
-		);
+	private function is_cloudflare_ip( $ip ) {
+		/**
+		 * Filters the array of allowed Cloudflare IP ranges.
+		 *
+		 * @param array $ranges Array of IPv4/IPv6 CIDR strings.
+		 */
+		$ranges = apply_filters( 'easypack_cloudflare_ip_ranges', $this->cloudflare_ip_ranges );
 
-		if ( in_array( $ip, $allowed_exact, true ) ) {
-			return true;
+		if ( ! is_array( $ranges ) ) {
+			$ranges = $this->cloudflare_ip_ranges;
 		}
 
-		// 91.216.25.0/24
-		$ip_parts = explode( '.', $ip );
-		if ( 4 === count( $ip_parts )
-			&& '91' === $ip_parts[0]
-			&& '216' === $ip_parts[1]
-			&& '25' === $ip_parts[2]
-			&& ctype_digit( $ip_parts[3] )
-			&& (int) $ip_parts[3] >= 0
-			&& (int) $ip_parts[3] <= 255
-		) {
-			return true;
+		foreach ( $ranges as $range ) {
+			if ( $this->ip_in_cidr( $ip, $range ) ) {
+				return true;
+			}
 		}
 
 		return false;
+	}
+
+	/**
+	 * Checks whether an IP address is in the InPost webhook allowlist.
+	 *
+	 * @param string $ip IP address.
+	 * @return bool
+	 */
+	private function is_allowed_inpost_webhook_ip( $ip ) {
+		$allowed_ranges = array(
+			'34.38.70.198',
+			'34.76.195.238',
+			'91.216.25.0/24',
+		);
+
+		foreach ( $allowed_ranges as $range ) {
+			if ( $this->ip_in_cidr( $ip, $range ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks whether an IP address matches a given CIDR subnet or single IP address.
+	 * Supports both IPv4 and IPv6.
+	 *
+	 * @param string $ip   IP address to check.
+	 * @param string $cidr Subnet in CIDR notation or single IP address.
+	 * @return bool
+	 */
+	private function ip_in_cidr( $ip, $cidr ) {
+		if ( false === strpos( $cidr, '/' ) ) {
+			return $ip === $cidr;
+		}
+
+		list( $subnet, $mask_bits ) = explode( '/', $cidr, 2 );
+		$mask_bits                  = (int) $mask_bits;
+
+		// Pre-validate IPs.
+		if ( ! filter_var( $ip, FILTER_VALIDATE_IP ) || ! filter_var( $subnet, FILTER_VALIDATE_IP ) ) {
+			return false;
+		}
+
+		$ip_bin     = inet_pton( $ip );
+		$subnet_bin = inet_pton( $subnet );
+
+		if ( false === $ip_bin || false === $subnet_bin ) {
+			return false;
+		}
+
+		if ( strlen( $ip_bin ) !== strlen( $subnet_bin ) ) {
+			return false;
+		}
+
+		$bytes = strlen( $ip_bin );
+		for ( $i = 0; $i < $bytes; $i++ ) {
+			if ( $mask_bits >= 8 ) {
+				$mask       = 0xFF;
+				$mask_bits -= 8;
+			} elseif ( $mask_bits > 0 ) {
+				$mask      = 0xFF << ( 8 - $mask_bits );
+				$mask_bits = 0;
+			} else {
+				$mask = 0x00;
+			}
+
+			if ( ( ord( $ip_bin[ $i ] ) & $mask ) !== ( ord( $subnet_bin[ $i ] ) & $mask ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 

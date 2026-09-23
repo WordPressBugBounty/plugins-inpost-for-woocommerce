@@ -16,29 +16,29 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Model;
 $easypack_sms              = 'no';
 $easypack_email            = 'no';
 $easypack_return_documents = 'no';
-$inputDisabled             = '';
+$easypack_input_disabled   = '';
 $easypack_sms_checked              = '';
 $easypack_email_checked            = '';
 $easypack_return_documents_checked = '';
 
 if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ) :
 
-	$additional_services = $shipment->getAdditionalServices();
-	if ( $additional_services && is_array( $additional_services ) ) {
-		if ( in_array( 'sms', $additional_services, true ) ) {
+	$easypack_additional_services = $shipment->getAdditionalServices();
+	if ( $easypack_additional_services && is_array( $easypack_additional_services ) ) {
+		if ( in_array( 'sms', $easypack_additional_services, true ) ) {
 			$easypack_sms_checked = 'checked';
 		}
-		if ( in_array( 'email', $additional_services, true ) ) {
+		if ( in_array( 'email', $easypack_additional_services, true ) ) {
 			$easypack_email_checked = 'checked';
 		}
-		if ( in_array( 'rod', $additional_services, true ) ) {
+		if ( in_array( 'rod', $easypack_additional_services, true ) ) {
 			$easypack_return_documents_checked = 'checked';
 		}
 	}
-	$inputDisabled = ' disabled ';
+	$easypack_input_disabled = ' disabled ';
 	?>
 	<label disabled style="display: block" for="easypack_sms_enabled" class="graytext">
-		<input <?php echo esc_attr( $inputDisabled ); ?>
+		<input <?php echo esc_attr( $easypack_input_disabled ); ?>
 			class="easypack_sms_enabled"
 			type="checkbox"
 			style=""
@@ -48,7 +48,7 @@ if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ) :
 		<?php esc_html_e( 'SMS notifications', 'inpost-for-woocommerce' ); ?>
 	</label>
 	<label disabled style="display: block" for="easypack_email_enabled" class="graytext">
-		<input <?php echo esc_attr( $inputDisabled ); ?>
+		<input <?php echo esc_attr( $easypack_input_disabled ); ?>
 			class="easypack_email_enabled"
 			type="checkbox"
 			style=""
@@ -58,7 +58,7 @@ if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ) :
 		<?php esc_html_e( 'Email notifications', 'inpost-for-woocommerce' ); ?>
 	</label>
 	<label disabled style="display: block" for="easypack_return_documents_enabled" class="graytext">
-		<input <?php echo esc_attr( $inputDisabled ); ?>
+		<input <?php echo esc_attr( $easypack_input_disabled ); ?>
 			class="easypack_return_documents_enabled"
 			type="checkbox"
 			style=""
@@ -70,30 +70,30 @@ if ( $shipment instanceof ShipX_Shipment_Model && ! $additional_package ) :
 	<?php
 else :
 
-	$ship_method_name        = '';
-	$ship_method_instance_id = '';
+	$easypack_ship_method_name        = '';
+	$easypack_ship_method_instance_id = '';
 
-	foreach ( $order->get_items( 'shipping' ) as $item_id => $item ) {
-		$ship_method_name        = $item->get_method_id();
-		$ship_method_instance_id = $item->get_instance_id();
+	foreach ( $order->get_items( 'shipping' ) as $easypack_item_id => $easypack_item ) {
+		$easypack_ship_method_name        = $easypack_item->get_method_id();
+		$easypack_ship_method_instance_id = $easypack_item->get_instance_id();
 	}
 
-	$shipping_method_settings = get_option( 'woocommerce_' . $ship_method_name . '_' . $ship_method_instance_id . '_settings' );
-	if ( isset( $shipping_method_settings['sms'] ) && 'yes' === $shipping_method_settings['sms'] ) {
-		$easypack_sms         = $shipping_method_settings['sms'];
+	$easypack_shipping_method_settings = get_option( 'woocommerce_' . $easypack_ship_method_name . '_' . $easypack_ship_method_instance_id . '_settings' );
+	if ( isset( $easypack_shipping_method_settings['sms'] ) && 'yes' === $easypack_shipping_method_settings['sms'] ) {
+		$easypack_sms         = $easypack_shipping_method_settings['sms'];
 		$easypack_sms_checked = 'checked';
 	}
-	if ( isset( $shipping_method_settings['email'] ) && 'yes' === $shipping_method_settings['email'] ) {
-		$easypack_email         = $shipping_method_settings['email'];
+	if ( isset( $easypack_shipping_method_settings['email'] ) && 'yes' === $easypack_shipping_method_settings['email'] ) {
+		$easypack_email         = $easypack_shipping_method_settings['email'];
 		$easypack_email_checked = 'checked';
 	}
-	if ( isset( $shipping_method_settings['return_documents'] ) && 'yes' === $shipping_method_settings['return_documents'] ) {
-		$easypack_return_documents         = $shipping_method_settings['return_documents'];
+	if ( isset( $easypack_shipping_method_settings['return_documents'] ) && 'yes' === $easypack_shipping_method_settings['return_documents'] ) {
+		$easypack_return_documents         = $easypack_shipping_method_settings['return_documents'];
 		$easypack_return_documents_checked = 'checked';
 	}
 	?>
 	<label style="display: block" for="easypack_sms_enabled">
-		<input <?php echo esc_attr( $inputDisabled ); ?>
+		<input <?php echo esc_attr( $easypack_input_disabled ); ?>
 			class="easypack_sms_enabled"
 			type="checkbox"
 			style=""
@@ -103,7 +103,7 @@ else :
 		<?php esc_html_e( 'SMS notifications', 'inpost-for-woocommerce' ); ?>
 	</label>
 	<label style="display: block" for="easypack_email_enabled">
-		<input <?php echo esc_attr( $inputDisabled ); ?>
+		<input <?php echo esc_attr( $easypack_input_disabled ); ?>
 			class="easypack_email_enabled"
 			type="checkbox"
 			style=""
@@ -113,7 +113,7 @@ else :
 		<?php esc_html_e( 'Email notifications', 'inpost-for-woocommerce' ); ?>
 	</label>
 	<label style="display: block" for="easypack_return_documents_enabled">
-		<input <?php echo esc_attr( $inputDisabled ); ?>
+		<input <?php echo esc_attr( $easypack_input_disabled ); ?>
 			class="easypack_return_documents_enabled"
 			type="checkbox"
 			style=""

@@ -21,36 +21,36 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
 		</a>
 
 		<?php
-		$logo = EasyPack()->getPluginImages() . 'logo/small/white.png';
+		$easypack_logo = EasyPack()->getPluginImages() . 'logo/small/white.png';
 
-		$inpost_methods = EasyPack_Helper()->get_inpost_methods();
-		$active_methods = array();
-		foreach ( $inpost_methods as $instance_id => $inpost_method ) {
+		$inpost_methods         = EasyPack_Helper()->get_inpost_methods();
+		$easypack_active_methods = array();
+		foreach ( $inpost_methods as $easypack_instance_id => $inpost_method ) {
 			if ( 'yes' === $inpost_method['active'] ) {
-				$active_methods[ $instance_id ] = $inpost_method['user_title'];
+				$easypack_active_methods[ $easypack_instance_id ] = $inpost_method['user_title'];
 			}
 		}
 
-		$params          = array(
+		$easypack_params          = array(
 			'type'        => 'select',
-			'options'     => $active_methods,
+			'options'     => $easypack_active_methods,
 			'class'       => array( 'easypack_additional_parcel' ),
 			'input_class' => array( 'easypack_additional_parcel' ),
 			'label'       => '',
 		);
-		$order           = wc_get_order( $order_id );
-		$selected_option = null;
+		$order                    = wc_get_order( $order_id );
+		$easypack_selected_option = null;
 
-		$shipping_methods = $order->get_shipping_methods();
-		if ( ! empty( $shipping_methods ) && is_array( $shipping_methods ) ) {
-			foreach ( $shipping_methods as $method ) {
-				if ( is_object( $method ) ) {
-					$selected_option = $method->get_instance_id();
+		$easypack_shipping_methods = $order->get_shipping_methods();
+		if ( ! empty( $easypack_shipping_methods ) && is_array( $easypack_shipping_methods ) ) {
+			foreach ( $easypack_shipping_methods as $easypack_method ) {
+				if ( is_object( $easypack_method ) ) {
+					$easypack_selected_option = $easypack_method->get_instance_id();
 				}
 			}
 		}
 
-		woocommerce_form_field( 'easypack_second_parcel', $params, $selected_option );
+		woocommerce_form_field( 'easypack_second_parcel', $easypack_params, $easypack_selected_option );
 		?>
 		<button id="easypack_add_additional_parcel" class="button" style="margin-top: 15px;">
 			<?php echo esc_html__( 'Add another parcel', 'inpost-for-woocommerce' ); ?>
@@ -88,7 +88,7 @@ use InspireLabs\WoocommerceInpost\shipx\models\shipment\ShipX_Shipment_Parcel_Mo
 							let out = '<div id="easypack_parcel_additional" class="postbox">';
 							out += '<div class="postbox-header"><h2 class="hndle ui-sortable-handle easypack_parcel_additional">' +
 								'InPost Dodatkowa Paczka' +
-								'<img style="height:22px; float:right;" src="<?php echo esc_url( $logo ); ?>"></h2>\n' +
+								'<img style="height:22px; float:right;" src="<?php echo esc_url( $easypack_logo ); ?>"></h2>\n' +
 								'</div>';
 
 							out += '<div class="inside easypack-second-metabox">';

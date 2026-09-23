@@ -428,6 +428,126 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 			return 'binary' === $data['content-transfer-encoding'];
 		}
 
+		/**
+		 * Summarize a non-JSON ShipX/Cloudflare response for logs and admin notices.
+		 *
+		 * @param array $response wp_remote_* response array.
+		 * @return array{code:int,message:string,summary:string,body_excerpt:string}
+		 */
+		private function summarize_non_json_api_response( $response ) {
+			$code    = (int) wp_remote_retrieve_response_code( $response );
+			$message = (string) wp_remote_retrieve_response_message( $response );
+			$body    = (string) wp_remote_retrieve_body( $response );
+			$plain   = trim( (string) preg_replace( '/\s+/u', ' ', wp_strip_all_tags( $body ) ) );
+
+			$blocked_ip  = $this->extract_ip_from_cloudflare_body( $body, $plain );
+			$ray_id      = '';
+			$is_cf_block = (
+				false !== stripos( $plain, 'Sorry, you have been blocked' )
+				|| false !== stripos( $plain, 'unable to access easypack24.net' )
+				|| false !== stripos( $plain, 'Attention Required! | Cloudflare' )
+			);
+
+			if ( preg_match( '/Cloudflare Ray ID:\s*([a-z0-9]+)/i', $plain, $ray_match ) ) {
+				$ray_id = $ray_match[1];
+			}
+
+			$summary = $plain;
+			if ( $is_cf_block ) {
+				$summary = 'Sorry, you have been blocked by Cloudflare (easypack24.net)';
+				if ( $blocked_ip ) {
+					$summary .= '; IP: ' . $blocked_ip;
+				}
+				if ( $ray_id ) {
+					$summary .= '; Ray ID: ' . $ray_id;
+				}
+			}
+
+			if ( '' === $summary ) {
+				$summary = 'Empty or non-JSON response body';
+			}
+
+			// Keep IP/Ray visible even when Cloudflare HTML body is long.
+			$excerpt_prefix = '';
+			if ( $blocked_ip || $ray_id ) {
+				$excerpt_prefix = trim(
+					( $blocked_ip ? 'Blocked IP: ' . $blocked_ip . '. ' : '' )
+					. ( $ray_id ? 'Ray ID: ' . $ray_id . '. ' : '' )
+				);
+			}
+
+			$excerpt_body = function_exists( 'mb_substr' )
+				? mb_substr( $plain, 0, 400 )
+				: substr( $plain, 0, 400 );
+			$length       = function_exists( 'mb_strlen' ) ? mb_strlen( $plain ) : strlen( $plain );
+			if ( $length > 400 ) {
+				$excerpt_body .= '...';
+			}
+
+			$excerpt = trim( $excerpt_prefix . ' ' . $excerpt_body );
+
+			return array(
+				'code'         => $code,
+				'message'      => $message,
+				'summary'      => $summary,
+				'body_excerpt' => $excerpt,
+				'ip'           => $blocked_ip,
+				'ray_id'       => $ray_id,
+			);
+		}
+
+		/**
+		 * Extract client IP from Cloudflare challenge/block HTML.
+		 *
+		 * @param string $raw_body Raw response body.
+		 * @param string $plain    Stripped plaintext body.
+		 * @return string
+		 */
+		private function extract_ip_from_cloudflare_body( $raw_body, $plain ) {
+			// Cloudflare footer often: "Your IP: Click to reveal 57.128.200.130"
+			if ( preg_match( '/Your IP:\s*(?:Click to reveal\s+)?(\d{1,3}(?:\.\d{1,3}){3})/i', $plain, $match ) ) {
+				return $match[1];
+			}
+
+			// IPv6 in the same footer (requires ":" so "Click" is never matched).
+			if ( preg_match( '/Your IP:\s*(?:Click to reveal\s+)?([0-9a-fA-F]{0,4}(?::[0-9a-fA-F]{0,4}){2,7})/i', $plain, $match ) ) {
+				return $match[1];
+			}
+
+			// Raw HTML variants.
+			if ( preg_match( '/(?:cf-footer-item-ip|your-ip)[^0-9]*(\d{1,3}(?:\.\d{1,3}){3})/i', $raw_body, $match ) ) {
+				return $match[1];
+			}
+
+			if ( preg_match( '/Your IP<\/span>\s*:\s*(?:<[^>]+>\s*)*(\d{1,3}(?:\.\d{1,3}){3})/i', $raw_body, $match ) ) {
+				return $match[1];
+			}
+
+			// Last resort: IPv4 near Ray ID footer line.
+			if ( preg_match( '/Cloudflare Ray ID:[^\d]*(\d{1,3}(?:\.\d{1,3}){3})/i', $plain, $match ) ) {
+				return $match[1];
+			}
+
+			return '';
+		}
+
+		/**
+		 * Human-readable one-liner for non-JSON API failures.
+		 *
+		 * @param array $response wp_remote_* response array.
+		 * @return string
+		 */
+		private function format_non_json_api_error_message( $response ) {
+			$info = $this->summarize_non_json_api_response( $response );
+
+			return sprintf(
+				'HTTP %1$d %2$s: %3$s',
+				(int) $info['code'],
+				$info['message'] ? $info['message'] : 'Error',
+				$info['summary']
+			);
+		}
+
 
 		public function post( $path, $args = array(), $method = 'POST' ) {
 			$url          = untrailingslashit( $this->api_url ) . str_replace( ' ', '%20', str_replace( '@', '%40', $path ) );
@@ -467,12 +587,16 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				$ret = json_decode( $response['body'], true );
 
 				if ( ! is_array( $ret ) ) {
+					$error_details = $this->format_non_json_api_error_message( $response );
 					if ( function_exists( 'wc_get_logger' ) ) {
 						\wc_get_logger()->debug( 'Get response body error:', array( 'source' => 'inpost-pl-exception' ) );
 						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
-						\wc_get_logger()->debug( print_r( $response['body'], true ), array( 'source' => 'inpost-pl-exception' ) );
+						\wc_get_logger()->debug( print_r( $this->summarize_non_json_api_response( $response ), true ), array( 'source' => 'inpost-pl-exception' ) );
 					}
-					throw new Exception( esc_html__( 'Bad API response. Check API URL', 'inpost-for-woocommerce' ), 503 );
+					throw new Exception(
+						esc_html__( 'Bad API response. Check API URL', 'inpost-for-woocommerce' ) . ' (' . esc_html( $error_details ) . ')',
+						503
+					);
 
 				} elseif ( isset( $ret['status'] ) ) {
 					$errors = '';
@@ -565,13 +689,17 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 				$ret = json_decode( $response['body'], true );
 				if ( ! is_array( $ret ) ) {
+					$error_details = $this->format_non_json_api_error_message( $response );
 
 					if ( function_exists( 'wc_get_logger' ) ) {
 						\wc_get_logger()->debug( 'Response is not array:', array( 'source' => 'inpost-pl-exception' ) );
 						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
-						\wc_get_logger()->debug( print_r( $ret, true ), array( 'source' => 'inpost-pl-exception' ) );
+						\wc_get_logger()->debug( print_r( $this->summarize_non_json_api_response( $response ), true ), array( 'source' => 'inpost-pl-exception' ) );
 					}
-					throw new Exception( esc_html__( 'Bad API response. Check API URL', 'inpost-for-woocommerce' ), 503 );
+					throw new Exception(
+						esc_html__( 'Bad API response. Check API URL', 'inpost-for-woocommerce' ) . ' (' . esc_html( $error_details ) . ')',
+						503
+					);
 				} elseif ( isset( $ret['status'] ) ) {
 						$errors = '';
 
@@ -665,13 +793,17 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 
 				$ret = json_decode( $response['body'], true );
 				if ( ! is_array( $ret ) ) {
+					$error_details = $this->format_non_json_api_error_message( $response );
 					if ( function_exists( 'wc_get_logger' ) ) {
 						\wc_get_logger()->debug( 'Bad API response (get)', array( 'source' => 'inpost-pl-api-error' ) );
 						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
-						\wc_get_logger()->debug( print_r( $ret, true ), array( 'source' => 'inpost-pl-api-error' ) );
+						\wc_get_logger()->debug( print_r( $this->summarize_non_json_api_response( $response ), true ), array( 'source' => 'inpost-pl-api-error' ) );
 					}
 					$alerts = new Alerts();
-					$alerts->add_error( 'InPost PL: ' . esc_html__( 'Bad API response', 'inpost-for-woocommerce' ) );
+					$alerts->add_error(
+						'InPost PL: ' . esc_html__( 'Bad API response', 'inpost-for-woocommerce' )
+						. ' (' . esc_html( $error_details ) . ')'
+					);
 
 				} elseif ( isset( $ret['status'] ) ) {
 					$errors = '';

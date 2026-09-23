@@ -703,11 +703,13 @@ class EasyPack extends inspire_Plugin4 {
 			$this->enqueue_geowidget_modal_a11y_script();
 
 			if ( get_option( 'easypack_js_map_button' ) === 'yes' && ! has_block( 'woocommerce/checkout' ) ) {
+				$front_js_path    = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/front.js';
+				$front_js_version = file_exists( $front_js_path ) ? filemtime( $front_js_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;
 				wp_enqueue_script(
 					'easypack-front-js',
 					$this->getPluginJs() . 'front.js',
 					array( 'jquery', 'easypack-jquery-modal', 'easypack-geowidget-modal-a11y', 'geowidget-inpost' ),
-					WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
+					$front_js_version,
 					array( 'in_footer' => true )
 				);
 				wp_localize_script(
