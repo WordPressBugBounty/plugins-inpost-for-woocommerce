@@ -19,6 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly.
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- View included into function scope.
+
 $courier_parcel_size = array();
 
 $length_value       = 0;
@@ -60,6 +62,17 @@ $width_value = ! empty( $courier_parcel_size['width'] )
 $height_value = ! empty( $courier_parcel_size['height'] )
 	? $courier_parcel_size['height']
 	: $parcel->getDimensions()->getHeight();
+
+// Product dimensions and parcel model values are stored/calculated in mm — convert for CM UI.
+// Template / default dimension options stay as entered by the merchant (no auto-conversion).
+$dimensions_are_mm = ( 'courier_dimensions_from_product' === $courier_parcel_source )
+	|| empty( $courier_parcel_size['length'] );
+
+if ( $dimensions_are_mm ) {
+	$length_value = EasyPack_Helper()->mm_to_ui_dimension( $length_value );
+	$width_value  = EasyPack_Helper()->mm_to_ui_dimension( $width_value );
+	$height_value = EasyPack_Helper()->mm_to_ui_dimension( $height_value );
+}
 
 $weight_value = ! empty( $courier_parcel_size['weight'] )
 	? $courier_parcel_size['weight']

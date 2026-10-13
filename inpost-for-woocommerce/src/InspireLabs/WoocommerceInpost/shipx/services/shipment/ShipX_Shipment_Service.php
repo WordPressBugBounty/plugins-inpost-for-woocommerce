@@ -805,23 +805,23 @@ class ShipX_Shipment_Service {
 					return null;
 				}
 				$weight_unit  = $weight->getUnit();
-				$dim_unit     = $dimensions->getUnit();
+				$dim_unit     = EasyPack_Helper()->get_courier_dimension_unit_label();
 				$length       = sprintf(
 					'%s: %s %s',
 					__( 'Length', 'inpost-for-woocommerce' ),
-					$dimensions->getLength(),
+					EasyPack_Helper()->mm_to_ui_dimension( $dimensions->getLength() ),
 					$dim_unit
 				);
 				$width        = sprintf(
 					'%s: %s %s',
 					__( 'Width', 'inpost-for-woocommerce' ),
-					$dimensions->getWidth(),
+					EasyPack_Helper()->mm_to_ui_dimension( $dimensions->getWidth() ),
 					$dim_unit
 				);
 				$height       = sprintf(
 					'%s: %s %s',
 					__( 'Height', 'inpost-for-woocommerce' ),
-					$dimensions->getHeight(),
+					EasyPack_Helper()->mm_to_ui_dimension( $dimensions->getHeight() ),
 					$dim_unit
 				);
 				$weight       = sprintf(

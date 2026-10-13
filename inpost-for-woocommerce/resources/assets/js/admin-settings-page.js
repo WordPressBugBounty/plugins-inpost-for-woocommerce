@@ -266,6 +266,79 @@ function inpost_pl_select_default_point_callback(point) {
 				}
 			);
 
+			function easypack_show_courier_dimensions_cm_notice() {
+				if ( $( '#easypack-courier-dimensions-cm-notice' ).length ) {
+					return;
+				}
+
+				const message = ( typeof easypack_settings !== 'undefined' && easypack_settings.courier_dimensions_cm_notice )
+					? easypack_settings.courier_dimensions_cm_notice
+					: 'If you change this setting, please note: existing template and default dimension values are not converted automatically. Please update them to the correct values.';
+				const buttonLabel = ( typeof easypack_settings !== 'undefined' && easypack_settings.courier_dimensions_cm_notice_btn )
+					? easypack_settings.courier_dimensions_cm_notice_btn
+					: 'I understand';
+
+				const $overlay = $(
+					'<div id="easypack-courier-dimensions-cm-notice" style="position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100000;display:flex;align-items:center;justify-content:center;">' +
+						'<div style="background:#fff;max-width:480px;width:90%;padding:24px;border-radius:4px;box-shadow:0 4px 20px rgba(0,0,0,0.2);">' +
+							'<p style="margin:0 0 20px;font-size:14px;line-height:1.5;color:#1d2327;">' + message + '</p>' +
+							'<div style="text-align:right;">' +
+								'<button type="button" class="button button-primary easypack-courier-dimensions-cm-notice-close">' + buttonLabel + '</button>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+
+				$( 'body' ).append( $overlay );
+
+				$overlay.on(
+					'click',
+					'.easypack-courier-dimensions-cm-notice-close',
+					function ( e ) {
+						e.preventDefault();
+						$overlay.remove();
+					}
+				);
+			}
+
+			function easypack_update_courier_dimension_labels( isCm ) {
+				if ( typeof easypack_settings === 'undefined' || ! easypack_settings.dim_labels ) {
+					return;
+				}
+
+				const unit   = isCm ? 'cm' : 'mm';
+				const labels = easypack_settings.dim_labels[ unit ];
+				const maxes  = ( easypack_settings.dim_max && easypack_settings.dim_max[ unit ] )
+					? easypack_settings.dim_max[ unit ]
+					: null;
+
+				if ( ! labels ) {
+					return;
+				}
+
+				$( '#easypack_courier_tmplts_ctemplate-cell th[data-easypack-dim-header="length"]' ).text( labels.length );
+				$( '#easypack_courier_tmplts_ctemplate-cell th[data-easypack-dim-header="width"]' ).text( labels.width );
+				$( '#easypack_courier_tmplts_ctemplate-cell th[data-easypack-dim-header="height"]' ).text( labels.height );
+
+				$( 'label[for="easypack_default_courier_dimensions[length]"]' ).text( labels.box_length );
+				$( 'label[for="easypack_default_courier_dimensions[width]"]' ).text( labels.box_width );
+				$( 'label[for="easypack_default_courier_dimensions[height]"]' ).text( labels.box_height );
+
+				if ( maxes ) {
+					$( '#easypack_courier_tmplts_ctemplate-cell input[data-id="length"]' ).attr( 'max', maxes.length );
+					$( '#easypack_courier_tmplts_ctemplate-cell input[data-id="width"]' ).attr( 'max', maxes.width );
+					$( '#easypack_courier_tmplts_ctemplate-cell input[data-id="height"]' ).attr( 'max', maxes.height );
+				}
+			}
+
+			$( '#easypack_courier_dimensions_in_cm' ).on(
+				'change',
+				function () {
+					easypack_update_courier_dimension_labels( $( this ).is( ':checked' ) );
+					easypack_show_courier_dimensions_cm_notice();
+				}
+			);
+
 			const copyBtn = document.getElementById( 'inpost-copy-webhook-url-btn' );
 			const input   = document.getElementById( 'easypack_enable_webhooks_url' );
 			const tooltip = document.getElementById( 'copy-tooltip' );

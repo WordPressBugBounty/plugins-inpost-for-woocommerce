@@ -39,6 +39,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- View included into function scope.
+
 $status_service = EasyPack()->get_shipment_status_service();
 
 if ( true === $wrong_api_env ) {
@@ -159,25 +161,26 @@ require 'costs/html-order-metabox-costs.php';
 				<ul id="easypack_parcels" class="easypack_courier_std" style="list-style:none">
 					<li>
 						<?php
-						$length = array(
+						$dim_unit_label = EasyPack_Helper()->get_courier_dimension_unit_label();
+						$length         = array(
 							'type'        => 'number',
 							'class'       => array( 'easypack_parcel' ),
 							'input_class' => array( 'easypack_parcel' ),
-							'label'       => esc_html__( 'Length:', 'inpost-for-woocommerce' ) . ' (' . $parcel->getDimensions()->getUnit() . ')',
+							'label'       => esc_html__( 'Length:', 'inpost-for-woocommerce' ) . ' (' . $dim_unit_label . ')',
 							'required'    => true,
 						);
-						$width  = array(
+						$width          = array(
 							'type'        => 'number',
 							'class'       => array( 'easypack_parcel' ),
 							'input_class' => array( 'easypack_parcel' ),
-							'label'       => esc_html__( 'Width:', 'inpost-for-woocommerce' ) . ' (' . $parcel->getDimensions()->getUnit() . ')',
+							'label'       => esc_html__( 'Width:', 'inpost-for-woocommerce' ) . ' (' . $dim_unit_label . ')',
 							'required'    => true,
 						);
-						$height = array(
+						$height         = array(
 							'type'        => 'number',
 							'class'       => array( 'easypack_parcel' ),
 							'input_class' => array( 'easypack_parcel' ),
-							'label'       => esc_html__( 'Height:', 'inpost-for-woocommerce' ) . ' (' . $parcel->getDimensions()->getUnit() . ')',
+							'label'       => esc_html__( 'Height:', 'inpost-for-woocommerce' ) . ' (' . $dim_unit_label . ')',
 							'required'    => true,
 						);
 
@@ -195,11 +198,17 @@ require 'costs/html-order-metabox-costs.php';
 			<?php } else { ?>
 				<ul id="easypack_parcels" class="easypack_courier_std" style="list-style:none">
 					<li>
-						<?php esc_html_e( 'Length', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $parcel->getDimensions()->getLength() ); ?> <?php echo esc_html( $parcel->getDimensions()->getUnit() ); ?>
+						<?php
+						$display_dim_unit = EasyPack_Helper()->get_courier_dimension_unit_label();
+						$display_length   = EasyPack_Helper()->mm_to_ui_dimension( $parcel->getDimensions()->getLength() );
+						$display_width    = EasyPack_Helper()->mm_to_ui_dimension( $parcel->getDimensions()->getWidth() );
+						$display_height   = EasyPack_Helper()->mm_to_ui_dimension( $parcel->getDimensions()->getHeight() );
+						?>
+						<?php esc_html_e( 'Length', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $display_length ); ?> <?php echo esc_html( $display_dim_unit ); ?>
 						<br>
-						<?php esc_html_e( 'Width', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $parcel->getDimensions()->getWidth() ); ?> <?php echo esc_html( $parcel->getDimensions()->getUnit() ); ?>
+						<?php esc_html_e( 'Width', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $display_width ); ?> <?php echo esc_html( $display_dim_unit ); ?>
 						<br>
-						<?php esc_html_e( 'Height', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $parcel->getDimensions()->getHeight() ); ?> <?php echo esc_html( $parcel->getDimensions()->getUnit() ); ?>
+						<?php esc_html_e( 'Height', 'inpost-for-woocommerce' ); ?>: <?php echo esc_html( $display_height ); ?> <?php echo esc_html( $display_dim_unit ); ?>
 						<br>
 						<?php esc_html_e( 'Non standard', 'inpost-for-woocommerce' ); ?>: <?php echo true === $parcel->is_non_standard() ? esc_html__( 'yes', 'inpost-for-woocommerce' ) : esc_html__( 'no', 'inpost-for-woocommerce' ); ?>
 						<br>

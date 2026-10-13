@@ -273,6 +273,33 @@ msgstr ""
 msgid "Set default dimensions for courier shipments"
 msgstr ""
 
+msgid "Enable the display of dimensions in CM in the shipment creation metabox."
+msgstr ""
+
+msgid "If you change this setting, please note: existing template and default dimension values are not converted automatically. Please update them to the correct values."
+msgstr ""
+
+msgid "I understand"
+msgstr ""
+
+msgid "Box length (cm)"
+msgstr ""
+
+msgid "Box width (cm)"
+msgstr ""
+
+msgid "Box height (cm)"
+msgstr ""
+
+msgid "Length (cm)"
+msgstr ""
+
+msgid "Width (cm)"
+msgstr ""
+
+msgid "Height (cm)"
+msgstr ""
+
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:280
 msgid "Box length (mm)"
 msgstr ""

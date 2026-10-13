@@ -277,7 +277,21 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 				),
 
 				array(
-					'title'    => __( 'Box length (mm)', 'inpost-for-woocommerce' ),
+					'title'    => __(
+						'Enable the display of dimensions in CM in the shipment creation metabox.',
+						'inpost-for-woocommerce'
+					),
+					'id'       => 'easypack_courier_dimensions_in_cm',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => '',
+					'default'  => '',
+					'options'  => array(),
+				),
+
+				array(
+					'title'    => $this->get_box_dimension_setting_title( 'length' ),
 					'id'       => 'easypack_default_courier_dimensions[length]',
 					'css'      => 'min-width:300px;',
 					'default'  => '',
@@ -288,7 +302,7 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 				),
 
 				array(
-					'title'    => __( 'Box width (mm)', 'inpost-for-woocommerce' ),
+					'title'    => $this->get_box_dimension_setting_title( 'width' ),
 					'id'       => 'easypack_default_courier_dimensions[width]',
 					'css'      => 'min-width:300px;',
 					'default'  => '',
@@ -299,7 +313,7 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 				),
 
 				array(
-					'title'    => __( 'Box height (mm)', 'inpost-for-woocommerce' ),
+					'title'    => $this->get_box_dimension_setting_title( 'height' ),
 					'id'       => 'easypack_default_courier_dimensions[height]',
 					'css'      => 'min-width:300px;',
 					'default'  => '',
@@ -781,6 +795,33 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 		}
 
 		/**
+		 * Title for default box dimension settings (mm or cm).
+		 *
+		 * @param string $dimension One of length, width, height.
+		 * @return string
+		 */
+		private function get_box_dimension_setting_title( $dimension ) {
+			$unit = EasyPack_Helper()->get_courier_dimension_unit_label();
+
+			switch ( $dimension ) {
+				case 'width':
+					return 'cm' === $unit
+						? __( 'Box width (cm)', 'inpost-for-woocommerce' )
+						: __( 'Box width (mm)', 'inpost-for-woocommerce' );
+				case 'height':
+					return 'cm' === $unit
+						? __( 'Box height (cm)', 'inpost-for-woocommerce' )
+						: __( 'Box height (mm)', 'inpost-for-woocommerce' );
+				case 'length':
+				default:
+					return 'cm' === $unit
+						? __( 'Box length (cm)', 'inpost-for-woocommerce' )
+						: __( 'Box length (mm)', 'inpost-for-woocommerce' );
+			}
+		}
+
+
+		/**
 		 * Save settings
 		 *
 		 * @throws Exception
@@ -1037,15 +1078,32 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 						</th>
 						<td class="forminp forminp-text">
 
+							<?php
+							$dim_unit_label = EasyPack_Helper()->get_courier_dimension_unit_label();
+							$max_length     = 'cm' === $dim_unit_label ? 350 : 3500;
+							$max_width      = 'cm' === $dim_unit_label ? 240 : 2400;
+							$max_height     = 'cm' === $dim_unit_label ? 240 : 2400;
+							$length_th      = 'cm' === $dim_unit_label
+								? __( 'Length (cm)', 'inpost-for-woocommerce' )
+								: __( 'Length (mm)', 'inpost-for-woocommerce' );
+							$width_th       = 'cm' === $dim_unit_label
+								? __( 'Width (cm)', 'inpost-for-woocommerce' )
+								: __( 'Width (mm)', 'inpost-for-woocommerce' );
+							$height_th      = 'cm' === $dim_unit_label
+								? __( 'Height (cm)', 'inpost-for-woocommerce' )
+								: __( 'Height (mm)', 'inpost-for-woocommerce' );
+							?>
 							<table id="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_ctemplate-cell">
 								<thead>
+								<tr>
 								<th><?php esc_html_e( 'Selected', 'inpost-for-woocommerce' ); ?></th>
 								<th><?php esc_html_e( 'Template name', 'inpost-for-woocommerce' ); ?></th>
-								<th><?php esc_html_e( 'Length (mm)', 'inpost-for-woocommerce' ); ?></th>
-								<th><?php esc_html_e( 'Width (mm)', 'inpost-for-woocommerce' ); ?></th>
-								<th><?php esc_html_e( 'Height (mm)', 'inpost-for-woocommerce' ); ?></th>
+								<th data-easypack-dim-header="length"><?php echo esc_html( $length_th ); ?></th>
+								<th data-easypack-dim-header="width"><?php echo esc_html( $width_th ); ?></th>
+								<th data-easypack-dim-header="height"><?php echo esc_html( $height_th ); ?></th>
 								<th><?php esc_html_e( 'Weight (kg)', 'inpost-for-woocommerce' ); ?></th>
 								<th><?php esc_html_e( 'Not standard?', 'inpost-for-woocommerce' ); ?></th>
+								</tr>
 								</thead>
 
 								<?php
@@ -1102,7 +1160,7 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 														type="number"
 														step="0.1"
 														min="0"
-														max="3500"
+														max="<?php echo esc_attr( $max_length ); ?>"
 														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][length]"
 												>
 											</td>
@@ -1114,7 +1172,7 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 														type="number"
 														step="0.1"
 														min="0"
-														max="2400"
+														max="<?php echo esc_attr( $max_width ); ?>"
 														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][width]"
 												>
 											</td>
@@ -1126,7 +1184,7 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 														type="number"
 														step="0.1"
 														min="0"
-														max="2400"
+														max="<?php echo esc_attr( $max_height ); ?>"
 														name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][height]"
 												>
 											</td>
@@ -1200,7 +1258,7 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 													type="number"
 													step="0.1"
 													min="0"
-													max="3500"
+													max="<?php echo esc_attr( $max_length ); ?>"
 													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][length]"
 											>
 										</td>
@@ -1212,7 +1270,7 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 													type="number"
 													step="0.1"
 													min="0"
-													max="2400"
+													max="<?php echo esc_attr( $max_width ); ?>"
 													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][width]"
 											>
 										</td>
@@ -1224,7 +1282,7 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 													type="number"
 													step="0.1"
 													min="0"
-													max="2400"
+													max="<?php echo esc_attr( $max_height ); ?>"
 													name="<?php echo esc_attr( EasyPack::ATTRIBUTE_TEMPLATES_PREFIX ); ?>_dmtemplates[<?php echo esc_attr( $k ); ?>][height]"
 											>
 										</td>

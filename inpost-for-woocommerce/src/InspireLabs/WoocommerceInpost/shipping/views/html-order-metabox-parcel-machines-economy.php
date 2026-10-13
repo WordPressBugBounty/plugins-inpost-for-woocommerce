@@ -32,6 +32,8 @@ use InspireLabs\WoocommerceInpost\shipx\services\shipment\ShipX_Shipment_Service
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- View included into function scope.
+
 ?>
 
 <?php

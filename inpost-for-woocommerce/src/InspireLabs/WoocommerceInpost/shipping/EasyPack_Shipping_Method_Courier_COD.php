@@ -311,6 +311,10 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 				$courier_parcel_source = EasyPack_Helper()->get_source_of_courier_dimensions( $order_id );
 				$courier_parcel_data   = EasyPack_Helper()->get_courier_parcel_dimensions( $order_id, $courier_parcel_source );
 
+				if ( 'courier_dimensions_from_product' !== $courier_parcel_source ) {
+					$courier_parcel_data = EasyPack_Helper()->convert_dimensions_array_ui_to_mm( $courier_parcel_data );
+				}
+
 				$parcels = array( get_option( 'easypack_default_package_size' ) );
 
 				$cod_amount = $order_amount;
@@ -334,6 +338,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 					'weight'       => isset( $_POST['parcel_weight'] ) ? sanitize_text_field( wp_unslash( $_POST['parcel_weight'] ) ) : '',
 					'non_standard' => isset( $_POST['parcel_non_standard'] ) ? sanitize_text_field( wp_unslash( $_POST['parcel_non_standard'] ) ) : '',
 				);
+				$courier_parcel_data = EasyPack_Helper()->convert_dimensions_array_ui_to_mm( $courier_parcel_data );
 
 				$cod_amounts = isset( $_POST['cod_amounts'] )
 					? array_map( 'sanitize_text_field', wp_unslash( $_POST['cod_amounts'] ) )
@@ -367,6 +372,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 							$parcels[ $i ]['dimensions']['length'] = isset( $p['dimensions']['length'] ) ? $p['dimensions']['length'] : '';
 							$parcels[ $i ]['dimensions']['width']  = isset( $p['dimensions']['width'] ) ? $p['dimensions']['width'] : '';
 							$parcels[ $i ]['dimensions']['height'] = isset( $p['dimensions']['height'] ) ? $p['dimensions']['height'] : '';
+							$parcels[ $i ]['dimensions']           = EasyPack_Helper()->convert_dimensions_array_ui_to_mm( $parcels[ $i ]['dimensions'] );
 						}
 					}
 				}

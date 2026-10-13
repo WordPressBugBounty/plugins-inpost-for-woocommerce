@@ -325,6 +325,11 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 				$courier_parcel_source = EasyPack_Helper()->get_source_of_courier_dimensions( $order_id );
 				$courier_parcel_data   = EasyPack_Helper()->get_courier_parcel_dimensions( $order_id, $courier_parcel_source );
 
+				// Product dims are already mm; templates/defaults are merchant UI units.
+				if ( 'courier_dimensions_from_product' !== $courier_parcel_source ) {
+					$courier_parcel_data = EasyPack_Helper()->convert_dimensions_array_ui_to_mm( $courier_parcel_data );
+				}
+
 				$insurance_amount = EasyPack_Helper()->get_insurance_amount( $order_id );
 
 				$reference_number = EasyPack_Helper()->get_maybe_custom_reference_number( $order_id );
@@ -345,6 +350,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 					'weight'       => isset( $_POST['parcel_weight'] ) ? sanitize_text_field( wp_unslash( $_POST['parcel_weight'] ) ) : '',
 					'non_standard' => isset( $_POST['parcel_non_standard'] ) ? sanitize_text_field( wp_unslash( $_POST['parcel_non_standard'] ) ) : '',
 				);
+				$courier_parcel_data = EasyPack_Helper()->convert_dimensions_array_ui_to_mm( $courier_parcel_data );
 
 				if ( isset( $_POST['insurance_amounts'] ) && is_array( $_POST['insurance_amounts'] ) ) {
 					$insurance_amounts = array_map( 'sanitize_text_field', wp_unslash( $_POST['insurance_amounts'] ) );
@@ -373,6 +379,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier' ) ) {
 							$parcels[ $i ]['dimensions']['length'] = isset( $p['dimensions']['length'] ) ? $p['dimensions']['length'] : '';
 							$parcels[ $i ]['dimensions']['width']  = isset( $p['dimensions']['width'] ) ? $p['dimensions']['width'] : '';
 							$parcels[ $i ]['dimensions']['height'] = isset( $p['dimensions']['height'] ) ? $p['dimensions']['height'] : '';
+							$parcels[ $i ]['dimensions']           = EasyPack_Helper()->convert_dimensions_array_ui_to_mm( $parcels[ $i ]['dimensions'] );
 						}
 					}
 				}

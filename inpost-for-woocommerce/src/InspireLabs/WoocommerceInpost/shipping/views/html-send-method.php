@@ -21,6 +21,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly.
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- View included into function scope.
+
+
 $custom_attributes = array( 'style' => 'width:100%;' );
 if ( $disabled || $send_method_disabled ) {
 	$custom_attributes['disabled'] = 'disabled';

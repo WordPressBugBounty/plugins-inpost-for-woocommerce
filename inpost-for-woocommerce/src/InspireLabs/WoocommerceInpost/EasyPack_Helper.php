@@ -657,6 +657,94 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 
 		/**
+		 * Whether courier dimensions should be shown in centimetres in admin UI.
+		 *
+		 * @return bool
+		 */
+		public function is_courier_dimensions_ui_in_cm() {
+			return 'yes' === get_option( 'easypack_courier_dimensions_in_cm' );
+		}
+
+
+		/**
+		 * Unit label for courier dimension fields in admin UI.
+		 *
+		 * @return string 'cm' or 'mm'
+		 */
+		public function get_courier_dimension_unit_label() {
+			return $this->is_courier_dimensions_ui_in_cm() ? 'cm' : 'mm';
+		}
+
+
+		/**
+		 * Convert a millimetre value to the admin UI unit.
+		 *
+		 * @param float|int|string $mm Dimension in mm.
+		 * @return float
+		 */
+		public function mm_to_ui_dimension( $mm ) {
+			$mm = is_numeric( $mm ) ? (float) $mm : 0.0;
+			if ( $mm <= 0 ) {
+				return 0.0;
+			}
+			return $this->is_courier_dimensions_ui_in_cm() ? ( $mm / 10 ) : $mm;
+		}
+
+
+		/**
+		 * Convert a value from the admin UI unit to millimetres (for ShipX API).
+		 *
+		 * @param float|int|string $value Dimension from UI.
+		 * @return float
+		 */
+		public function ui_dimension_to_mm( $value ) {
+			$value = is_numeric( $value ) ? (float) $value : 0.0;
+			if ( $value <= 0 ) {
+				return 0.0;
+			}
+			return $this->is_courier_dimensions_ui_in_cm() ? ( $value * 10 ) : $value;
+		}
+
+
+		/**
+		 * Convert length/width/height keys from mm to UI units.
+		 *
+		 * @param array $dimensions Dimensions array with length/width/height in mm.
+		 * @return array
+		 */
+		public function convert_dimensions_array_mm_to_ui( $dimensions ) {
+			if ( ! is_array( $dimensions ) ) {
+				return $dimensions;
+			}
+			foreach ( array( 'length', 'width', 'height' ) as $key ) {
+				if ( isset( $dimensions[ $key ] ) && is_numeric( $dimensions[ $key ] ) ) {
+					$dimensions[ $key ] = $this->mm_to_ui_dimension( $dimensions[ $key ] );
+				}
+			}
+			return $dimensions;
+		}
+
+
+		/**
+		 * Convert length/width/height keys from UI units to mm for ShipX API.
+		 *
+		 * @param array $dimensions Dimensions array with length/width/height from UI.
+		 * @return array
+		 */
+		public function convert_dimensions_array_ui_to_mm( $dimensions ) {
+			if ( ! is_array( $dimensions ) ) {
+				return $dimensions;
+			}
+			foreach ( array( 'length', 'width', 'height' ) as $key ) {
+				if ( isset( $dimensions[ $key ] ) && '' !== $dimensions[ $key ] && is_numeric( $dimensions[ $key ] ) ) {
+					$dimensions[ $key ] = $this->ui_dimension_to_mm( $dimensions[ $key ] );
+				}
+			}
+			return $dimensions;
+		}
+
+
+		/**
 		 * Inline CSS for button
 		 *
 		 * @return void

@@ -816,13 +816,48 @@ class EasyPack extends inspire_Plugin4 {
 					'easypack-admin-settings-page',
 					'easypack_settings',
 					array(
-						'change_country_alert' => __( 'Are you sure to change the country?', 'inpost-for-woocommerce' ),
-						'debug_notice'         => __(
+						'change_country_alert'              => __( 'Are you sure to change the country?', 'inpost-for-woocommerce' ),
+						'debug_notice'                      => __(
 							'Does not work simultaneously with the option \'JS mode of map button\'',
 							'inpost-for-woocommerce'
 						),
-						'webhook_notice'       => __( 'Copied!', 'inpost-for-woocommerce' ),
-						'webhook_url'          => esc_url( EasyPack_Helper()->get_webhook_url() ),
+						'webhook_notice'                    => __( 'Copied!', 'inpost-for-woocommerce' ),
+						'webhook_url'                       => esc_url( EasyPack_Helper()->get_webhook_url() ),
+						'courier_dimensions_cm_notice'      => __(
+							'If you change this setting, please note: existing template and default dimension values are not converted automatically. Please update them to the correct values.',
+							'inpost-for-woocommerce'
+						),
+						'courier_dimensions_cm_notice_btn'  => __( 'I understand', 'inpost-for-woocommerce' ),
+						'dim_labels'                        => array(
+							'mm' => array(
+								'length'     => __( 'Length (mm)', 'inpost-for-woocommerce' ),
+								'width'      => __( 'Width (mm)', 'inpost-for-woocommerce' ),
+								'height'     => __( 'Height (mm)', 'inpost-for-woocommerce' ),
+								'box_length' => __( 'Box length (mm)', 'inpost-for-woocommerce' ),
+								'box_width'  => __( 'Box width (mm)', 'inpost-for-woocommerce' ),
+								'box_height' => __( 'Box height (mm)', 'inpost-for-woocommerce' ),
+							),
+							'cm' => array(
+								'length'     => __( 'Length (cm)', 'inpost-for-woocommerce' ),
+								'width'      => __( 'Width (cm)', 'inpost-for-woocommerce' ),
+								'height'     => __( 'Height (cm)', 'inpost-for-woocommerce' ),
+								'box_length' => __( 'Box length (cm)', 'inpost-for-woocommerce' ),
+								'box_width'  => __( 'Box width (cm)', 'inpost-for-woocommerce' ),
+								'box_height' => __( 'Box height (cm)', 'inpost-for-woocommerce' ),
+							),
+						),
+						'dim_max'                           => array(
+							'mm' => array(
+								'length' => 3500,
+								'width'  => 2400,
+								'height' => 2400,
+							),
+							'cm' => array(
+								'length' => 350,
+								'width'  => 240,
+								'height' => 240,
+							),
+						),
 					)
 				);
 
@@ -2072,6 +2107,9 @@ class EasyPack extends inspire_Plugin4 {
 				if ( $is_service_courier_type ) {
 					$courier_parcel_source = EasyPack_Helper()->get_source_of_courier_dimensions( $order_id );
 					$courier_parcel_data   = EasyPack_Helper()->get_courier_parcel_dimensions( $order_id, $courier_parcel_source );
+					if ( 'courier_dimensions_from_product' !== $courier_parcel_source ) {
+						$courier_parcel_data = EasyPack_Helper()->convert_dimensions_array_ui_to_mm( $courier_parcel_data );
+					}
 				}
 
 				$shipment_model = $shipment_service->create_shipment_object_by_shiping_data(

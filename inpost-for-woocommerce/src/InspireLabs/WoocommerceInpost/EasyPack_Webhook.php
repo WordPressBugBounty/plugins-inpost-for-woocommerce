@@ -247,9 +247,35 @@ class EasyPack_Webhook {
 
 		$change_order_status_webhook = get_option( 'easypack_change_order_status_by_webhook' );
 		if ( $change_order_status_webhook === $status ) {
-			$current_order_status = $wc_order->get_status();
-			if ( 'completed' !== $current_order_status ) {
-				$wc_order->update_status( 'wc-completed' );
+			$target_order_status = 'completed';
+
+			/**
+			 * Filter the WooCommerce order status applied when a webhook matches
+			 * the "Change order status by webhook" setting (General settings).
+			 *
+			 * Default is `completed`. Return another registered order status slug
+			 * (e.g. `processing`, `on-hold`) or `wc-processing`. Return an empty
+			 * string to skip changing the order status.
+			 *
+			 * @param string   $target_order_status Default WooCommerce status slug.
+			 * @param \WC_Order $wc_order           Order being updated.
+			 * @param string   $webhook_status      InPost status from the webhook payload.
+			 * @param array    $webhook_body        Full decoded webhook request body.
+			 */
+			$target_order_status = apply_filters(
+				'inpost_pl_webhook_order_status',
+				$target_order_status,
+				$wc_order,
+				$status,
+				$webhook_body
+			);
+
+			if ( is_string( $target_order_status ) && '' !== $target_order_status ) {
+				$target_slug          = str_replace( 'wc-', '', $target_order_status );
+				$current_order_status = $wc_order->get_status();
+				if ( $target_slug !== $current_order_status ) {
+					$wc_order->update_status( $target_order_status );
+				}
 			}
 		}
 

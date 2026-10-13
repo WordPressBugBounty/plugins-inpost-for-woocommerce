@@ -1742,6 +1742,33 @@ msgstr "Długość paczki (mm)"
 msgid "Set default dimensions for courier shipments"
 msgstr "Ustaw domyślne wymiary dla przesyłek kurierskich"
 
+msgid "Enable the display of dimensions in CM in the shipment creation metabox."
+msgstr "Włącz wyświetlanie rozmiarów w CM w metaboxie tworzenia przesyłki"
+
+msgid "If you change this setting, please note: existing template and default dimension values are not converted automatically. Please update them to the correct values."
+msgstr "Jeśli zmieniasz to ustawienie, pamiętaj: istniejące wartości szablonów i domyślnych wymiarów nie są konwertowane automatycznie. Zaktualizuj je do prawidłowych wartości."
+
+msgid "I understand"
+msgstr "Rozumiem"
+
+msgid "Box length (cm)"
+msgstr "Długość paczki (cm)"
+
+msgid "Box width (cm)"
+msgstr "Szerokość paczki (cm)"
+
+msgid "Box height (cm)"
+msgstr "Wysokość paczki (cm)"
+
+msgid "Length (cm)"
+msgstr "Długość (cm)"
+
+msgid "Width (cm)"
+msgstr "Szerokość (cm)"
+
+msgid "Height (cm)"
+msgstr "Wysokość (cm)"
+
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:324
 msgid "Box is non standard?"
 msgstr "Paczka jest niestandardowa?"

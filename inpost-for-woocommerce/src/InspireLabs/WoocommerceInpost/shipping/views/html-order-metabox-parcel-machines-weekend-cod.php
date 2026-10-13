@@ -34,6 +34,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- View included into function scope.
+
 $status_service = EasyPack()->get_shipment_status_service();
 if ( true === $wrong_api_env ) {
 
