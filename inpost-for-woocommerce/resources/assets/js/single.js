@@ -1,1 +1,0 @@
-console.log('some single Inpost shipping method');
