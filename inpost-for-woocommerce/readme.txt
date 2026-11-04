@@ -4,7 +4,7 @@ Tags: inpost, paczkomaty, etykiety, przesyłki
 Requires at least: 5.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.9.9
+Stable tag: 2.0.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
  
@@ -42,6 +42,11 @@ Po zainstalowaniu wtyczki skonfiguruj sposób dostawy InPost oraz ceny poszczeg�
 
 
 == Changelog ==
+
+= 2.0.0 =
+* Feat: output in UI additional tracking number for returned shipments
+* Fix: additional setting for Insurance
+* Feat: quick links in Bulk mode to edit insurance value
 
 = 1.9.9 =
 * Feat: filter for custom order statuses regarding webhook change status

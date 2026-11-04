@@ -339,23 +339,39 @@ if ( ! class_exists( 'EasyPack_Shipment_Manager_List_Table' ) ) {
 		private function get_tracking_number_link( ShipX_Shipment_Model $shipment ) {
 
 			$tracking_number = $shipment->getInternalData()->getTrackingNumber();
+			$order_id        = $shipment->getInternalData()->getOrderId();
 
 			if ( empty( $tracking_number ) ) {
-				$order_id        = $shipment->getInternalData()->getOrderId();
 				$tracking_number = EasyPack_Helper()->get_tracking_number_from_meta( $order_id );
 			}
 
 			$tracking_url = EasyPack_Helper()->get_tracking_url();
+			$html         = '';
 
 			if ( ! empty( $tracking_number ) ) {
-				return sprintf(
+				$html = sprintf(
 					'<a target="_blank" href="%s">%s</a>',
 					esc_url( $tracking_url . $tracking_number ),
-					$tracking_number
+					esc_html( $tracking_number )
 				);
 			}
 
-			return '';
+			$return_tracking_number = $shipment->getInternalData()->getReturnTrackingNumber();
+			if ( empty( $return_tracking_number ) ) {
+				$return_tracking_number = EasyPack_Helper()->get_return_tracking_number_from_meta( $order_id );
+			}
+
+			if ( ! empty( $return_tracking_number ) ) {
+				$return_label = esc_html__( 'Return:', 'inpost-for-woocommerce' );
+				$return_link  = sprintf(
+					'<a target="_blank" href="%s">%s</a>',
+					esc_url( $tracking_url . $return_tracking_number ),
+					esc_html( $return_tracking_number )
+				);
+				$html        .= ( '' !== $html ? '<br>' : '' ) . '<span style="font-weight:bold">' . $return_label . '</span> ' . $return_link;
+			}
+
+			return $html;
 		}
 
 		public function get_hidden_columns() {

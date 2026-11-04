@@ -147,6 +147,8 @@ if ( ! empty(
 	<div class="padding-bottom15"></div>
 <?php endif ?>
 
+<?php require 'html-order-metabox-return-tracking.php'; ?>
+
 <?php require 'costs/html-order-metabox-costs.php'; ?>
 
 <p><?php esc_html_e( 'Attributes:', 'inpost-for-woocommerce' ); ?>

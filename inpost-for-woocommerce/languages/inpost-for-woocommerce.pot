@@ -729,6 +729,11 @@ msgstr ""
 msgid "Tracking number"
 msgstr ""
 
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:365
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:252
+msgid "Return:"
+msgstr ""
+
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:284
 #: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:133
 msgid "Order ID"
@@ -1199,7 +1204,7 @@ msgstr ""
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:114
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:108
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:218
-msgid "Insurance"
+msgid "Additional insurance"
 msgstr ""
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:1364
@@ -1213,7 +1218,7 @@ msgstr ""
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:122
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:116
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:226
-msgid "Default insurance amount"
+msgid "Default additional insurance amount"
 msgstr ""
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:1504
@@ -2173,6 +2178,10 @@ msgstr ""
 msgid "Tracking number:"
 msgstr ""
 
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-return-tracking.php:34
+msgid "Return tracking number:"
+msgstr ""
+
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:136
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:136
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-weekend-cod.php:143
@@ -2395,7 +2404,16 @@ msgstr ""
 
 #: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-insurance.php:18
 #: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-insurance.php:25
-msgid "Insurance amount: "
+msgid "Additional insurance amount: "
+msgstr ""
+
+msgid "Select additional insurance (for values over 200 PLN). COD always requires additional insurance equal to the order value."
+msgstr ""
+
+msgid "Skip additional insurance up to 200 PLN"
+msgstr ""
+
+msgid "When enabled, additional insurance is not added for non-COD orders with a total of 200 PLN or less (statutory cover). COD always keeps additional insurance equal to the order value. Above 200 PLN, insurance is calculated as before (full order value or method default)."
 msgstr ""
 
 #: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-view-additional-package.php:19
@@ -2515,4 +2533,41 @@ msgstr ""
 #: resources/assets/js/build/js/inpostpl-block/block.json
 msgctxt "block description"
 msgid "Adds map button and add input to save delivery point data."
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Insurance amount:"
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Edit insurance amount"
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Save"
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Cancel"
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Helper.php
+msgid "Value cannot be lower than the COD amount."
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Please enter a valid insurance amount."
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Could not save insurance amount."
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Invalid order."
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Helper.php
+msgid "Insurance amount cannot be negative."
 msgstr ""

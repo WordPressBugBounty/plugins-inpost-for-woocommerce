@@ -1280,6 +1280,184 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 
 		/**
+		 * Statutory / included insurance threshold in PLN (postal law).
+		 *
+		 * @return float
+		 */
+		public function get_insurance_statutory_threshold() {
+			/**
+			 * Filter the PLN threshold under which additional insurance can be skipped.
+			 *
+			 * @param float $threshold Default 200.
+			 */
+			return (float) apply_filters( 'inpost_pl_insurance_statutory_threshold', 200.0 );
+		}
+
+		/**
+		 * Whether order shipping method is an InPost COD method.
+		 *
+		 * @param \WC_Order $order Order.
+		 * @return bool
+		 */
+		public function is_order_inpost_cod( $order ) {
+			if ( ! $order || is_wp_error( $order ) ) {
+				return false;
+			}
+
+			$fs_linked = $order->get_meta( '_fs_easypack_method_name' );
+			if ( ! empty( $fs_linked ) && $this->is_inpost_cod_method_id( (string) $fs_linked ) ) {
+				return true;
+			}
+
+			foreach ( $order->get_shipping_methods() as $shipping_method ) {
+				$method_id = (string) $shipping_method->get_method_id();
+				if ( $this->is_inpost_cod_method_id( $method_id ) ) {
+					return true;
+				}
+
+				if ( 0 === strpos( $method_id, 'flexible_shipping' ) ) {
+					$linked = $this->get_method_linked_to_fs_by_instance_id( $shipping_method->get_instance_id() );
+					if ( ! empty( $linked ) && $this->is_inpost_cod_method_id( (string) $linked ) ) {
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Check if a WooCommerce shipping method ID is InPost COD.
+		 *
+		 * @param string $method_id Method ID.
+		 * @return bool
+		 */
+		public function is_inpost_cod_method_id( $method_id ) {
+			$method_id = (string) $method_id;
+
+			if ( '' === $method_id ) {
+				return false;
+			}
+
+			$cod_methods = array(
+				'easypack_parcel_machines_cod',
+				'easypack_parcel_machines_economy_cod',
+				'easypack_parcel_machines_weekend_cod',
+				'easypack_shipping_courier_c2c_cod',
+				'easypack_cod_shipping_courier',
+				'easypack_shipping_courier_le_cod',
+				'easypack_shipping_courier_local_standard_cod',
+				'easypack_shipping_courier_lse_cod',
+				'easypack_shipping_courier_palette_cod',
+			);
+
+			if ( in_array( $method_id, $cod_methods, true ) ) {
+				return true;
+			}
+
+			return ( false !== strpos( $method_id, '_cod' ) || false !== strpos( $method_id, 'cod_' ) );
+		}
+
+		/**
+		 * Meta key for manual insurance amount override (orders list / bulk).
+		 *
+		 * @return string
+		 */
+		public function get_insurance_override_meta_key() {
+			return '_easypack_insurance_amount_override';
+		}
+
+		/**
+		 * Whether order has a saved insurance amount override.
+		 *
+		 * @param \WC_Order $order Order.
+		 * @return bool
+		 */
+		public function order_has_insurance_override( $order ) {
+			if ( ! $order || is_wp_error( $order ) ) {
+				return false;
+			}
+
+			return $order->meta_exists( $this->get_insurance_override_meta_key() );
+		}
+
+		/**
+		 * Get saved insurance override amount, or null when not set.
+		 *
+		 * @param int|\WC_Order $order_or_id Order or ID.
+		 * @return float|null
+		 */
+		public function get_insurance_amount_override( $order_or_id ) {
+			$order = ( $order_or_id instanceof \WC_Order ) ? $order_or_id : wc_get_order( $order_or_id );
+			if ( ! $order || is_wp_error( $order ) || ! $this->order_has_insurance_override( $order ) ) {
+				return null;
+			}
+
+			return (float) wc_format_decimal( $order->get_meta( $this->get_insurance_override_meta_key() ), 2 );
+		}
+
+		/**
+		 * Save insurance amount override for an order.
+		 *
+		 * @param int   $order_id Order ID.
+		 * @param float $amount   Amount.
+		 * @return bool
+		 */
+		public function set_insurance_amount_override( $order_id, $amount ) {
+			$order = wc_get_order( $order_id );
+			if ( ! $order || is_wp_error( $order ) ) {
+				return false;
+			}
+
+			$order->update_meta_data( $this->get_insurance_override_meta_key(), wc_format_decimal( $amount, 2 ) );
+			$order->save();
+
+			return true;
+		}
+
+		/**
+		 * COD amount for validation (order total for InPost COD methods).
+		 *
+		 * @param \WC_Order $order Order.
+		 * @return float
+		 */
+		public function get_order_cod_amount_for_insurance( $order ) {
+			if ( ! $order || is_wp_error( $order ) || ! $this->is_order_inpost_cod( $order ) ) {
+				return 0.0;
+			}
+
+			return (float) $order->get_total();
+		}
+
+		/**
+		 * Validate insurance amount against COD minimum.
+		 *
+		 * @param \WC_Order $order  Order.
+		 * @param float     $amount Insurance amount.
+		 * @return true|\WP_Error
+		 */
+		public function validate_insurance_amount_for_order( $order, $amount ) {
+			$amount    = (float) $amount;
+			$cod_amount = $this->get_order_cod_amount_for_insurance( $order );
+
+			if ( $cod_amount > 0 && $amount + 0.00001 < $cod_amount ) {
+				return new \WP_Error(
+					'inpost_insurance_below_cod',
+					esc_html__( 'Value cannot be lower than the COD amount.', 'inpost-for-woocommerce' )
+				);
+			}
+
+			if ( $amount < 0 ) {
+				return new \WP_Error(
+					'inpost_insurance_negative',
+					esc_html__( 'Insurance amount cannot be negative.', 'inpost-for-woocommerce' )
+				);
+			}
+
+			return true;
+		}
+
+		/**
 		 * Get insurance amount
 		 *
 		 * @param int $order_id $order_id.
@@ -1290,18 +1468,39 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 			/**
 			 * Priority to get insurance:
-			 * 1) from shipping method settings if method linked to FS.
-			 * 2) from shipping method settings.
-			 * 3) from old settings (deleted already).
+			 * 1) draft from bulk list edit (POST insurance_amount).
+			 * 2) saved override meta from orders list.
+			 * 3) from shipping method settings if method linked to FS.
+			 * 4) from shipping method settings.
+			 * 5) from old settings (deleted already).
+			 * 6) optional auto-skip under statutory 200 PLN for non-COD.
 			 */
-
-			$insurance_amount = false;
 
 			$order = wc_get_order( $order_id );
 
 			if ( ! $order || is_wp_error( $order ) ) {
 				return false;
 			}
+
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Called from AJAX handlers that already verified nonce.
+			$bulk_draft_insurance = isset( $_POST['insurance_amount'] )
+				? sanitize_text_field( wp_unslash( $_POST['insurance_amount'] ) )
+				: '';
+			if ( isset( $_POST['action'] )
+				&& 'easypack_bulk_create_shipments' === sanitize_text_field( wp_unslash( $_POST['action'] ) )
+				&& '' !== $bulk_draft_insurance
+				&& is_numeric( $bulk_draft_insurance )
+			) {
+				return (float) wc_format_decimal( $bulk_draft_insurance, 2 );
+			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+			$override = $this->get_insurance_amount_override( $order );
+			if ( null !== $override ) {
+				return $override;
+			}
+
+			$insurance_amount = false;
 
 			$shipping_method_name = '';
 			$method_instance_id   = '';
@@ -1345,7 +1544,19 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 				}
 			}
 
-			return $insurance_amount ? $insurance_amount : 0.00;
+			$insurance_amount = $insurance_amount ? (float) $insurance_amount : 0.00;
+
+			if ( 'yes' === get_option( 'easypack_auto_skip_insurance_under_200', 'no' ) ) {
+				$order_total = (float) $order->get_total();
+				$threshold   = $this->get_insurance_statutory_threshold();
+				$is_cod      = $this->is_order_inpost_cod( $order );
+
+				if ( ! $is_cod && $order_total <= $threshold ) {
+					$insurance_amount = 0.00;
+				}
+			}
+
+			return $insurance_amount;
 		}
 
 
@@ -2339,6 +2550,33 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 			}
 
 			return $tracking_number;
+		}
+
+		/**
+		 * Get return tracking number from order meta or shipment object.
+		 *
+		 * @param int $order_id Order ID.
+		 * @return string
+		 */
+		public function get_return_tracking_number_from_meta( $order_id ) {
+
+			$return_tracking_number = '';
+
+			if ( ! $order_id ) {
+				return $return_tracking_number;
+			}
+
+			$return_tracking_number = $this->get_woo_order_meta( $order_id, '_easypack_return_tracking' );
+
+			if ( empty( $return_tracking_number ) ) {
+				$shipment = $this->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
+				if ( ! empty( $shipment ) && $shipment instanceof ShipX_Shipment_Model ) {
+					$internal_return = $shipment->getInternalData()->getReturnTrackingNumber();
+					$return_tracking_number = ! empty( $internal_return ) ? $internal_return : '';
+				}
+			}
+
+			return $return_tracking_number;
 		}
 	}
 

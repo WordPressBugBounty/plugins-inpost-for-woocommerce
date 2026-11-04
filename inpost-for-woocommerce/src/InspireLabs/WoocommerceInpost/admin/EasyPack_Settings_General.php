@@ -388,6 +388,23 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 
 				array(
 					'title'    => __(
+						'Skip additional insurance up to 200 PLN',
+						'inpost-for-woocommerce'
+					),
+					'id'       => 'easypack_auto_skip_insurance_under_200',
+					'type'     => 'checkbox',
+					'class'    => '',
+					'css'      => 'min-width: 300px;',
+					'desc_tip' => __(
+						'When enabled, additional insurance is not added for non-COD orders with a total of 200 PLN or less (statutory cover). COD always keeps additional insurance equal to the order value. Above 200 PLN, insurance is calculated as before (full order value or method default).',
+						'inpost-for-woocommerce'
+					),
+					'default'  => 'no',
+					'options'  => array(),
+				),
+
+				array(
+					'title'    => __(
 						'Enable InPost methods for all products in your shop',
 						'inpost-for-woocommerce'
 					),

@@ -1010,6 +1010,10 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				}
 			}
 
+			if ( empty( $order_id ) && isset( $_POST['order_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+				$order_id = absint( wp_unslash( $_POST['order_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			}
+
 			/**
 			 * Filter shipment payload sent to ShipX create endpoint.
 			 *

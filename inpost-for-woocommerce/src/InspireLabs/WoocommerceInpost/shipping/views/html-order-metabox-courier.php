@@ -114,6 +114,8 @@ if ( ! empty( $shipment instanceof ShipX_Shipment_Model && $shipment->getInterna
 	<?php
 }
 
+require 'html-order-metabox-return-tracking.php';
+
 require 'costs/html-order-metabox-costs.php';
 ?>
 

@@ -1375,6 +1375,57 @@ function inpost_process_selected_item(orders, index, total, form, failed, need_l
 		ajaxdata_process_item['locker_size'] = locker_size;
 	}
 
+	const draft_insurance = inpost_pl_get_draft_insurance_amount( order_id );
+	if ( draft_insurance && false === draft_insurance.ok ) {
+		failed++;
+		inpost_pl_mark_bulk_row_error( order_id );
+		const failed_id = String( order_id );
+		if ( inpost_pl_bulk_shipment_failed_ids.indexOf( failed_id ) === -1 ) {
+			inpost_pl_bulk_shipment_failed_ids.push( failed_id );
+		}
+
+		const $status_cell = inpost_pl_get_order_status_cell( order_id );
+		$status_cell.removeClass( 'order-preview disabled' );
+		$status_cell.find( '.inpost-status-inside-td' ).show().removeClass( 'easypack-alert-status' );
+
+		if ( index < total ) {
+			inpost_process_selected_item( orders, ( index + 1 ), total, form, failed, need_labels, locker_size );
+		}
+
+		if ( index == total ) {
+			if ( need_labels ) {
+				const label_order_ids = inpost_pl_normalize_order_ids( successful_ids );
+				if ( ! label_order_ids.length ) {
+					inpost_pl_show_labels_popup( {
+						mode: 'info',
+						totalSelected: inpost_pl_bulk_total_selected,
+						message: inpost_pl_popup_text( 'no_orders_ready_for_labels' ),
+					} );
+					inpost_pl_end_bulk_action();
+				} else {
+					print_labels_bulk(
+						successful_ids,
+						{
+							source: 'shipments_then_labels',
+							totalSelected: inpost_pl_bulk_total_selected,
+							allSelectedOrderIds: inpost_pl_bulk_all_selected_ids.slice(),
+							labelOrderIds: label_order_ids,
+							shipmentFailedOrderIds: inpost_pl_unique_order_ids( inpost_pl_bulk_shipment_failed_ids ),
+						}
+					);
+				}
+			} else {
+				inpost_pl_end_bulk_action();
+			}
+		}
+
+		return;
+	}
+
+	if ( draft_insurance && true === draft_insurance.ok ) {
+		ajaxdata_process_item['insurance_amount'] = draft_insurance.amount;
+	}
+
 	jQuery.ajax(
 		{
 			type: 'POST',
@@ -1555,3 +1606,232 @@ function inpost_table_processing() {
 	result['orders']                 = orders;
 	return result;
 }
+
+/**
+ * @param {string} key
+ * @return {string}
+ */
+function inpost_pl_insurance_text( key ) {
+	if ( typeof easypack_bulk !== 'undefined'
+		&& easypack_bulk.insurance_texts
+		&& easypack_bulk.insurance_texts[ key ]
+	) {
+		return easypack_bulk.insurance_texts[ key ];
+	}
+	return '';
+}
+
+/**
+ * @param {jQuery} $wrap
+ * @param {string} message
+ * @return {void}
+ */
+function inpost_pl_insurance_show_error( $wrap, message ) {
+	const $error = $wrap.find( '.easypack-insurance-edit__error' );
+	if ( ! message ) {
+		$error.attr( 'hidden', 'hidden' ).text( '' );
+		return;
+	}
+	$error.removeAttr( 'hidden' ).text( message );
+}
+
+/**
+ * @param {jQuery} $wrap
+ * @return {void}
+ */
+function inpost_pl_insurance_enter_edit( $wrap ) {
+	const amount = $wrap.attr( 'data-amount' ) || '0';
+	$wrap.addClass( 'is-editing' );
+	$wrap.find( '.easypack-insurance-edit__label' ).attr( 'hidden', 'hidden' );
+	$wrap.find( '.easypack-insurance-edit__form' ).removeAttr( 'hidden' );
+	$wrap.find( '.easypack-insurance-edit__input' ).val( amount ).trigger( 'focus' ).trigger( 'select' );
+	inpost_pl_insurance_show_error( $wrap, '' );
+}
+
+/**
+ * @param {jQuery} $wrap
+ * @return {void}
+ */
+function inpost_pl_insurance_exit_edit( $wrap ) {
+	const amount = $wrap.attr( 'data-amount' ) || '0';
+	$wrap.removeClass( 'is-editing' );
+	$wrap.find( '.easypack-insurance-edit__form' ).attr( 'hidden', 'hidden' );
+	$wrap.find( '.easypack-insurance-edit__label' ).removeAttr( 'hidden' );
+	$wrap.find( '.easypack-insurance-edit__input' ).val( amount );
+	inpost_pl_insurance_show_error( $wrap, '' );
+}
+
+/**
+ * @param {jQuery} $wrap
+ * @param {number|string} amount
+ * @param {string} [formatted]
+ * @return {void}
+ */
+function inpost_pl_insurance_apply_amount( $wrap, amount, formatted ) {
+	const numeric = parseFloat( amount );
+	const safe    = isNaN( numeric ) ? 0 : numeric;
+	$wrap.attr( 'data-amount', String( safe ) );
+	$wrap.find( '.easypack-insurance-edit__input' ).val( safe );
+	$wrap.find( '.easypack-insurance-edit__value' ).text(
+		formatted || String( safe )
+	);
+	if ( typeof easypack_bulk !== 'undefined' && easypack_bulk.currency_symbol ) {
+		$wrap.find( '.easypack-insurance-edit__currency' ).text( easypack_bulk.currency_symbol );
+	}
+}
+
+/**
+ * @param {jQuery} $wrap
+ * @return {{ok: boolean, amount: number|null, message: string}}
+ */
+function inpost_pl_insurance_validate_wrap( $wrap ) {
+	const raw     = String( $wrap.find( '.easypack-insurance-edit__input' ).val() || '' ).trim().replace( ',', '.' );
+	const amount  = parseFloat( raw );
+	const is_cod  = '1' === String( $wrap.attr( 'data-is-cod' ) || '0' );
+	const cod_min = parseFloat( $wrap.attr( 'data-cod-min' ) || '0' );
+
+	if ( '' === raw || isNaN( amount ) ) {
+		return {
+			ok: false,
+			amount: null,
+			message: inpost_pl_insurance_text( 'invalid' ),
+		};
+	}
+
+	if ( amount < 0 ) {
+		return {
+			ok: false,
+			amount: null,
+			message: inpost_pl_insurance_text( 'invalid' ),
+		};
+	}
+
+	if ( is_cod && ! isNaN( cod_min ) && cod_min > 0 && amount + 0.00001 < cod_min ) {
+		return {
+			ok: false,
+			amount: null,
+			message: inpost_pl_insurance_text( 'below_cod' ),
+		};
+	}
+
+	return {
+		ok: true,
+		amount: Math.round( amount * 100 ) / 100,
+		message: '',
+	};
+}
+
+/**
+ * Draft insurance from open editor (unsaved).
+ *
+ * @param {string|number} order_id
+ * @return {{ok: boolean, amount?: number, message?: string}|null} null when not editing.
+ */
+function inpost_pl_get_draft_insurance_amount( order_id ) {
+	const $wrap = inpost_pl_get_order_status_cell( order_id ).find( '.easypack-insurance-edit' ).first();
+	if ( ! $wrap.length || ! $wrap.hasClass( 'is-editing' ) ) {
+		return null;
+	}
+
+	const validated = inpost_pl_insurance_validate_wrap( $wrap );
+	if ( ! validated.ok ) {
+		inpost_pl_insurance_show_error( $wrap, validated.message );
+		return {
+			ok: false,
+			message: validated.message,
+		};
+	}
+
+	return {
+		ok: true,
+		amount: validated.amount,
+	};
+}
+
+/**
+ * @param {jQuery} $wrap
+ * @return {void}
+ */
+function inpost_pl_insurance_save( $wrap ) {
+	if ( $wrap.data( 'saving' ) ) {
+		return;
+	}
+
+	const validated = inpost_pl_insurance_validate_wrap( $wrap );
+	if ( ! validated.ok ) {
+		inpost_pl_insurance_show_error( $wrap, validated.message );
+		return;
+	}
+
+	const order_id = $wrap.attr( 'data-order-id' );
+	$wrap.data( 'saving', true );
+	$wrap.addClass( 'is-saving' );
+	inpost_pl_insurance_show_error( $wrap, '' );
+
+	jQuery.ajax(
+		{
+			type: 'POST',
+			url: easypack_bulk.ajaxurl,
+			dataType: 'json',
+			data: {
+				action: 'easypack_save_insurance_override',
+				nonce: easypack_bulk.nonce,
+				order_id: order_id,
+				insurance_amount: validated.amount,
+			},
+		}
+	).done( function ( response ) {
+		if ( ! response || response.status !== 'ok' ) {
+			inpost_pl_insurance_show_error(
+				$wrap,
+				( response && response.message ) ? response.message : inpost_pl_insurance_text( 'save_error' )
+			);
+			return;
+		}
+
+		inpost_pl_insurance_apply_amount(
+			$wrap,
+			response.amount,
+			response.amount_formatted || ''
+		);
+		inpost_pl_insurance_exit_edit( $wrap );
+	} ).fail( function () {
+		inpost_pl_insurance_show_error( $wrap, inpost_pl_insurance_text( 'save_error' ) );
+	} ).always( function () {
+		$wrap.data( 'saving', false );
+		$wrap.removeClass( 'is-saving' );
+	} );
+}
+
+jQuery( document ).on( 'click', '.easypack-insurance-edit__label', function ( event ) {
+	event.preventDefault();
+	event.stopPropagation();
+	inpost_pl_insurance_enter_edit( jQuery( this ).closest( '.easypack-insurance-edit' ) );
+} );
+
+jQuery( document ).on( 'click', '.easypack-insurance-edit__cancel', function ( event ) {
+	event.preventDefault();
+	event.stopPropagation();
+	inpost_pl_insurance_exit_edit( jQuery( this ).closest( '.easypack-insurance-edit' ) );
+} );
+
+jQuery( document ).on( 'click', '.easypack-insurance-edit__save', function ( event ) {
+	event.preventDefault();
+	event.stopPropagation();
+	inpost_pl_insurance_save( jQuery( this ).closest( '.easypack-insurance-edit' ) );
+} );
+
+jQuery( document ).on( 'keydown', '.easypack-insurance-edit__input', function ( event ) {
+	const $wrap = jQuery( this ).closest( '.easypack-insurance-edit' );
+	if ( 'Enter' === event.key ) {
+		event.preventDefault();
+		inpost_pl_insurance_save( $wrap );
+	} else if ( 'Escape' === event.key ) {
+		event.preventDefault();
+		inpost_pl_insurance_exit_edit( $wrap );
+	}
+} );
+
+jQuery( document ).on( 'click', '.easypack-insurance-edit', function ( event ) {
+	event.stopPropagation();
+} );

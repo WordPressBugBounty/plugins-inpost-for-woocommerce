@@ -1,9 +1,10 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: InPost for WooCommerce 1.5.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/inpost-for-woocommerce\n"
 "POT-Creation-Date: 2018-08-24 13:01:34+00:00\n"
-"PO-Revision-Date: 2026-09-10 14:25+0200\n"
+"PO-Revision-Date: 2026-11-02 16:21+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -97,8 +98,8 @@ msgstr "Sandbox"
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:114
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:108
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:218
-msgid "Insurance"
-msgstr "Ubezpieczenie"
+msgid "Additional insurance"
+msgstr "Dodatkowe ubezpieczenie"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:1372
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:140
@@ -107,8 +108,8 @@ msgstr "Ubezpieczenie"
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:122
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:116
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:226
-msgid "Default insurance amount"
-msgstr "Domyślna wartość ubezpieczenia"
+msgid "Default additional insurance amount"
+msgstr "Domyślna wartość ubezpieczenia dodatkowego"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:209
 msgid "Send options"
@@ -240,6 +241,11 @@ msgstr "POP"
 msgid "Tracking number"
 msgstr "Numer przesyłki"
 
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:365
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:252
+msgid "Return:"
+msgstr "Zwrot:"
+
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Shipment_Manager_List_Table.php:284
 #: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:133
 msgid "Order ID"
@@ -319,7 +325,8 @@ msgid "Dispatch point "
 msgstr "Punkt odbioru "
 
 #: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:52
-msgid "From the list, select the packages that you want to be sent by courier."
+msgid ""
+"From the list, select the packages that you want to be sent by courier."
 msgstr "Wybierz z listy przesyłki, która chcesz wysłać za pomocą kuriera."
 
 #: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:54
@@ -363,8 +370,13 @@ msgid "Get return stickers"
 msgstr "Pobierz etykiety zwrotne"
 
 #: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:242
-msgid "From the list, select the packages that you want to be collected to be sent. If Courier has been chosen, the collection of your packages by a courier will be arranged."
-msgstr "Wybierz z listy przesyłki, które chcesz wysłaćJeśli wybrano kuriera, odbiór paczek zostanie zlecony przez kuriera."
+msgid ""
+"From the list, select the packages that you want to be collected to be sent."
+" If Courier has been chosen, the collection of your packages by a courier "
+"will be arranged."
+msgstr ""
+"Wybierz z listy przesyłki, które chcesz wysłaćJeśli wybrano kuriera, odbiór "
+"paczek zostanie zlecony przez kuriera."
 
 #: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:358
 #: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:390
@@ -414,7 +426,9 @@ msgstr "zbyt dużo znaków"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:213
 msgid "Action (cancel) can not be taken on shipment with status (confirmed)."
-msgstr "Akcja (anulowanie) nie może być wykonana, jeżeli przesyłka jest w statusie (potwierdzona)"
+msgstr ""
+"Akcja (anulowanie) nie może być wykonana, jeżeli przesyłka jest w statusie "
+"(potwierdzona)"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack_AJAX.php:179
 #: src/InspireLabs/WoocommerceInpost/EasyPack_AJAX.php:197
@@ -423,8 +437,11 @@ msgid "There are some validation errors."
 msgstr "Występują błędy walidacji."
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:226
-msgid "Can not create sticker. You have not enough funds to pay for this parcel"
-msgstr "Nie można pobrać etykiety. Nie posiadasz wystarczających środków, aby opłacić przesyłkę"
+msgid ""
+"Can not create sticker. You have not enough funds to pay for this parcel"
+msgstr ""
+"Nie można pobrać etykiety. Nie posiadasz wystarczających środków, aby "
+"opłacić przesyłkę"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:217
 msgid "Invalid login or token"
@@ -443,7 +460,8 @@ msgid "Default send parcel locker: "
 msgstr "Domyślny paczkomat nadawczy: "
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:222
-msgid "The transaction can not be completed due to the balance of your account"
+msgid ""
+"The transaction can not be completed due to the balance of your account"
 msgstr "Transakcja nie może być dokończona z powodu stanu Twojego konta"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:343
@@ -453,11 +471,16 @@ msgstr "Nieprawidłowa odpowiedź API. Sprawdź API URL"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:882
 msgid "Invalid phone number. Valid phone number must contains 10 digits."
-msgstr "Nieprawidłowy numer telefonu. Poprawny numer telefonu zawiera 10 cyfr."
+msgstr ""
+"Nieprawidłowy numer telefonu. Poprawny numer telefonu zawiera 10 cyfr."
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:889
-msgid "Invalid phone number. Valid phone number must contains 9 digits and must not begins with 0."
-msgstr "Nieprawidłowy numer telefonu. Poprawny numer telefonu zawiera 9 cyfr i nie może zaczyna się od 0."
+msgid ""
+"Invalid phone number. Valid phone number must contains 9 digits and must not"
+" begins with 0."
+msgstr ""
+"Nieprawidłowy numer telefonu. Poprawny numer telefonu zawiera 9 cyfr i nie "
+"może zaczyna się od 0."
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:896
 msgid "Invalid phone number."
@@ -512,8 +535,12 @@ msgstr "Darmowa wysyłka"
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:132
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_COD.php:142
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:147
-msgid "Enter the amount of the contract, from which shipping will be free (does not include virtual products)."
-msgstr "Wprowadź kwotę zamówienia, od której koszt wysyłki będzie darmowy (nie obejmuje produktów wirtualnych)."
+msgid ""
+"Enter the amount of the contract, from which shipping will be free (does not"
+" include virtual products)."
+msgstr ""
+"Wprowadź kwotę zamówienia, od której koszt wysyłki będzie darmowy (nie "
+"obejmuje produktów wirtualnych)."
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:181
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:155
@@ -557,8 +584,14 @@ msgstr "Na podstawie"
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:221
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:270
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:318
-msgid "Select the method of calculating shipping cost. If the cost of shipping is to be calculated based on the weight of the cart and the products do not have a defined weight, the cost will be calculated incorrectly."
-msgstr "Wybierz metodę obliczenia kosztu przesyłki. Jeśli koszt przesyłki jest obliczony na podstawie wagi, a nie posiada określonej wagi,koszt zostanie obliczony niepoprawnie."
+msgid ""
+"Select the method of calculating shipping cost. If the cost of shipping is "
+"to be calculated based on the weight of the cart and the products do not "
+"have a defined weight, the cost will be calculated incorrectly."
+msgstr ""
+"Wybierz metodę obliczenia kosztu przesyłki. Jeśli koszt przesyłki jest "
+"obliczony na podstawie wagi, a nie posiada określonej wagi,koszt zostanie "
+"obliczony niepoprawnie."
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:248
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:224
@@ -693,8 +726,12 @@ msgstr "InPost Paczkomat 24/7"
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:195
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:244
-msgid "Enter the amount of the order from which the shipping will be free (does not include virtual products). "
-msgstr "Wprowadź kwotę zamówienia, od której koszt wysyłki będzie darmowy (nie obejmuje produktów wirtualnych). "
+msgid ""
+"Enter the amount of the order from which the shipping will be free (does not"
+" include virtual products). "
+msgstr ""
+"Wprowadź kwotę zamówienia, od której koszt wysyłki będzie darmowy (nie "
+"obejmuje produktów wirtualnych). "
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1259
 msgid "Shipment canceled"
@@ -748,8 +785,12 @@ msgstr "Numer referencyjny: "
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:51
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:54
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:55
-msgid "This shipment was created in production API. Change API environment to production to process this shipment"
-msgstr "Przesyłka stworzona w produkcyjnym API. Zmień API na środowisko prodykcyjne, aby móc przetwarzać przesyłkę"
+msgid ""
+"This shipment was created in production API. Change API environment to "
+"production to process this shipment"
+msgstr ""
+"Przesyłka stworzona w produkcyjnym API. Zmień API na środowisko prodykcyjne,"
+" aby móc przetwarzać przesyłkę"
 
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:64
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:64
@@ -762,7 +803,9 @@ msgstr "Przesyłka stworzona w produkcyjnym API. Zmień API na środowisko prody
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:59
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c.php:63
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-courier-c2c_cod.php:64
-msgid "This shipment was created in sandbox API. Change API environment to sandbox to process this shipment"
+msgid ""
+"This shipment was created in sandbox API. Change API environment to sandbox "
+"to process this shipment"
 msgstr "Przesyłka stworzona w sandbox API. Zmień API na środowisko sandbox"
 
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:86
@@ -831,6 +874,10 @@ msgstr "Nie utworzono jeszcze (nowy)"
 #: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-view-additional-package.php:41
 msgid "Tracking number:"
 msgstr "Numer przesyłki:"
+
+#: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-return-tracking.php:34
+msgid "Return tracking number:"
+msgstr "Numer przesyłki zwrotnej:"
 
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy-cod.php:136
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-parcel-machines-economy.php:136
@@ -1005,8 +1052,12 @@ msgstr "%"
 
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-cod.php:25
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-courier-local-super-express.php:25
-msgid "The commission is added to the shipping cost according to the formula: [value of the cart] * [%] + [shipping cost]."
-msgstr "Prowizja jest doliczana do kosztów przesyłki zgodnie ze wzorem: [wartość koszyka] * [%] + [kosz przesyłki]"
+msgid ""
+"The commission is added to the shipping cost according to the formula: "
+"[value of the cart] * [%] + [shipping cost]."
+msgstr ""
+"Prowizja jest doliczana do kosztów przesyłki zgodnie ze wzorem: [wartość "
+"koszyka] * [%] + [kosz przesyłki]"
 
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-cod.php:49
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-rates-cod.php:81
@@ -1039,8 +1090,30 @@ msgstr "Czy jesteś pewny?"
 
 #: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-insurance.php:18
 #: src/InspireLabs/WoocommerceInpost/shipping/views/services/html-service-insurance.php:25
-msgid "Insurance amount: "
-msgstr "Wartość ubezpieczenia: "
+msgid "Additional insurance amount: "
+msgstr "Kwota dodatkowego ubezpieczenia: "
+
+msgid ""
+"Select additional insurance (for values over 200 PLN). COD always requires "
+"additional insurance equal to the order value."
+msgstr ""
+"Wybierz dodatkowe ubezpieczenie (dla wartości ponad 200 zł). COD zawsze "
+"wymaga dodatkowego ubezpieczenia równego wartości zamówienia."
+
+msgid "Skip additional insurance up to 200 PLN"
+msgstr "Nie doliczaj dodatkowego ubezpieczenia do 200 zł"
+
+msgid ""
+"When enabled, additional insurance is not added for non-COD orders with a "
+"total of 200 PLN or less (statutory cover). COD always keeps additional "
+"insurance equal to the order value. Above 200 PLN, insurance is calculated "
+"as before (full order value or method default)."
+msgstr ""
+"Po włączeniu dodatkowe ubezpieczenie nie jest doliczane dla zamówień bez COD"
+" o wartości 200 zł lub mniej (ochrona ustawowa). Dla COD dodatkowe "
+"ubezpieczenie pozostaje równe wartości zamówienia. Powyżej 200 zł "
+"ubezpieczenie liczone jest jak dotychczas (pełna wartość zamówienia lub "
+"domyślna kwota metody)."
 
 #: src/InspireLabs/WoocommerceInpost/shipx/services/shipment/ShipX_Shipment_Service.php:703
 msgid "Parcel e-commerce InPost"
@@ -1212,8 +1285,14 @@ msgid "https://wordpress.org/plugins/inpost-for-woocommerce/"
 msgstr "https://wordpress.org/plugins/inpost-for-woocommerce/"
 
 #. Description of the plugin
-msgid "InPost for WooCommerce is a dedicated integration plugin, designed for small and medium-sized businesses that want to quickly and conveniently integrate with InPost services."
-msgstr "InPost dla WooCommerce to dedykowana wtyczka do integracji, stworzona z myślą o małych i średnich firmach, które chcą w szybki i wygodny sposób zintegrować się z usługami InPost."
+msgid ""
+"InPost for WooCommerce is a dedicated integration plugin, designed for small"
+" and medium-sized businesses that want to quickly and conveniently integrate"
+" with InPost services."
+msgstr ""
+"InPost dla WooCommerce to dedykowana wtyczka do integracji, stworzona z "
+"myślą o małych i średnich firmach, które chcą w szybki i wygodny sposób "
+"zintegrować się z usługami InPost."
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:196
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:170
@@ -1271,11 +1350,16 @@ msgstr "Dodaj punkt odbioru"
 
 #: src/InspireLabs/WoocommerceInpost/admin/views/html-shipment-manager.php:68
 msgid "Filter shipments by courier to show pickup options"
-msgstr "Filtruj przesyłki według metody nadania 'Kurier', aby zobaczyć opcje odbioru"
+msgstr ""
+"Filtruj przesyłki według metody nadania 'Kurier', aby zobaczyć opcje odbioru"
 
 #: src/InspireLabs/WoocommerceInpost/shipx/services/courier_pickup/ShipX_Courier_Pickup_Service.php:33
-msgid "No dispatch points or wrong configuration. Add dispatch points on the InPost options page."
-msgstr "Brak dodanych punktów odbioru w konfiguracji modułu. Dodaj punkt odbioru w ustawieniach wtyczki."
+msgid ""
+"No dispatch points or wrong configuration. Add dispatch points on the InPost"
+" options page."
+msgstr ""
+"Brak dodanych punktów odbioru w konfiguracji modułu. Dodaj punkt odbioru w "
+"ustawieniach wtyczki."
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:227
 msgid "Parcel locker label format"
@@ -1337,8 +1421,12 @@ msgid "Tracking link:"
 msgstr "Link do śledzenia:"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:487
-msgid "Do not provide InPost parcel locker service if the weight of goods exceeds 25 kg"
-msgstr "Nie udostępniaj usług InPost Paczkomaty gdy waga produktu wynosi więcej niż 25kg"
+msgid ""
+"Do not provide InPost parcel locker service if the weight of goods exceeds "
+"25 kg"
+msgstr ""
+"Nie udostępniaj usług InPost Paczkomaty gdy waga produktu wynosi więcej niż "
+"25kg"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:907
 msgid "Size A (8 x 38 x 64 cm)"
@@ -1418,8 +1506,12 @@ msgstr "Uwaga!"
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:228
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:277
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:325
-msgid "Set the dimension in the settings of each product. The default value is size 'A'"
-msgstr "W każdym z produktów należy ustawić gabaryt. Domyślnie wszędzie jest to gab. 'A'"
+msgid ""
+"Set the dimension in the settings of each product. The default value is size"
+" 'A'"
+msgstr ""
+"W każdym z produktów należy ustawić gabaryt. Domyślnie wszędzie jest to gab."
+" 'A'"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Product_Shipping_Method_Selector.php:310
 msgid "InPost parcel dimensions"
@@ -1474,7 +1566,8 @@ msgstr "InPost Smart Kurier"
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:76
 msgid "Inpost Parcel Locker. Allow customers to pick up orders themselves."
-msgstr "Paczkomat InPost. Metoda pozwala klientom na samodzielny odbiór przesyłek."
+msgstr ""
+"Paczkomat InPost. Metoda pozwala klientom na samodzielny odbiór przesyłek."
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:1298
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:52
@@ -1577,8 +1670,11 @@ msgid "Integration with 'InPost PL' plugin"
 msgstr "Integracja z wtyczką „InPost PL”"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:116
-msgid "In case of questions/problems related to the plugin, please contact us via the "
-msgstr "W przypadku pytań/problemów związanych z wtyczką, prosimy o kontakt przez "
+msgid ""
+"In case of questions/problems related to the plugin, please contact us via "
+"the "
+msgstr ""
+"W przypadku pytań/problemów związanych z wtyczką, prosimy o kontakt przez "
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:118
 msgid "InPost form"
@@ -1645,8 +1741,12 @@ msgid "Point name"
 msgstr "Nazwa punktu"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:498
-msgid "Send an email to the buyer about the start of the delivery process just after parcel created?"
-msgstr "Wysłać mail do kupującego o rozpoczęciu procesu dostawy zaraz po utworzeniu przesyłki?"
+msgid ""
+"Send an email to the buyer about the start of the delivery process just "
+"after parcel created?"
+msgstr ""
+"Wysłać mail do kupującego o rozpoczęciu procesu dostawy zaraz po utworzeniu "
+"przesyłki?"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:1745
 msgid "contact to support"
@@ -1662,12 +1762,17 @@ msgstr "Twoje zamówienie uzyskało numer przesyłki"
 
 #: resources/templates/emails/plain/send-tracking-to-buyer.php:30
 #: resources/templates/emails/send-tracking-to-buyer.php:41
-msgid "A tracking number has been given for your order. It will soon move on its journey"
-msgstr "Do twojego zamówienia został wygenerowany numer przesyłki. Niedługo ruszy w dalszą podróż"
+msgid ""
+"A tracking number has been given for your order. It will soon move on its "
+"journey"
+msgstr ""
+"Do twojego zamówienia został wygenerowany numer przesyłki. Niedługo ruszy w "
+"dalszą podróż"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:219
 msgid "Token is missing or invalid. Or service works on server, try later."
-msgstr "Brakujący lub nieprawidłowy token. Lub prace serwisowe, spróbuj później."
+msgstr ""
+"Brakujący lub nieprawidłowy token. Lub prace serwisowe, spróbuj później."
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:675
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:974
@@ -1706,21 +1811,33 @@ msgid "Commercial product identifier"
 msgstr "Identyfikator produktu handlowego"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:715
-msgid "Enable JS mode of the map button - if the 'Select Parcel Locker' button does not appear in your checkout"
-msgstr "Włącz tryb JS przycisku mapy - jeśli w Twoim checkoucie nie pojawia się przycisk 'Wybierz Paczkomat'"
+msgid ""
+"Enable JS mode of the map button - if the 'Select Parcel Locker' button does"
+" not appear in your checkout"
+msgstr ""
+"Włącz tryb JS przycisku mapy - jeśli w Twoim checkoucie nie pojawia się "
+"przycisk 'Wybierz Paczkomat'"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:376
 msgid "Enable InPost methods for all products in your shop"
 msgstr "Włącz metody InPost dla wszystkich produktów w swoim sklepie"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:384
-msgid "Enable this setting if you want to enable all configured Inpost shipping methods for each product in your store."
-msgstr "Włącz to ustawienie, jeśli chcesz włączyć wszystkie skonfigurowane metody wysyłki Inpost dla każdego produktu w swoim sklepie."
+msgid ""
+"Enable this setting if you want to enable all configured Inpost shipping "
+"methods for each product in your store."
+msgstr ""
+"Włącz to ustawienie, jeśli chcesz włączyć wszystkie skonfigurowane metody "
+"wysyłki Inpost dla każdego produktu w swoim sklepie."
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:388
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:407
-msgid "This setting ignores the individual settings in the product settings in the Inpost tab."
-msgstr "To ustawienie ignoruje indywidualne ustawienia w ustawieniach produktu w zakładce Inpost."
+msgid ""
+"This setting ignores the individual settings in the product settings in the "
+"Inpost tab."
+msgstr ""
+"To ustawienie ignoruje indywidualne ustawienia w ustawieniach produktu w "
+"zakładce Inpost."
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:313
 msgid "Box weight (kg)"
@@ -1742,11 +1859,18 @@ msgstr "Długość paczki (mm)"
 msgid "Set default dimensions for courier shipments"
 msgstr "Ustaw domyślne wymiary dla przesyłek kurierskich"
 
-msgid "Enable the display of dimensions in CM in the shipment creation metabox."
+msgid ""
+"Enable the display of dimensions in CM in the shipment creation metabox."
 msgstr "Włącz wyświetlanie rozmiarów w CM w metaboxie tworzenia przesyłki"
 
-msgid "If you change this setting, please note: existing template and default dimension values are not converted automatically. Please update them to the correct values."
-msgstr "Jeśli zmieniasz to ustawienie, pamiętaj: istniejące wartości szablonów i domyślnych wymiarów nie są konwertowane automatycznie. Zaktualizuj je do prawidłowych wartości."
+msgid ""
+"If you change this setting, please note: existing template and default "
+"dimension values are not converted automatically. Please update them to the "
+"correct values."
+msgstr ""
+"Jeśli zmieniasz to ustawienie, pamiętaj: istniejące wartości szablonów i "
+"domyślnych wymiarów nie są konwertowane automatycznie. Zaktualizuj je do "
+"prawidłowych wartości."
 
 msgid "I understand"
 msgstr "Rozumiem"
@@ -1785,8 +1909,12 @@ msgid "Selected parcel locker:"
 msgstr "Wybrany punkt odbioru:"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:240
-msgid "The package has not been created! You do not have funds in your Parcel Manager account or a contract for InPost services."
-msgstr "Paczka nie została utworzona! Nie masz środków na koncie w Manager Paczek lub podpiętej umowy na usługi InPost."
+msgid ""
+"The package has not been created! You do not have funds in your Parcel "
+"Manager account or a contract for InPost services."
+msgstr ""
+"Paczka nie została utworzona! Nie masz środków na koncie w Manager Paczek "
+"lub podpiętej umowy na usługi InPost."
 
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-no-funds-alert.php:11
 msgid "The package has not been created! You do not have funds in"
@@ -1801,8 +1929,12 @@ msgid "or a contract for InPost services."
 msgstr "lub podpiętej umowy na usługi InPost."
 
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-no-funds-alert.php:18
-msgid "Re-creating a package is possible in the Package Manager after topping up funds."
-msgstr "Ponowne utworzenie paczki jest możliwe w Manager Paczek po doładowaniu środków."
+msgid ""
+"Re-creating a package is possible in the Package Manager after topping up "
+"funds."
+msgstr ""
+"Ponowne utworzenie paczki jest możliwe w Manager Paczek po doładowaniu "
+"środków."
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:654
 msgid "Debug mode"
@@ -1813,24 +1945,36 @@ msgid "Inpost shipping methods are only visible to administrators"
 msgstr "Metody dostawy Inpost widoczne tylko dla administratorów"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:734
-msgid "Please keep in mind that different templates may have a non-standard appearance "
+msgid ""
+"Please keep in mind that different templates may have a non-standard "
+"appearance "
 msgstr "Należy pamiętać, że różne szablony mogą mieć niestandardowy wygląd "
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:735
-msgid "design, and do not always contain in the code the entire list of standard hooks "
-msgstr "konstrukcję i nie zawsze zawierać w kodzie całą listę standardowych hooków "
+msgid ""
+"design, and do not always contain in the code the entire list of standard "
+"hooks "
+msgstr ""
+"konstrukcję i nie zawsze zawierać w kodzie całą listę standardowych hooków "
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:736
-msgid "that are used to operate plugins - in particular, to display the map button."
-msgstr "które służą do obsługi wtyczek - w szczególności do wyświetlania przycisku mapy."
+msgid ""
+"that are used to operate plugins - in particular, to display the map button."
+msgstr ""
+"które służą do obsługi wtyczek - w szczególności do wyświetlania przycisku "
+"mapy."
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:691
 msgid "Map button output"
 msgstr "Miejsce, w którym powinien pojawić się przycisk mapy"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:738
-msgid "By default, the button should be visible immediately after the block with a choice of delivery methods."
-msgstr "Domyślnie przycisk powinien być widoczny zaraz po bloku z możliwością wyboru sposobu dostawy."
+msgid ""
+"By default, the button should be visible immediately after the block with a "
+"choice of delivery methods."
+msgstr ""
+"Domyślnie przycisk powinien być widoczny zaraz po bloku z możliwością wyboru"
+" sposobu dostawy."
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:698
 msgid "Before the 'Place order' button"
@@ -1885,16 +2029,27 @@ msgid "Before form with checkout details"
 msgstr "Przed formularzem ze szczegółami zamówienia"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:740
-msgid "You can try changing where you want the map button to appear using a setting."
-msgstr "Możesz spróbować zmienić miejsce, w którym ma się pojawiać przycisk mapy."
+msgid ""
+"You can try changing where you want the map button to appear using a "
+"setting."
+msgstr ""
+"Możesz spróbować zmienić miejsce, w którym ma się pojawiać przycisk mapy."
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:742
-msgid "If the button is not visible after activating the plugin, it is recommended to start with option 'Before the Place order' button."
-msgstr "Jeżeli po włączeniu wtyczki przycisk nie jest widoczny, zaleca się zacząć od opcji 'Przed przyciskiem Złóż zamówienie'."
+msgid ""
+"If the button is not visible after activating the plugin, it is recommended "
+"to start with option 'Before the Place order' button."
+msgstr ""
+"Jeżeli po włączeniu wtyczki przycisk nie jest widoczny, zaleca się zacząć od"
+" opcji 'Przed przyciskiem Złóż zamówienie'."
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:732
-msgid "The settings associated with the map button do not work if you are using Checkout based on Blocks."
-msgstr "Ustawienia powiązane z przyciskiem mapy nie działają, jeśli korzystasz ze strony Checkout opartej na Woo Blokach."
+msgid ""
+"The settings associated with the map button do not work if you are using "
+"Checkout based on Blocks."
+msgstr ""
+"Ustawienia powiązane z przyciskiem mapy nie działają, jeśli korzystasz ze "
+"strony Checkout opartej na Woo Blokach."
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:769
 msgid "Does not work simultaneously with the option 'JS mode of map button'"
@@ -1960,15 +2115,21 @@ msgstr "Telefon (wymagany)"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:676
 msgid "Disable condition to enable geowidget scripts only on Checkout page"
-msgstr "Wyłącz sprawdzanie, aby skrypt dla geowidgetu był podłączony tylko na stronie Checkout"
+msgstr ""
+"Wyłącz sprawdzanie, aby skrypt dla geowidgetu był podłączony tylko na "
+"stronie Checkout"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:395
 msgid "Enable SmartCourier method for all products in your shop"
 msgstr "Włącz metodę SmartCourier dla wszystkich produktów w swoim sklepie"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:403
-msgid "Enable this setting if you want to enable SmartCourier shipping method for each product in your store."
-msgstr "Włącz to ustawienie, jeśli chcesz włączyć metodę wysyłki SmartCourier dla każdego produktu w swoim sklepie."
+msgid ""
+"Enable this setting if you want to enable SmartCourier shipping method for "
+"each product in your store."
+msgstr ""
+"Włącz to ustawienie, jeśli chcesz włączyć metodę wysyłki SmartCourier dla "
+"każdego produktu w swoim sklepie."
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:106
 msgid "The organization does not have an available service on its account"
@@ -1985,7 +2146,8 @@ msgstr "Organizacja nie ma podpisanej umowy na usługę SmartCourier"
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:122
 msgid "Providing incorrect dimensions/exceeding the permissible dimensions"
-msgstr "Podanie nieprawidłowych wymiarów/przekroczenie dopuszczalnych wymiarów"
+msgstr ""
+"Podanie nieprawidłowych wymiarów/przekroczenie dopuszczalnych wymiarów"
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_EsmartMix.php:130
 msgid "Exceeding the maximum weight"
@@ -1997,11 +2159,16 @@ msgstr "Kilka szczegółów transakcji: "
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:528
 msgid "Automatically add buyer order comment to field 'Refernece'"
-msgstr "Automatycznie skopiować komentarz kupującego do pola 'Numer referencyjny'"
+msgstr ""
+"Automatycznie skopiować komentarz kupującego do pola 'Numer referencyjny'"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php:445
-msgid "Order has too long note, please check it and create shipment from order page."
-msgstr "Zamówienie ma zbyt długą notatkę. Sprawdź ją i utwórz przesyłkę na stronie zamówienia."
+msgid ""
+"Order has too long note, please check it and create shipment from order "
+"page."
+msgstr ""
+"Zamówienie ma zbyt długą notatkę. Sprawdź ją i utwórz przesyłkę na stronie "
+"zamówienia."
 
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:157
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:156
@@ -2090,8 +2257,12 @@ msgid "Re-load page"
 msgstr "Odśwież stronę"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Custom_Product_List_Table.php:423
-msgid "By changing these settings you change the settings for all products on the page in a similar way."
-msgstr "Zmieniając te ustawienia, w podobny sposób zmieniasz ustawienia dla wszystkich produktów na stronie."
+msgid ""
+"By changing these settings you change the settings for all products on the "
+"page in a similar way."
+msgstr ""
+"Zmieniając te ustawienia, w podobny sposób zmieniasz ustawienia dla "
+"wszystkich produktów na stronie."
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:201
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:202
@@ -2133,8 +2304,11 @@ msgstr "Dodaj tekst '(darmowa wysyłka)' na końcu tytułu metody wysyłki"
 
 #: resources/templates/emails/plain/send-tracking-to-buyer.php:34
 #: resources/templates/emails/send-tracking-to-buyer.php:50
-msgid "For your order was created multi-package. It will soon move on its journey"
-msgstr "Do Twojego zamówienia została stworzona Przesyłka wielopaczkowa. Niedługo ruszy w dalszą podróż"
+msgid ""
+"For your order was created multi-package. It will soon move on its journey"
+msgstr ""
+"Do Twojego zamówienia została stworzona Przesyłka wielopaczkowa. Niedługo "
+"ruszy w dalszą podróż"
 
 #: resources/templates/emails/plain/send-tracking-to-buyer.php:35
 #: resources/templates/emails/send-tracking-to-buyer.php:51
@@ -2146,8 +2320,11 @@ msgid "It seems you forgot to select the InPost pick up point."
 msgstr "Wygląda na to, że zapomniałeś wybrać punktu odbioru InPost."
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:1505
-msgid "If so, please select InPost pick up point from this list or on the map."
-msgstr "Jeśli tak, proszę wybrać punkt odbioru InPost z listy lub za pomocą przycisku na mapie."
+msgid ""
+"If so, please select InPost pick up point from this list or on the map."
+msgstr ""
+"Jeśli tak, proszę wybrać punkt odbioru InPost z listy lub za pomocą "
+"przycisku na mapie."
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:681
 #: src/InspireLabs/WoocommerceInpost/Geowidget_v5.php:85
@@ -2207,8 +2384,12 @@ msgid "Not standard?"
 msgstr "Niestandardowa?"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:414
-msgid "If there is no general InPost shipping method for the products, then always choose the most expensive one."
-msgstr "Jeśli nie ma ogólnej metody wysyłki InPost dla produktów, zawsze wybieraj najdroższą opcję."
+msgid ""
+"If there is no general InPost shipping method for the products, then always "
+"choose the most expensive one."
+msgstr ""
+"Jeśli nie ma ogólnej metody wysyłki InPost dla produktów, zawsze wybieraj "
+"najdroższą opcję."
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:428
 msgid "Enable webhooks"
@@ -2223,24 +2404,36 @@ msgid "After enabling this setting, when there is a product"
 msgstr "Po włączeniu tego ustawienia gdy w koszyku jest produkt"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:420
-msgid " with the Paczkomat service only and another product with the Courier service only "
+msgid ""
+" with the Paczkomat service only and another product with the Courier "
+"service only "
 msgstr " z usługą tylko Paczkomat i drugi produkt z usługą tylko Kurier - "
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:421
-msgid "in the cart, the most expensive one will be selected and the delivery method will be displayed"
+msgid ""
+"in the cart, the most expensive one will be selected and the delivery method"
+" will be displayed"
 msgstr "wybierze tą najdroższą i wyświetli metodę dostawy"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:433
-msgid "Enabling webhooks allows you to update the status of shipments in your order"
-msgstr "Włączenie webhook pozwala na aktualizację statusów przesyłek w zamówieniu"
+msgid ""
+"Enabling webhooks allows you to update the status of shipments in your order"
+msgstr ""
+"Włączenie webhook pozwala na aktualizację statusów przesyłek w zamówieniu"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:454
 msgid "Change order status to Completed if webhook status is received like:"
-msgstr "Zmień status zamówienia na Zrealizowano, jeśli otrzymany status webhooka taki jak:"
+msgstr ""
+"Zmień status zamówienia na Zrealizowano, jeśli otrzymany status webhooka "
+"taki jak:"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:481
-msgid "Check your default settings before enable this option (parcel dimensions, etc.)"
-msgstr "Przed włączeniem tej opcji proszę dokładnie sprawdzić ustawienia domyślne (rozmiary paczki, i t.d.)"
+msgid ""
+"Check your default settings before enable this option (parcel dimensions, "
+"etc.)"
+msgstr ""
+"Przed włączeniem tej opcji proszę dokładnie sprawdzić ustawienia domyślne "
+"(rozmiary paczki, i t.d.)"
 
 #: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php:476
 msgid "Creating a shipment automatically after paying for the order"
@@ -2276,8 +2469,14 @@ msgid "Product configuration"
 msgstr "Konfiguracja produktu"
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:211
-msgid "Enabling this option allows you to create Parcel on Weekend shipments (despite the customer choosing the InPost Paczkomat 24/7 service) in the time intervals from Thursday (20:00) to Friday (18:00)"
-msgstr "Włączenie umożliwia tworzenie przesyłek Paczka W Weekend (pomimo wybranego serwisu przez klienta InPost Paczkomat 24/7) w przedziałach czasowych od czwartku (godzina 20:00) do piątku (godzina 18:00)"
+msgid ""
+"Enabling this option allows you to create Parcel on Weekend shipments "
+"(despite the customer choosing the InPost Paczkomat 24/7 service) in the "
+"time intervals from Thursday (20:00) to Friday (18:00)"
+msgstr ""
+"Włączenie umożliwia tworzenie przesyłek Paczka W Weekend (pomimo wybranego "
+"serwisu przez klienta InPost Paczkomat 24/7) w przedziałach czasowych od "
+"czwartku (godzina 20:00) do piątku (godzina 18:00)"
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:210
 msgid "PWW mode"
@@ -2285,8 +2484,12 @@ msgstr "Tryb PWW"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:195
 #: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:245
-msgid "You are creating a Weekend Package service, which is available from Thursday 20:00 to Friday 18:00 - currently this is not a dedicated time slot"
-msgstr "Tworzysz usługę Paczka w Weekend, która jest dostępna od czwartku 20:00 do piątku godzina 18:00 - aktualnie nie jest to dedykowany przedział"
+msgid ""
+"You are creating a Weekend Package service, which is available from Thursday"
+" 20:00 to Friday 18:00 - currently this is not a dedicated time slot"
+msgstr ""
+"Tworzysz usługę Paczka w Weekend, która jest dostępna od czwartku 20:00 do "
+"piątku godzina 18:00 - aktualnie nie jest to dedykowany przedział"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack_API.php:197
 msgid "forbidden"
@@ -2301,8 +2504,12 @@ msgid "API key or Organization ID is empty"
 msgstr "Klucz API lub ID organizacji jest pusty"
 
 #: src/InspireLabs/WoocommerceInpost/EasyPack.php:939
-msgid "Error when trying to get API services. Check wc-logs, file 'inpost-pl-services-error'"
-msgstr "Błąd podczas próby uzyskania dostępu do usług API. Sprawdź wc-logs, plik „inpost-pl-services-error”."
+msgid ""
+"Error when trying to get API services. Check wc-logs, file 'inpost-pl-"
+"services-error'"
+msgstr ""
+"Błąd podczas próby uzyskania dostępu do usług API. Sprawdź wc-logs, plik "
+"„inpost-pl-services-error”."
 
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier-cod.php:133
 #: src/InspireLabs/WoocommerceInpost/shipping/views/html-order-metabox-courier.php:132
@@ -2415,7 +2622,8 @@ msgstr "Rabat dla kuponów"
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:211
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:260
 msgid "Apply minimum order rule before coupon discount"
-msgstr "Zastosuj regułę minimalnego zamówienia sprzed użycia kuponu zniżkowego"
+msgstr ""
+"Zastosuj regułę minimalnego zamówienia sprzed użycia kuponu zniżkowego"
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:176
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:150
@@ -2423,8 +2631,12 @@ msgstr "Zastosuj regułę minimalnego zamówienia sprzed użycia kuponu zniżkow
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Economy.php:165
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Parcel_Machines_Weekend.php:213
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:262
-msgid "If checked, free shipping would be available based on pre-discount order amount."
-msgstr "Jeśli zaznaczone, bezpłatna wysyłka będzie dostępna na podstawie kwoty zamówienia przed rabatem."
+msgid ""
+"If checked, free shipping would be available based on pre-discount order "
+"amount."
+msgstr ""
+"Jeśli zaznaczone, bezpłatna wysyłka będzie dostępna na podstawie kwoty "
+"zamówienia przed rabatem."
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier.php:208
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shipping_Method_Courier_C2C.php:182
@@ -2453,8 +2665,14 @@ msgid "Enter a cost (excl. tax) or sum, e.g. <code>10.00 * [qty]</code>."
 msgstr "Wpisz koszt (bez podatku) lub sumę, np. <code>10.00 * [ilość]</code>."
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1605
-msgid "Use <code>[qty]</code> for the number of items, <br/><code>[cost]</code> for the total cost of items, and <code>[fee percent=\"10\" min_fee=\"20\" max_fee=\"\"]</code> for percentage based fees."
-msgstr "Użyj <code>[qty]</code> dla liczby elementów, <br/><code>[cost]</code> dla całkowitego kosztu elementów i <code>[fee percent=\"10\" min_fee=\"20\" max_fee=\"\"]</code> dla opłat procentowych."
+msgid ""
+"Use <code>[qty]</code> for the number of items, <br/><code>[cost]</code> for"
+" the total cost of items, and <code>[fee percent=\"10\" min_fee=\"20\" "
+"max_fee=\"\"]</code> for percentage based fees."
+msgstr ""
+"Użyj <code>[qty]</code> dla liczby elementów, <br/><code>[cost]</code> dla "
+"całkowitego kosztu elementów i <code>[fee percent=\"10\" min_fee=\"20\" "
+"max_fee=\"\"]</code> dla opłat procentowych."
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1609
 msgid "Shipping class costs"
@@ -2462,8 +2680,12 @@ msgstr "Koszty klasy wysyłkowej"
 
 #. translators: %s: URL for link.
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1613
-msgid "These costs can optionally be added based on the <a href=\"%s\">product shipping class</a>."
-msgstr "These costs can optionally be added based on the <a href=\"%s\">product shipping class</a>."
+msgid ""
+"These costs can optionally be added based on the <a href=\"%s\">product "
+"shipping class</a>."
+msgstr ""
+"These costs can optionally be added based on the <a href=\"%s\">product "
+"shipping class</a>."
 
 #. translators: %s: shipping class name
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines.php:1621
@@ -2501,8 +2723,12 @@ msgstr "nazwa punktu"
 
 #. translators: %1$s: Field name that is missing, %2$s: Pickup point number
 #: src/InspireLabs/WoocommerceInpost/shipx/services/courier_pickup/ShipX_Courier_Pickup_Service.php:93
-msgid "The configuration of the dispatch points is incomplete. The field %1$s is missing at pickup point #%2$s"
-msgstr "Konfiguracja punktów wysyłki jest niekompletna. Brakuje pola %1$s w punkcie odbioru #%2$s."
+msgid ""
+"The configuration of the dispatch points is incomplete. The field %1$s is "
+"missing at pickup point #%2$s"
+msgstr ""
+"Konfiguracja punktów wysyłki jest niekompletna. Brakuje pola %1$s w punkcie "
+"odbioru #%2$s."
 
 #: resources/assets/js/build/inpostpl-block-frontend.js:1
 msgid "Parcel locker must be chosen."
@@ -2516,23 +2742,35 @@ msgstr "Opcji wysyłki Inpost PL"
 #: resources/assets/js/build/js/inpostpl-block/block.json
 msgctxt "block description"
 msgid "Adds map button and add input to save delivery point data."
-msgstr "Dodaje przycisk mapy i dodaje pole do zapisywania danych o punkcie dostawy."
+msgstr ""
+"Dodaje przycisk mapy i dodaje pole do zapisywania danych o punkcie dostawy."
 
 #: src/InspireLabs/WoocommerceInpost/shipping/EasyPack_Shippng_Parcel_Machines_COD.php:37
-msgid "InPost Parcel Locker COD. Allow customers to pick up orders themselves."
-msgstr "Paczkomat InPost z opcją odbioru osobistego. Pozwól klientom na samodzielny odbiór zamówień."
+msgid ""
+"InPost Parcel Locker COD. Allow customers to pick up orders themselves."
+msgstr ""
+"Paczkomat InPost z opcją odbioru osobistego. Pozwól klientom na samodzielny "
+"odbiór zamówień."
 
 msgid "Enable InPost metabox to create shipments for all orders in your shop"
 msgstr "Włącz metabox InPost dla wszystkich zamówień w Twoim sklepie"
 
-msgid "Enable this setting if you want to enable output of InPost shipment creation metabox for each order in your store."
-msgstr "Włącz to ustawienie, jeśli chcesz włączyć wyjście metaboxu tworzenia przesyłki InPost dla każdego zamówienia w swoim sklepie."
+msgid ""
+"Enable this setting if you want to enable output of InPost shipment creation"
+" metabox for each order in your store."
+msgstr ""
+"Włącz to ustawienie, jeśli chcesz włączyć wyjście metaboxu tworzenia "
+"przesyłki InPost dla każdego zamówienia w swoim sklepie."
 
 msgid "Parcel locker ID code is required"
 msgstr "Kod Paczkomatu jest wymagany"
 
-msgid "Parcel locker ID for the Weekend Package service is wrong. It should be available 24/7"
-msgstr "ID paczkomatu dla usługi Paczka w Weekend jest błędny. Paczkomat powinien być dostępny 24/7"
+msgid ""
+"Parcel locker ID for the Weekend Package service is wrong. It should be "
+"available 24/7"
+msgstr ""
+"ID paczkomatu dla usługi Paczka w Weekend jest błędny. Paczkomat powinien "
+"być dostępny 24/7"
 
 msgid "Insurance amount should be greater or equal than COD"
 msgstr "Kwota ubezpieczenia powinna być większa lub równa kwocie pobrania"
@@ -2600,8 +2838,11 @@ msgid "Orders %s were placed without InPost shipping method."
 msgstr "Zamówienia %s zostały złożone z pominięciem metody wysyłki InPost."
 
 #: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
-msgid "Orders %s are not ready for label download yet (see details in the table)."
-msgstr "Zamówienia %s nie są jeszcze gotowe do pobrania etykiet (szczegóły w tabeli)."
+msgid ""
+"Orders %s are not ready for label download yet (see details in the table)."
+msgstr ""
+"Zamówienia %s nie są jeszcze gotowe do pobrania etykiet (szczegóły w "
+"tabeli)."
 
 #: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
 msgid "Label availability period has expired."
@@ -2670,3 +2911,40 @@ msgstr "Waga jest zbyt duża"
 #: src/InspireLabs/WoocommerceInpost/EasyPack_API.php
 msgid "Parcel dimensions: %s"
 msgstr "Wymiary paczki: %s"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Insurance amount:"
+msgstr "Kwota ubezpieczenia:"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Edit insurance amount"
+msgstr "Edytuj kwotę ubezpieczenia"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Save"
+msgstr "Zapisz"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Cancel"
+msgstr "Anuluj"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Helper.php
+msgid "Value cannot be lower than the COD amount."
+msgstr "Wartość nie może być mniejsza niż kwota pobrania."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Please enter a valid insurance amount."
+msgstr "Podaj prawidłową kwotę ubezpieczenia."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Could not save insurance amount."
+msgstr "Nie udało się zapisać kwoty ubezpieczenia."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPackBulkOrders.php
+msgid "Invalid order."
+msgstr "Nieprawidłowe zamówienie."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Helper.php
+msgid "Insurance amount cannot be negative."
+msgstr "Kwota ubezpieczenia nie może być ujemna."

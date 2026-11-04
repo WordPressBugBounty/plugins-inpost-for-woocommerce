@@ -55,6 +55,10 @@ class ShipX_Shipment_Service {
 			$order->update_meta_data( '_shipx_shipment_object', $shipment );
 			$tracking_number = $shipment->getInternalData()->getTrackingNumber();
 			$order->update_meta_data( '_easypack_parcel_tracking', $tracking_number );
+			$return_tracking_number = $shipment->getInternalData()->getReturnTrackingNumber();
+			if ( ! empty( $return_tracking_number ) ) {
+				$order->update_meta_data( '_easypack_return_tracking', $return_tracking_number );
+			}
 			$order->save();
 		}
 	}
@@ -652,6 +656,27 @@ class ShipX_Shipment_Service {
 		}
 
 		return ''; // todo gb
+	}
+
+	/**
+	 * Build public tracking URL for a return tracking number.
+	 *
+	 * @param string $return_tracking_number Return tracking number.
+	 * @return string
+	 */
+	public function getReturnTrackingUrl( $return_tracking_number ) {
+		if ( empty( $return_tracking_number ) ) {
+			return '';
+		}
+
+		if ( EasyPack_API::COUNTRY_PL === EasyPack_API()->getCountry() ) {
+			return sprintf(
+				'https://inpost.pl/sledzenie-przesylek?number=%s',
+				rawurlencode( (string) $return_tracking_number )
+			);
+		}
+
+		return '';
 	}
 
 	/**

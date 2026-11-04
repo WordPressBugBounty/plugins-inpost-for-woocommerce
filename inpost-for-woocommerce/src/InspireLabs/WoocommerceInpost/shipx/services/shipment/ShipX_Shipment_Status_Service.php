@@ -191,6 +191,12 @@ class ShipX_Shipment_Status_Service {
 		} else {
 			$shipment->getInternalData()->setTrackingNumber( $search_results['tracking_number'] );
 
+			if ( ! empty( $search_results['return_tracking_number'] ) ) {
+				$shipment->getInternalData()->setReturnTrackingNumber(
+					sanitize_text_field( (string) $search_results['return_tracking_number'] )
+				);
+			}
+
 			$status_id = $search_results['status'];
 			$shipment->getInternalData()->setStatus( $search_results['status'] );
 			$shipment->getInternalData()->setStatusChangedTimestamp( time() );

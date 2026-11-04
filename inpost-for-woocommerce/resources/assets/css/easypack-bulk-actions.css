@@ -170,3 +170,147 @@ tr.inpost-pl-bulk-row-error > td {
     gap: 8px;
     justify-content: flex-end;
 }
+
+/* Insurance amount inline edit (orders list) — HPOS + classic posts table */
+.wp-list-table td.easypack_shipping_statuses .easypack-insurance-edit,
+.wp-list-table td.column-easypack_shipping_statuses .easypack-insurance-edit,
+.woocommerce-page .easypack-insurance-edit,
+.easypack-insurance-edit {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.4;
+    max-width: 100%;
+}
+
+.wp-list-table td.easypack_shipping_statuses .easypack-insurance-edit__label,
+.wp-list-table td.column-easypack_shipping_statuses .easypack-insurance-edit__label,
+.woocommerce-page .easypack-insurance-edit__label,
+.easypack-insurance-edit__label {
+    display: inline !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: inherit !important;
+    font: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    text-align: left !important;
+    text-decoration: none !important;
+    cursor: pointer;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+}
+
+.wp-list-table td.easypack_shipping_statuses .easypack-insurance-edit__label:hover .easypack-insurance-edit__value,
+.wp-list-table td.easypack_shipping_statuses .easypack-insurance-edit__label:focus .easypack-insurance-edit__value,
+.wp-list-table td.column-easypack_shipping_statuses .easypack-insurance-edit__label:hover .easypack-insurance-edit__value,
+.wp-list-table td.column-easypack_shipping_statuses .easypack-insurance-edit__label:focus .easypack-insurance-edit__value,
+.easypack-insurance-edit__label:hover .easypack-insurance-edit__value,
+.easypack-insurance-edit__label:focus .easypack-insurance-edit__value {
+    color: #2271b1;
+}
+
+.easypack-insurance-edit__value {
+    border-bottom: 1px dotted #646970;
+}
+
+.easypack-insurance-edit__currency {
+    margin-left: 2px;
+}
+
+.easypack-insurance-edit__form {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    flex-wrap: wrap;
+    vertical-align: middle;
+}
+
+.easypack-insurance-edit__form[hidden],
+.easypack-insurance-edit__label[hidden],
+.easypack-insurance-edit__error[hidden] {
+    display: none !important;
+}
+
+.wp-list-table td.easypack_shipping_statuses .easypack-insurance-edit__input,
+.wp-list-table td.column-easypack_shipping_statuses .easypack-insurance-edit__input,
+.easypack-insurance-edit__input {
+    width: 72px;
+    min-height: 26px;
+    margin: 0;
+    padding: 0 4px;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.wp-list-table td.easypack_shipping_statuses .easypack-insurance-edit__save,
+.wp-list-table td.easypack_shipping_statuses .easypack-insurance-edit__cancel,
+.wp-list-table td.column-easypack_shipping_statuses .easypack-insurance-edit__save,
+.wp-list-table td.column-easypack_shipping_statuses .easypack-insurance-edit__cancel,
+.easypack-insurance-edit__save,
+.easypack-insurance-edit__cancel {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 26px !important;
+    height: 26px !important;
+    min-height: 26px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid transparent !important;
+    border-radius: 2px !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    vertical-align: middle;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+}
+
+.easypack-insurance-edit__save .dashicons,
+.easypack-insurance-edit__cancel .dashicons {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.easypack-insurance-edit__save {
+    color: #00a32a !important;
+}
+
+.easypack-insurance-edit__save:hover {
+    border-color: #00a32a !important;
+    background: #edfaef !important;
+}
+
+.easypack-insurance-edit__cancel {
+    color: #d63638 !important;
+}
+
+.easypack-insurance-edit__cancel:hover {
+    border-color: #d63638 !important;
+    background: #fcf0f1 !important;
+}
+
+.easypack-insurance-edit.is-saving {
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+.easypack-insurance-edit__error {
+    display: block;
+    margin-top: 4px;
+    color: #b32d2e;
+    font-size: 11px;
+    line-height: 1.35;
+}

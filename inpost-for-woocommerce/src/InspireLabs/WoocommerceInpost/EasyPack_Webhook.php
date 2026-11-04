@@ -301,8 +301,22 @@ class EasyPack_Webhook {
 				$timestamp = $date->getTimestamp();
 				$shipment->getInternalData()->setStatusChangedTimestamp( $timestamp );
 			}
+
+			if ( ! empty( $webhook_body['payload']['return_tracking_number'] ) ) {
+				$shipment->getInternalData()->setReturnTrackingNumber(
+					sanitize_text_field( (string) $webhook_body['payload']['return_tracking_number'] )
+				);
+			}
+
 			$shipment_service = new ShipX_Shipment_Service();
-			$shipment_service->update_shipment_to_db( $shipment );
+
+			// For returns, refresh from API so return_tracking_number is stored even if absent in webhook payload.
+			$inpost_id = $shipment->getInternalData()->getInpostId();
+			if ( 'returned_to_sender' === $status && ! empty( $inpost_id ) ) {
+				$status_service->refreshStatus( $shipment );
+			} else {
+				$shipment_service->update_shipment_to_db( $shipment );
+			}
 		}
 
 		$resp = array(

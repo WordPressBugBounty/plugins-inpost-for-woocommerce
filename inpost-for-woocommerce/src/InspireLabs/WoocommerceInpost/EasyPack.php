@@ -1514,7 +1514,7 @@ class EasyPack extends inspire_Plugin4 {
 			);
 
 			$settings['fs_insurance_inpost_pl'] = array(
-				'title'    => esc_html__( 'Insurance', 'inpost-for-woocommerce' )
+				'title'    => esc_html__( 'Additional insurance', 'inpost-for-woocommerce' )
 								. ' InPost PL: '
 								. esc_html__( 'set from order amount', 'inpost-for-woocommerce' ),
 				'type'     => 'checkbox',
@@ -1524,7 +1524,7 @@ class EasyPack extends inspire_Plugin4 {
 			);
 
 			$settings['fs_insurance_value_inpost_pl'] = array(
-				'title'             => esc_html__( 'Default insurance amount', 'inpost-for-woocommerce' ),
+				'title'             => esc_html__( 'Default additional insurance amount', 'inpost-for-woocommerce' ),
 				'type'              => 'number',
 				'custom_attributes' => array(
 					'step' => 'any',

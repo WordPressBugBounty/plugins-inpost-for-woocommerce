@@ -121,7 +121,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 					'desc_tip'    => true,
 				),
 				'insurance_inpost_pl'                    => array(
-					'title'       => __( 'Insurance', 'inpost-for-woocommerce' ),
+					'title'       => __( 'Additional insurance', 'inpost-for-woocommerce' ),
 					'label'       => __( 'Set from order amount', 'inpost-for-woocommerce' ),
 					'type'        => 'checkbox',
 					'description' => '',
@@ -129,7 +129,7 @@ if ( ! class_exists( 'EasyPack_Shipping_Method_Courier_COD' ) ) {
 					'desc_tip'    => true,
 				),
 				'insurance_value_inpost_pl'              => array(
-					'title'             => __( 'Default insurance amount', 'inpost-for-woocommerce' ),
+					'title'             => __( 'Default additional insurance amount', 'inpost-for-woocommerce' ),
 					'type'              => 'number',
 					'custom_attributes' => array(
 						'step' => 'any',

@@ -67,6 +67,13 @@ class ShipX_Shipment_Internal_Data {
 	private $tracking_number;
 
 	/**
+	 * Return tracking number assigned when shipment is returned to sender.
+	 *
+	 * @var string|null
+	 */
+	private $return_tracking_number;
+
+	/**
 	 * @var ShipX_Shipment_Cost_Model
 	 */
 	private $shipment_cost;
@@ -220,6 +227,20 @@ class ShipX_Shipment_Internal_Data {
 	 */
 	public function setTrackingNumber( $tracking_number ) {
 		$this->tracking_number = $tracking_number;
+	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getReturnTrackingNumber() {
+		return $this->return_tracking_number;
+	}
+
+	/**
+	 * @param string|null $return_tracking_number Return tracking number.
+	 */
+	public function setReturnTrackingNumber( $return_tracking_number ) {
+		$this->return_tracking_number = $return_tracking_number;
 	}
 
 	/**

@@ -58,6 +58,7 @@ class EasyPackBulkOrders {
 		add_filter( 'manage_edit-shop_order_columns', array( $this, 'manage_edit_shop_order_columns' ), 11 );
 
 		add_action( 'wp_ajax_easypack_bulk_create_shipments', array( $this, 'easypack_bulk_create_shipments_callback' ) );
+		add_action( 'wp_ajax_easypack_save_insurance_override', array( $this, 'easypack_save_insurance_override_callback' ) );
 
 		add_action( 'manage_shop_order_posts_custom_column', array( $this, 'manage_shop_order_posts_custom_column' ), 11, 2 );
 		add_action( 'manage_woocommerce_page_wc-orders_custom_column', array( $this, 'manage_shop_order_posts_custom_column' ), 11, 2 );
@@ -179,16 +180,18 @@ class EasyPackBulkOrders {
 			$inpost_status = '<div class="inpost-status-inside-td">'
 							. esc_html__( 'Not created yet', 'inpost-for-woocommerce' )
 							. ' ('
-							. $shipping_method_title
+							. esc_html( $shipping_method_title )
 							. ')'
+							. $this->get_orders_list_insurance_edit_html( $order )
 							. '</div>';
 
 			if ( ! empty( $shipping_method_changed ) ) {
 				$inpost_status = '<div class="inpost-status-inside-td">'
 								. esc_html__( 'Not created yet', 'inpost-for-woocommerce' )
 								. ' ('
-								. '<b style="color:#c51313">' . $shipping_method_title . '</b>'
+								. '<b style="color:#c51313">' . esc_html( $shipping_method_title ) . '</b>'
 								. ')'
+								. $this->get_orders_list_insurance_edit_html( $order )
 								. '</div>';
 			}
 
@@ -199,8 +202,9 @@ class EasyPackBulkOrders {
 					$inpost_status = '<div class="inpost-status-inside-td easypack-alert-status">'
 									. esc_html__( 'Adding of dimensions is required', 'inpost-for-woocommerce' )
 									. ' ('
-									. $shipping_method_title
+									. esc_html( $shipping_method_title )
 									. ')'
+									. $this->get_orders_list_insurance_edit_html( $order )
 									. '</div>';
 				}
 			}
@@ -241,9 +245,22 @@ class EasyPackBulkOrders {
 
 				$link_to_tracking = sprintf(
 					'<a target="_blank" href="%s">%s</a>',
-					$tracking_url . $tracking_number,
-					$tracking_number
+					esc_url( $tracking_url . $tracking_number ),
+					esc_html( $tracking_number )
 				);
+
+				$return_tracking_number = EasyPack_Helper()->get_return_tracking_number_from_meta( $order_id );
+				$return_tracking_html   = '';
+				if ( ! empty( $return_tracking_number ) ) {
+					$return_tracking_html = '<br><span style="font-weight:bold">'
+						. esc_html__( 'Return:', 'inpost-for-woocommerce' )
+						. '</span> '
+						. sprintf(
+							'<a target="_blank" href="%s">%s</a>',
+							esc_url( $tracking_url . $return_tracking_number ),
+							esc_html( $return_tracking_number )
+						);
+				}
 
 				$additional_packages_notice = '';
 
@@ -255,6 +272,7 @@ class EasyPackBulkOrders {
 
 				$inpost_status = '<div class="inpost-status-inside-td">'
 								. $print_label_icon . ' ' . $shipping_method_title . ' ' . $link_to_tracking
+								. $return_tracking_html
 								. '<br>'
 								. $additional_packages_notice
 								. '</div>';
@@ -369,7 +387,48 @@ class EasyPackBulkOrders {
                 </div>';
 		}
 
-		echo wp_kses_post( $inpost_status . $status_line );
+		echo wp_kses( $inpost_status . $status_line, $this->get_orders_list_column_allowed_html() );
+	}
+
+	/**
+	 * Allowed HTML for InPost status column (includes insurance edit controls).
+	 *
+	 * @return array
+	 */
+	private function get_orders_list_column_allowed_html() {
+		$allowed = wp_kses_allowed_html( 'post' );
+
+		$allowed['div']['data-order-id'] = true;
+		$allowed['div']['data-amount']   = true;
+		$allowed['div']['data-cod-min']  = true;
+		$allowed['div']['data-is-cod']   = true;
+		$allowed['div']['hidden']       = true;
+
+		$allowed['span']['hidden']      = true;
+		$allowed['span']['aria-hidden'] = true;
+		$allowed['span']['title']       = true;
+
+		$allowed['a']['class'] = true;
+		$allowed['a']['href']  = true;
+		$allowed['a']['title'] = true;
+		$allowed['a']['hidden'] = true;
+
+		$allowed['button'] = array(
+			'type'   => true,
+			'class'  => true,
+			'title'  => true,
+			'hidden' => true,
+		);
+
+		$allowed['input'] = array(
+			'type'  => true,
+			'class' => true,
+			'step'  => true,
+			'min'   => true,
+			'value' => true,
+		);
+
+		return $allowed;
 	}
 
 
@@ -467,6 +526,24 @@ class EasyPackBulkOrders {
 			}
 		}
 
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verified above.
+		$draft_insurance_raw = isset( $_POST['insurance_amount'] )
+			? sanitize_text_field( wp_unslash( $_POST['insurance_amount'] ) )
+			: '';
+		if ( '' !== $draft_insurance_raw && is_numeric( $draft_insurance_raw ) ) {
+			$draft_insurance = (float) wc_format_decimal( $draft_insurance_raw, 2 );
+			$validated       = EasyPack_Helper()->validate_insurance_amount_for_order( $order, $draft_insurance );
+			if ( is_wp_error( $validated ) ) {
+				$return_content = array(
+					'status'  => 'bad',
+					'message' => $validated->get_error_message(),
+				);
+				echo wp_json_encode( $return_content );
+				exit;
+			}
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
 		$shipping_method_class_name = EasyPack_Helper()->get_class_name_by_shipping_id( $service );
 
 		$class_with_namespace = 'InspireLabs\WoocommerceInpost\shipping\\' . $shipping_method_class_name;
@@ -499,11 +576,12 @@ class EasyPackBulkOrders {
 			|| 'woocommerce_page_wc-orders' === $current_screen->id ) {
 			$plugin_data = EasyPack::EasyPack();
 
+			$bulk_actions_css_path = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/css/easypack-bulk-actions.css';
 			wp_enqueue_style(
 				'easypack-bulk-actions',
 				$plugin_data->getPluginCss() . 'easypack-bulk-actions.css',
 				array(),
-				WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION
+				file_exists( $bulk_actions_css_path ) ? filemtime( $bulk_actions_css_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION
 			);
 			$bulk_actions_js_path = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/bulk-actions.js';
 			wp_enqueue_script(
@@ -517,9 +595,19 @@ class EasyPackBulkOrders {
 				'easypack-bulk-actions',
 				'easypack_bulk',
 				array(
-					'ajaxurl'     => admin_url( 'admin-ajax.php' ),
-					'nonce'       => wp_create_nonce( 'easypack-bulk-actions' ),
-					'popup_texts' => array(
+					'ajaxurl'          => admin_url( 'admin-ajax.php' ),
+					'nonce'            => wp_create_nonce( 'easypack-bulk-actions' ),
+					'currency_symbol'  => html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOTES, 'UTF-8' ),
+					'insurance_texts'  => array(
+						'label'            => esc_html__( 'Insurance amount:', 'inpost-for-woocommerce' ),
+						'save'             => esc_html__( 'Save', 'inpost-for-woocommerce' ),
+						'cancel'           => esc_html__( 'Cancel', 'inpost-for-woocommerce' ),
+						'edit'             => esc_html__( 'Edit insurance amount', 'inpost-for-woocommerce' ),
+						'below_cod'        => esc_html__( 'Value cannot be lower than the COD amount.', 'inpost-for-woocommerce' ),
+						'invalid'          => esc_html__( 'Please enter a valid insurance amount.', 'inpost-for-woocommerce' ),
+						'save_error'       => esc_html__( 'Could not save insurance amount.', 'inpost-for-woocommerce' ),
+					),
+					'popup_texts'      => array(
 						'title'                      => esc_html__( 'InPost labels', 'inpost-for-woocommerce' ),
 						/* translators: %d: number of selected orders. */
 						'selected_count'             => esc_html__( 'Selected %d orders.', 'inpost-for-woocommerce' ),
@@ -552,6 +640,147 @@ class EasyPackBulkOrders {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Editable insurance amount markup for orders without a created shipment.
+	 *
+	 * @param WC_Order $order Order.
+	 * @return string
+	 */
+	private function get_orders_list_insurance_edit_html( $order ) {
+		if ( ! $order || is_wp_error( $order ) ) {
+			return '';
+		}
+
+		$order_id = $order->get_id();
+		$amount   = EasyPack_Helper()->get_insurance_amount( $order_id );
+		if ( false === $amount ) {
+			$amount = 0.0;
+		}
+		$amount     = (float) wc_format_decimal( $amount, 2 );
+		$is_cod     = EasyPack_Helper()->is_order_inpost_cod( $order );
+		$cod_min    = EasyPack_Helper()->get_order_cod_amount_for_insurance( $order );
+		$currency   = html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOTES, 'UTF-8' );
+		$amount_fmt = wc_format_localized_price( wc_format_decimal( $amount, wc_get_price_decimals() ) );
+
+		ob_start();
+		?>
+		<div class="easypack-insurance-edit"
+			data-order-id="<?php echo esc_attr( (string) $order_id ); ?>"
+			data-amount="<?php echo esc_attr( (string) $amount ); ?>"
+			data-cod-min="<?php echo esc_attr( (string) $cod_min ); ?>"
+			data-is-cod="<?php echo $is_cod ? '1' : '0'; ?>">
+			<a href="#" class="easypack-insurance-edit__label" title="<?php esc_attr_e( 'Edit insurance amount', 'inpost-for-woocommerce' ); ?>">
+				<span class="easypack-insurance-edit__caption"><?php esc_html_e( 'Insurance amount:', 'inpost-for-woocommerce' ); ?></span>
+				<span class="easypack-insurance-edit__value"><?php echo esc_html( $amount_fmt ); ?></span>
+				<span class="easypack-insurance-edit__currency"><?php echo esc_html( $currency ); ?></span>
+			</a>
+			<span class="easypack-insurance-edit__form" hidden>
+				<input type="number"
+					class="easypack-insurance-edit__input"
+					step="0.01"
+					min="0"
+					value="<?php echo esc_attr( (string) $amount ); ?>" />
+				<button type="button" class="easypack-insurance-edit__save" title="<?php esc_attr_e( 'Save', 'inpost-for-woocommerce' ); ?>">
+					<span class="dashicons dashicons-yes" aria-hidden="true"></span>
+				</button>
+				<button type="button" class="easypack-insurance-edit__cancel" title="<?php esc_attr_e( 'Cancel', 'inpost-for-woocommerce' ); ?>">
+					<span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
+				</button>
+			</span>
+			<span class="easypack-insurance-edit__error" hidden></span>
+		</div>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * AJAX: save insurance amount override from orders list.
+	 *
+	 * @return void
+	 */
+	public function easypack_save_insurance_override_callback() {
+		if ( ! is_admin() ) {
+			exit;
+		}
+
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'easypack-bulk-actions' ) ) {
+			wp_send_json(
+				array(
+					'status'  => 'bad',
+					'message' => esc_html__( 'Bad nonce', 'inpost-for-woocommerce' ),
+				)
+			);
+		}
+
+		if ( ! current_user_can( 'manage_woocommerce' )
+			&& ! current_user_can( 'edit_shop_orders' )
+			&& ! current_user_can( 'manage_options' )
+		) {
+			wp_send_json(
+				array(
+					'status'  => 'bad',
+					'message' => esc_html__( 'Insufficient permissions', 'inpost-for-woocommerce' ),
+				)
+			);
+		}
+
+		$order_id = isset( $_POST['order_id'] ) ? absint( wp_unslash( $_POST['order_id'] ) ) : 0;
+		$amount   = isset( $_POST['insurance_amount'] )
+			? wc_format_decimal( sanitize_text_field( wp_unslash( $_POST['insurance_amount'] ) ), 2 )
+			: '';
+
+		$order = wc_get_order( $order_id );
+		if ( ! $order || is_wp_error( $order ) ) {
+			wp_send_json(
+				array(
+					'status'  => 'bad',
+					'message' => esc_html__( 'Invalid order.', 'inpost-for-woocommerce' ),
+				)
+			);
+		}
+
+		$status = EasyPack_Helper()->get_woo_order_meta( $order_id, '_easypack_status' );
+		if ( ! empty( $status ) ) {
+			wp_send_json(
+				array(
+					'status'  => 'bad',
+					'message' => esc_html__( 'Shipment already created', 'inpost-for-woocommerce' ),
+				)
+			);
+		}
+
+		if ( ! is_numeric( $amount ) ) {
+			wp_send_json(
+				array(
+					'status'  => 'bad',
+					'message' => esc_html__( 'Please enter a valid insurance amount.', 'inpost-for-woocommerce' ),
+				)
+			);
+		}
+
+		$amount   = (float) $amount;
+		$validated = EasyPack_Helper()->validate_insurance_amount_for_order( $order, $amount );
+		if ( is_wp_error( $validated ) ) {
+			wp_send_json(
+				array(
+					'status'  => 'bad',
+					'message' => $validated->get_error_message(),
+				)
+			);
+		}
+
+		EasyPack_Helper()->set_insurance_amount_override( $order_id, $amount );
+
+		wp_send_json(
+			array(
+				'status'          => 'ok',
+				'amount'          => $amount,
+				'amount_formatted'=> wc_format_localized_price( wc_format_decimal( $amount, wc_get_price_decimals() ) ),
+				'currency_symbol' => html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOTES, 'UTF-8' ),
+			)
+		);
 	}
 
 
