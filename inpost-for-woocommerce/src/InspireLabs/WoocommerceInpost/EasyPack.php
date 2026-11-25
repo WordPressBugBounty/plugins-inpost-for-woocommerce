@@ -217,6 +217,13 @@ class EasyPack extends inspire_Plugin4 {
 			( new EasyPackBulkOrders() )->hooks();
 			( new EasyPackCoupons() )->hooks();
 			( new EasyPack_Webhook() )->hooks();
+			( new EasyPack_Privacy() )->hooks();
+			// Refresh shipment status / tracking / return tracking before the order page is built (priority 1:
+			// before WooCommerce loads the order for the HPOS screen), so every box shows fresh data on first view.
+			add_action( 'load-post.php', array( $this, 'refresh_shipment_before_order_edit_page' ), 1 );
+			add_action( 'load-woocommerce_page_wc-orders', array( $this, 'refresh_shipment_before_order_edit_page' ), 1 );
+			add_action( 'load-admin_page_wc-orders', array( $this, 'refresh_shipment_before_order_edit_page' ), 1 );
+			add_action( 'init', array( $this, 'maybe_cleanup_orphan_options' ) );
 
 			// integration with Woocommerce blocks start.
 			add_action(
@@ -703,12 +710,13 @@ class EasyPack extends inspire_Plugin4 {
 			$this->enqueue_geowidget_modal_a11y_script();
 
 			if ( get_option( 'easypack_js_map_button' ) === 'yes' && ! has_block( 'woocommerce/checkout' ) ) {
+				$this->register_typ_locker_script();
 				$front_js_path    = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/front.js';
 				$front_js_version = file_exists( $front_js_path ) ? filemtime( $front_js_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION;
 				wp_enqueue_script(
 					'easypack-front-js',
 					$this->getPluginJs() . 'front.js',
-					array( 'jquery', 'easypack-jquery-modal', 'easypack-geowidget-modal-a11y', 'geowidget-inpost' ),
+					array( 'jquery', 'easypack-jquery-modal', 'easypack-geowidget-modal-a11y', 'geowidget-inpost', 'easypack-typ-locker' ),
 					$front_js_version,
 					array( 'in_footer' => true )
 				);
@@ -1073,6 +1081,112 @@ class EasyPack extends inspire_Plugin4 {
 	}
 
 	/**
+	 * Refresh the InPost shipment of the order being opened, before the edit screen renders.
+	 *
+	 * Without webhooks, status / tracking / return tracking are only refreshed when the order is viewed.
+	 * The refresh used to run inside the InPost metabox, i.e. after WooCommerce had already loaded the
+	 * order for the screen, so the "Custom Fields" box (and the metabox status) showed the previous data
+	 * until the page was reloaded. Running it here fixes that; the metabox call is then a no-op
+	 * (EasyPack_Helper::refresh_shipment_status() refreshes once per request).
+	 *
+	 * @return void
+	 */
+	public function refresh_shipment_before_order_edit_page(): void {
+		// Only when the page is displayed: on HPOS the order form also POSTs to page=wc-orders&action=edit,
+		// and refreshing there would add an API call to every order save.
+		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'GET' !== strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) ) ) {
+			return;
+		}
+
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only screen detection; no state change from request data.
+		$order_id = 0;
+
+		if ( isset( $_GET['page'] ) && 'wc-orders' === $_GET['page'] ) {
+			// HPOS: admin.php?page=wc-orders&action=edit&id=123.
+			if ( isset( $_GET['action'], $_GET['id'] ) && 'edit' === $_GET['action'] ) {
+				$order_id = absint( wp_unslash( $_GET['id'] ) );
+			}
+		} elseif ( isset( $_GET['post'], $_GET['action'] ) && 'edit' === $_GET['action'] ) {
+			// Legacy storage: post.php?post=123&action=edit.
+			$order_id = absint( wp_unslash( $_GET['post'] ) );
+			if ( $order_id && 'shop_order' !== get_post_type( $order_id ) ) {
+				$order_id = 0;
+			}
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		if ( ! $order_id || ! current_user_can( 'edit_shop_orders' ) ) {
+			return;
+		}
+
+		try {
+			EasyPack_Helper()->refresh_shipment_status( $order_id );
+		} catch ( \Throwable $e ) {
+			// Never break the order screen because of the InPost API.
+			if ( function_exists( 'wc_get_logger' ) ) {
+				\wc_get_logger()->debug( 'Early shipment refresh failed: ' . $e->getMessage(), array( 'source' => 'inpost-pl-refresh' ) );
+			}
+		}
+	}
+
+	/**
+	 * One-time removal of the plugin's own technical options that are no longer used (audit A8a/A8b).
+	 *
+	 * Only these exact wp_options rows are deleted - no settings in use, no order meta.
+	 * - easypack_api_login_error: write-only flag from ping() (never read),
+	 * - easypack_api_error_login: name read by the settings page but never written,
+	 * - easypack_api_url: settings field not used by the API (URL comes from the environment),
+	 * - inpost_pl_organisation_services_global: write-only copy of the ShipX services list.
+	 *
+	 * @return void
+	 */
+	public function maybe_cleanup_orphan_options(): void {
+		// Autoloaded on purpose: the check must not cost a DB query per request.
+		if ( get_option( 'inpost_pl_orphan_options_cleaned' ) ) {
+			return;
+		}
+
+		foreach ( array( 'easypack_api_login_error', 'easypack_api_error_login', 'easypack_api_url', 'inpost_pl_organisation_services_global' ) as $option ) {
+			delete_option( $option );
+		}
+
+		update_option( 'inpost_pl_orphan_options_cleaned', '1', true );
+	}
+
+	/**
+	 * Register the shared thank-you page module (typ-locker.js) used by every checkout mode:
+	 * inpost-pl.js, front.js and typ-related-points.js depend on it.
+	 *
+	 * @return void
+	 */
+	public function register_typ_locker_script(): void {
+		if ( wp_script_is( 'easypack-typ-locker', 'registered' ) ) {
+			return;
+		}
+
+		$path = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/typ-locker.js';
+
+		wp_register_script(
+			'easypack-typ-locker',
+			$this->getPluginJs() . 'typ-locker.js',
+			array(),
+			file_exists( $path ) ? filemtime( $path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
+			array( 'in_footer' => true )
+		);
+
+		wp_localize_script(
+			'easypack-typ-locker',
+			'easypack_typ_locker',
+			array(
+				'ajaxurl'      => admin_url( 'admin-ajax.php' ),
+				'security'     => wp_create_nonce( 'easypack_nonce' ),
+				'updated_text' => __( 'Pick up point has been successfuly written', 'inpost-for-woocommerce' ),
+				'error_text'   => __( 'Some error is occured', 'inpost-for-woocommerce' ),
+			)
+		);
+	}
+
+	/**
 	 * Enqueues thank-you page handlers for Blocks checkout + JS map button mode.
 	 *
 	 * In that configuration front.js is skipped (has_block) and inpost-pl.js is skipped
@@ -1098,11 +1212,12 @@ class EasyPack extends inspire_Plugin4 {
 		$typ_js_path = WOOCOMMERCE_INPOST_PLUGIN_DIR . '/resources/assets/js/typ-related-points.js';
 
 		$this->enqueue_geowidget_modal_a11y_script();
+		$this->register_typ_locker_script();
 
 		wp_enqueue_script(
 			'easypack-typ-related-points-js',
 			$this->getPluginJs() . 'typ-related-points.js',
-			array( 'jquery', 'easypack-jquery-modal', 'easypack-geowidget-modal-a11y', 'geowidget-inpost' ),
+			array( 'jquery', 'easypack-jquery-modal', 'easypack-geowidget-modal-a11y', 'geowidget-inpost', 'easypack-typ-locker' ),
 			file_exists( $typ_js_path ) ? filemtime( $typ_js_path ) : WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
 			array( 'in_footer' => true )
 		);
@@ -1275,8 +1390,13 @@ class EasyPack extends inspire_Plugin4 {
 
 		check_ajax_referer( 'inpost_product_table', 'security' );
 
+		// The nonce only proves the request came from the Products Settings screen; it does not authorize editing.
+		if ( ! current_user_can( 'edit_products' ) ) {
+			wp_send_json( array( 'error' => esc_html__( 'You are not allowed to edit products.', 'inpost-for-woocommerce' ) ), 403 );
+		}
+
 		if ( isset( $_POST['product_data'] ) && is_array( $_POST['product_data'] ) && isset( $_POST['product_id'] ) ) {
-			$product_id = sanitize_text_field( wp_unslash( $_POST['product_id'] ) );
+			$product_id = absint( wp_unslash( $_POST['product_id'] ) );
 
 			$wc_product = wc_get_product( $product_id );
 
@@ -1284,6 +1404,11 @@ class EasyPack extends inspire_Plugin4 {
 				$error = 'Product #' . $product_id . ' does not exist';
 				wp_send_json( array( 'error' => $error ) );
 				wp_die();
+			}
+
+			// Per-product check (e.g. multi-vendor roles that may edit only their own products).
+			if ( ! current_user_can( 'edit_product', $product_id ) ) {
+				wp_send_json( array( 'error' => esc_html__( 'You are not allowed to edit this product.', 'inpost-for-woocommerce' ) ), 403 );
 			}
 
 			$locker_size_meta_key     = self::ATTRIBUTE_PREFIX . '_parcel_dimensions';
@@ -1630,7 +1755,14 @@ class EasyPack extends inspire_Plugin4 {
 					$api_url = 'https://sandbox-api-gateway-pl.easypack24.net/v1/points';
 				}
 
-				$url = $api_url . '?relative_post_code=' . $zip_code . '&max_distance=3000&limit=5';
+				$url = add_query_arg(
+					array(
+						'relative_post_code' => rawurlencode( $zip_code ),
+						'max_distance'       => 3000,
+						'limit'              => 5,
+					),
+					$api_url
+				);
 
 				$args = array(
 					'method'  => 'GET',

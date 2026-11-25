@@ -177,23 +177,24 @@ class EasyPackBulkOrders {
 
 		if ( empty( $status ) ) {
 
+			// Method changed in the order metabox (#easypack_change_first_parcel): show the NEW method,
+			// in red, so the merchant sees that bulk creation will use it instead of the checkout method.
+			$changed_method = $this->get_metabox_changed_method( $order_id );
+			if ( null !== $changed_method ) {
+				$shipping_method_id    = $changed_method['method_id'];
+				$shipping_method_title = $changed_method['title'];
+				$method_title_html     = '<b style="color:#c51313">' . esc_html( $shipping_method_title ) . '</b>';
+			} else {
+				$method_title_html = esc_html( $shipping_method_title );
+			}
+
 			$inpost_status = '<div class="inpost-status-inside-td">'
 							. esc_html__( 'Not created yet', 'inpost-for-woocommerce' )
 							. ' ('
-							. esc_html( $shipping_method_title )
+							. $method_title_html
 							. ')'
 							. $this->get_orders_list_insurance_edit_html( $order )
 							. '</div>';
-
-			if ( ! empty( $shipping_method_changed ) ) {
-				$inpost_status = '<div class="inpost-status-inside-td">'
-								. esc_html__( 'Not created yet', 'inpost-for-woocommerce' )
-								. ' ('
-								. '<b style="color:#c51313">' . esc_html( $shipping_method_title ) . '</b>'
-								. ')'
-								. $this->get_orders_list_insurance_edit_html( $order )
-								. '</div>';
-			}
 
 			if ( EasyPack_Helper()->is_courier_service_by_id( $shipping_method_id ) ) {
 				$courier_parcel_source = EasyPack_Helper()->get_source_of_courier_dimensions( $order_id );
@@ -202,7 +203,7 @@ class EasyPackBulkOrders {
 					$inpost_status = '<div class="inpost-status-inside-td easypack-alert-status">'
 									. esc_html__( 'Adding of dimensions is required', 'inpost-for-woocommerce' )
 									. ' ('
-									. esc_html( $shipping_method_title )
+									. $method_title_html
 									. ')'
 									. $this->get_orders_list_insurance_edit_html( $order )
 									. '</div>';
@@ -221,7 +222,7 @@ class EasyPackBulkOrders {
 					}
 					$shipping_method_title = str_replace( '_', ' ', $service_created );
 					if ( $cod ) {
-						$shipping_method_title . ' ' . esc_html__( 'COD', 'inpost-for-woocommerce' );
+						$shipping_method_title .= ' ' . esc_html__( 'COD', 'inpost-for-woocommerce' );
 					}
 				}
 			}
@@ -505,7 +506,14 @@ class EasyPackBulkOrders {
 			$service = $fs_method_name;
 		}
 
-		if ( ! $is_any_inpost_method && ! $is_inpost_method_linked_via_flexible_shipping ) {
+		// The merchant changed the method in the order metabox (#easypack_change_first_parcel) but left
+		// without creating the shipment there: bulk must create it with the NEW method, not the checkout one.
+		$changed_method = $this->get_metabox_changed_method( $order_id );
+		if ( null !== $changed_method ) {
+			$service = $changed_method['method_id'];
+		}
+
+		if ( ! $is_any_inpost_method && ! $is_inpost_method_linked_via_flexible_shipping && null === $changed_method ) {
 			$return_content = array(
 				'status'  => 'bad',
 				'message' => esc_html__( 'Order was placed with not InPost shipping method', 'inpost-for-woocommerce' ),
@@ -560,6 +568,48 @@ class EasyPackBulkOrders {
 
 		$class_instance = new $class_with_namespace();
 		$class_instance::ajax_create_package();
+	}
+
+	/**
+	 * InPost method selected in the order metabox (#easypack_change_first_parcel), if any.
+	 *
+	 * EasyPack_AJAX::change_first_package() stores the selected zone instance in
+	 * `_inpost_pl_metabox_shipping_method_instance_id` and its method ID in `_inpost_pl_metabox_shipping_method`.
+	 * For a Flexible Shipping instance the InPost method linked to it is used.
+	 *
+	 * @param int|string $order_id Order ID.
+	 * @return array{method_id: string, title: string}|null Null when the method was not changed.
+	 */
+	private function get_metabox_changed_method( $order_id ): ?array {
+		$instance_id = (string) EasyPack_Helper()->get_woo_order_meta( $order_id, '_inpost_pl_metabox_shipping_method_instance_id' );
+		$method_id   = (string) EasyPack_Helper()->get_woo_order_meta( $order_id, '_inpost_pl_metabox_shipping_method' );
+
+		if ( '' === $instance_id && '' === $method_id ) {
+			return null;
+		}
+
+		$inpost_methods = EasyPack_Helper()->get_inpost_methods();
+
+		if ( '' !== $instance_id && isset( $inpost_methods[ $instance_id ] ) ) {
+			$method = $inpost_methods[ $instance_id ];
+			$inpost = ! empty( $method['inpost_title'] ) ? (string) $method['inpost_title'] : (string) $method['method_title'];
+			if ( 0 === strpos( $inpost, 'easypack_' ) ) {
+				return array(
+					'method_id' => $inpost,
+					'title'     => ! empty( $method['user_title'] ) ? (string) $method['user_title'] : $inpost,
+				);
+			}
+		}
+
+		// Zone instance no longer exists: fall back to the stored method ID.
+		if ( 0 === strpos( $method_id, 'easypack_' ) ) {
+			return array(
+				'method_id' => $method_id,
+				'title'     => ucwords( str_replace( '_', ' ', $method_id ) ),
+			);
+		}
+
+		return null;
 	}
 
 

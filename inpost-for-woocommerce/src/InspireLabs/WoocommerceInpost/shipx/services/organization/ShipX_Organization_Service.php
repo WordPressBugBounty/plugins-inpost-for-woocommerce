@@ -74,7 +74,6 @@ class ShipX_Organization_Service {
 			$allServices = EasyPack_API()->getServicesGlobal();
 
 			if ( ! empty( $allServices ) ) {
-				update_option( 'inpost_pl_organisation_services_global', $allServices );
 				break;
 			}
 			sleep( 1 );

@@ -277,7 +277,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		$is_disabled_first = $current_page === 1 ? 'disabled' : null;
 		$is_disabled_last  = $current_page == $total_pagination_pages ? 'disabled' : null;
 		if ( $total_pagination_pages ) {
-			$current_rel_uri = add_query_arg( null, null );
+			$current_rel_uri = add_query_arg( '', '' );
 			?>
 			<form method="get" action="<?php echo esc_url( $current_rel_uri ); ?>">
 				<div class="tablenav-pages">

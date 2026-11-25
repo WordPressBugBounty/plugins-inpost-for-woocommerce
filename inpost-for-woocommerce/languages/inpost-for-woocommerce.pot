@@ -2571,3 +2571,67 @@ msgstr ""
 #: src/InspireLabs/WoocommerceInpost/EasyPack_Helper.php
 msgid "Insurance amount cannot be negative."
 msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php
+msgid "•••••••• saved - leave empty to keep"
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_AJAX.php
+#, php-format
+msgid "Pick-up point %s was selected by the customer on the order confirmation page."
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_AJAX.php
+#, php-format
+msgid "Pick-up point was changed by the customer on the order confirmation page from %1$s to %2$s."
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php
+msgid "You are not allowed to edit products."
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php
+msgid "You are not allowed to edit this product."
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "InPost PL order data"
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+#, php-format
+msgid "InPost PL data within order %s has been retained."
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+#, php-format
+msgid "Removed InPost PL data from order %s."
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "InPost PL shipments"
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "Pick-up point and shipment data of your orders delivered by InPost."
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "Pick-up point"
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "Pick-up point description"
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "Return tracking number"
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "InPost shipment ID"
+msgstr ""
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "Order number"
+msgstr ""

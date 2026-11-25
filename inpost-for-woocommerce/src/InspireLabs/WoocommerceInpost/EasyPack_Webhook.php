@@ -80,11 +80,49 @@ class EasyPack_Webhook {
 				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => array( $this, 'inpost_webhook_callback' ),
 				'args'                => array(),
-				'permission_callback' => function () {
-					return true;
-				},
+				'permission_callback' => array( $this, 'webhook_permission_check' ),
 			)
 		);
+	}
+
+	/**
+	 * REST permission check for the InPost webhook.
+	 *
+	 * Runs the existing authorization gates before the handler (WP REST pattern):
+	 * webhooks enabled + request from an InPost IP (verify_request()), and matching
+	 * organization ID (verify_organisation_id()). Responses keep the previous 403
+	 * messages and logging.
+	 *
+	 * @param \WP_REST_Request $request The REST request object.
+	 * @return true|\WP_Error
+	 */
+	public function webhook_permission_check( \WP_REST_Request $request ) {
+
+		$headers = $request->get_headers();
+
+		if ( ! $this->verify_request( $headers ) ) {
+			if ( function_exists( 'wc_get_logger' ) ) {
+				\wc_get_logger()->debug( 'IP Address does not match to InPost API:', array( 'source' => 'inpost-pl-webhook' ) );
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
+				\wc_get_logger()->debug( print_r( $headers, true ), array( 'source' => 'inpost-pl-webhook' ) );
+			}
+
+			return new \WP_Error( 'inpost_webhook_forbidden_ip', 'IP Address does not match to InPost API.', array( 'status' => 403 ) );
+		}
+
+		$webhook_body = json_decode( $request->get_body(), true );
+
+		if ( ! $this->verify_organisation_id( $webhook_body ) ) {
+			if ( function_exists( 'wc_get_logger' ) ) {
+				\wc_get_logger()->debug( 'Organisation ID does not match:', array( 'source' => 'inpost-pl-webhook' ) );
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
+				\wc_get_logger()->debug( print_r( $webhook_body, true ), array( 'source' => 'inpost-pl-webhook' ) );
+			}
+
+			return new \WP_Error( 'inpost_webhook_forbidden_organization', 'Organisation ID does not match.', array( 'status' => 403 ) );
+		}
+
+		return true;
 	}
 
 
@@ -100,7 +138,6 @@ class EasyPack_Webhook {
 	public function inpost_webhook_callback( \WP_REST_Request $request ) {
 
 		$webhook_body = array();
-		$headers      = array();
 		$status       = null;
 
 		if ( ! $request->is_json_content_type() ) {
@@ -114,7 +151,6 @@ class EasyPack_Webhook {
 		try {
 
 			$webhook_body = json_decode( $request->get_body(), true );
-			$headers      = $request->get_headers();
 
 		} catch ( \Exception $e ) {
 
@@ -132,37 +168,7 @@ class EasyPack_Webhook {
 			return new \WP_REST_Response( $exception_data, 500 );
 		}
 
-		if ( ! $this->verify_request( $headers ) ) {
-
-			$resp = array(
-				'status'   => 403,
-				'response' => 'IP Address does not match to InPost API.',
-			);
-
-			if ( function_exists( 'wc_get_logger' ) ) {
-				\wc_get_logger()->debug( 'IP Address does not match to InPost API:', array( 'source' => 'inpost-pl-webhook' ) );
-				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
-				\wc_get_logger()->debug( print_r( $headers, true ), array( 'source' => 'inpost-pl-webhook' ) );
-			}
-
-			return new \WP_REST_Response( $resp, 403 );
-		}
-
-		if ( ! $this->verify_organisation_id( $webhook_body ) ) {
-
-			$resp = array(
-				'status'   => 403,
-				'response' => 'Organisation ID does not match.',
-			);
-
-			if ( function_exists( 'wc_get_logger' ) ) {
-				\wc_get_logger()->debug( 'Organisation ID does not match:', array( 'source' => 'inpost-pl-webhook' ) );
-				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Structured debug output for WooCommerce logs.
-				\wc_get_logger()->debug( print_r( $webhook_body, true ), array( 'source' => 'inpost-pl-webhook' ) );
-			}
-
-			return new \WP_REST_Response( $resp, 403 );
-		}
+		// Authorization (webhooks enabled, InPost IP, organization ID) runs in webhook_permission_check().
 
 		$tracking_number = null;
 		$wc_order_id     = null;

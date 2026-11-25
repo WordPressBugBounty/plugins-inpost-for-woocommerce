@@ -696,21 +696,78 @@ if ( ! class_exists( 'EasyPack_AJAX' ) ) :
 				wp_send_json_error( 'order_finalised' );
 			}
 
-			$new_locker = sanitize_text_field( wp_unslash( $_POST['inpost_pl_locker'] ) );
-			$locker_desc = ! empty( $_POST['inpost_pl_locker_desc'] )
-				? sanitize_text_field( wp_unslash( $_POST['inpost_pl_locker_desc'] ) )
-				: null;
-
-			if ( ! empty( $new_locker ) ) {
-				$order->update_meta_data( '_parcel_machine_id', $new_locker );
-				if ( ! empty( $locker_desc ) ) {
-					$order->update_meta_data( '_parcel_machine_desc', $locker_desc );
-				}
-				$order->save();
-				wp_send_json_success( 'locker_updated' );
+			// Only parcel-locker orders can get a point (e.g. not courier orders).
+			if ( ! self::order_uses_locker_shipping( $order ) ) {
+				wp_send_json_error( 'not_locker_order' );
 			}
 
-			wp_send_json_error( 'invalid_locker' );
+			// Once the shipment exists, the point is on the label - changing it here would desync order and parcel.
+			if ( ! empty( $order->get_meta( '_shipx_shipment_object' ) ) || '' !== (string) $order->get_meta( '_easypack_parcel_tracking' ) ) {
+				wp_send_json_error( 'shipment_created' );
+			}
+
+			// InPost point IDs: letters, digits, "-" and "_" (e.g. KRA010, WAW22M, POP-KRA123).
+			// Validate the raw value: sanitizing first would turn e.g. "<b>X</b>Y" into a valid-looking "XY".
+			$raw_locker = wp_unslash( $_POST['inpost_pl_locker'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Strictly validated by the regex below.
+			if ( ! is_string( $raw_locker ) || ! preg_match( '/^[A-Za-z0-9][A-Za-z0-9_-]{1,31}$/', $raw_locker ) ) {
+				wp_send_json_error( 'invalid_locker' );
+			}
+
+			$new_locker  = sanitize_text_field( $raw_locker );
+			$locker_desc = ! empty( $_POST['inpost_pl_locker_desc'] )
+				? sanitize_text_field( wp_unslash( $_POST['inpost_pl_locker_desc'] ) )
+				: '';
+			$locker_desc = function_exists( 'mb_substr' ) ? mb_substr( $locker_desc, 0, 255 ) : substr( $locker_desc, 0, 255 );
+
+			$previous_locker = (string) $order->get_meta( '_parcel_machine_id' );
+
+			$order->update_meta_data( '_parcel_machine_id', $new_locker );
+			if ( '' !== $locker_desc ) {
+				$order->update_meta_data( '_parcel_machine_desc', $locker_desc );
+			}
+
+			// Audit trail for the merchant: the point was chosen (or changed) outside checkout.
+			if ( $previous_locker !== $new_locker ) {
+				$order->add_order_note(
+					'' === $previous_locker
+						? sprintf(
+							/* translators: %s: pick-up point ID */
+							__( 'Pick-up point %s was selected by the customer on the order confirmation page.', 'inpost-for-woocommerce' ),
+							$new_locker
+						)
+						: sprintf(
+							/* translators: 1: previous pick-up point ID, 2: new pick-up point ID */
+							__( 'Pick-up point was changed by the customer on the order confirmation page from %1$s to %2$s.', 'inpost-for-woocommerce' ),
+							$previous_locker,
+							$new_locker
+						)
+				);
+			}
+
+			$order->save();
+			wp_send_json_success( 'locker_updated' );
+		}
+
+		/**
+		 * Whether the order ships with an InPost parcel-locker method (directly or linked via Flexible Shipping).
+		 *
+		 * Same rule as EasyPack::possibility_setup_missed_locker_on_typ(), which decides when the
+		 * thank-you page offers point selection.
+		 *
+		 * @param \WC_Order $order Order.
+		 * @return bool
+		 */
+		private static function order_uses_locker_shipping( $order ): bool {
+			foreach ( $order->get_shipping_methods() as $shipping_method ) {
+				$method_id = (string) $shipping_method->get_method_id();
+				$fs_method = (string) EasyPack_Helper()->get_method_linked_to_fs_by_instance_id( $shipping_method->get_instance_id() );
+
+				if ( 0 === strpos( $method_id, 'easypack_parcel_machines' ) || 0 === strpos( $fs_method, 'easypack_parcel_machines' ) ) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 

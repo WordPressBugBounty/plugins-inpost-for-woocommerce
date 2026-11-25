@@ -2948,3 +2948,67 @@ msgstr "Nieprawidłowe zamówienie."
 #: src/InspireLabs/WoocommerceInpost/EasyPack_Helper.php
 msgid "Insurance amount cannot be negative."
 msgstr "Kwota ubezpieczenia nie może być ujemna."
+
+#: src/InspireLabs/WoocommerceInpost/admin/EasyPack_Settings_General.php
+msgid "•••••••• saved - leave empty to keep"
+msgstr "•••••••• zapisano – pozostaw puste, aby zachować"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_AJAX.php
+#, php-format
+msgid "Pick-up point %s was selected by the customer on the order confirmation page."
+msgstr "Punkt odbioru %s został wybrany przez klienta na stronie potwierdzenia zamówienia."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_AJAX.php
+#, php-format
+msgid "Pick-up point was changed by the customer on the order confirmation page from %1$s to %2$s."
+msgstr "Punkt odbioru został zmieniony przez klienta na stronie potwierdzenia zamówienia z %1$s na %2$s."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php
+msgid "You are not allowed to edit products."
+msgstr "Nie masz uprawnień do edycji produktów."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack.php
+msgid "You are not allowed to edit this product."
+msgstr "Nie masz uprawnień do edycji tego produktu."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "InPost PL order data"
+msgstr "Dane zamówień InPost PL"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+#, php-format
+msgid "InPost PL data within order %s has been retained."
+msgstr "Dane InPost PL w zamówieniu %s zostały zachowane."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+#, php-format
+msgid "Removed InPost PL data from order %s."
+msgstr "Usunięto dane InPost PL z zamówienia %s."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "InPost PL shipments"
+msgstr "Przesyłki InPost PL"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "Pick-up point and shipment data of your orders delivered by InPost."
+msgstr "Punkt odbioru i dane przesyłek Twoich zamówień dostarczanych przez InPost."
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "Pick-up point"
+msgstr "Punkt odbioru"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "Pick-up point description"
+msgstr "Opis punktu odbioru"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "Return tracking number"
+msgstr "Numer śledzenia zwrotu"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "InPost shipment ID"
+msgstr "ID przesyłki InPost"
+
+#: src/InspireLabs/WoocommerceInpost/EasyPack_Privacy.php
+msgid "Order number"
+msgstr "Numer zamówienia"

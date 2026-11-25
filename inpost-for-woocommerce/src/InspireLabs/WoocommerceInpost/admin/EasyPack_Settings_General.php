@@ -31,6 +31,16 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 		private $status_service;
 
 		/**
+		 * Settings rendered as masked password fields.
+		 */
+		const MASKED_SECRET_FIELDS = array(
+			'easypack_organization_id',
+			'easypack_token',
+			'easypack_geowidget_production_token',
+			'easypack_geowidget_sandbox_token',
+		);
+
+		/**
 		 * Constructor.
 		 */
 		public function __construct() {
@@ -50,11 +60,7 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 		 * Output the settings
 		 */
 		public function output() {
-			$easypack_api_change = get_option( 'easypack_api_error_login', 0 );
 			?>
-			<input id="easypack_api_change" type="hidden"
-					name="easypack_api_change"
-					value="<?php echo esc_attr( $easypack_api_change ); ?>">
 			<style>
 				.form-table {
 					border-bottom: 1px solid #ccc;
@@ -131,51 +137,45 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 					'id'    => 'general_options',
 				),
 
-				array(
-					'title'             => __( 'API URL', 'inpost-for-woocommerce' ),
-					'id'                => 'easypack_api_url',
-					'css'               => 'min-width:300px;',
-					'default'           => 'https://sandbox-api-shipx-pl.easypack24.net',
-					'type'              => 'text',
-					'desc_tip'          => false,
-					'class'             => 'easypack-api-url',
-					'custom_attributes' => array( 'required' => 'required' ),
-				),
-				array(
-					'title'             => __( 'Organization ID', 'inpost-for-woocommerce' ),
-					'id'                => 'easypack_organization_id',
-					'css'               => 'min-width:300px;',
-					'default'           => '',
-					'type'              => 'text',
-					'desc_tip'          => false,
-					'custom_attributes' => array( 'required' => 'required' ),
+				$this->masked_secret_field(
+					array(
+						'title'             => __( 'Organization ID', 'inpost-for-woocommerce' ),
+						'id'                => 'easypack_organization_id',
+						'css'               => 'min-width:300px;',
+						'default'           => '',
+						'desc_tip'          => false,
+						'custom_attributes' => array( 'required' => 'required' ),
+					)
 				),
 
-				array(
-					'title'             => __( 'Token', 'inpost-for-woocommerce' ),
-					'id'                => 'easypack_token',
-					'css'               => 'min-width:300px;',
-					'default'           => '',
-					'type'              => 'text',
-					'desc_tip'          => false,
-					'custom_attributes' => array( 'required' => 'required' ),
+				$this->masked_secret_field(
+					array(
+						'title'             => __( 'Token', 'inpost-for-woocommerce' ),
+						'id'                => 'easypack_token',
+						'css'               => 'min-width:300px;',
+						'default'           => '',
+						'desc_tip'          => false,
+						'custom_attributes' => array( 'required' => 'required' ),
+					)
 				),
 
-				array(
-					'title'    => __( 'Geowidget production token', 'inpost-for-woocommerce' ),
-					'id'       => 'easypack_geowidget_production_token',
-					'css'      => 'min-width:300px;',
-					'default'  => '',
-					'type'     => 'text',
-					'desc_tip' => false,
+				$this->masked_secret_field(
+					array(
+						'title'    => __( 'Geowidget production token', 'inpost-for-woocommerce' ),
+						'id'       => 'easypack_geowidget_production_token',
+						'css'      => 'min-width:300px;',
+						'default'  => '',
+						'desc_tip' => false,
+					)
 				),
-				array(
-					'title'    => __( 'Geowidget sandbox token', 'inpost-for-woocommerce' ),
-					'id'       => 'easypack_geowidget_sandbox_token',
-					'css'      => 'min-width:300px;',
-					'default'  => '',
-					'type'     => 'text',
-					'desc_tip' => false,
+				$this->masked_secret_field(
+					array(
+						'title'    => __( 'Geowidget sandbox token', 'inpost-for-woocommerce' ),
+						'id'       => 'easypack_geowidget_sandbox_token',
+						'css'      => 'min-width:300px;',
+						'default'  => '',
+						'desc_tip' => false,
+					)
 				),
 
 				array(
@@ -846,15 +846,72 @@ if ( ! class_exists( 'EasyPack_Settings_General' ) ) :
 		public function save() {
 			$settings = $this->get_settings();
 
+			foreach ( self::MASKED_SECRET_FIELDS as $option_id ) {
+				add_filter( 'woocommerce_admin_settings_sanitize_option_' . $option_id, array( $this, 'keep_saved_secret_on_empty' ), 10, 3 );
+			}
+
 			WC_Admin_Settings::save_fields( $settings );
 			EasyPack_API()->clear_cache();
 
-			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- WC settings save; nonce handled by WooCommerce settings API.
-			if ( ! empty( $_REQUEST['easypack_organization_id'] ) && ! empty( $_REQUEST['easypack_token'] ) ) {
-				// phpcs:enable WordPress.Security.NonceVerification.Recommended
+			// Secret fields are rendered empty, so check the saved values rather than the request.
+			if ( '' !== (string) get_option( 'easypack_organization_id', '' ) && '' !== (string) get_option( 'easypack_token', '' ) ) {
 				$ping = EasyPack_API()->ping();
 				EasyPack()->get_merchant_services( true );
 			}
+		}
+
+		/**
+		 * Render a secret setting as a masked password field.
+		 *
+		 * The stored value is never printed into the page ('value' => ''); an empty submit
+		 * keeps the saved value (see keep_saved_secret_on_empty()). Browser/password-manager
+		 * autofill is disabled so it cannot silently overwrite the secret with a login password.
+		 *
+		 * @param array $field WooCommerce settings field definition.
+		 * @return array
+		 */
+		private function masked_secret_field( array $field ): array {
+			$has_value = '' !== (string) get_option( $field['id'], '' );
+
+			$field['type']  = 'password';
+			$field['value'] = '';
+
+			$attributes = isset( $field['custom_attributes'] ) && is_array( $field['custom_attributes'] ) ? $field['custom_attributes'] : array();
+			$attributes = array_merge(
+				$attributes,
+				array(
+					'autocomplete'   => 'new-password',
+					'spellcheck'     => 'false',
+					'data-1p-ignore' => 'true',
+					'data-lpignore'  => 'true',
+				)
+			);
+
+			if ( $has_value ) {
+				// Already saved: the field may stay empty, so it must not block form submit.
+				unset( $attributes['required'] );
+				$field['placeholder'] = __( '•••••••• saved - leave empty to keep', 'inpost-for-woocommerce' );
+			}
+
+			$field['custom_attributes'] = $attributes;
+
+			return $field;
+		}
+
+		/**
+		 * Keep the saved secret when its masked field is submitted empty.
+		 *
+		 * @param mixed $value     Sanitized value.
+		 * @param array $option    Field definition.
+		 * @param mixed $raw_value Raw submitted value.
+		 * @return mixed
+		 */
+		public function keep_saved_secret_on_empty( $value, $option, $raw_value ) {
+			if ( ! is_string( $raw_value ) || '' === trim( $raw_value ) ) {
+				return get_option( $option['id'], '' );
+			}
+
+			return is_string( $value ) ? trim( $value ) : $value;
 		}
 
 		/**

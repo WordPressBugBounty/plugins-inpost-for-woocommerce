@@ -122,7 +122,6 @@ function inpost_pl_select_default_point_callback(point) {
 				}
 			);
 
-			$( '#easypack_api_url' ).closest( 'tr' ).css( 'display', 'none' );
 			$( '#easypack_geowidget_url' ).closest( 'tr' ).css( 'display', 'none' );
 
 			let webhook_setting = $( 'input[name="easypack_enable_webhooks"]' );
@@ -203,30 +202,6 @@ function inpost_pl_select_default_point_callback(point) {
 				);
 			}
 
-			$( '#easypack_organization_id' ).change(
-				function () {
-					$( '#easypack_api_change' ).val( '1' );
-				}
-			);
-			$( '#easypack_api_environment' ).change(
-				function () {
-					$( '#easypack_api_change' ).val( '1' );
-				}
-			);
-			$( '#easypack_token' ).change(
-				function () {
-					$( '#easypack_api_change' ).val( '1' );
-				}
-			);
-
-			$( '#easypack_token' ).keyup(
-				function () {
-					if (easypack_token !== $( '#easypack_token' ).val()) {
-						$( '#easypack_api_change' ).val( '1' );
-					}
-				}
-			);
-			var easypack_token = $( '#easypack_token' ).val();
 
 			config = $( '#easypack_default_machine_id' ).data( 'geowidget_config' );
 

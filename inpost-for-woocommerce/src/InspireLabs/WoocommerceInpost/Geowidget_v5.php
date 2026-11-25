@@ -70,10 +70,11 @@ class Geowidget_v5 {
 			);
 			if ( 'yes' !== get_option( 'easypack_js_map_button' ) ) {
 				EasyPack()->enqueue_geowidget_modal_a11y_script();
+				EasyPack()->register_typ_locker_script();
 				wp_enqueue_script(
 					'inpost-pl-manage-geowidget',
 					$this->get_easypack_js_src(),
-					array( 'jquery', 'easypack-jquery-modal', 'easypack-geowidget-modal-a11y', 'geowidget-inpost' ),
+					array( 'jquery', 'easypack-jquery-modal', 'easypack-geowidget-modal-a11y', 'geowidget-inpost', 'easypack-typ-locker' ),
 					WOOCOMMERCE_INPOST_PL_PLUGIN_VERSION,
 					array( 'in_footer' => true )
 				);

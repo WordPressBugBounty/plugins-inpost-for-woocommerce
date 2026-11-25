@@ -2,7 +2,6 @@
  * Global variables
  */
 var inpostjsGeowidgetModal;
-let inpost_pl_is_ajax_get_point_running = false;
 
 /**
  * Get the currently selected shipping method from the DOM.
@@ -74,16 +73,6 @@ function inpost_pl_select_point_callback_js_mode(point) {
         geoBtn.textContent = easypack_front_map.button_text2;
     }
 
-    let is_need_write_missed_locker = false;
-    const typ_page = document.getElementById('selected-parcel-locker-pl-id');
-
-    if (typ_page) {
-        is_need_write_missed_locker = true;
-        typ_page.innerHTML = point_name;
-        const typ_page_desc = document.getElementById('selected-parcel-machine-desc');
-        if (typ_page_desc) typ_page_desc.innerHTML = selected_point_data;
-        document.querySelectorAll('.hidden-inpost-pl-typ-data').forEach(el => el.style.display = 'block');
-    }
 
     // Save selection to LocalStorage
     const EasyPackPointObject = {
@@ -114,54 +103,9 @@ function inpost_pl_select_point_callback_js_mode(point) {
 
     if (inpostjsGeowidgetModal) inpostjsGeowidgetModal.close();
 
-    // If on Thank You Page, update locker info via AJAX (Fetch API)
-    if (is_need_write_missed_locker) {
-        const typMapData = document.getElementById('inpost-pl-typ-map-data');
-        const order_id = typMapData ? typMapData.getAttribute('data-id') : '';
-        let order_key = '';
-        try {
-            order_key = new URLSearchParams(window.location.search).get('key') || '';
-        } catch (err) {
-            order_key = '';
-        }
-
-        const formData = new URLSearchParams();
-        formData.append('action', 'update_locker_from_typ_page');
-        formData.append('order_id', order_id);
-        formData.append('order_key', order_key);
-        formData.append('inpost_pl_locker', point_name);
-        formData.append('inpost_pl_locker_desc', parcelMachineAddressDesc);
-        formData.append('security', easypack_front_map.security);
-
-        // UI state: beforeSend
-        inpost_pl_is_ajax_get_point_running = true;
-        document.querySelectorAll('.inpost_pl_geowidget_related_preloader').forEach(el => el.style.display = 'flex');
-        document.querySelectorAll('.inpost_pl_locker_changed').forEach(el => el.remove());
-        document.querySelectorAll('.inpost-pl-related-point-btn').forEach(el => el.style.background = '#fff');
-
-        fetch(easypack_front_map.ajaxurl, {
-            method: 'POST',
-            body: formData,
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (!typMapData) return;
-                if (data && data.success) {
-                    typMapData.insertAdjacentHTML('beforebegin', `<div class="inpost_pl_locker_changed" style="color:#26be22; font-weight: bold">${easypack_front_map.updated_text}: ${point_name}</div>`);
-                } else {
-                    typMapData.insertAdjacentHTML('beforebegin', `<div class="inpost_pl_locker_changed" style="color:#e03636; font-weight: bold">${easypack_front_map.error_text}</div>`);
-                }
-            })
-            .catch(() => {
-                if (!typMapData) return;
-                typMapData.insertAdjacentHTML('beforebegin', `<div class="inpost_pl_locker_changed" style="color:#e03636; font-weight: bold">${easypack_front_map.error_text}</div>`);
-            })
-            .finally(() => {
-                inpost_pl_is_ajax_get_point_running = false;
-                document.querySelectorAll('.inpost-pl-typ-preloader').forEach(el => el.remove());
-                document.querySelectorAll('.inpost_pl_geowidget_related_preloader').forEach(el => el.style.display = 'none');
-            });
+    // Thank-you page: shared logic in typ-locker.js.
+    if (window.InpostPlTypLocker && window.InpostPlTypLocker.isTypPage()) {
+        window.InpostPlTypLocker.selectFromMap(point_name, parcelMachineAddressDesc, address_line1, address_line2);
     }
 }
 
@@ -311,65 +255,7 @@ function inpost_pl_js_init_front() {
             if (inpostjsGeowidgetModal && !inpostjsGeowidgetModal.isOpen) inpostjsGeowidgetModal.open();
         }
 
-        // Nearest point button click on TYP
-        const relatedBtn = target.closest('.inpost-pl-related-point-btn');
-        if (relatedBtn) {
-            e.preventDefault();
-            if (inpost_pl_is_ajax_get_point_running) return;
-
-            document.querySelectorAll('.inpost-pl-related-point-btn').forEach(el => el.style.background = '#fff');
-
-            const point_id = relatedBtn.getAttribute('data-id');
-            const order_id = document.getElementById('inpost-pl-related-data-order')?.value || '';
-            let order_key = '';
-            try {
-                order_key = new URLSearchParams(window.location.search).get('key') || '';
-            } catch (err) {
-                order_key = '';
-            }
-
-            const formData = new URLSearchParams();
-            formData.append('action', 'update_locker_from_typ_page');
-            formData.append('order_id', order_id);
-            formData.append('order_key', order_key);
-            formData.append('inpost_pl_locker', point_id);
-            formData.append('inpost_pl_locker_desc', relatedBtn.getAttribute('data-address-id'));
-            formData.append('security', easypack_front_map.security);
-
-            inpost_pl_is_ajax_get_point_running = true;
-            document.querySelectorAll('.hidden-inpost-pl-typ-data').forEach(el => el.style.display = 'none');
-            const relatedPreloader = relatedBtn.querySelector('.inpost-pl-select-from-points-preloader');
-            if (relatedPreloader) relatedPreloader.style.display = 'block';
-            document.querySelectorAll('.inpost_pl_locker_changed').forEach(el => el.remove());
-
-            fetch(easypack_front_map.ajaxurl, {
-                method: 'POST',
-                body: formData,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-            })
-                .then(res => res.json())
-                .then(data => {
-                    const anchor = document.getElementById('inpost-pl-typ-map-data');
-                    if (data && data.success) {
-                        relatedBtn.style.background = '#afeaad';
-                        const info = relatedBtn.querySelector('.inpost-pl-related-locker-info');
-                        if (info) {
-                            info.insertAdjacentHTML('afterend', `<div class="inpost_pl_locker_changed" style="color:#26be22; font-weight: bold">${easypack_front_map.updated_text}: ${point_id}</div>`);
-                        }
-                        if (anchor) anchor.insertAdjacentHTML('beforebegin', `<div class="inpost_pl_locker_changed" style="color:#26be22; font-weight: bold">${easypack_front_map.updated_text}: ${point_id}</div>`);
-                    } else if (anchor) {
-                        anchor.insertAdjacentHTML('beforebegin', `<div class="inpost_pl_locker_changed" style="color:#e03636; font-weight: bold">${easypack_front_map.error_text}</div>`);
-                    }
-                })
-                .catch(() => {
-                    const anchor = document.getElementById('inpost-pl-typ-map-data');
-                    if (anchor) anchor.insertAdjacentHTML('beforebegin', `<div class="inpost_pl_locker_changed" style="color:#e03636; font-weight: bold">${easypack_front_map.error_text}</div>`);
-                })
-                .finally(() => {
-                    inpost_pl_is_ajax_get_point_running = false;
-                    if (relatedPreloader) relatedPreloader.style.display = 'none';
-                });
-        }
+        // Nearest point buttons on TYP are handled by typ-locker.js.
     });
 
     /**

@@ -1986,6 +1986,14 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 		 */
 		public function refresh_shipment_status( $order_id ) {
 
+			// One refresh per order per request: the order edit page refreshes early (before rendering,
+			// see EasyPack::refresh_shipment_before_order_edit_page()) and the metabox calls this again.
+			static $refreshed = array();
+			$order_id         = absint( $order_id );
+			if ( isset( $refreshed[ $order_id ] ) ) {
+				return $refreshed[ $order_id ];
+			}
+
 			$response = array();
 
 			$shipment = $this->get_woo_order_meta( $order_id, '_shipx_shipment_object' );
@@ -2004,6 +2012,8 @@ if ( ! class_exists( 'EasyPack_Helper' ) ) :
 
 			$status_srv = EasyPack()->get_shipment_status_service();
 			$response   = $status_srv->refreshStatus( $shipment );
+
+			$refreshed[ $order_id ] = $response;
 
 			return $response;
 		}

@@ -852,10 +852,6 @@ if ( ! class_exists( 'InspireLabs\WoocommerceInpost\EasyPack_API' ) ) :
 				if ( $res && ! isset( $res['error'] ) ) {
 					$alerts = new Alerts();
 					$alerts->add_success( 'Inpost PL: ' . esc_html__( 'New API settings connection test passed.', 'inpost-for-woocommerce' ) );
-
-					update_option( 'easypack_api_login_error', '0' );
-				} else {
-					update_option( 'easypack_api_login_error', '1' );
 				}
 			}
 

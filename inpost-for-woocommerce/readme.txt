@@ -3,8 +3,8 @@ Contributors: inspirelabs
 Tags: inpost, paczkomaty, etykiety, przesyłki
 Requires at least: 5.3
 Tested up to: 7.1
-Requires PHP: 7.4
-Stable tag: 2.0.0
+Requires PHP: 8.2
+Stable tag: 2.0.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
  
@@ -42,6 +42,13 @@ Po zainstalowaniu wtyczki skonfiguruj sposób dostawy InPost oraz ceny poszczeg�
 
 
 == Changelog ==
+
+= 2.0.1 =
+* Fix: API keys masked in plugin settings (Organization ID, Token, Geowidget tokens)
+* Fix: webhook authorization moved to REST permission callback
+* Fix: shipping method changed in order metabox is used for Bulk shipment creation and shown in orders list
+* Fix: shipment status refreshed before order page loads
+* Feat: GDPR: InPost order data erased and exported with WordPress personal data tools
 
 = 2.0.0 =
 * Feat: output in UI additional tracking number for returned shipments
@@ -417,3 +424,5 @@ Po zainstalowaniu wtyczki skonfiguruj sposób dostawy InPost oraz ceny poszczeg�
 
 = 1.0.0 =
 * wstępne wydanie.
+
+ksa9wqw77qsic33m8nh4qfohq2gtibs2
